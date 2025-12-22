@@ -49,7 +49,7 @@ class PersonalForgetPage extends StatelessWidget {
             alignment: Alignment.topLeft,
             child: Container(
               margin: EdgeInsets.fromLTRB(29.w*3, 100.h*3, 0, 0),
-              child: Text('卡口App',style: TextStyle(color: HhColors.textBlackColor,fontSize: 42.sp*3,fontWeight: FontWeight.bold),),
+              child: Text('浩海卡口',style: TextStyle(color: HhColors.textBlackColor,fontSize: 42.sp*3,fontWeight: FontWeight.bold),),
             ),
           ),
           Align(

@@ -368,7 +368,7 @@ class RegisterPage extends StatelessWidget {
                       onPressed: () {
                         Get.to(WebViewPage(title: '隐私协议', url: 'http://117.132.5.139:18034/admin-file/iot-test/public/2024/9/24/haohai_iot_privacy_agreement.html',));
                       },
-                      child: Text('《卡口App平台隐私政策》',
+                      child: Text('《浩海卡口平台隐私政策》',
                         style: TextStyle(color: HhColors.backBlueOutColor,fontSize: 12.sp*3,fontWeight: FontWeight.w500),
                       ),
                     ),
@@ -480,7 +480,7 @@ class RegisterPage extends StatelessWidget {
                                 Get.to(WebViewPage(title: '隐私协议', url: 'http://117.132.5.139:18034/admin-file/iot-test/public/2024/9/24/haohai_iot_privacy_agreement.html',));
                               },
                               child: Text(
-                                '《卡口App平台隐私政策》',
+                                '《浩海卡口平台隐私政策》',
                                 style: TextStyle(
                                     decoration: TextDecoration.none,
                                     color: HhColors.mainBlueColor,

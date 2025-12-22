@@ -48,7 +48,7 @@ class LaunchPage extends StatelessWidget {
                       child: Image.asset('assets/images/common/logo.png',fit: BoxFit.fill,)
                   ),
                   SizedBox(height: 12.w*3,),
-                  Text('卡口App',style: TextStyle(color: HhColors.whiteColor,fontSize: 16.sp*3),)
+                  Text('浩海卡口',style: TextStyle(color: HhColors.whiteColor,fontSize: 16.sp*3),)
                 ],
               )
           ),
