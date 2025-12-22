@@ -1,0 +1,177 @@
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+/*def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}*/
+
+apply plugin: 'com.android.application'
+//apply plugin: 'kotlin-android'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+
+def flutterVersionCode = "33"
+def flutterVersionName = "1.0.7.29"
+
+android {
+    compileSdkVersion 34
+//    compileSdkVersion flutter.compileSdkVersion
+//    ndkVersion flutter.ndkVersion
+
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_1_8
+//        targetCompatibility JavaVersion.VERSION_1_8
+//    }
+
+    defaultConfig {
+        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+        multiDexEnabled true
+        applicationId "com.ehaohai.iot"
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        minSdkVersion 22
+        targetSdkVersion 30
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+
+
+        ndk {
+            //设置支持的SO库架构
+            abiFilters  "armeabi-v7a","arm64-v8a", "x86"
+        }
+        manifestPlaceholders = [
+                XG_ACCESS_ID : "1500040929",///个人版
+                XG_ACCESS_KEY: "A2UCA4MQX4ST",///个人版
+//                XG_ACCESS_ID : "1500041692",///企业版
+//                XG_ACCESS_KEY: "AAST7H0KI7QE",///企业版
+                HW_APPID: "103066123"
+        ]
+
+
+    }
+    lintOptions { checkReleaseBuilds false }
+
+
+    //签名
+    signingConfigs {
+        debugConfig {
+            storeFile file("../sign.jks")      //签名文件
+            storePassword "haohaiadmin"
+            keyAlias "haohai"
+            keyPassword "haohaiadmin"  //签名密码
+        }
+        release {
+            storeFile file("../sign.jks")      //签名文件
+            storePassword "haohaiadmin"
+            keyAlias "haohai"
+            keyPassword "haohaiadmin"  //签名密码
+        }
+    }
+    flavorDimensions "app"
+    productFlavors {
+        haohaiVersion {
+            dimension 'app'
+            applicationId "com.ehaohai.iot"//包名
+//            resValue "string", "app_name", "浩海万联"   // 设置默认的app_name
+            manifestPlaceholders = [
+                    APP_ICON: "@drawable/logo",//app图标
+                    CHANNEL_NAME: "haohaiVersion",
+                    APP_NAME: "浩海万联",
+                    AUTHORITIES: "com.ehaohai.iot.fileprovider",
+                    XG_ACCESS_ID : "1500040929",///个人版
+                    XG_ACCESS_KEY: "A2UCA4MQX4ST",///个人版
+            ]
+//            buildConfigField("String", "NET_TYPE", "ONLINE")//网络
+        }
+        businessVersion {
+            dimension 'app'
+            applicationId "com.ehaohai.iotb"//包名
+//            resValue "string", "app_name", "浩海万联"   // 设置默认的app_name
+            manifestPlaceholders = [
+                    APP_ICON: "@drawable/logo",//app图标
+                    CHANNEL_NAME: "businessVersion",
+                    APP_NAME: "浩海万联企业版",
+                    AUTHORITIES: "com.ehaohai.iotb.fileprovider",
+                    XG_ACCESS_ID : "1500041692",///企业版
+                    XG_ACCESS_KEY: "AAST7H0KI7QE",///企业版
+            ]
+//            buildConfigField("String", "NET_TYPE", "ONLINE")//网络
+        }
+        betaVersion {
+            dimension 'app'
+            applicationId "com.ehaohai.iot"//包名
+            manifestPlaceholders = [
+                    APP_ICON: "@drawable/logo",//app图标
+                    CHANNEL_NAME: "betaVersion",
+                    APP_NAME: "浩海万联测试版${defaultConfig.versionName}",
+                    AUTHORITIES: "com.ehaohai.iot.fileprovider",
+                    XG_ACCESS_ID : "1500040929",///个人版
+                    XG_ACCESS_KEY: "A2UCA4MQX4ST",///个人版
+            ]
+        }
+        betaBusinessVersion {
+            dimension 'app'
+            applicationId "com.ehaohai.iotb"//包名
+//            resValue "string", "app_name", "浩海万联"   // 设置默认的app_name
+            manifestPlaceholders = [
+                    APP_ICON: "@drawable/logo",//app图标
+                    CHANNEL_NAME: "betaBusinessVersion",
+                    APP_NAME: "浩海万联企业测试版${defaultConfig.versionName}",
+                    AUTHORITIES: "com.ehaohai.iotb.fileprovider",
+                    XG_ACCESS_ID : "1500041692",///企业版
+                    XG_ACCESS_KEY: "AAST7H0KI7QE",///企业版
+            ]
+//            buildConfigField("String", "NET_TYPE", "ONLINE")//网络
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release //解决unsigned
+            shrinkResources false
+            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            ndk{
+                //QQ微信等大佬都只用"armeabi"
+                abiFilters  "armeabi-v7a","arm64-v8a", "x86"
+            }
+        }
+        debug {
+            signingConfig signingConfigs.debugConfig //解决unsigned
+            minifyEnabled false
+            shrinkResources false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            ndk {
+                //这里配置开发调试时的，根据个人需要增减少，x86建议加上不然部分模拟器回报错
+                abiFilters  "armeabi-v7a","arm64-v8a", "x86"
+            }
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+flutter {
+    source '../..'
+}
