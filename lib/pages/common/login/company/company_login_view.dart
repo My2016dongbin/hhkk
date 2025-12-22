@@ -60,7 +60,7 @@ class CompanyLoginPage extends StatelessWidget {
             child: Container(
               margin: EdgeInsets.fromLTRB(36.w*3, 135.h*3, 0, 0),
               child: Text(
-                '欢迎登录浩海万联',
+                '欢迎登录卡口App',
                 style: TextStyle(
                     color: HhColors.blackColor,
                     fontSize: 20.sp*3,
@@ -266,7 +266,7 @@ class CompanyLoginPage extends StatelessWidget {
                         Get.to(WebViewPage(title: '隐私协议', url: 'http://117.132.5.139:18034/admin-file/iot-test/public/2024/9/24/haohai_iot_privacy_agreement.html',));
                       },
                       child: Text(
-                        '《浩海万联平台隐私政策》',
+                        '《卡口App平台隐私政策》',
                         style: TextStyle(
                             color: HhColors.backBlueOutColor,
                             fontSize: 12.sp*3,
@@ -428,7 +428,7 @@ class CompanyLoginPage extends StatelessWidget {
                                 Get.to(WebViewPage(title: '隐私协议', url: 'http://117.132.5.139:18034/admin-file/iot-test/public/2024/9/24/haohai_iot_privacy_agreement.html',));
                               },
                               child: Text(
-                                '《浩海万联平台隐私政策》',
+                                '《卡口App平台隐私政策》',
                                 style: TextStyle(
                                     decoration: TextDecoration.none,
                                     color: HhColors.mainBlueColor,

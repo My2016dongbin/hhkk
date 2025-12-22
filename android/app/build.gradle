@@ -87,12 +87,12 @@ android {
     productFlavors {
         haohaiVersion {
             dimension 'app'
-            applicationId "com.ehaohai.iot"//包名
-//            resValue "string", "app_name", "浩海万联"   // 设置默认的app_name
+            applicationId "com.ehaohai.kk"//包名
+//            resValue "string", "app_name", "卡口App"   // 设置默认的app_name
             manifestPlaceholders = [
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "haohaiVersion",
-                    APP_NAME: "浩海万联",
+                    APP_NAME: "卡口App",
                     AUTHORITIES: "com.ehaohai.iot.fileprovider",
                     XG_ACCESS_ID : "1500040929",///个人版
                     XG_ACCESS_KEY: "A2UCA4MQX4ST",///个人版
@@ -101,12 +101,12 @@ android {
         }
         businessVersion {
             dimension 'app'
-            applicationId "com.ehaohai.iotb"//包名
-//            resValue "string", "app_name", "浩海万联"   // 设置默认的app_name
+            applicationId "com.ehaohai.kkb"//包名
+//            resValue "string", "app_name", "卡口App"   // 设置默认的app_name
             manifestPlaceholders = [
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "businessVersion",
-                    APP_NAME: "浩海万联企业版",
+                    APP_NAME: "卡口App企业版",
                     AUTHORITIES: "com.ehaohai.iotb.fileprovider",
                     XG_ACCESS_ID : "1500041692",///企业版
                     XG_ACCESS_KEY: "AAST7H0KI7QE",///企业版
@@ -115,11 +115,11 @@ android {
         }
         betaVersion {
             dimension 'app'
-            applicationId "com.ehaohai.iot"//包名
+            applicationId "com.ehaohai.kk"//包名
             manifestPlaceholders = [
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "betaVersion",
-                    APP_NAME: "浩海万联测试版${defaultConfig.versionName}",
+                    APP_NAME: "卡口App测试版${defaultConfig.versionName}",
                     AUTHORITIES: "com.ehaohai.iot.fileprovider",
                     XG_ACCESS_ID : "1500040929",///个人版
                     XG_ACCESS_KEY: "A2UCA4MQX4ST",///个人版
@@ -127,12 +127,12 @@ android {
         }
         betaBusinessVersion {
             dimension 'app'
-            applicationId "com.ehaohai.iotb"//包名
-//            resValue "string", "app_name", "浩海万联"   // 设置默认的app_name
+            applicationId "com.ehaohai.kkb"//包名
+//            resValue "string", "app_name", "卡口App"   // 设置默认的app_name
             manifestPlaceholders = [
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "betaBusinessVersion",
-                    APP_NAME: "浩海万联企业测试版${defaultConfig.versionName}",
+                    APP_NAME: "卡口App企业测试版${defaultConfig.versionName}",
                     AUTHORITIES: "com.ehaohai.iotb.fileprovider",
                     XG_ACCESS_ID : "1500041692",///企业版
                     XG_ACCESS_KEY: "AAST7H0KI7QE",///企业版
