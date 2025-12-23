@@ -19,4 +19,5 @@ class SPKeys{
   final String tenantName = 'tenantName';
   final String account = 'account';
   final String password = 'password';
+  final String permissions = 'permissions';
 }

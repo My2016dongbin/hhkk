@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
+import 'package:iot/pages/home/main/main_view.dart';
 import 'package:iot/pages/home/mqtt/mqtt_controller.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 
@@ -16,7 +17,7 @@ import '../../res/styles.dart';
 import '../../utils/HhColors.dart';
 import 'device/device_view.dart';
 import 'home_controller.dart';
-import 'main/main_view.dart';
+import 'video/video_view.dart';
 import 'message/message_view.dart';
 import 'my/my_view.dart';
 class HomePage extends StatelessWidget {
@@ -51,8 +52,9 @@ class HomePage extends StatelessWidget {
               index: logic.index.value,
               children:  [
                 MainPage(),
-                DevicePage(),
+                VideoPage(),
                 MessagePage(),
+                DevicePage(),
                 MyPage(),
               ],
             ),
@@ -72,15 +74,16 @@ class HomePage extends StatelessWidget {
                   count: logic.unreadMsgCount.value,
                 ),
                 BottomBarItem(
-                  selectedImgRes: ImageRes.momentsPressed,
-                  unselectedImgRes: ImageRes.moments,
+                  selectedImgRes: ImageRes.chatPressed,
+                  unselectedImgRes: ImageRes.chat,
                   selectedStyle: Styles.ts_39CD80_10sp_bold,
                   unselectedStyle: Styles.ts_333333_10sp,
-                  label: StrRes.momentTab,
+                  label: StrRes.chatTab,
                   imgWidth: 18.w*3,
                   imgHeight: 18.w*3,
                   onClick: logic.switchTab,
-                  count: logic.unhandledCount.value,
+                  onDoubleClick: logic.scrollToUnreadMessage,
+                  count: logic.unreadMsgCount.value,
                 ),
                 BottomBarItem(
                   selectedImgRes: ImageRes.servicePressed,
@@ -91,6 +94,17 @@ class HomePage extends StatelessWidget {
                   imgWidth: 18.w*3,
                   imgHeight: 18.w*3,
                   onClick: logic.switchTab,
+                ),
+                BottomBarItem(
+                  selectedImgRes: ImageRes.momentsPressed,
+                  unselectedImgRes: ImageRes.moments,
+                  selectedStyle: Styles.ts_39CD80_10sp_bold,
+                  unselectedStyle: Styles.ts_333333_10sp,
+                  label: StrRes.momentTab,
+                  imgWidth: 18.w*3,
+                  imgHeight: 18.w*3,
+                  onClick: logic.switchTab,
+                  count: logic.unhandledCount.value,
                 ),
                 BottomBarItem(
                   selectedImgRes: ImageRes.minePressed,

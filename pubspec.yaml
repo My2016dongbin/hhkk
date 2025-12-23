@@ -99,6 +99,7 @@ dependencies:
       url: https://github.com/TencentCloud/TPNS-Flutter-Plugin
       ref: V1.3.0
 
+  carousel_slider: ^4.2.1
   amap_flutter_map: ^3.0.0
   amap_flutter_location: ^3.0.0
 #  qc_amap_navi:

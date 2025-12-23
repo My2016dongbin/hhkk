@@ -13,6 +13,7 @@ import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
 import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
+import 'package:iot/utils/Permissions.dart';
 import 'package:iot/utils/RequestUtils.dart';
 import 'package:iot/utils/SPKeys.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -25,6 +26,8 @@ class LaunchController extends GetxController {
 
   @override
   Future<void> onInit() async {
+    ///初始化SP
+    Permissions.init();
     permission();
     super.onInit();
   }

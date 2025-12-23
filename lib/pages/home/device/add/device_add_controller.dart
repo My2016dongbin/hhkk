@@ -80,7 +80,7 @@ class DeviceAddController extends GetxController {
 
       if(model['longitude']!=null && model['longitude']!=0 && model['longitude']!=""){
         // dynamic map = CommonUtils().gdToBd(double.parse(model['longitude']), double.parse(model['latitude']));
-        List<num> map = ParseLocation.parseTypeToBd09(num.parse("${model['latitude']}"), num.parse("${model['longitude']}"),model['coordinateType']??"0");
+        List<double> map = ParseLocation.parseTypeToBd09(double.parse("${model['latitude']}"), double.parse("${model['longitude']}"),model['coordinateType']??"0");
         model['longitude'] = "${map[1]}";
         model['latitude'] = "${map[0]}";
 
