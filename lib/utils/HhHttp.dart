@@ -56,6 +56,7 @@ class HhHttp {
     options.headers["Tenant-Id"] = "${CommonData.tenant}";
     options.headers["tenant-user-type"] = "${CommonData.tenantUserType}";
     options.headers["Authorization"] = "Bearer ${CommonData.token}";
+    options.headers["RequestResource"] = "kakouApp";
     // HhLog.d("-----------${options.headers}");
     // 更多业务需求
     handler.next(options);
@@ -122,7 +123,7 @@ class HhHttp {
       HhLog.e("发送请求异常: $e");
       EventBusUtil.getInstance().fire(HhLoading(show: false));
       EventBusUtil.getInstance().fire(HhToast(title: '服务器异常请稍后重试'));
-      rethrow;
+      return {"msg": "服务器异常请稍后重试"} as T;
     }
   }
 

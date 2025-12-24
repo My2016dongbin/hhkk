@@ -1,8 +1,9 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/bus/bus_bean.dart';
-import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhHttp.dart';
@@ -13,22 +14,19 @@ import 'package:iot/utils/RequestUtils.dart';
 class MainController extends GetxController {
   final Rx<bool> pageStatus = true.obs;
   late BuildContext context;
-  final Rx<int> ?highPointNum = 0.obs;
-  final Rx<int> ?kaKouNum = 0.obs;
-  final Rx<int> ?droneNum = 0.obs;
   final Rx<int> ?deviceAllNum = 0.obs;
   final Rx<int> ?deviceOnlineNum = 0.obs;
-  final Rx<double> ?deviceOnlineRatio = 0.0.obs;
   final Rx<int> ?deviceOfflineNum = 0.obs;
-  final Rx<bool> fireLevelByGridOrStation = true.obs;
+  final Rx<int> ?deviceOnlineRatio = 0.obs;
   //fireLevelIndex 0五级火险   1四级火险   2三级火线   3二级火险   4一级火险
   final Rx<int> fireLevelIndex = 0.obs;
   StreamSubscription ?fireMessageSubscription;
   StreamSubscription ?fireWarningSubscription;
   StreamSubscription ?messageSubscription;
   final Rx<int> ?headerIndex = 0.obs;
-  final RxList<String> ?headerList = ["assets/images/common/iot/main_image.png"].obs;
+  final RxList<String> ?headerList = ["assets/images/common/main_image.png"].obs;
   late List<dynamic> menuList = [];
+  final RxList<dynamic> liveWarningList = [].obs;
   final RxList<dynamic> fireLevelList = [].obs;
   final PageController menuPageController = PageController();
   final Rx<int> currentMenuPage = 0.obs;
@@ -38,10 +36,21 @@ class MainController extends GetxController {
   late Rx<bool> warnManageNoRead = false.obs;
   late Rx<bool> fireWarnNoRead = true.obs;
   late int menuCountInPage = 12;
-  late List<dynamic> fireLevelByGridList = [{},{},{},{},{}];
   late List<dynamic> fireLevelByStationList = [{},{},{},{},{}];
   late Rx<String> gridName = "".obs;
   late Rx<String> levelName = "".obs;
+
+  final PagingController<int, dynamic> deviceController = PagingController(firstPageKey: 1);
+  final ScrollController deviceScrollController = ScrollController();
+  late EasyRefreshController deviceEasyController = EasyRefreshController();
+  final Rx<int> deviceStatus = 2.obs;//2全部设备  1在线  0离线
+  late int devicePageNo = 1;
+  late List<dynamic> typeList = [
+    {
+      "alarmName":"类型",
+      "alarmType":null,
+    },
+  ];
 
   @override
   Future<void> onInit() async {
@@ -52,6 +61,9 @@ class MainController extends GetxController {
     });
     getWarnCount();
     getMenuList();
+    getDeviceStatistics();
+    getLiveWarningList();
+    getWarnType();
     super.onInit();
   }
 
@@ -125,6 +137,47 @@ class MainController extends GetxController {
     }
   }
 
+
+  Future<void> getDeviceStatistics() async {
+    var result = await HhHttp().request(
+      RequestUtils.statistics,
+      method: DioMethod.get,
+    );
+    HhLog.d("statistics -- $result");
+    if (result["data"] != null) {
+
+      deviceAllNum!.value = result["data"]["count"];
+      deviceOnlineNum!.value = result["data"]["online"];
+      deviceOfflineNum!.value = result["data"]["offline"];
+
+      deviceOnlineRatio!.value = 0;
+
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"]),type: 2));
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+    }
+  }
+
+
+  Future<void> getLiveWarningList() async {
+    var result = await HhHttp().request(
+      RequestUtils.liveWarningList,
+      method: DioMethod.get,
+    );
+    HhLog.d("getLiveWarningList -- $result");
+    if (result["data"] != null) {
+      deviceOnlineRatio!.value = result["data"]["total"]??0;
+
+      liveWarningList.value = result["data"]["list"]??[];
+
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"]),type: 2));
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+    }
+  }
+
   String parseLevelName(String level) {
     String levelName = "";
     if(level == "1"){
@@ -157,5 +210,77 @@ class MainController extends GetxController {
     }
 
     return "";
+  }
+
+  Future<void> mainDeviceList() async {
+    EventBusUtil.getInstance().fire(HhLoading(show: true));
+    dynamic params = {
+      "pageNo":devicePageNo,
+      "pageSize":100,
+      "status":deviceStatus.value==2?null:deviceStatus.value,
+      "activeStatus":1,
+    };
+    var result = await HhHttp().request(
+      RequestUtils.mainDeviceList,
+      method: DioMethod.get,
+      params: params,
+    );
+    EventBusUtil.getInstance().fire(HhLoading(show: false));
+    HhLog.d("mainDeviceList -- $params");
+    HhLog.d("mainDeviceList -- $result");
+    if (result["data"] != null && result["data"]["list"] != null) {
+      if(devicePageNo == 1){
+        deviceController.itemList = [];
+      }
+      deviceController.appendLastPage(result["data"]["list"]);
+    } else {
+      deviceController.itemList = [];
+      devicePageNo = 1;
+      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"]),type: 2));
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+    }
+
+
+    /*await Future.delayed(const Duration(milliseconds: 2000),(){
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+      deviceController.itemList = [
+        {
+          "name":"北港沟庄户北坡",
+          "createTime":"2025-10-10 12:12:12",
+          "offlineTime":"离线10天以上",
+        },
+        {
+          "name":"曹家铺小龙潭",
+          "createTime":"2025-10-10 12:12:12",
+          "offlineTime":"离线10天以上",
+        },
+        {
+          "name":"摘唐山莲花坑",
+          "createTime":"2025-10-10 12:12:12",
+          "offlineTime":"离线10天",
+        },
+      ];
+      deviceController.appendLastPage([]);
+    });*/
+  }
+
+  Future<void> getWarnType() async {
+    typeList.clear();
+    var result = await HhHttp()
+        .request(RequestUtils.getAlarmConfig, method: DioMethod.get);
+    HhLog.d("getWarnType --  $result");
+    if (result["code"] == 0) {
+      dynamic data = result["data"];
+      if(data!=null){
+        for(dynamic model in data){
+          if(model["chose"]==1){
+            typeList.add(model);
+          }
+        }
+      }
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    }
   }
 }

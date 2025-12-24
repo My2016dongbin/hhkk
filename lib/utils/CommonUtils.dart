@@ -4,7 +4,9 @@ import 'dart:math';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
@@ -31,6 +33,7 @@ import 'package:iot/utils/SPKeys.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tpns_flutter_plugin/tpns_flutter_plugin.dart';
+import 'package:video_player/video_player.dart';
 
 class CommonUtils {
   List<Color> gradientColors() {
@@ -1432,13 +1435,263 @@ class CommonUtils {
     }
   }
 
-  static line({double? marginTop,double? marginBottom}) {
+  static line({double? marginTop,double? marginBottom,EdgeInsets? margin,Color? color,double? height}) {
     return Container(
-      margin: EdgeInsets.fromLTRB(0, marginTop??0, 0, marginBottom??0),
-      color: HhColors.backColor,
+      margin: margin??EdgeInsets.fromLTRB(0, marginTop??0, 0, marginBottom??0),
+      color: color??HhColors.grayE8BackColor,
       width: 1.sw,
-      height: 1.w,
+      height: height??1.w,
     );
+  }
+
+  static backView({EdgeInsets? margin,EdgeInsets? padding,bool? white,String? title}) {
+    return Container(
+      margin: margin??EdgeInsets.only(top:30.w*3),
+      padding: padding??EdgeInsets.all(20.w*3),
+      color: HhColors.trans,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset(
+            white==true?"assets/images/common/back_white.png":"assets/images/common/icon_back_left.png",
+            width: 9.w*3,
+            height: 16.w*3,
+            fit: BoxFit.fill,
+          ),
+          SizedBox(width: 7.w*3,),
+          Text(title??'返回',style: TextStyle(
+              color: white==true?HhColors.whiteColor:HhColors.textBlackColor,
+              fontSize: 16.sp*3,
+              fontWeight: FontWeight.w400
+          ),)
+        ],
+      ),
+    );
+  }
+
+
+  String parseStringTimeYearDay(String s) {
+    s = s.replaceAll(" ", "");
+    s = "${s.substring(0,10)} ${s.substring(10,s.length)}";
+    DateTime date = DateTime.parse(s);
+    String time = date.toIso8601String();
+    time = time.substring(0, 10);
+    time = time.replaceAll("T", " ");
+    return time;
+  }
+
+
+  String parseStringTimeAll(String s) {
+    s = s.replaceAll(" ", "");
+    s = "${s.substring(0,10)} ${s.substring(10,s.length)}";
+    DateTime date = DateTime.parse(s);
+    String time = date.toIso8601String();
+    time = time.substring(0, 19);
+    time = time.replaceAll("T", " ");
+    return time;
+  }
+
+
+  String parseNullExpect(dynamic s, String def) {
+    String r = "$s";
+    if (s == null || s == "null") {
+      r = def;
+    }
+    return r.replaceAll("null", "");
+  }
+
+  late VideoPlayerController _controller;
+  final Rx<bool> _showControls = true.obs;//控制是否显示播放按钮&进度条
+  final Rx<bool> playStatus = true.obs;//播放暂停
+  final Rx<bool> state = true.obs;//状态
+  Future<bool> onWillPop() async {
+    _controller.dispose();
+    state.value = false;
+    return true; // 返回 false 阻止对话框关闭
+  }
+  void checkVideoEnded() {
+    if (_controller != null &&
+        _controller!.value.position >= _controller!.value.duration) {
+      _showControls.value = true;//播放结束显示控制按钮
+      playStatus.value = false;
+    }
+  }
+  ///视频查看Dialog
+  showVideoFileDialog(
+      context, {
+        required String url,
+        String? asset,
+      }) async {
+    _controller = VideoPlayerController.network(url,videoPlayerOptions: VideoPlayerOptions(
+      mixWithOthers: true,
+      allowBackgroundPlayback: false, // <— 强制texture输出关键配置
+    ))
+      ..initialize().then((_) {
+        SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+          statusBarColor: Colors.white,
+          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.dark,
+        ));
+        state.value = true;
+        EventBusUtil.getInstance().fire(HhLoading(show: false));
+        _controller.play();
+        Get.dialog(
+          WillPopScope(
+            onWillPop: () async {
+              _controller.pause();
+              _controller.dispose();
+              SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+                statusBarColor: Colors.transparent,
+                statusBarBrightness: Brightness.dark,
+                statusBarIconBrightness: Brightness.dark,
+              ));
+              return true;
+            },
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              body: Obx(() => state.value?SafeArea(
+                top: false,
+                child: Container(
+                  height: 1.sh,
+                  width: 1.sw,
+                  color: HhColors.blackRealColor,
+                  child: Stack(
+                    children: [
+                      SizedBox(
+                        width: 1.sw,
+                        child: Center(
+                          child: _controller == null
+                              ? const Text("视频不存在",style: TextStyle(color: HhColors.whiteColor),)
+                              : _controller.value.isInitialized
+                              ? GestureDetector(
+                            onTap: () {
+                              _showControls.value = !_showControls.value; // 点击切换控制条显示
+                            },
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                RepaintBoundary(
+                                  child: Opacity(
+                                    opacity: 1,
+                                    child: AspectRatio(
+                                      aspectRatio: _controller.value.aspectRatio,
+                                      child: VideoPlayer(_controller),
+                                    ),
+                                  ),
+                                ),
+
+                                // 播放/暂停按钮
+                                if (_showControls.value)
+                                  Positioned(
+                                    child: IconButton(
+                                      iconSize: 60,
+                                      icon: Icon(
+                                        playStatus.value
+                                            ? Icons.pause_circle_filled
+                                            : Icons.play_circle_filled,
+                                        color: Colors.white.withAlpha(100),
+                                      ),
+                                      onPressed: () {
+                                        _controller.value.isPlaying
+                                            ? _controller.pause()
+                                            : _controller.play();
+                                        Future.delayed(const Duration(milliseconds: 200),(){
+                                          if(_controller.value.isPlaying){
+                                            playStatus.value = true;
+                                          }else{
+                                            playStatus.value = false;
+                                          }
+                                        });
+                                      },
+                                    ),
+                                  ),
+
+                                // 视频进度条
+                                if (_showControls.value)
+                                  Positioned(
+                                    bottom: 10,
+                                    left: 0,
+                                    right: 0,
+                                    child: VideoProgressIndicator(
+                                      _controller,
+                                      allowScrubbing: true, // 允许拖动进度条
+                                      colors: const VideoProgressColors(
+                                        playedColor: Colors.blue,
+                                        bufferedColor: Colors.grey,
+                                        backgroundColor: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          )
+                              : CircularProgressIndicator(),
+                        ),
+                      ),
+                      Container(
+                        height: 50.w * 3,
+                        width: 1.sw,
+                        color: HhColors.whiteColor,
+                        child: Stack(
+                          children: [
+                            Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                '视频查看',
+                                style: TextStyle(
+                                    decoration: TextDecoration.none,
+                                    color: HhColors.blackTextColor,
+                                    fontSize: 18.sp * 3,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: BouncingWidget(
+                                duration: const Duration(milliseconds: 100),
+                                scaleFactor: 0.5,
+                                onPressed: () {
+                                  _controller.pause();
+                                  _controller.dispose();
+                                  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+                                    statusBarColor: Colors.transparent,
+                                    statusBarBrightness: Brightness.dark,
+                                    statusBarIconBrightness: Brightness.dark,
+                                  ));
+                                  Get.back();
+                                },
+                                child: Material(
+                                  child: CommonUtils.backView(
+                                    margin: EdgeInsets.fromLTRB(20.w * 3, 0, 0, 0),
+                                    padding: EdgeInsets.fromLTRB(0, 10.w, 20.w, 10.w),),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ):const SizedBox()),
+            ),
+          ),
+          barrierColor: Colors.black87,
+          useSafeArea: true,
+        );
+      });
+  }
+
+
+  int parseTotalPage(String s, int pageSize) {
+    int page = 1;
+    try{
+      int allCount = int.parse(s);
+      page = (allCount + pageSize - 1) ~/ pageSize;
+    }catch(e){
+      //
+    }
+    return page;
   }
 
 }

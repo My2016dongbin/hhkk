@@ -1,8 +1,8 @@
 
 class RequestUtils{
 
-  static const base = 'http://117.132.5.139:18033/iot-api';//外网生产
-  // static const base = 'http://192.168.1.2:18034';//debug
+  // static const base = 'http://117.132.5.139:18033/iot-api';//外网生产
+  static const base = 'http://192.168.1.2:18034';//debug
 
   static const login = '$base/admin-api/system/auth/login';//密码登录
   static const logout = '$base/admin-api/system/auth/logout';//登出
@@ -85,6 +85,10 @@ class RequestUtils{
   static const shareHandle = '$base/app-api/mid/receive-log/handleReceiveLog';//分享处理 POST{id,status}
   static const deleteChangeSpace = '$base/admin-api/mid/space/deleteSpaceAndDevice';//删除空间
 
+
+  static const statistics = '$base/admin-api/mid/device-base/countStatistics';
+  static const liveWarningList = '$base/admin-api/mid/device-alarm-info/page';
+  static const mainDeviceList = '$base/admin-api/mid/device-base/page';
 
   /*
     Map<String, dynamic> map = {};
