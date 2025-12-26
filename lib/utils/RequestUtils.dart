@@ -87,8 +87,12 @@ class RequestUtils{
 
 
   static const statistics = '$base/admin-api/mid/device-base/countStatistics';
+  static const fireLevelStatistics = '$base/admin-api/mid/device-base/fireLevelcountStatistics';
+  static const fireLevelList = '$base/admin-api/mid/device-base/dataPage';
   static const liveWarningList = '$base/admin-api/mid/device-alarm-info/page';
+  static const liveWarningInfo = '$base/admin-api/mid/device-alarm-info/get';
   static const mainDeviceList = '$base/admin-api/mid/device-base/page';
+  static const alarmHandle = '$base/admin-api/mid/device-alarm-info/alarmAudit';
 
   /*
     Map<String, dynamic> map = {};

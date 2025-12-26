@@ -10,6 +10,7 @@ import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/Permissions.dart';
 import 'package:iot/utils/RequestUtils.dart';
+import 'package:overlay_tooltip/overlay_tooltip.dart';
 
 class MainController extends GetxController {
   final Rx<bool> pageStatus = true.obs;
@@ -18,8 +19,8 @@ class MainController extends GetxController {
   final Rx<int> ?deviceOnlineNum = 0.obs;
   final Rx<int> ?deviceOfflineNum = 0.obs;
   final Rx<int> ?deviceOnlineRatio = 0.obs;
-  //fireLevelIndex 0五级火险   1四级火险   2三级火线   3二级火险   4一级火险
-  final Rx<int> fireLevelIndex = 0.obs;
+  //fireLevelIndex 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
+  final Rx<int> fireLevelIndex = 5.obs;
   StreamSubscription ?fireMessageSubscription;
   StreamSubscription ?fireWarningSubscription;
   StreamSubscription ?messageSubscription;
@@ -32,11 +33,11 @@ class MainController extends GetxController {
   final Rx<int> currentMenuPage = 0.obs;
   late Rx<int> menuPageCount = 1.obs;
   late Rx<String> messageCount = "0".obs;
-  late Rx<String> appLoc = "青岛市市北区万科大厦C座".obs;
+  late Rx<String> appLoc = "青岛市城阳区物联网产业园".obs;
   late Rx<bool> warnManageNoRead = false.obs;
   late Rx<bool> fireWarnNoRead = true.obs;
-  late int menuCountInPage = 12;
-  late List<dynamic> fireLevelByStationList = [{},{},{},{},{}];
+  late int menuCountInPage = 4;
+  late List<int> fireLevelByStationList = [0,0,0,0,0];
   late Rx<String> gridName = "".obs;
   late Rx<String> levelName = "".obs;
 
@@ -51,6 +52,7 @@ class MainController extends GetxController {
       "alarmType":null,
     },
   ];
+  final TooltipController handleController = TooltipController();
 
   @override
   Future<void> onInit() async {
@@ -62,6 +64,8 @@ class MainController extends GetxController {
     getWarnCount();
     getMenuList();
     getDeviceStatistics();
+    getFireLevelStatistics();
+    getFireLevelList();
     getLiveWarningList();
     getWarnType();
     super.onInit();
@@ -150,8 +154,6 @@ class MainController extends GetxController {
       deviceOnlineNum!.value = result["data"]["online"];
       deviceOfflineNum!.value = result["data"]["offline"];
 
-      deviceOnlineRatio!.value = 0;
-
     } else {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"]),type: 2));
@@ -160,10 +162,70 @@ class MainController extends GetxController {
   }
 
 
+  Future<void> getFireLevelStatistics() async {
+    var result = await HhHttp().request(
+      RequestUtils.fireLevelStatistics,
+      method: DioMethod.get,
+    );
+    HhLog.d("getFireLevelStatistics -- $result");
+    if (result["data"] != null) {
+      for (int i = 0; i < result["data"].length; i++) {
+        dynamic model = result["data"][i];
+        if("${model["fireLevel"]}" == "1"){
+          fireLevelByStationList[4] = model["count"];
+        }
+        if("${model["fireLevel"]}" == "2"){
+          fireLevelByStationList[3] = model["count"];
+        }
+        if("${model["fireLevel"]}" == "3"){
+          fireLevelByStationList[2] = model["count"];
+        }
+        if("${model["fireLevel"]}" == "4"){
+          fireLevelByStationList[1] = model["count"];
+        }
+        if("${model["fireLevel"]}" == "5"){
+          fireLevelByStationList[0] = model["count"];
+        }
+      }
+    } else {
+      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"]),type: 2));
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+    }
+  }
+
+  Future<void> getFireLevelList() async {
+    EventBusUtil.getInstance().fire(HhLoading(show: true));
+    var result = await HhHttp().request(
+      RequestUtils.fireLevelList,
+      method: DioMethod.get,
+      params: {
+        "pageNo":"1",
+        "pageSize":"100",
+        "fireLevel":"${fireLevelIndex.value}",
+      }
+    );
+    EventBusUtil.getInstance().fire(HhLoading(show: false));
+    HhLog.d("getFireLevelList -- $result");
+    fireLevelList.value = [];
+    if (result["data"] != null && result["data"]["list"] != null) {
+      fireLevelList.value = result["data"]["list"];
+    } else {
+      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"]),type: 2));
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+    }
+  }
+
+
   Future<void> getLiveWarningList() async {
+    String now = CommonUtils().parseLongTimeYearDay("${DateTime.now().millisecondsSinceEpoch}");
     var result = await HhHttp().request(
       RequestUtils.liveWarningList,
       method: DioMethod.get,
+      params: {
+        "pageNum":1,
+        "pageSize":4,
+        "createTime":"$now 00:00:00,$now 23:59:59",
+      }
     );
     HhLog.d("getLiveWarningList -- $result");
     if (result["data"] != null) {
@@ -283,4 +345,39 @@ class MainController extends GetxController {
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
+  Future<void> alarmHandle(String id, String auditResult) async {
+    dynamic data = {
+      "id": id,
+      "auditResult": auditResult,
+    };
+    var result = await HhHttp()
+        .request(RequestUtils.alarmHandle, method: DioMethod.post,data: data);
+    HhLog.d("alarmHandle --  $result");
+    if (result["code"] == 0) {
+      getLiveWarningList();
+      Get.back();
+      EventBusUtil.getInstance().fire(HhToast(title: '操作成功',type: 0));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    }
+  }
+
+  Future<void> getLiveWarningInfo(String id) async {
+    dynamic param = {
+      "id": id,
+    };
+    var result = await HhHttp()
+        .request(RequestUtils.liveWarningInfo, method: DioMethod.get,params: param);
+    HhLog.d("liveWarningInfo --  $result");
+    if (result["code"] == 0) {
+
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    }
+  }
+
+
 }

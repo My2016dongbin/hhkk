@@ -8,15 +8,19 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/bus/bus_bean.dart';
+import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/common/today_warning/today_warning_binding.dart';
 import 'package:iot/pages/common/today_warning/today_warning_view.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
+import 'package:iot/pages/home/device/list/device_list_binding.dart';
+import 'package:iot/pages/home/device/list/device_list_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/ParseLocation.dart';
 import 'package:iot/utils/Permissions.dart';
+import 'package:overlay_tooltip/overlay_tooltip.dart';
 
 import 'main_controller.dart';
 
@@ -37,7 +41,7 @@ class MainPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: HhColors.backColor,
       body: Obx(
-        () => Container(
+            () => Container(
           height: 1.sh,
           width: 1.sw,
           padding: EdgeInsets.zero,
@@ -175,6 +179,8 @@ class MainPage extends StatelessWidget {
               logic.getWarnCount();
               logic.getMenuList();
               logic.getDeviceStatistics();
+              logic.getFireLevelStatistics();
+              logic.getFireLevelList();
               logic.getLiveWarningList();
               logic.getWarnType();
             },
@@ -552,7 +558,7 @@ class MainPage extends StatelessWidget {
                                   width: 68.w * 3,
                                   alignment: Alignment.center,
                                   child: Text(
-                                    CommonUtils().parseDoubleNumber("${logic.deviceOnlineRatio!.value}", 1),
+                                    "${logic.deviceOnlineRatio!.value}",
                                     maxLines: 1,
                                     style: TextStyle(
                                         color: HhColors.mainRedColor,
@@ -716,16 +722,17 @@ class MainPage extends StatelessWidget {
                   Permissions.hasPermission(Permissions.mainDeviceMonitor)?Container(
                     margin: EdgeInsets.fromLTRB(14.w * 3, 9.w * 3, 14.w * 3, 0),
                     height: 240.w * 3,
+                    width: 1.sw,
                     decoration: BoxDecoration(
                       color: HhColors.whiteColor,
                       borderRadius: BorderRadius.circular(8.w * 3),
                     ),
-                    child: ListView.builder(
+                    child: logic.liveWarningList.isNotEmpty?ListView.builder(
                         physics: const NeverScrollableScrollPhysics(),
                         padding: EdgeInsets.zero,
                         scrollDirection: Axis.vertical,
                         itemCount: logic.liveWarningList.length,
-                        itemBuilder: liveWarningBuilder),
+                        itemBuilder: liveWarningBuilder):CommonUtils().noneWidgetSmall(image: "assets/images/common/icon_no_message_search.png",text: "暂无预警信息"),
                   ):const SizedBox(),
 
                   ///火险等级
@@ -799,14 +806,14 @@ class MainPage extends StatelessWidget {
                                           const Duration(milliseconds: 100),
                                       scaleFactor: 0.2,
                                       onPressed: () async {
-                                        // 0五级火险   1四级火险   2三级火线   3二级火险   4一级火险
-                                        logic.fireLevelIndex.value = 0;
-                                        //logic.parseFireLevelList();
+                                        // 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
+                                        logic.fireLevelIndex.value = 5;
+                                        logic.getFireLevelList();
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
                                             color:
-                                                logic.fireLevelIndex.value == 0
+                                                logic.fireLevelIndex.value == 5
                                                     ? HhColors.whiteColor
                                                     : HhColors.levelColorBack,
                                             borderRadius:
@@ -821,7 +828,7 @@ class MainPage extends StatelessWidget {
                                               margin: EdgeInsets.only(
                                                   left: 5.w * 3),
                                               child: Text(
-                                                CommonUtils().parseNull("${logic.fireLevelByStationList[0]["value"]}", "0"),
+                                                CommonUtils().parseNull("${logic.fireLevelByStationList[0]}", "0"),
                                                 style: TextStyle(
                                                     color: HhColors.levelColor5,
                                                     fontSize: 20.sp * 3,
@@ -840,7 +847,7 @@ class MainPage extends StatelessWidget {
                                                 style: TextStyle(
                                                     color: logic.fireLevelIndex
                                                                 .value ==
-                                                            0
+                                                            5
                                                         ? HhColors.levelColor5
                                                         : HhColors
                                                             .gray9TextColor,
@@ -850,7 +857,7 @@ class MainPage extends StatelessWidget {
                                               ),
                                             ),
                                             const Expanded(child: SizedBox()),
-                                            logic.fireLevelIndex.value != 0
+                                            logic.fireLevelIndex.value != 5
                                                 ? const SizedBox()
                                                 : Container(
                                                     height: 2.w * 3,
@@ -874,14 +881,14 @@ class MainPage extends StatelessWidget {
                                           const Duration(milliseconds: 100),
                                       scaleFactor: 0.2,
                                       onPressed: () async {
-                                        // 0五级火险   1四级火险   2三级火线   3二级火险   4一级火险
-                                        logic.fireLevelIndex.value = 1;
-                                        //logic.parseFireLevelList();
+                                        // 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
+                                        logic.fireLevelIndex.value = 4;
+                                        logic.getFireLevelList();
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
                                             color:
-                                                logic.fireLevelIndex.value == 1
+                                                logic.fireLevelIndex.value == 4
                                                     ? HhColors.whiteColor
                                                     : HhColors.levelColorBack,
                                             borderRadius:
@@ -896,7 +903,7 @@ class MainPage extends StatelessWidget {
                                               margin: EdgeInsets.only(
                                                   left: 5.w * 3),
                                               child: Text(
-                                                CommonUtils().parseNull("${logic.fireLevelByStationList[1]["value"]}", "0"),
+                                                CommonUtils().parseNull("${logic.fireLevelByStationList[1]}", "0"),
                                                 style: TextStyle(
                                                     color: HhColors.levelColor4,
                                                     fontSize: 20.sp * 3,
@@ -915,7 +922,7 @@ class MainPage extends StatelessWidget {
                                                 style: TextStyle(
                                                     color: logic.fireLevelIndex
                                                                 .value ==
-                                                            1
+                                                            4
                                                         ? HhColors.levelColor4
                                                         : HhColors
                                                             .gray9TextColor,
@@ -925,7 +932,7 @@ class MainPage extends StatelessWidget {
                                               ),
                                             ),
                                             const Expanded(child: SizedBox()),
-                                            logic.fireLevelIndex.value != 1
+                                            logic.fireLevelIndex.value != 4
                                                 ? const SizedBox()
                                                 : Container(
                                                     height: 2.w * 3,
@@ -949,14 +956,14 @@ class MainPage extends StatelessWidget {
                                           const Duration(milliseconds: 100),
                                       scaleFactor: 0.2,
                                       onPressed: () async {
-                                        // 0五级火险   1四级火险   2三级火线   3二级火险   4一级火险
-                                        logic.fireLevelIndex.value = 2;
-                                        //logic.parseFireLevelList();
+                                        // 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
+                                        logic.fireLevelIndex.value = 3;
+                                        logic.getFireLevelList();
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
                                             color:
-                                                logic.fireLevelIndex.value == 2
+                                                logic.fireLevelIndex.value == 3
                                                     ? HhColors.whiteColor
                                                     : HhColors.levelColorBack,
                                             borderRadius:
@@ -971,7 +978,7 @@ class MainPage extends StatelessWidget {
                                               margin: EdgeInsets.only(
                                                   left: 5.w * 3),
                                               child: Text(
-                                                CommonUtils().parseNull("${logic.fireLevelByStationList[2]["value"]}", "0"),
+                                                CommonUtils().parseNull("${logic.fireLevelByStationList[2]}", "0"),
                                                 style: TextStyle(
                                                     color: HhColors.levelColor3,
                                                     fontSize: 20.sp * 3,
@@ -990,7 +997,7 @@ class MainPage extends StatelessWidget {
                                                 style: TextStyle(
                                                     color: logic.fireLevelIndex
                                                                 .value ==
-                                                            2
+                                                            3
                                                         ? HhColors.levelColor3
                                                         : HhColors
                                                             .gray9TextColor,
@@ -1000,7 +1007,7 @@ class MainPage extends StatelessWidget {
                                               ),
                                             ),
                                             const Expanded(child: SizedBox()),
-                                            logic.fireLevelIndex.value != 2
+                                            logic.fireLevelIndex.value != 3
                                                 ? const SizedBox()
                                                 : Container(
                                                     height: 2.w * 3,
@@ -1024,14 +1031,14 @@ class MainPage extends StatelessWidget {
                                           const Duration(milliseconds: 100),
                                       scaleFactor: 0.2,
                                       onPressed: () async {
-                                        // 0五级火险   1四级火险   2三级火线   3二级火险   4一级火险
-                                        logic.fireLevelIndex.value = 3;
-                                        //logic.parseFireLevelList();
+                                        // 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
+                                        logic.fireLevelIndex.value = 2;
+                                        logic.getFireLevelList();
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
                                             color:
-                                                logic.fireLevelIndex.value == 3
+                                                logic.fireLevelIndex.value == 2
                                                     ? HhColors.whiteColor
                                                     : HhColors.levelColorBack,
                                             borderRadius:
@@ -1046,7 +1053,7 @@ class MainPage extends StatelessWidget {
                                               margin: EdgeInsets.only(
                                                   left: 5.w * 3),
                                               child: Text(
-                                                CommonUtils().parseNull("${logic.fireLevelByStationList[3]["value"]}", "0"),
+                                                CommonUtils().parseNull("${logic.fireLevelByStationList[3]}", "0"),
                                                 style: TextStyle(
                                                     color: HhColors.levelColor2,
                                                     fontSize: 20.sp * 3,
@@ -1065,7 +1072,7 @@ class MainPage extends StatelessWidget {
                                                 style: TextStyle(
                                                     color: logic.fireLevelIndex
                                                                 .value ==
-                                                            3
+                                                            2
                                                         ? HhColors.levelColor2
                                                         : HhColors
                                                             .gray9TextColor,
@@ -1075,7 +1082,7 @@ class MainPage extends StatelessWidget {
                                               ),
                                             ),
                                             const Expanded(child: SizedBox()),
-                                            logic.fireLevelIndex.value != 3
+                                            logic.fireLevelIndex.value != 2
                                                 ? const SizedBox()
                                                 : Container(
                                                     height: 2.w * 3,
@@ -1099,14 +1106,14 @@ class MainPage extends StatelessWidget {
                                           const Duration(milliseconds: 100),
                                       scaleFactor: 0.2,
                                       onPressed: () async {
-                                        // 0五级火险   1四级火险   2三级火线   3二级火险   4一级火险
-                                        logic.fireLevelIndex.value = 4;
-                                        //logic.parseFireLevelList();
+                                        // 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
+                                        logic.fireLevelIndex.value = 1;
+                                        logic.getFireLevelList();
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
                                             color:
-                                                logic.fireLevelIndex.value == 4
+                                                logic.fireLevelIndex.value == 1
                                                     ? HhColors.whiteColor
                                                     : HhColors.levelColorBack,
                                             borderRadius:
@@ -1121,7 +1128,7 @@ class MainPage extends StatelessWidget {
                                               margin: EdgeInsets.only(
                                                   left: 5.w * 3),
                                               child: Text(
-                                                CommonUtils().parseNull("${logic.fireLevelByStationList[4]["value"]}", "0"),
+                                                CommonUtils().parseNull("${logic.fireLevelByStationList[4]}", "0"),
                                                 style: TextStyle(
                                                     color: HhColors.levelColor1,
                                                     fontSize: 20.sp * 3,
@@ -1140,7 +1147,7 @@ class MainPage extends StatelessWidget {
                                                 style: TextStyle(
                                                     color: logic.fireLevelIndex
                                                                 .value ==
-                                                            4
+                                                            1
                                                         ? HhColors.levelColor1
                                                         : HhColors
                                                             .gray9TextColor,
@@ -1150,7 +1157,7 @@ class MainPage extends StatelessWidget {
                                               ),
                                             ),
                                             const Expanded(child: SizedBox()),
-                                            logic.fireLevelIndex.value != 4
+                                            logic.fireLevelIndex.value != 1
                                                 ? const SizedBox()
                                                 : Container(
                                                     height: 2.w * 3,
@@ -1173,7 +1180,6 @@ class MainPage extends StatelessWidget {
                             ),
                             Expanded(
                               child: ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
                                   padding: EdgeInsets.zero,
                                   scrollDirection: Axis.vertical,
                                   itemCount: logic.fireLevelList.length,
@@ -1264,7 +1270,7 @@ class MainPage extends StatelessWidget {
   Widget deviceListItemBuilder(BuildContext context, item, int index) {
     return InkWell(
       onTap: () async {
-
+        CommonUtils().parseRouteDetail(item);
       },
       child: Container(
         margin: EdgeInsets.only(top: 17.w*3),
@@ -1338,144 +1344,157 @@ class MainPage extends StatelessWidget {
   }
 
   Widget? liveWarningBuilder(BuildContext context, int index) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(15.w * 3, 12.w * 3, 15.w * 3, 0),
-      child: Row(
-        children: [
-          Container(
-            alignment: Alignment.center,
-            child: Image.asset(
-              "assets/images/common/menu_video.png",
-              width: 40.w*3,
-              height: 40.w*3,
-              fit: BoxFit.fill,
+    return InkWell(
+      onTap: () async {
+        showLiveWarningInfoDialog(logic.liveWarningList.value[index]);
+        //logic.getLiveWarningInfo("${logic.liveWarningList.value[index]["id"]}");
+      },
+      child: Container(
+        margin: EdgeInsets.fromLTRB(15.w * 3, 12.w * 3, 15.w * 3, 0),
+        child: Row(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              child: Image.asset(
+                CommonUtils().parseDeviceImageWarn(logic.liveWarningList.value[index]),
+                width: 40.w*3,
+                height: 40.w*3,
+                fit: BoxFit.fill,
+              ),
             ),
-          ),
-          SizedBox(width: 10.w*3,),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "${CommonUtils().parseNull("${logic.liveWarningList.value[index]['deviceName']}", "")}接收${parseAlarmType("${logic.liveWarningList.value[index]['alarmType']}")}",
-                  maxLines: 1,
-                  style: TextStyle(
-                      color: HhColors.blackTextColor,
-                      overflow: TextOverflow.ellipsis,
-                      fontSize: 14.sp * 3,
-                      fontWeight: FontWeight.w400),
-                ),
-                SizedBox(height: 5.w*3,),
-                Text(
-                  CommonUtils().parseLongTime("${logic.liveWarningList.value[index]['alarmTimestamp']}"),
-                  maxLines: 1,
-                  style: TextStyle(
-                      color: HhColors.gray9TextColor,
-                      overflow: TextOverflow.ellipsis,
-                      fontSize: 14.sp * 3,
-                      fontWeight: FontWeight.w400),
-                ),
-              ],
+            SizedBox(width: 10.w*3,),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "${CommonUtils().parseNull("${logic.liveWarningList.value[index]['deviceName']}", "")}接收${parseAlarmType("${logic.liveWarningList.value[index]['alarmType']}")}",
+                    maxLines: 1,
+                    style: TextStyle(
+                        color: HhColors.blackTextColor,
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: 14.sp * 3,
+                        fontWeight: FontWeight.w400),
+                  ),
+                  SizedBox(height: 5.w*3,),
+                  Text(
+                    CommonUtils().parseLongTime("${logic.liveWarningList.value[index]['alarmTimestamp']}"),
+                    maxLines: 1,
+                    style: TextStyle(
+                        color: HhColors.gray9TextColor,
+                        overflow: TextOverflow.ellipsis,
+                        fontSize: 14.sp * 3,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Container(
-            padding: EdgeInsets.fromLTRB(10.w * 3, 4.w * 3, 10.w * 3, 5.w * 3),
-            decoration: BoxDecoration(
-                color: HhColors.levelBtnBack,
-                borderRadius: BorderRadius.circular(4.w * 3)),
-            child: Text(
-              "未处理",
-              style: TextStyle(
-                  color: HhColors.mainBlueColor,
-                  fontSize: 13.sp * 3,
-                  fontWeight: FontWeight.w400),
+            Container(
+              padding: EdgeInsets.fromLTRB(10.w * 3, 4.w * 3, 10.w * 3, 5.w * 3),
+              decoration: BoxDecoration(
+                  color: "${logic.liveWarningList.value[index]['auditStatus']}"=="1"?HhColors.levelBtnBackGreen:HhColors.levelBtnBack,
+                  borderRadius: BorderRadius.circular(4.w * 3)),
+              child: Text(
+                "${logic.liveWarningList.value[index]['auditStatus']}"=="1"?"已处理":"未处理",
+                style: TextStyle(
+                    color: "${logic.liveWarningList.value[index]['auditStatus']}"=="1"?HhColors.backgroundColorGreen:HhColors.mainBlueColor,
+                    fontSize: 13.sp * 3,
+                    fontWeight: FontWeight.w400),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
   Widget? fireLevelBuilder(BuildContext context, int index) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(15.w * 3, 12.w * 3, 15.w * 3, 0),
-      child: Row(
-        children: [
-          Container(
-            width: 35.w * 3,
-            alignment: Alignment.center,
-            child: Text(
-              "${index + 1}",
-              style: TextStyle(
-                  color: HhColors.blackTextColor,
-                  fontSize: 14.sp * 3,
-                  fontWeight: FontWeight.w400),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              CommonUtils().parseNull("${logic.fireLevelList.value[index]['stationName']}", ""),
-              maxLines: 1,
-              style: TextStyle(
-                  color: HhColors.blackTextColor,
-                  overflow: TextOverflow.ellipsis,
-                  fontSize: 14.sp * 3,
-                  fontWeight: FontWeight.w400),
-            ),
-          ),
-          HhTap(
-            borderRadius: BorderRadius.circular(4.w * 3),
-            onTapUp: () async {
-              ///设备
-              try{
-                List<double> end = ParseLocation.gps84_To_Gcj02(double.parse("${logic.fireLevelList.value[index]['latitude']}"), double.parse("${logic.fireLevelList.value[index]['longitude']}"),);
-                EventBusUtil.getInstance().fire(HhLoading(show: true));
-                /*await QcAmapNavi.startNavigation(
-                    fromLat: double.parse("${CommonData.latitude}"),
-                    fromLng: double.parse("${CommonData.longitude}"),
-                    fromName: "我的位置",
-                    toLat: double.parse("${end[0]}"),
-                    toLng: double.parse("${end[1]}"),
-                    toName: "${logic.fireLevelList.value[index]['stationName']}",
-                  );*/
-                EventBusUtil.getInstance().fire(HhLoading(show: false));
-              }catch(e){
-                HhLog.e(e.toString());
-                EventBusUtil.getInstance().fire(HhToast(title: "该定位不可用"));
-              }
-            },
-            child: Container(
-              padding:
-                  EdgeInsets.fromLTRB(14.w * 3, 4.w * 3, 14.w * 3, 5.w * 3),
-              decoration: BoxDecoration(
-                  color: HhColors.levelBtnBack,
-                  borderRadius: BorderRadius.circular(4.w * 3)),
+    return HhTap(
+      overlayColor: HhColors.trans,
+      onTapUp: () {
+        CommonUtils().parseRouteDetail(logic.fireLevelList.value[index]);
+      },
+      child: Container(
+        margin: EdgeInsets.fromLTRB(15.w * 3, 12.w * 3, 15.w * 3, 0),
+        child: Row(
+          children: [
+            Container(
+              width: 35.w * 3,
+              alignment: Alignment.center,
               child: Text(
-                "定位",
+                "${index + 1}",
                 style: TextStyle(
-                    color: HhColors.mainBlueColor,
-                    fontSize: 13.sp * 3,
+                    color: HhColors.blackTextColor,
+                    fontSize: 14.sp * 3,
                     fontWeight: FontWeight.w400),
               ),
             ),
-          ),
-        ],
+            Expanded(
+              child: Text(
+                CommonUtils().parseNull("${logic.fireLevelList.value[index]['name']}", ""),
+                maxLines: 1,
+                style: TextStyle(
+                    color: HhColors.blackTextColor,
+                    overflow: TextOverflow.ellipsis,
+                    fontSize: 14.sp * 3,
+                    fontWeight: FontWeight.w400),
+              ),
+            ),
+            HhTap(
+              borderRadius: BorderRadius.circular(4.w * 3),
+              onTapUp: () async {
+                ///设备
+                /*try{
+                  List<double> end = ParseLocation.gps84_To_Gcj02(double.parse("${logic.fireLevelList.value[index]['latitude']}"), double.parse("${logic.fireLevelList.value[index]['longitude']}"),);
+                  EventBusUtil.getInstance().fire(HhLoading(show: true));
+                  *//*await QcAmapNavi.startNavigation(
+                      fromLat: double.parse("${CommonData.latitude}"),
+                      fromLng: double.parse("${CommonData.longitude}"),
+                      fromName: "我的位置",
+                      toLat: double.parse("${end[0]}"),
+                      toLng: double.parse("${end[1]}"),
+                      toName: "${logic.fireLevelList.value[index]['stationName']}",
+                    );*//*
+                  EventBusUtil.getInstance().fire(HhLoading(show: false));
+                }catch(e){
+                  HhLog.e(e.toString());
+                  EventBusUtil.getInstance().fire(HhToast(title: "该定位不可用"));
+                }*/
+                EventBusUtil.getInstance().fire(HhToast(title: "跳转地图 - 地图暂未开发"));
+              },
+              child: Container(
+                padding:
+                    EdgeInsets.fromLTRB(14.w * 3, 4.w * 3, 14.w * 3, 5.w * 3),
+                decoration: BoxDecoration(
+                    color: HhColors.levelBtnBack,
+                    borderRadius: BorderRadius.circular(4.w * 3)),
+                child: Text(
+                  "定位",
+                  style: TextStyle(
+                      color: HhColors.mainBlueColor,
+                      fontSize: 13.sp * 3,
+                      fontWeight: FontWeight.w400),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   void menuTap(item) {
     if (item["title"] == "智慧立杆") {
-
+      Get.to(() => DeviceListPage(), binding: DeviceListBinding(), arguments: {"productKey": CommonData.productKeyFireSmartPole,"title": "智慧立杆"});
     }
     if (item["title"] == "火险因子") {
-
+      Get.to(() => DeviceListPage(), binding: DeviceListBinding(), arguments: {"productKey": CommonData.productKeyFireRiskFactor,"title": "火险因子"});
     }
     if (item["title"] == "报警管理") {
 
     }
     if (item["title"] == "全部设备") {
-
+      Get.to(() => DeviceListPage(), binding: DeviceListBinding(), arguments: {"productKey": "","title": "全部"});
     }
   }
 
@@ -1523,6 +1542,319 @@ class MainPage extends StatelessWidget {
       }
     }
     return "报警";
+  }
+
+  void showLiveWarningInfoDialog(dynamic fireInfo) {
+      CommonUtils.closeAllOverlays();
+      showModalBottomSheet(context: Get.context!, builder: (a){
+        return Container(
+          width: 1.sw,
+          height: 0.62.sh,
+          decoration: BoxDecoration(
+              color: HhColors.whiteColor,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(8.w*3))
+          ),
+          child: OverlayTooltipScaffold(
+            overlayColor: Colors.red.withOpacity(.4),
+            tooltipAnimationCurve: Curves.linear,
+            tooltipAnimationDuration: const Duration(milliseconds: 0),
+            controller: logic.handleController,
+            preferredOverlay: GestureDetector(
+              onTap: () {
+                logic.handleController.dismiss();
+              },
+              child: Container(
+                height: double.infinity,
+                width: double.infinity,
+                color: HhColors.mainGrayColor,
+              ),
+            ),
+            builder: (BuildContext context) {
+              return Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  SizedBox(height: 10.w*3,),
+                  Row(
+                    children: [
+                      SizedBox(width: 20.w*3,),
+                      Text('报警详情',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w600),),
+                      const Expanded(child: SizedBox()),
+                      HhTap(
+                        onTapUp: (){
+                          Get.back();
+                        },
+                        child: Container(
+                            color: HhColors.trans,
+                            padding: EdgeInsets.all(10.w*3),
+                            child: Image.asset('assets/images/common/icon_up_x.png',width:12.w*3,height: 12.w*3,fit: BoxFit.fill,)
+                        ),
+                      ),
+                      SizedBox(width: 20.w*3,),
+                    ],
+                  ),
+                  Container(
+                    height: 0.5.w,
+                    width: 1.sw,
+                    margin: EdgeInsets.fromLTRB(20.w*3, 6.w*3, 20.w*3, 0),
+                    color: HhColors.grayDDTextColor,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          ///报警时间
+                          Container(
+                            margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                            child: Row(
+                              children: [
+                                Text('报警时间',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                                SizedBox(width: 10.w*3,),
+                                Expanded(child: Text(CommonUtils().parseLongTime('${fireInfo["alarmTimestamp"]}'),textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
+                              ],
+                            ),
+                          ),
+                          ///报警类型
+                          Container(
+                            margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                            child: Row(
+                              children: [
+                                Text('报警类型',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                                SizedBox(width: 10.w*3,),
+                                Expanded(child: Text(parseAlarmType(fireInfo["alarmType"]),textAlign:TextAlign.end,style: TextStyle(color: HhColors.mainBlueColor,fontSize: 14.sp*3),)),
+                              ],
+                            ),
+                          ),
+                          ///报警经纬度
+                          Container(
+                            margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                            child: Row(
+                              children: [
+                                Text('报警经纬度',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                                SizedBox(width: 10.w*3,),
+                                Expanded(child: Text("${CommonUtils().parseNull('${fireInfo["longitude"]}', "")},${CommonUtils().parseNull('${fireInfo["latitude"]}', "")}",textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
+                              ],
+                            ),
+                          ),
+                          ///详细地址
+                          Container(
+                            width: 1.sw,
+                            margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('详细地址',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                                SizedBox(height: 5.w*3,),
+                                Text(CommonUtils().parseNull('${fireInfo["location"]}', ""),style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
+                              ],
+                            ),
+                          ),
+                          ///报警图片
+                          Container(
+                            width: 1.sw,
+                            margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('报警图片',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                                SizedBox(height: 10.w*3,),
+                                HhTap(
+                                  overlayColor: HhColors.trans,
+                                  onTapUp: (){
+                                    CommonUtils().showPictureDialog(Get.context, url:"${CommonData.endpoint}${fireInfo['alarmImageUrl']}");
+                                  },
+                                  child: Image.network(
+                                    "${CommonData.endpoint}${fireInfo["alarmImageUrl"]}",
+                                    width: 50.w*3,
+                                    height: 50.w*3,
+                                    fit: BoxFit.fill,
+                                    errorBuilder: (BuildContext context,Object exception,StackTrace? stackTrace){
+                                      return Image.asset(
+                                        "assets/images/common/icon_no_picture_big.png",
+                                        width: 1.sw,
+                                        height: 0.45.sw,
+                                        fit: BoxFit.fill,
+                                      );
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          ///按钮
+                          Container(
+                            height: 32.w*3,
+                            width: 1.sw,
+                            margin: EdgeInsets.fromLTRB(20.w*3, 20.w*3, 20.w*3, 0),
+                            child: Row(
+                              children: [
+                                ///视频
+                                Expanded(
+                                  child: HhTap(
+                                    overlayColor: HhColors.trans,
+                                    onTapUp: (){
+                                      CommonUtils().parseRouteDetail(fireInfo);
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: HhColors.whiteColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                        border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                                      ),
+                                      child: Text('视频',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 15.w*3,),
+                                ///auditStatus处理状态 1已处理 0未处理   ///auditResult处理结果 1真实 0误报
+                                "${fireInfo["auditStatus"]}" == "1"?Expanded(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: HhColors.whiteColor,
+                                      borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                      border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                                    ),
+                                    child: Text("${fireInfo["auditResult"]}" == "1"?'真实':"误报",style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                                  ),
+                                ):Expanded(
+                                  child: OverlayTooltipItem(
+                                    displayIndex: 0,
+                                    tooltipVerticalPosition: TooltipVerticalPosition.TOP,
+                                    absorbPointer: false,
+                                    tooltip: (controller) {
+                                      return Container(
+                                        margin: EdgeInsets.fromLTRB(0, 10.w*3, 0, 10.w*3),
+                                        decoration: BoxDecoration(
+                                            color: HhColors.whiteColor,
+                                            borderRadius: BorderRadius.circular(16.w*3)
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            BouncingWidget(
+                                              duration: const Duration(milliseconds: 100),
+                                              scaleFactor: 1.2,
+                                              onPressed: (){
+                                                logic.handleController.dismiss();
+                                                logic.alarmHandle("${fireInfo["id"]}", "1");
+                                              },
+                                              child: Container(
+                                                color:HhColors.trans,
+                                                padding: EdgeInsets.fromLTRB(22.w*3, 25.w*3, 15.w*3, 15.w*3),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text('真实', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                                    SizedBox(width: 20.w*3,),
+                                                    Image.asset(
+                                                      "assets/images/common/ic_setting.png",
+                                                      width: 18.w*3,
+                                                      height: 18.w*3,
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            BouncingWidget(
+                                              duration: const Duration(milliseconds: 100),
+                                              scaleFactor: 1.2,
+                                              onPressed: (){
+                                                logic.handleController.dismiss();
+                                                logic.alarmHandle("${fireInfo["id"]}", "0");
+                                              },
+                                              child: Container(
+                                                color:HhColors.trans,
+                                                padding: EdgeInsets.fromLTRB(22.w*3, 15.w*3, 15.w*3, 24.w*3),
+                                                child: Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text('误报', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                                    SizedBox(width: 20.w*3,),
+                                                    Image.asset(
+                                                      "assets/images/common/ic_setting.png",
+                                                      width: 18.w*3,
+                                                      height: 18.w*3,
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                    child: HhTap(
+                                      overlayColor: HhColors.trans,
+                                      onTapUp: (){
+                                        logic.handleController.start();
+                                      },
+                                      child: Container(
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          color: HhColors.whiteColor,
+                                          borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                          border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                                        ),
+                                        child: Text('处理',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 15.w*3,),
+                                ///定位
+                                Expanded(
+                                  child: HhTap(
+                                    overlayColor: HhColors.trans,
+                                    onTapUp: (){
+
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: HhColors.whiteColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                        border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                                      ),
+                                      child: Text('定位',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 15.w*3,),
+                                ///导航
+                                Expanded(
+                                  child: HhTap(
+                                    overlayColor: HhColors.trans,
+                                    onTapUp: (){
+
+                                    },
+                                    child: Container(
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: HhColors.mainBlueColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                      ),
+                                      child: Text('导航',style: TextStyle(color: HhColors.whiteColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              );
+            },
+          ),
+        );
+      },isDismissible: true,enableDrag: false,isScrollControlled: true,);
   }
 }
 

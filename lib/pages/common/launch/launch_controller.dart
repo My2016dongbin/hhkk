@@ -31,6 +31,7 @@ class LaunchController extends GetxController {
   Future<void> onInit() async {
     ///初始化SP
     Permissions.init();
+    CommonUtils.init();
     permission();
     showLoadingSubscription =
         EventBusUtil.getInstance().on<HhLoading>().listen((event) {

@@ -25,4 +25,12 @@ class CommonData{
   static const String loadingInfoFinal = "正在加载，请稍后…";
   static int versionTime = 0;
   static BuildContext? context;
+
+
+
+  ///火险因子
+  static const String productKeyFireRiskFactor = "2QWASjR4T7aetr7G";
+  ///智慧立杆卡口
+  static const String productKeyFireSmartPole= "aSkWAXGKPh4zEcjE";
+
 }

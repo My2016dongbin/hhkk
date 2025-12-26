@@ -15,6 +15,7 @@ class HhColors {
   static const transRedColors = Color(0x22FF5C5C);
   static const grayAATextColor = Color(0xFFAAAAAA);//深灰字体颜色
   static const grayBBTextColor = Color(0xFFBBBBBB);//深灰字体颜色
+  static const grayHintTextColor = Color(0xFFB2B3C0);//深灰字体颜色
   static const grayCCTextColor = Color(0xFFCCCCCC);//深灰字体颜色
   static const grayC3TextColor = Color(0xFFC3CCDC);//深灰字体颜色
   static const grayLineColor = Color(0xFFF3F3F8);//深灰字体颜色
@@ -51,6 +52,7 @@ class HhColors {
   static const mainRedNoticeColor = Color(0xFFE02020);//红色
   static const transBlue1Color = Color(0xFFAACAFF);//蓝色渐变背景色
   static const transBlue2Color = Color(0xFFD3E8FF);//蓝色渐变背景色
+  static const transRed2Color = Color(0xFFFEF0F0);//蓝色渐变背景色
   static const blueBackColor = Color(0xFFEAF1FF);//蓝色渐变背景色
   static const blue25Color = Color(0xFFDAEDFF);//蓝色渐变背景色
   static const blue25InColor = Color(0xFFEDF5FF);//蓝色渐变背景色
@@ -108,6 +110,7 @@ class HhColors {
   static const levelColor5 = Color(0xFFFF0200);
   static const levelColorBack = Color(0xFFF4F7FF);
   static const levelBtnBack = Color(0xFFF1F5FF);
+  static const levelBtnBackGreen = Color(0xFFDFFCFF);
 
   static const discoverBackground = Color(0xFFE6FdFF);
   static const discoverTag = Color(0xFF359A9F);

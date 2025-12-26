@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/HhColors.dart';
@@ -114,6 +115,7 @@ class TodayWarningPage extends StatelessWidget {
                       logic.pageNum = 1;
                       logic.refreshController.resetNoData();
                       logic.fetchPage();
+                      logic.getWarnType();
                     },
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.zero,
@@ -132,97 +134,10 @@ class TodayWarningPage extends StatelessWidget {
             ),
           ),
         ),
-        ///筛选
-        Container(
-          margin: EdgeInsets.fromLTRB(15.w*3, 100.w*3, 15.w*3, 0),
-          child: Row(
-            children: [
-              Expanded(
-                child: HhTap(
-                  borderRadius: BorderRadius.circular(20.w*3),
-                  onTapUp: (){
-                    showDeviceTypeFilter();
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 0),
-                    height: 40.w*3,
-                    decoration: BoxDecoration(
-                      color: HhColors.whiteColor,
-                      borderRadius: BorderRadius.circular(20.w*3)
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('${logic.typeList[logic.deviceType.value]["title"]}',style: TextStyle(
-                            color: HhColors.blackTextColor,
-                            fontSize: 14.sp*3,
-                            fontWeight: FontWeight.w400),
-                        ),
-                        SizedBox(
-                          width: 5.w*3,
-                        ),
-                        Image.asset(
-                          "assets/images/common/icon_down_choose.png",
-                          width: 7.w*3,
-                          height: 6.w*3,
-                          fit: BoxFit.fill,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: 30.w*3,
-              ),
-              Expanded(
-                child: HhTap(
-                  borderRadius: BorderRadius.circular(20.w*3),
-                  onTapUp: (){
-                    showDeviceStatusFilter();
-                  },
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 0),
-                    height: 40.w*3,
-                    decoration: BoxDecoration(
-                        color: HhColors.whiteColor,
-                        borderRadius: BorderRadius.circular(20.w*3)
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('${logic.statusList[logic.deviceStatus.value]["title"]}',style: TextStyle(
-                            color: HhColors.blackTextColor,
-                            fontSize: 14.sp*3,
-                            fontWeight: FontWeight.w400),
-                        ),
-                        SizedBox(
-                          width: 5.w*3,
-                        ),
-                        Image.asset(
-                          "assets/images/common/icon_down_choose.png",
-                          width: 7.w*3,
-                          height: 6.w*3,
-                          fit: BoxFit.fill,
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
 
         ///菜单
         Container(
-          margin: EdgeInsets.fromLTRB(14.w*3, 155.w*3, 14.w*3, 20.w*3),
-          decoration: BoxDecoration(
-            color: HhColors.whiteColor,
-            borderRadius: BorderRadius.circular(8.w*3)
-          ),
+          margin: EdgeInsets.fromLTRB(14.w*3, 95.w*3, 14.w*3, 20.w*3),
           child: SmartRefresher(
             controller: logic.refreshController,
             enablePullUp: true,
@@ -242,89 +157,157 @@ class TodayWarningPage extends StatelessWidget {
               pagingController: logic.listController,
               physics: const ClampingScrollPhysics(),
               builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                noItemsFoundIndicatorBuilder: (context) => CommonUtils().noneWidget(image:'assets/images/common/icon_no_message.png',info: '暂无设备',mid: 20.w,
+                noItemsFoundIndicatorBuilder: (context) => CommonUtils().noneWidget(image:'assets/images/common/icon_no_message_search.png',info: '暂无报警信息',mid: 20.w,
                   height: 0.36.sw,
                   width: 0.44.sw,),
                 firstPageProgressIndicatorBuilder: (context) => Container(),
                 itemBuilder: (context, item, index) {
                   return InkWell(
                     onTap: (){
-
+                      logic.readOne("${item["id"]}");
                     },
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(0, 5.w*3, 0, 0),
-                          padding: EdgeInsets.fromLTRB(15.w*3, 5.w*3, 15.w*3, 5.w*3),
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(
-                              color: HhColors.whiteColor,
-                              borderRadius: BorderRadius.all(Radius.circular(8.w*3))
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                CommonUtils().parseNull('${item['deviceName']}',""),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    color: HhColors.blackRealColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
-                              ),
-                              SizedBox(height: 8.w*3,),
-                              SizedBox(
-                                width: 1.sw,
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding:EdgeInsets.fromLTRB(5.w*3, 1.w*3, 5.w*3, 1.w*3),
-                                      decoration: BoxDecoration(
-                                        color: "${item['deviceStatus']}"=="1"?HhColors.transBlue2Color:HhColors.grayEEBackColor,
-                                        borderRadius: BorderRadius.circular(4.w*3)
-                                      ),
-                                      child: Text(
-                                        "${item['deviceStatus']}"=="1"?'在线':'离线',
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                            color: "${item['deviceStatus']}"=="1"?HhColors.mainBlueColor:HhColors.gray9TextColor, fontSize: 12.sp*3),
-                                      ),
-                                    ),
-                                    SizedBox(width: 10.w*3,),
-                                    Text(
-                                      CommonUtils().parseNull('${item['areaCodeName']}', ""),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.end,
-                                      style: TextStyle(
-                                          color: HhColors.gray9TextColor, fontSize: 14.sp*3),
-                                    ),
-                                    SizedBox(width: 10.w*3,),
-                                    Expanded(
-                                      child: Text(
-                                        CommonUtils().parseNull('${item['address']}', ""),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                            color: HhColors.gray9TextColor, fontSize: 14.sp*3),
-                                      ),
-                                    ),
-                                  ],
+                    child: Container(
+                      margin: EdgeInsets.only(top: 10.w*3),
+                      padding: EdgeInsets.fromLTRB(8.w*3, 12.w*3, 10.w*3, 12.w*3),
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                          color: HhColors.whiteColor,
+                          borderRadius: BorderRadius.all(Radius.circular(8.w*3))
+                      ),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            width: 113.w*3,
+                            height: 70.w*3,
+                            child: Stack(
+                              children: [
+                                Container(
+                                  clipBehavior: Clip.hardEdge,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.w*3),
+                                  ),
+                                  child: item['alarmType']=='openCap'||item['alarmType']=='openSensor'||item['alarmType']=='tilt'?Image.asset(
+                                    "assets/images/common/icon_message_back.png",
+                                    width: 113.w*3,
+                                    height: 70.w*3,
+                                    fit: BoxFit.fill,
+                                  ):("${item['alarmType']}".contains("offline"))?Image.asset(
+                                    "assets/images/common/icon_offline_warn.png",
+                                    width: 113.w*3,
+                                    height: 70.w*3,
+                                    fit: BoxFit.fill,
+                                  ):InkWell(
+                                    onTap: (){
+                                      CommonUtils().showPictureDialog(context, url:"${CommonData.endpoint}${item['alarmImageUrl']}");
+                                      logic.readOne("${item["id"]}");
+                                    },
+                                    child: Image.network("${CommonData.endpoint}${item['alarmImageUrl']}",errorBuilder: (a,b,c){
+                                      return Image.asset(
+                                        "assets/images/common/ic_message_no.png",
+                                        width: 113.w*3,
+                                        height: 70.w*3,
+                                        fit: BoxFit.fill,
+                                      );
+                                    },
+                                      width: 113.w*3,
+                                      height: 70.w*3,
+                                      fit: BoxFit.fill,),
+                                  ),
                                 ),
-                              ),
-                            ],
+                                item['alarmType']=='tilt'?Align(
+                                  alignment:Alignment.center,
+                                  child: Image.asset(
+                                    "assets/images/common/icon_message_y.png",
+                                    width: 30.w*3,
+                                    height: 30.w*3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ):item['alarmType']=='openCap'||item['alarmType']=='openSensor'?Align(
+                                  alignment:Alignment.center,
+                                  child: Image.asset(
+                                    "assets/images/common/icon_message_open.png",
+                                    width: 30.w*3,
+                                    height: 30.w*3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ):const SizedBox(),
+                              ],
+                            ),
                           ),
-                        ),
-                        Container(
-                          color: HhColors.line25Color,
-                          height: 1.w,
-                          width: 1.sw,
-                          margin: EdgeInsets.fromLTRB(10.w*3, 6.w*3, 10.w*3, 0),
-                        )
-                      ],
+                          Expanded(
+                            child: SizedBox(
+                              height: 70.w*3,
+                              child: Stack(
+                                children: [
+                                  item['status'] == true?const SizedBox():Container(
+                                    height: 6.w*3,
+                                    width: 6.w*3,
+                                    margin: EdgeInsets.fromLTRB(0, 5.w, 0, 0),
+                                    decoration: BoxDecoration(
+                                        color: HhColors.backRedInColor,
+                                        borderRadius: BorderRadius.all(Radius.circular(3.w*3))
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(30.w, 5.w, 0, 0),
+                                    child: Text(
+                                      parseType("${item['alarmType']}"),
+                                      style: TextStyle(
+                                          color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(30.w, 26.w*3, 0, 0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          CommonUtils().parseNull('${item['deviceName']}',""),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: HhColors.gray9TextColor, fontSize: 14.sp*3),
+                                        ),
+                                        SizedBox(height: 5.w,),
+                                        Text(
+                                          CommonUtils().parseNull('${item['spaceName']}', ""),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                              color: HhColors.gray9TextColor, fontSize: 13.sp*3),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.topRight,
+                                    child: Container(
+                                      margin: EdgeInsets.only(top: 5.w*3),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            CommonUtils().parseLongTimeYearDay('${item['createTime']}'),
+                                            style: TextStyle(
+                                                color: HhColors.gray9TextColor, fontSize: 12.sp*3),
+                                          ),
+                                          SizedBox(height: 5.w*3,),
+                                          Text(
+                                            CommonUtils().parseLongTimeHourMinuteSecond('${item['createTime']}'),
+                                            style: TextStyle(
+                                                color: HhColors.gray9TextColor, fontSize: 12.sp*3),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -336,229 +319,14 @@ class TodayWarningPage extends StatelessWidget {
     );
   }
 
-
-  void showDeviceTypeFilter() {
-    showCupertinoDialog(context: Get.context!, builder: (BuildContext context) {
-      return Obx(() =>GestureDetector(
-        onTap: (){
-          Navigator.pop(context);
-        },
-        child: Material(
-          color: HhColors.trans,
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  width: 0.7.sw,
-                  height: 175.w*3,
-                  decoration: BoxDecoration(
-                      color: HhColors.whiteColor,
-                      borderRadius: BorderRadius.circular(16.w*3)
-                  ),
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                            height: 30.w*3,
-                            width: 1.sw,
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.fromLTRB(0, 15.w*3, 0, 0),
-                            child: Text("设备分类",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,height: 1.2,fontWeight: FontWeight.bold),)
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                          margin: EdgeInsets.only(top: 50.w*3),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: buildDeviceTypeChildren(context)
-                            ),
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: BouncingWidget(
-                          duration: const Duration(milliseconds: 100),
-                          scaleFactor: 0.5,
-                          onPressed: () async {
-                            Get.back();
-                          },
-                          child: Container(
-                            margin: EdgeInsets.fromLTRB(0, 14.w*3, 20.w*3, 0),
-                            padding: EdgeInsets.all(10.w),
-                            color: HhColors.trans,
-                            child: Image.asset(
-                              "assets/images/common/icon_up_x.png",
-                              width: 12.w*3,
-                              height: 12.w*3,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ));
-    },barrierDismissible: true);
-  }
-
-  buildDeviceTypeChildren(context) {
-    List<Widget> listW = [];
-    for(int i = 0; i < logic.typeList.length; i++){
-      dynamic typeModel = logic.typeList[i];
-      listW.add(
-          Container(
-            height: 0.5.w,
-            width: 1.sw,
-            margin: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 0),
-            color: HhColors.grayDDTextColor,
-          ),
-      );
-      listW.add(
-          HhTap(
-            overlayColor: HhColors.grayDDTextColor.withAlpha(80),
-            onTapUp: () async {
-              logic.deviceType.value = i;
-              Navigator.pop(context);
-
-              logic.pageNum = 1;
-              logic.refreshController.resetNoData();
-              logic.fetchPage();
-            },
-            child: Container(
-              height: 40.w*3,
-              width: 1.sw,
-              color: HhColors.trans,
-              alignment: Alignment.center,
-              padding: EdgeInsets.fromLTRB(0, 10.w*3, 0, 10.w*3),
-              child: Text("${typeModel['title']}",style: TextStyle(color: logic.deviceType.value==i?HhColors.blueTextColor:HhColors.blackColor,fontSize: 14.sp*3,height: 1.2),),
-            ),
-          )
-      );
+  String parseType(String s) {
+    for(int i = 0;i < logic.typeList.length;i++){
+      dynamic model = logic.typeList[i];
+      if(model["alarmType"] == s){
+        return model["alarmName"];
+      }
     }
-    return listW;
-  }
-
-  void showDeviceStatusFilter() {
-    showCupertinoDialog(context: Get.context!, builder: (BuildContext context) {
-      return Obx(() =>GestureDetector(
-        onTap: (){
-          Navigator.pop(context);
-        },
-        child: Material(
-          color: HhColors.trans,
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: Container(
-                  width: 0.7.sw,
-                  height: 175.w*3,
-                  decoration: BoxDecoration(
-                      color: HhColors.whiteColor,
-                      borderRadius: BorderRadius.circular(16.w*3)
-                  ),
-                  child: Stack(
-                    children: [
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                            height: 30.w*3,
-                            width: 1.sw,
-                            alignment: Alignment.center,
-                            margin: EdgeInsets.fromLTRB(0, 15.w*3, 0, 0),
-                            child: Text("状态分类",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,height: 1.2,fontWeight: FontWeight.bold),)
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topCenter,
-                        child: Container(
-                          margin: EdgeInsets.only(top: 50.w*3),
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: buildDeviceStatusChildren(context)
-                            ),
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: BouncingWidget(
-                          duration: const Duration(milliseconds: 100),
-                          scaleFactor: 0.5,
-                          onPressed: () async {
-                            Get.back();
-                          },
-                          child: Container(
-                            margin: EdgeInsets.fromLTRB(0, 14.w*3, 20.w*3, 0),
-                            padding: EdgeInsets.all(10.w),
-                            color: HhColors.trans,
-                            child: Image.asset(
-                              "assets/images/common/icon_up_x.png",
-                              width: 12.w*3,
-                              height: 12.w*3,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ));
-    },barrierDismissible: true);
-  }
-
-  buildDeviceStatusChildren(context) {
-    List<Widget> listW = [];
-    for(int i = 0; i < logic.statusList.length; i++){
-      dynamic statusModel = logic.statusList[i];
-      listW.add(
-          Container(
-            height: 0.5.w,
-            width: 1.sw,
-            margin: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 0),
-            color: HhColors.grayDDTextColor,
-          ),
-      );
-      listW.add(
-          HhTap(
-            overlayColor: HhColors.grayDDTextColor.withAlpha(80),
-            onTapUp: () async {
-              logic.deviceStatus.value = i;
-              Navigator.pop(context);
-
-              logic.pageNum = 1;
-              logic.refreshController.resetNoData();
-              logic.fetchPage();
-            },
-            child: Container(
-              height: 40.w*3,
-              width: 1.sw,
-              color: HhColors.trans,
-              alignment: Alignment.center,
-              padding: EdgeInsets.fromLTRB(0, 10.w*3, 0, 10.w*3),
-              child: Text("${statusModel['title']}",style: TextStyle(color: logic.deviceStatus.value==i?HhColors.blueTextColor:HhColors.blackColor,fontSize: 14.sp*3,height: 1.2),),
-            ),
-          )
-      );
-    }
-    return listW;
+    return "报警";
   }
 
 }

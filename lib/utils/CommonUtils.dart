@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'dart:math';
 import 'package:bouncing_widget/bouncing_widget.dart';
@@ -30,12 +31,54 @@ import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/RequestUtils.dart';
 import 'package:iot/utils/SPKeys.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tpns_flutter_plugin/tpns_flutter_plugin.dart';
 import 'package:video_player/video_player.dart';
 
 class CommonUtils {
+  static late Directory tempDir;
+
+  static void init() async {
+    tempDir = await getApplicationCacheDirectory();
+  }
+  static Widget parseCacheImageView(String deviceNo,dynamic item) {
+    try{
+      // 将图片保存到缓存目录
+      final filePath =
+          '${tempDir.path}/catch_$deviceNo.png';
+      final file = File(filePath);
+
+      FileImage fileImage = FileImage(file);
+      // 同步清除指定文件的缓存
+      fileImage.evict();
+      if(fileImage.file.lengthSync() < 2600){
+        //处理白屏问题
+        return Image.asset(
+          CommonUtils().parseDeviceBackImage(item),
+          // "assets/images/common/test_video.jpg",
+          fit: BoxFit.fill,
+        );
+      }
+      return Image(image: fileImage,errorBuilder: (c,d,e){
+        HhLog.d("parseCacheImageView error $deviceNo");
+        return Image.asset(
+          CommonUtils().parseDeviceBackImage(item),
+          // "assets/images/common/test_video.jpg",
+          fit: BoxFit.fill,
+        );
+      }, fit: BoxFit.fill,);
+    }catch(e){
+      //
+      return Image.asset(
+        CommonUtils().parseDeviceBackImage(item),
+        // "assets/images/common/test_video.jpg",
+        fit: BoxFit.fill,
+      );
+    }
+  }
+
   List<Color> gradientColors() {
     List<Color> gradientColors = [
       HhColors.backTransColor1,
@@ -297,7 +340,7 @@ class CommonUtils {
         Text(
           info ?? '暂无数据',
           style:
-              TextStyle(color: HhColors.grayBBTextColor, fontSize: 14.sp * 3),
+              TextStyle(color: HhColors.grayHintTextColor, fontSize: 14.sp * 3),
         ),
       ],
     );
@@ -321,7 +364,7 @@ class CommonUtils {
         Text(
           text ?? '暂无数据',
           style:
-              TextStyle(color: HhColors.grayBBTextColor, fontSize: 13.sp * 3),
+              TextStyle(color: HhColors.grayHintTextColor, fontSize: 13.sp * 3),
         ),
       ],
     );
@@ -1373,22 +1416,43 @@ class CommonUtils {
 
     if(item['productKey'] == '5MiTcinKdSasKdKQ'){
       ///道闸
-      Get.to(()=>DaoZhaDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark'],"${item['status']}"!="1"),binding: DaoZhaDetailBinding());
+      Get.to(()=>DaoZhaDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: DaoZhaDetailBinding());
     // }else if(item['productKey'] == 'R45bbC4eBxm3555D'){//TODO 测试调试
     }else if(item['productKey'] == 'Dhs5Kt8bbZaKrCCz'){
       ///运维箱
-      Get.to(()=>YunWeiDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']),binding: YunWeiDetailBinding());
-    }else if (item['productKey'] == 'aSkWAXGKPh4zEcjE'){
+      Get.to(()=>YunWeiDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2),binding: YunWeiDetailBinding());
+    }else if (item['productKey'] == CommonData.productKeyFireSmartPole){
       ///浩海智慧立杆
-      Get.to(()=>LiGanDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark'],"${item['status']}"!="1"),binding: LiGanDeviceDetailBinding());
-    }else if (item['productKey'] == '2QWASjR4T7aetr7G'){
+      Get.to(()=>LiGanDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: LiGanDeviceDetailBinding());
+    }else if (item['productKey'] == CommonData.productKeyFireRiskFactor){
       ///火险因子监测站
-      Get.to(()=>HXYZDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark'],"${item['status']}"!="1"),binding: HXYZDeviceDetailBinding());
+      Get.to(()=>HXYZDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: HXYZDeviceDetailBinding());
     }else if (item['productKey'] == 'R45bbC4eBxm3555D'){
       ///一体机
-      Get.to(()=>DeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark'],"${item['status']}"!="1"),binding: DeviceDetailBinding());
+      Get.to(()=>DeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: DeviceDetailBinding());
     }else{
-      Get.to(()=>DeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark'],"${item['status']}"!="1"),binding: DeviceDetailBinding());
+      Get.to(()=>DeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: DeviceDetailBinding());
+    }
+  }
+
+  parseDeviceImageWarn(item){
+    if(item['productKey'] == '5MiTcinKdSasKdKQ'){
+      ///道闸-高清车牌识别一体机
+      return "assets/images/common/icon_b.png";
+    }else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz'){
+      ///智能运维箱
+      return "assets/images/common/icon_live_k.png";
+    }else if (item['productKey'] == CommonData.productKeyFireSmartPole){
+      ///浩海智慧立杆
+      return "assets/images/common/icon_live_k.png";
+    }else if (item['productKey'] == CommonData.productKeyFireRiskFactor){
+      ///火险因子监测站
+      return "assets/images/common/icon_live_fire.png";
+    }else if (item['productKey'] == 'R45bbC4eBxm3555D'){
+      ///一体机
+      return "assets/images/common/icon_c.png";
+    }else{
+      return "assets/images/common/icon_c.png";
     }
   }
 
@@ -1400,10 +1464,10 @@ class CommonUtils {
     }else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz'){
       ///智能运维箱
       return "assets/images/common/icon_e.png";
-    }else if (item['productKey'] == 'aSkWAXGKPh4zEcjE'){
+    }else if (item['productKey'] == CommonData.productKeyFireSmartPole){
       ///浩海智慧立杆
       return "assets/images/common/icon_d.png";
-    }else if (item['productKey'] == '2QWASjR4T7aetr7G'){
+    }else if (item['productKey'] == CommonData.productKeyFireRiskFactor){
       ///火险因子监测站
       return "assets/images/common/icon_e.png";
     }else if (item['productKey'] == 'R45bbC4eBxm3555D'){
@@ -1421,10 +1485,10 @@ class CommonUtils {
     }else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz'){
       ///智能运维箱
       return "assets/images/common/test_video_ywx.png";
-    }else if (item['productKey'] == 'aSkWAXGKPh4zEcjE'){
+    }else if (item['productKey'] == CommonData.productKeyFireSmartPole){
       ///浩海智慧立杆
       return "assets/images/common/test_video.jpg";
-    }else if (item['productKey'] == '2QWASjR4T7aetr7G'){
+    }else if (item['productKey'] == CommonData.productKeyFireRiskFactor){
       ///火险因子监测站
       return "assets/images/common/test_video.jpg";
     }else if (item['productKey'] == 'R45bbC4eBxm3555D'){
@@ -1692,6 +1756,22 @@ class CommonUtils {
       //
     }
     return page;
+  }
+
+  static void closeAllOverlays() {
+    Get.closeAllSnackbars(); //先清掉SnackBar
+
+    //逐个关掉 overlay（对话框、BottomSheet）
+    while ((Get.isDialogOpen ?? false) || (Get.isBottomSheetOpen ?? false)) {
+      Get.back(); // closeOverlays: true 的效果就是优先关 overlay
+    }
+
+    //再Navigator 方案（覆盖用原生 API 打开的弹窗）
+    final ctx = Get.context;
+    if (ctx != null) {
+      Navigator.of(ctx).popUntil((r) => r is PageRoute);
+      Navigator.of(ctx, rootNavigator: true).popUntil((r) => r is PageRoute);
+    }
   }
 
 }
