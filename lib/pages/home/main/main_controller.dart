@@ -10,7 +10,6 @@ import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/Permissions.dart';
 import 'package:iot/utils/RequestUtils.dart';
-import 'package:overlay_tooltip/overlay_tooltip.dart';
 
 class MainController extends GetxController {
   final Rx<bool> pageStatus = true.obs;
@@ -52,7 +51,6 @@ class MainController extends GetxController {
       "alarmType":null,
     },
   ];
-  final TooltipController handleController = TooltipController();
 
   @override
   Future<void> onInit() async {

@@ -209,7 +209,7 @@ class MyPage extends StatelessWidget {
                     ],
                   ),
 
-                  ///设备&&空间
+                  ///设备&&分组
                   Container(
                     margin: EdgeInsets.fromLTRB(14.w*3, 24.w*3, 14.w*3, 0),
                     child: Row(
@@ -322,7 +322,7 @@ class MyPage extends StatelessWidget {
                                       child: Container(
                                         margin: EdgeInsets.fromLTRB(82.w*3, 50.w*3, 0.w, 0.w),
                                         child: Text(
-                                          "空间管理",
+                                          "分组管理",
                                           style: TextStyle(
                                               color: HhColors.gray9TextColor,
                                               fontSize: 13.sp*3),
@@ -347,7 +347,7 @@ class MyPage extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ///空间网络
+                        ///分组网络
                         /*InkWell(
                           onTap: () {
                             // Get.to(() => NetWorkPage(), binding: NetWorkBinding());
@@ -375,7 +375,7 @@ class MyPage extends StatelessWidget {
                                   child: Container(
                                     margin: EdgeInsets.only(left: 70.w),
                                     child: Text(
-                                      "空间网络",
+                                      "分组网络",
                                       style: TextStyle(
                                           color: HhColors.textBlackColor,
                                           fontSize: 28.sp,

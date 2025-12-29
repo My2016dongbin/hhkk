@@ -271,7 +271,7 @@ class DeviceAddPage extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.fromLTRB(20.w*3, 312.w*3, 0, 0),
                     child: Text(
-                      "请选择设备空间",
+                      "请选择设备分组",
                       style: TextStyle(
                           color: HhColors.blackTextColor,
                           fontSize: 15.sp*3,),
@@ -309,7 +309,7 @@ class DeviceAddPage extends StatelessWidget {
                           return;
                         }
                         if(logic.spaceId == '' || logic.spaceId == 'null'){
-                          EventBusUtil.getInstance().fire(HhToast(title: '请选择设备空间'));
+                          EventBusUtil.getInstance().fire(HhToast(title: '请选择设备分组'));
                           return;
                         }
 
@@ -326,13 +326,17 @@ class DeviceAddPage extends StatelessWidget {
                             logic.updateDevice(true);
                           }
                         }else{
-                          if(logicLocation.locText.value == '' || logicLocation.locText.value == '已搜索'){
+                          /*if(logicLocation.locText.value == '' || logicLocation.locText.value == '已搜索'){
                             EventBusUtil.getInstance().fire(HhToast(title: '请选择设备定位'));
                             return;
                           }
                           logic.latitude.value = logicLocation.latitude.value;
                           logic.longitude.value = logicLocation.longitude.value;
-                          logic.locText.value = logicLocation.locText.value;
+                          logic.locText.value = logicLocation.locText.value;*/
+                          //TODO 测试待修改
+                          logic.latitude.value = 36.888888;
+                          logic.longitude.value = 130.888888;
+                          logic.locText.value = "物联网产业园";
                           logic.createDevice();
                         }
                       },
@@ -424,7 +428,7 @@ class DeviceAddPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ///新增空间
+                ///新增分组
                 BouncingWidget(
                   duration: const Duration(milliseconds: 100),
                   scaleFactor: 1.2,
@@ -453,7 +457,7 @@ class DeviceAddPage extends StatelessWidget {
                           width: 6.w,
                         ),
                         Text(
-                          "新增空间",
+                          "新增分组",
                           style: TextStyle(
                               color: HhColors.gray4TextColor,
                               fontSize: 15.sp*3,fontWeight: FontWeight.w200),

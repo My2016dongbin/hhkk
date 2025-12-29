@@ -2,12 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iot/utils/HhColors.dart';
 
-/// 弹窗方向
+///弹窗方向
 enum HhMenuDirection {
   top,
   bottom,
   left,
   right,
+}
+///菜单方向
+enum HhItemDirection {
+  horizontal,
+  vertical,
 }
 
 class HhActionMenu {
@@ -21,6 +26,7 @@ class HhActionMenu {
     required Offset offset,
     required List<Widget> items,
     HhMenuDirection direction = HhMenuDirection.bottom,
+    HhItemDirection itemDirection = HhItemDirection.horizontal,
     String? backgroundImage,
     EdgeInsets padding =
     const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -46,7 +52,7 @@ class HhActionMenu {
             /// 点击空白关闭
             Positioned.fill(
               child: Container(
-                color: HhColors.trans,
+                color: HhColors.transBlack,
                 child: GestureDetector(
                   onTap: dismiss,
                   behavior: HitTestBehavior.translucent,
@@ -83,16 +89,26 @@ class HhActionMenu {
                     child: Stack(
                       children: [
                         /// 背景图自动铺满
-                        if (backgroundImage != null)
+                        (backgroundImage != null)?
                           Positioned.fill(
                             child: Image.asset(
                               backgroundImage,
                               fit: BoxFit.fill,
                             ),
+                          ):Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: HhColors.whiteColor,
+                              borderRadius: BorderRadius.circular(8.w*3),
+                            ),
                           ),
+                        ),
 
                         /// 内容决定尺寸
-                        Row(
+                        itemDirection==HhItemDirection.horizontal?Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: items,
+                        ):Column(
                           mainAxisSize: MainAxisSize.min,
                           children: items,
                         ),

@@ -49,7 +49,7 @@ class MessageController extends GetxController {
   final Rx<int> chooseListCallNumber = 0.obs;
   final Rx<bool> spaceListStatus = true.obs;
   List<dynamic> spaceList = [{
-    "name":"空间",
+    "name":"分组",
     "id":null,
   }];
   List<num> chooseListLeft = [];
@@ -224,7 +224,7 @@ class MessageController extends GetxController {
         List<dynamic> listS =  result["data"]["list"]??[];
         spaceList.clear();
         spaceList.add({
-          "name":"空间",
+          "name":"分组",
           "id":null,
         });
         for(int i = 0; i < listS.length; i++){

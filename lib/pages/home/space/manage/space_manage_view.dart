@@ -50,7 +50,7 @@ class SpaceManagePage extends StatelessWidget {
                   margin: EdgeInsets.only(top: 54.w*3),
                   color: HhColors.trans,
                   child: Text(
-                    '管理空间',
+                    '管理分组',
                     style: TextStyle(
                         color: HhColors.blackTextColor,
                         fontSize: 18.sp*3,
@@ -96,7 +96,7 @@ class SpaceManagePage extends StatelessWidget {
                 ),
               ),
 
-              ///新增空间按钮
+              ///新增分组按钮
               Align(
                 alignment: Alignment.bottomCenter,
                 child: BouncingWidget(
@@ -117,7 +117,7 @@ class SpaceManagePage extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            "添加新空间",
+                            "添加新分组",
                             style: TextStyle(
                               color: HhColors.whiteColor,
                               fontSize: 16.sp*3,
@@ -193,7 +193,7 @@ class SpaceManagePage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ///空间名
+                ///分组名
                 InkWell(
                   onTap: (){
                     item['open'] = item['open']==true?false:true;
@@ -233,7 +233,7 @@ class SpaceManagePage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      item['spaceName'] == '默认空间'
+                      item['spaceName'] == '默认分组'
                           ? const SizedBox()
                           : InkWell(
                               onTap: () {
@@ -265,8 +265,8 @@ class SpaceManagePage extends StatelessWidget {
             ),
           ),
 
-          ///删除空间
-          item['spaceName'] == '默认空间'
+          ///删除分组
+          item['spaceName'] == '默认分组'
               ? const SizedBox()
               : Container(
             height: 1.w,
@@ -280,12 +280,12 @@ class SpaceManagePage extends StatelessWidget {
               dashColor: HhColors.grayDDTextColor,
             ),
           ),
-          item['spaceName'] == '默认空间'
+          item['spaceName'] == '默认分组'
               ? const SizedBox()
               : InkWell(
             onTap: () {
               CommonUtils().showDeleteDialog(
-                  context, "确定要删除“${item['spaceName']}”?\n请选择如何删除空间", () {
+                  context, "确定要删除“${item['spaceName']}”?\n请选择如何删除分组", () {
                 Get.back();
                 // logic.deleteChangeSpace(item['spaceId'],item['spaceId'],1);
                 showChooseSpaceDialog(item);
@@ -305,7 +305,7 @@ class SpaceManagePage extends StatelessWidget {
                   borderRadius: BorderRadius.all(Radius.circular(20.w))),
               child: Center(
                   child: Text(
-                '删除空间',
+                '删除分组',
                 style: TextStyle(color: HhColors.mainRedColor, fontSize: 15.sp*3),
               )),
             ),
@@ -339,7 +339,7 @@ class SpaceManagePage extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(height: 15.w*3,),
-                    Text('空间删除后，将设备转移至',style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
+                    Text('分组删除后，将设备转移至',style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
                     SizedBox(height: 20.w*3,),
                     Expanded(
                       child: SingleChildScrollView(

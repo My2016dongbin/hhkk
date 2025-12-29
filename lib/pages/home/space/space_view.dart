@@ -60,7 +60,7 @@ class SpacePage extends StatelessWidget {
             margin: EdgeInsets.only(top: 54.w * 3),
             color: HhColors.trans,
             child: Text(
-              '添加空间',
+              '添加分组',
               style: TextStyle(
                   color: HhColors.blackTextColor,
                   fontSize: 18.sp * 3,
@@ -115,7 +115,7 @@ class SpacePage extends StatelessWidget {
                           border: const OutlineInputBorder(
                               borderSide: BorderSide.none),
                           counterText: '',
-                          hintText: '请输入空间名称',
+                          hintText: '请输入分组名称',
                           hintStyle: TextStyle(
                               color: HhColors.grayCCTextColor,
                               fontSize: 16.sp * 3,
@@ -170,13 +170,13 @@ class SpacePage extends StatelessWidget {
                   //隐藏输入法
                   FocusScope.of(logic.context).requestFocus(FocusNode());
                   if (logic.accountController!.text.isEmpty) {
-                    EventBusUtil.getInstance().fire(HhToast(title: '请输入空间名称'));
+                    EventBusUtil.getInstance().fire(HhToast(title: '请输入分组名称'));
                     return;
                   }
                   if (!CommonUtils()
                       .validateSpaceName(logic.accountController!.text)) {
                     EventBusUtil.getInstance()
-                        .fire(HhToast(title: '空间名称不能包含特殊字符'));
+                        .fire(HhToast(title: '分组名称不能包含特殊字符'));
                     return;
                   }
                   Future.delayed(const Duration(milliseconds: 500), () {

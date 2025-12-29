@@ -12,14 +12,19 @@ import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/common/today_warning/today_warning_binding.dart';
 import 'package:iot/pages/common/today_warning/today_warning_view.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
+import 'package:iot/pages/home/device/add/device_add_binding.dart';
+import 'package:iot/pages/home/device/add/device_add_view.dart';
 import 'package:iot/pages/home/device/list/device_list_binding.dart';
 import 'package:iot/pages/home/device/list/device_list_view.dart';
+import 'package:iot/pages/home/space/space_binding.dart';
+import 'package:iot/pages/home/space/space_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/ParseLocation.dart';
 import 'package:iot/utils/Permissions.dart';
+import 'package:iot/widgets/pop_menu.dart';
 import 'package:overlay_tooltip/overlay_tooltip.dart';
 
 import 'main_controller.dart';
@@ -45,13 +50,13 @@ class MainPage extends StatelessWidget {
           height: 1.sh,
           width: 1.sw,
           padding: EdgeInsets.zero,
-          child: logic.pageStatus.value ? mainPage() : const SizedBox(),
+          child: logic.pageStatus.value ? mainPage(context) : const SizedBox(),
         ),
       ),
     );
   }
 
-  mainPage() {
+  mainPage(context) {
     return Stack(
       children: [
         ///背景-渐变色
@@ -143,11 +148,69 @@ class MainPage extends StatelessWidget {
                 ),
               ):const SizedBox(),
               ///添加
-              BouncingWidget(
-                duration: const Duration(milliseconds: 100),
-                scaleFactor: 0.5,
-                onPressed: () async {
-
+              GestureDetector(
+                onTapDown: (details) {
+                  HhActionMenu.show(
+                    context: context,
+                    offset: details.globalPosition,
+                    direction: HhMenuDirection.bottom,
+                    itemDirection: HhItemDirection.vertical,
+                    //backgroundImage: 'assets/images/common/icon_pop_background.png',
+                    dx: 20.w*3,
+                    dy: 10.w*3,
+                    items: [
+                      BouncingWidget(
+                        duration: const Duration(milliseconds: 100),
+                        scaleFactor: 1.2,
+                        onPressed: (){
+                          HhActionMenu.dismiss();
+                          Get.to(()=>DeviceAddPage(snCode: '',),binding: DeviceAddBinding());
+                        },
+                        child: Container(
+                          color:HhColors.trans,
+                          padding: EdgeInsets.fromLTRB(15.w*3, 15.w*3, 15.w*3, 12.w*3),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
+                                "assets/images/common/icon_scanner.png",
+                                width: 18.w * 3,
+                                height: 18.w * 3,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(width: 5.w*3),
+                              Text('添加设备', style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w200),),
+                            ],
+                          ),
+                        ),
+                      ),
+                      BouncingWidget(
+                        duration: const Duration(milliseconds: 100),
+                        scaleFactor: 1.2,
+                        onPressed: (){
+                          HhActionMenu.dismiss();
+                          Get.to(()=>SpacePage(),binding: SpaceBinding());
+                        },
+                        child: Container(
+                          color:HhColors.trans,
+                          padding: EdgeInsets.fromLTRB(15.w*3, 12.w*3, 15.w*3, 15.w*3),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
+                                "assets/images/common/icon_zu.png",
+                                width: 18.w * 3,
+                                height: 18.w * 3,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(width: 5.w*3),
+                              Text('添加分组', style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w200),),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  );
                 },
                 child: Container(
                   margin: EdgeInsets.fromLTRB(0, 39.w * 3, 15.w * 3, 0),
@@ -166,7 +229,7 @@ class MainPage extends StatelessWidget {
                     ],
                   ),
                 ),
-              )
+              ),
             ],
           ),
         ),
@@ -801,11 +864,8 @@ class MainPage extends StatelessWidget {
                               child: Row(
                                 children: [
                                   Expanded(
-                                    child: BouncingWidget(
-                                      duration:
-                                          const Duration(milliseconds: 100),
-                                      scaleFactor: 0.2,
-                                      onPressed: () async {
+                                    child: GestureDetector(
+                                      onTap: () async {
                                         // 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
                                         logic.fireLevelIndex.value = 5;
                                         logic.getFireLevelList();
@@ -876,11 +936,8 @@ class MainPage extends StatelessWidget {
                                     ),
                                   ),
                                   Expanded(
-                                    child: BouncingWidget(
-                                      duration:
-                                          const Duration(milliseconds: 100),
-                                      scaleFactor: 0.2,
-                                      onPressed: () async {
+                                    child: GestureDetector(
+                                      onTap: () async {
                                         // 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
                                         logic.fireLevelIndex.value = 4;
                                         logic.getFireLevelList();
@@ -951,11 +1008,8 @@ class MainPage extends StatelessWidget {
                                     ),
                                   ),
                                   Expanded(
-                                    child: BouncingWidget(
-                                      duration:
-                                          const Duration(milliseconds: 100),
-                                      scaleFactor: 0.2,
-                                      onPressed: () async {
+                                    child: GestureDetector(
+                                      onTap: () async {
                                         // 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
                                         logic.fireLevelIndex.value = 3;
                                         logic.getFireLevelList();
@@ -1026,11 +1080,8 @@ class MainPage extends StatelessWidget {
                                     ),
                                   ),
                                   Expanded(
-                                    child: BouncingWidget(
-                                      duration:
-                                          const Duration(milliseconds: 100),
-                                      scaleFactor: 0.2,
-                                      onPressed: () async {
+                                    child: GestureDetector(
+                                      onTap: () async {
                                         // 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
                                         logic.fireLevelIndex.value = 2;
                                         logic.getFireLevelList();
@@ -1101,11 +1152,8 @@ class MainPage extends StatelessWidget {
                                     ),
                                   ),
                                   Expanded(
-                                    child: BouncingWidget(
-                                      duration:
-                                          const Duration(milliseconds: 100),
-                                      scaleFactor: 0.2,
-                                      onPressed: () async {
+                                    child: GestureDetector(
+                                      onTap: () async {
                                         // 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
                                         logic.fireLevelIndex.value = 1;
                                         logic.getFireLevelList();
@@ -1546,7 +1594,7 @@ class MainPage extends StatelessWidget {
 
   void showLiveWarningInfoDialog(dynamic fireInfo) {
       CommonUtils.closeAllOverlays();
-      showModalBottomSheet(context: Get.context!, builder: (a){
+      showModalBottomSheet(context: Get.context!, builder: (context){
         return Container(
           width: 1.sw,
           height: 0.62.sh,
@@ -1554,304 +1602,251 @@ class MainPage extends StatelessWidget {
               color: HhColors.whiteColor,
               borderRadius: BorderRadius.vertical(top: Radius.circular(8.w*3))
           ),
-          child: OverlayTooltipScaffold(
-            overlayColor: Colors.red.withOpacity(.4),
-            tooltipAnimationCurve: Curves.linear,
-            tooltipAnimationDuration: const Duration(milliseconds: 0),
-            controller: logic.handleController,
-            preferredOverlay: GestureDetector(
-              onTap: () {
-                logic.handleController.dismiss();
-              },
-              child: Container(
-                height: double.infinity,
-                width: double.infinity,
-                color: HhColors.mainGrayColor,
-              ),
-            ),
-            builder: (BuildContext context) {
-              return Column(
-                mainAxisSize: MainAxisSize.max,
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              SizedBox(height: 10.w*3,),
+              Row(
                 children: [
-                  SizedBox(height: 10.w*3,),
-                  Row(
+                  SizedBox(width: 20.w*3,),
+                  Text('报警详情',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w600),),
+                  const Expanded(child: SizedBox()),
+                  HhTap(
+                    onTapUp: (){
+                      Get.back();
+                    },
+                    child: Container(
+                        color: HhColors.trans,
+                        padding: EdgeInsets.all(10.w*3),
+                        child: Image.asset('assets/images/common/icon_up_x.png',width:12.w*3,height: 12.w*3,fit: BoxFit.fill,)
+                    ),
+                  ),
+                  SizedBox(width: 20.w*3,),
+                ],
+              ),
+              Container(
+                height: 0.5.w,
+                width: 1.sw,
+                margin: EdgeInsets.fromLTRB(20.w*3, 6.w*3, 20.w*3, 0),
+                color: HhColors.grayDDTextColor,
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      SizedBox(width: 20.w*3,),
-                      Text('报警详情',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w600),),
-                      const Expanded(child: SizedBox()),
-                      HhTap(
-                        onTapUp: (){
-                          Get.back();
-                        },
-                        child: Container(
-                            color: HhColors.trans,
-                            padding: EdgeInsets.all(10.w*3),
-                            child: Image.asset('assets/images/common/icon_up_x.png',width:12.w*3,height: 12.w*3,fit: BoxFit.fill,)
+                      ///报警时间
+                      Container(
+                        margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                        child: Row(
+                          children: [
+                            Text('报警时间',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                            SizedBox(width: 10.w*3,),
+                            Expanded(child: Text(CommonUtils().parseLongTime('${fireInfo["alarmTimestamp"]}'),textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
+                          ],
                         ),
                       ),
-                      SizedBox(width: 20.w*3,),
+                      ///报警类型
+                      Container(
+                        margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                        child: Row(
+                          children: [
+                            Text('报警类型',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                            SizedBox(width: 10.w*3,),
+                            Expanded(child: Text(parseAlarmType(fireInfo["alarmType"]),textAlign:TextAlign.end,style: TextStyle(color: HhColors.mainBlueColor,fontSize: 14.sp*3),)),
+                          ],
+                        ),
+                      ),
+                      ///报警经纬度
+                      Container(
+                        margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                        child: Row(
+                          children: [
+                            Text('报警经纬度',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                            SizedBox(width: 10.w*3,),
+                            Expanded(child: Text("${CommonUtils().parseNull('${fireInfo["longitude"]}', "")},${CommonUtils().parseNull('${fireInfo["latitude"]}', "")}",textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
+                          ],
+                        ),
+                      ),
+                      ///详细地址
+                      Container(
+                        width: 1.sw,
+                        margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('详细地址',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                            SizedBox(height: 5.w*3,),
+                            Text(CommonUtils().parseNull('${fireInfo["location"]}', ""),style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
+                          ],
+                        ),
+                      ),
+                      ///报警图片
+                      Container(
+                        width: 1.sw,
+                        margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('报警图片',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                            SizedBox(height: 10.w*3,),
+                            HhTap(
+                              overlayColor: HhColors.trans,
+                              onTapUp: (){
+                                CommonUtils().showPictureDialog(Get.context, url:"${CommonData.endpoint}${fireInfo['alarmImageUrl']}");
+                              },
+                              child: Image.network(
+                                "${CommonData.endpoint}${fireInfo["alarmImageUrl"]}",
+                                width: 50.w*3,
+                                height: 50.w*3,
+                                fit: BoxFit.fill,
+                                errorBuilder: (BuildContext context,Object exception,StackTrace? stackTrace){
+                                  return Image.asset(
+                                    "assets/images/common/icon_no_picture_big.png",
+                                    width: 1.sw,
+                                    height: 0.45.sw,
+                                    fit: BoxFit.fill,
+                                  );
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      ///按钮
+                      Container(
+                        height: 32.w*3,
+                        width: 1.sw,
+                        margin: EdgeInsets.fromLTRB(20.w*3, 20.w*3, 20.w*3, 0),
+                        child: Row(
+                          children: [
+                            ///视频
+                            Expanded(
+                              child: HhTap(
+                                overlayColor: HhColors.trans,
+                                onTapUp: (){
+                                  CommonUtils().parseRouteDetail(fireInfo);
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: HhColors.whiteColor,
+                                    borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                    border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                                  ),
+                                  child: Text('视频',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 15.w*3,),
+                            ///auditStatus处理状态 1已处理 0未处理   ///auditResult处理结果 1真实 0误报
+                            "${fireInfo["auditStatus"]}" == "1"?Expanded(
+                              child: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: HhColors.whiteColor,
+                                  borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                  border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                                ),
+                                child: Text("${fireInfo["auditResult"]}" == "1"?'真实':"误报",style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                              ),
+                            ):Expanded(
+                              child: GestureDetector(
+                                onTapDown: (details) {
+                                  HhActionMenu.show(
+                                    context: context,
+                                    offset: details.globalPosition,
+                                    direction: HhMenuDirection.top,
+                                    itemDirection: HhItemDirection.vertical,
+                                    //backgroundImage: 'assets/images/common/icon_pop_background.png',
+                                    dx: 50.w*3,
+                                    items: [
+                                      BouncingWidget(
+                                        duration: const Duration(milliseconds: 100),
+                                        scaleFactor: 1.2,
+                                        onPressed: (){
+                                          HhActionMenu.dismiss();
+                                          logic.alarmHandle("${fireInfo["id"]}", "1");
+                                        },
+                                        child: Container(
+                                          color:HhColors.trans,
+                                          padding: EdgeInsets.fromLTRB(35.w*3, 10.w*3, 35.w*3, 10.w*3),
+                                          child: Text('真实', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                        ),
+                                      ),
+                                      BouncingWidget(
+                                        duration: const Duration(milliseconds: 100),
+                                        scaleFactor: 1.2,
+                                        onPressed: (){
+                                          HhActionMenu.dismiss();
+                                          logic.alarmHandle("${fireInfo["id"]}", "0");
+                                        },
+                                        child: Container(
+                                          color:HhColors.trans,
+                                          padding: EdgeInsets.fromLTRB(35.w*3, 10.w*3, 35.w*3, 10.w*3),
+                                          child: Text('误报', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                        ),
+                                      )
+                                    ],
+                                  );
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: HhColors.whiteColor,
+                                    borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                    border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                                  ),
+                                  child: Text('处理',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 15.w*3,),
+                            ///定位
+                            Expanded(
+                              child: HhTap(
+                                overlayColor: HhColors.trans,
+                                onTapUp: (){
+
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: HhColors.whiteColor,
+                                    borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                    border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                                  ),
+                                  child: Text('定位',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 15.w*3,),
+                            ///导航
+                            Expanded(
+                              child: HhTap(
+                                overlayColor: HhColors.trans,
+                                onTapUp: (){
+
+                                },
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: HhColors.mainBlueColor,
+                                    borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                  ),
+                                  child: Text('导航',style: TextStyle(color: HhColors.whiteColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
-                  Container(
-                    height: 0.5.w,
-                    width: 1.sw,
-                    margin: EdgeInsets.fromLTRB(20.w*3, 6.w*3, 20.w*3, 0),
-                    color: HhColors.grayDDTextColor,
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          ///报警时间
-                          Container(
-                            margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
-                            child: Row(
-                              children: [
-                                Text('报警时间',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
-                                SizedBox(width: 10.w*3,),
-                                Expanded(child: Text(CommonUtils().parseLongTime('${fireInfo["alarmTimestamp"]}'),textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
-                              ],
-                            ),
-                          ),
-                          ///报警类型
-                          Container(
-                            margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
-                            child: Row(
-                              children: [
-                                Text('报警类型',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
-                                SizedBox(width: 10.w*3,),
-                                Expanded(child: Text(parseAlarmType(fireInfo["alarmType"]),textAlign:TextAlign.end,style: TextStyle(color: HhColors.mainBlueColor,fontSize: 14.sp*3),)),
-                              ],
-                            ),
-                          ),
-                          ///报警经纬度
-                          Container(
-                            margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
-                            child: Row(
-                              children: [
-                                Text('报警经纬度',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
-                                SizedBox(width: 10.w*3,),
-                                Expanded(child: Text("${CommonUtils().parseNull('${fireInfo["longitude"]}', "")},${CommonUtils().parseNull('${fireInfo["latitude"]}', "")}",textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
-                              ],
-                            ),
-                          ),
-                          ///详细地址
-                          Container(
-                            width: 1.sw,
-                            margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('详细地址',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
-                                SizedBox(height: 5.w*3,),
-                                Text(CommonUtils().parseNull('${fireInfo["location"]}', ""),style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
-                              ],
-                            ),
-                          ),
-                          ///报警图片
-                          Container(
-                            width: 1.sw,
-                            margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('报警图片',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
-                                SizedBox(height: 10.w*3,),
-                                HhTap(
-                                  overlayColor: HhColors.trans,
-                                  onTapUp: (){
-                                    CommonUtils().showPictureDialog(Get.context, url:"${CommonData.endpoint}${fireInfo['alarmImageUrl']}");
-                                  },
-                                  child: Image.network(
-                                    "${CommonData.endpoint}${fireInfo["alarmImageUrl"]}",
-                                    width: 50.w*3,
-                                    height: 50.w*3,
-                                    fit: BoxFit.fill,
-                                    errorBuilder: (BuildContext context,Object exception,StackTrace? stackTrace){
-                                      return Image.asset(
-                                        "assets/images/common/icon_no_picture_big.png",
-                                        width: 1.sw,
-                                        height: 0.45.sw,
-                                        fit: BoxFit.fill,
-                                      );
-                                    },
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          ///按钮
-                          Container(
-                            height: 32.w*3,
-                            width: 1.sw,
-                            margin: EdgeInsets.fromLTRB(20.w*3, 20.w*3, 20.w*3, 0),
-                            child: Row(
-                              children: [
-                                ///视频
-                                Expanded(
-                                  child: HhTap(
-                                    overlayColor: HhColors.trans,
-                                    onTapUp: (){
-                                      CommonUtils().parseRouteDetail(fireInfo);
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: HhColors.whiteColor,
-                                        borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
-                                        border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
-                                      ),
-                                      child: Text('视频',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 15.w*3,),
-                                ///auditStatus处理状态 1已处理 0未处理   ///auditResult处理结果 1真实 0误报
-                                "${fireInfo["auditStatus"]}" == "1"?Expanded(
-                                  child: Container(
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: HhColors.whiteColor,
-                                      borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
-                                      border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
-                                    ),
-                                    child: Text("${fireInfo["auditResult"]}" == "1"?'真实':"误报",style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
-                                  ),
-                                ):Expanded(
-                                  child: OverlayTooltipItem(
-                                    displayIndex: 0,
-                                    tooltipVerticalPosition: TooltipVerticalPosition.TOP,
-                                    absorbPointer: false,
-                                    tooltip: (controller) {
-                                      return Container(
-                                        margin: EdgeInsets.fromLTRB(0, 10.w*3, 0, 10.w*3),
-                                        decoration: BoxDecoration(
-                                            color: HhColors.whiteColor,
-                                            borderRadius: BorderRadius.circular(16.w*3)
-                                        ),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            BouncingWidget(
-                                              duration: const Duration(milliseconds: 100),
-                                              scaleFactor: 1.2,
-                                              onPressed: (){
-                                                logic.handleController.dismiss();
-                                                logic.alarmHandle("${fireInfo["id"]}", "1");
-                                              },
-                                              child: Container(
-                                                color:HhColors.trans,
-                                                padding: EdgeInsets.fromLTRB(22.w*3, 25.w*3, 15.w*3, 15.w*3),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Text('真实', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
-                                                    SizedBox(width: 20.w*3,),
-                                                    Image.asset(
-                                                      "assets/images/common/ic_setting.png",
-                                                      width: 18.w*3,
-                                                      height: 18.w*3,
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            BouncingWidget(
-                                              duration: const Duration(milliseconds: 100),
-                                              scaleFactor: 1.2,
-                                              onPressed: (){
-                                                logic.handleController.dismiss();
-                                                logic.alarmHandle("${fireInfo["id"]}", "0");
-                                              },
-                                              child: Container(
-                                                color:HhColors.trans,
-                                                padding: EdgeInsets.fromLTRB(22.w*3, 15.w*3, 15.w*3, 24.w*3),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Text('误报', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
-                                                    SizedBox(width: 20.w*3,),
-                                                    Image.asset(
-                                                      "assets/images/common/ic_setting.png",
-                                                      width: 18.w*3,
-                                                      height: 18.w*3,
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                    child: HhTap(
-                                      overlayColor: HhColors.trans,
-                                      onTapUp: (){
-                                        logic.handleController.start();
-                                      },
-                                      child: Container(
-                                        alignment: Alignment.center,
-                                        decoration: BoxDecoration(
-                                          color: HhColors.whiteColor,
-                                          borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
-                                          border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
-                                        ),
-                                        child: Text('处理',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 15.w*3,),
-                                ///定位
-                                Expanded(
-                                  child: HhTap(
-                                    overlayColor: HhColors.trans,
-                                    onTapUp: (){
-
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: HhColors.whiteColor,
-                                        borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
-                                        border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
-                                      ),
-                                      child: Text('定位',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 15.w*3,),
-                                ///导航
-                                Expanded(
-                                  child: HhTap(
-                                    overlayColor: HhColors.trans,
-                                    onTapUp: (){
-
-                                    },
-                                    child: Container(
-                                      alignment: Alignment.center,
-                                      decoration: BoxDecoration(
-                                        color: HhColors.mainBlueColor,
-                                        borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
-                                      ),
-                                      child: Text('导航',style: TextStyle(color: HhColors.whiteColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              );
-            },
+                ),
+              )
+            ],
           ),
         );
       },isDismissible: true,enableDrag: false,isScrollControlled: true,);

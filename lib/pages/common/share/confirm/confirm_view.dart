@@ -99,7 +99,7 @@ class ConfirmPage extends StatelessWidget {
                       Container(
                         margin: EdgeInsets.only(left: 30.w),
                         child: Text(
-                          "我的空间",
+                          "我的分组",
                           style: TextStyle(
                               color: HhColors.textBlackColor,
                               fontSize: 28.sp,

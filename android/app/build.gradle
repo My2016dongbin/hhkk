@@ -42,7 +42,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         multiDexEnabled true
-        applicationId "com.ehaohai.iot"
+        applicationId "com.ehaohai.kk"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 22
@@ -93,7 +93,7 @@ android {
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "haohaiVersion",
                     APP_NAME: "浩海卡口",
-                    AUTHORITIES: "com.ehaohai.iot.fileprovider",
+                    AUTHORITIES: "com.ehaohai.kk.fileprovider",
                     XG_ACCESS_ID : "1500040929",///个人版
                     XG_ACCESS_KEY: "A2UCA4MQX4ST",///个人版
             ]
@@ -101,13 +101,13 @@ android {
         }
         businessVersion {
             dimension 'app'
-            applicationId "com.ehaohai.kkb"//包名
+            applicationId "com.ehaohai.kk"//包名
 //            resValue "string", "app_name", "浩海卡口"   // 设置默认的app_name
             manifestPlaceholders = [
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "businessVersion",
                     APP_NAME: "浩海卡口",
-                    AUTHORITIES: "com.ehaohai.iotb.fileprovider",
+                    AUTHORITIES: "com.ehaohai.kk.fileprovider",
                     XG_ACCESS_ID : "1500041692",///企业版
                     XG_ACCESS_KEY: "AAST7H0KI7QE",///企业版
             ]
@@ -120,20 +120,20 @@ android {
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "betaVersion",
                     APP_NAME: "浩海卡口测试版${defaultConfig.versionName}",
-                    AUTHORITIES: "com.ehaohai.iot.fileprovider",
+                    AUTHORITIES: "com.ehaohai.kk.fileprovider",
                     XG_ACCESS_ID : "1500040929",///个人版
                     XG_ACCESS_KEY: "A2UCA4MQX4ST",///个人版
             ]
         }
         betaBusinessVersion {
             dimension 'app'
-            applicationId "com.ehaohai.kkb"//包名
+            applicationId "com.ehaohai.kk"//包名
 //            resValue "string", "app_name", "浩海卡口"   // 设置默认的app_name
             manifestPlaceholders = [
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "betaBusinessVersion",
                     APP_NAME: "浩海卡口企业测试版${defaultConfig.versionName}",
-                    AUTHORITIES: "com.ehaohai.iotb.fileprovider",
+                    AUTHORITIES: "com.ehaohai.kk.fileprovider",
                     XG_ACCESS_ID : "1500041692",///企业版
                     XG_ACCESS_KEY: "AAST7H0KI7QE",///企业版
             ]

@@ -161,7 +161,7 @@ class CommonUtils {
       type = "设备报警";
     }
     if (s == 'spaceAlarm') {
-      type = "空间报警";
+      type = "分组报警";
     }
     return type;
   }
@@ -197,7 +197,7 @@ class CommonUtils {
   }
 
   bool validateSpaceName(String spaceName) {
-    //空间名称不能包含特殊符号
+    //分组名称不能包含特殊符号
     final RegExp pattern = RegExp(r'^[a-zA-Z0-9\u4e00-\u9fa5]+$');
     HhLog.d("$spaceName , ${pattern.hasMatch(spaceName)}");
     return pattern.hasMatch(spaceName);

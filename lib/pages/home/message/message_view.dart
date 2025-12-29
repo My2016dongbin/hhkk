@@ -498,7 +498,7 @@ class MessagePage extends StatelessWidget {
               ),
             ),
           ),
-          //空间
+          //分组
           logic.isChooseSpace.value?Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,

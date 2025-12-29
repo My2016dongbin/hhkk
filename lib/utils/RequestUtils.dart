@@ -21,13 +21,13 @@ class RequestUtils{
   static const unReadCount = '$base/admin-api/system/message-log/getUnReadMessageCount';//主页未读消息数量查询
   static const unReadCountWarn = '$base/admin-api/mid/device-alarm-info/getUnReadDeviceAlarmCount';//未读消息数量查询
   static const unReadCountNotice = '$base/admin-api/system/message-log/getUnReadMessageCount';//未读消息数量查询
-  static const mainSpaceList = '$base/admin-api/mid/space/page';//主页空间列表
-  static const spaceCreate = '$base/admin-api/mid/space/create';//添加空间
-  static const spaceUpdate = '$base/admin-api/mid/space/update';//更新空间
+  static const mainSpaceList = '$base/admin-api/mid/space/page';//主页分组列表
+  static const spaceCreate = '$base/admin-api/mid/space/create';//添加分组
+  static const spaceUpdate = '$base/admin-api/mid/space/update';//更新分组
   static const message = '$base/admin-api/system/message-log/page';//主页-消息-通知信息查询
   static const messageCall = '$base/admin-api/mid/pole-device-call-log/page';//主页-消息-通话信息查询
   static const messageAlarm = '$base/admin-api/mid/device-alarm-info/page';//主页-消息-报警信息查询
-  //static const spaceInfo = '$base/admin-api/mid/space/get';//主页-空间-空间信息
+  //static const spaceInfo = '$base/admin-api/mid/space/get';//主页-分组-分组信息
   static const deviceInfo = '$base/admin-api/mid/device-base/get';//设备详情
   static const deviceConfig = '$base/admin-api/mid/device-config/get';//设备配置
   static const deviceConfigScreenTop = '$base/admin-api/mid/device-info/sendDeviceCmd';//设备配置修改
@@ -42,7 +42,7 @@ class RequestUtils{
   static const deviceList = '$base/admin-api/mid/device-base/page';//设备查询
   static const alarmType = '$base/admin-api/system/dict-data/page';//告警类型查询
   static const userEdit = '$base/admin-api/system/user/profile/update';//修改个人信息
-  static const mainSearch = '$base/admin-api/mid/space/getListByKeyWord';//主页查询空间设备及消息
+  static const mainSearch = '$base/admin-api/mid/space/getListByKeyWord';//主页查询分组设备及消息
   static const fileUpload = '$base/admin-api/infra/file/upload';//文件上传
   static const headerUpload = '$base/admin-api/system/user/profile/update-avatar';//个人头像上传
   static const password = '$base/admin-api/system/user/profile/update-password';//修改个人密码
@@ -83,7 +83,7 @@ class RequestUtils{
   static const shareSend = '$base/app-api/mid/receive-log/create';//发起分享
   static const shareList = '$base/app-api/mid/receive-log/page';//分享管理记录
   static const shareHandle = '$base/app-api/mid/receive-log/handleReceiveLog';//分享处理 POST{id,status}
-  static const deleteChangeSpace = '$base/admin-api/mid/space/deleteSpaceAndDevice';//删除空间
+  static const deleteChangeSpace = '$base/admin-api/mid/space/deleteSpaceAndDevice';//删除分组
 
 
   static const statistics = '$base/admin-api/mid/device-base/countStatistics';

@@ -13,7 +13,7 @@ class SpaceController extends GetxController {
   final Rx<bool> testStatus = true.obs;
   final Rx<bool> pageStatus = false.obs;
   final Rx<bool> accountStatus = false.obs;
-  TextEditingController ?accountController = TextEditingController(text: '新的空间');
+  TextEditingController ?accountController = TextEditingController(text: '新的分组');
   late BuildContext context;
   late double longitude;
   late double latitude;

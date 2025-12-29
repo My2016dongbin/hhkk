@@ -51,7 +51,7 @@ class MapPage extends StatelessWidget {
             margin: EdgeInsets.only(top: 90.w),
             color: HhColors.trans,
             child: Text(
-              '空间定位',
+              '分组定位',
               style: TextStyle(
                   color: HhColors.blackTextColor,
                   fontSize: 30.sp,

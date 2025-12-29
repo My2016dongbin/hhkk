@@ -7,6 +7,8 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
+import 'package:iot/pages/home/device/add/device_add_binding.dart';
+import 'package:iot/pages/home/device/add/device_add_view.dart';
 import 'package:iot/pages/home/my/scan/scan_binding.dart';
 import 'package:iot/pages/home/my/scan/scan_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
@@ -324,9 +326,27 @@ class DeviceListPage extends StatelessWidget {
                                         backgroundImage: 'assets/images/common/icon_pop_background.png',
                                         dx: 40.w*3,
                                         items: [
-                                          PopMenuItem(title: "修改", image: "assets/images/common/icon_pop_edit.png", onTap: (){CommonUtils.closeAllOverlays();}),
+                                          PopMenuItem(title: "修改", image: "assets/images/common/icon_pop_edit.png", onTap: (){
+                                            Get.to(
+                                                    () => DeviceAddPage(
+                                                  snCode: '${item['deviceNo']}',
+                                                ),
+                                                binding: DeviceAddBinding(),
+                                                arguments: item);
+                                          }),
                                           PopMenuItem(title: "地图", image: "assets/images/common/icon_pop_map.png", onTap: (){}),
-                                          PopMenuItem(title: "删除", image: "assets/images/common/icon_pop_delete.png", color: HhColors.mainRedColor, onTap: (){}),
+                                          PopMenuItem(title: "删除", image: "assets/images/common/icon_pop_delete.png", color: HhColors.mainRedColor, onTap: (){
+                                            CommonUtils().showDeleteDialog(
+                                                context,
+                                                '确定要删除“${item['name']}”?\n删除设备后无法恢复', () {
+                                              Get.back();
+                                            }, () {
+                                              Get.back();
+                                              logic.deleteDevice(item);
+                                            }, () {
+                                              Get.back();
+                                            });
+                                          }),
                                         ],
                                       );
                                     },
@@ -415,6 +435,7 @@ class PopMenuItem extends StatelessWidget {
       overlayColor: HhColors.trans,
       onTapUp: (){
         onTap();
+        HhActionMenu.dismiss();
       },
       child: Container(
         width: 60.w * 3,

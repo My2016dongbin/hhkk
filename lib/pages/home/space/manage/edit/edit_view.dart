@@ -51,7 +51,7 @@ class EditPage extends StatelessWidget {
               margin: EdgeInsets.only(top: 54.w * 3),
               color: HhColors.trans,
               child: Text(
-                '修改空间',
+                '修改分组',
                 style: TextStyle(
                     color: HhColors.blackTextColor,
                     fontSize: 18.sp * 3,
@@ -105,7 +105,7 @@ class EditPage extends StatelessWidget {
                             border: const OutlineInputBorder(
                                 borderSide: BorderSide.none),
                             counterText: '',
-                            hintText: '请输入新的空间名称',
+                            hintText: '请输入新的分组名称',
                             hintStyle: TextStyle(
                                 color: HhColors.grayCCTextColor,
                                 fontSize: 16.sp*3,
@@ -167,7 +167,7 @@ class EditPage extends StatelessWidget {
                     if (!CommonUtils()
                         .validateSpaceName(logic.accountController!.text)) {
                       EventBusUtil.getInstance()
-                          .fire(HhToast(title: '空间名称不能包含特殊字符'));
+                          .fire(HhToast(title: '分组名称不能包含特殊字符'));
                       return;
                     }
                     Future.delayed(const Duration(milliseconds: 500), () {

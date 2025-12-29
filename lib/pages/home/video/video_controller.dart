@@ -148,7 +148,7 @@ class VideoController extends GetxController {
     getWeather();
     //未读消息数量
     getUnRead();
-    //获取空间列表
+    //获取分组列表
     getSpaceList(1,true);
     Future.delayed(const Duration(milliseconds: 3000),(){
       EventBusUtil.getInstance().fire(Version());

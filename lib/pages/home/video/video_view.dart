@@ -398,7 +398,7 @@ class VideoPage extends StatelessWidget {
                               width: 5.h,
                             ),
                             Text(
-                              "空间",
+                              "分组",
                               style: TextStyle(
                                   color: HhColors.blackTextColor,
                                   fontSize: 14.sp*3),
@@ -435,7 +435,7 @@ class VideoPage extends StatelessWidget {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text('管理空间', style: TextStyle(color: HhColors.textBlackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                  Text('管理分组', style: TextStyle(color: HhColors.textBlackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
                                   SizedBox(width: 20.w*3,),
                                   Image.asset(
                                     "assets/images/common/ic_setting.png",
@@ -707,7 +707,7 @@ class VideoPage extends StatelessWidget {
     );
   }
 
-  ///主页-我的空间视图
+  ///主页-我的分组视图
   containPage() {
     return logic.containStatus.value?Stack(
       children: [
@@ -751,7 +751,7 @@ class VideoPage extends StatelessWidget {
                     ),
                     Expanded(
                       child: Text(
-                        '搜索设备、空间、消息...',
+                        '搜索设备、分组、消息...',
                         style: TextStyle(
                             color: HhColors.gray9TextColor, fontSize: 14.sp*3),
                       ),
@@ -904,7 +904,7 @@ class VideoPage extends StatelessWidget {
                 ),
               ),
             ),
-            ///空间列表滚动
+            ///分组列表滚动
             SizedBox(
               height: 36.w*3,
               child: Stack(
@@ -991,7 +991,7 @@ class VideoPage extends StatelessWidget {
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text('管理空间', style: TextStyle(color: HhColors.textBlackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                      Text('管理分组', style: TextStyle(color: HhColors.textBlackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
                                       SizedBox(width: 20.w*3,),
                                       Image.asset(
                                         "assets/images/common/ic_setting.png",
@@ -1228,7 +1228,7 @@ class VideoPage extends StatelessWidget {
     );
   }
 
-  ///我的空间视图-添加空间按钮
+  ///我的分组视图-添加分组按钮
   buttonView() {
     return
       BouncingWidget(
@@ -1243,7 +1243,7 @@ class VideoPage extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(24.w*3))),
         child: Center(
           child: Text(
-            "添加新空间",
+            "添加新分组",
             textAlign: TextAlign.center,
             style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3),
           ),
@@ -1416,7 +1416,7 @@ class VideoPage extends StatelessWidget {
                           color: HhColors.transBlack,
                           borderRadius: BorderRadius.circular(12.w*3)
                         ),
-                        child: Text('进入默认空间',style: TextStyle(color: HhColors.whiteColor,fontSize: 13.sp*3),),
+                        child: Text('进入默认分组',style: TextStyle(color: HhColors.whiteColor,fontSize: 13.sp*3),),
                       ),
                     ),
                   ),

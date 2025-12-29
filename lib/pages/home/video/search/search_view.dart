@@ -110,7 +110,7 @@ class SearchPage extends StatelessWidget {
                             border: const OutlineInputBorder(
                                 borderSide: BorderSide.none
                             ),
-                            hintText: '搜索设备、空间、消息...',
+                            hintText: '搜索设备、分组、消息...',
                             hintStyle: TextStyle(
                                 color: HhColors.gray9TextColor, fontSize: 14.sp*3),
                           ),
@@ -231,7 +231,7 @@ class SearchPage extends StatelessWidget {
                       item['spaceName']==""?const SizedBox():Container(
                         constraints: BoxConstraints(maxWidth: 0.25.sw),
                         child: Text(
-                          CommonUtils().parseNull('${item['spaceName']}', "默认空间"),
+                          CommonUtils().parseNull('${item['spaceName']}', "默认分组"),
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: HhColors.textColor, fontSize: 13.sp*3),
@@ -309,7 +309,7 @@ class SearchPage extends StatelessWidget {
         ));
       }
       HhLog.d("device--");
-      ///空间
+      ///分组
       for(int i = 0; i < logic.spaceList.length; i++){
         dynamic space = logic.spaceList[i];
         List<dynamic> deviceList = space['deviceBaseDOList']??[];
