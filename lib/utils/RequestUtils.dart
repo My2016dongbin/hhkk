@@ -93,12 +93,14 @@ class RequestUtils{
   static const liveWarningInfo = '$base/admin-api/mid/device-alarm-info/get';
   static const mainDeviceList = '$base/admin-api/mid/device-base/page';
   static const alarmHandle = '$base/admin-api/mid/device-alarm-info/alarmAudit';
+  static const streamFromId = '$base/admin-api';
+  static const treeDetail = '$base/admin-api/mid/space/videoSpaceList';
 
   /*
     Map<String, dynamic> map = {};
     map['pageNo'] = '$pageKey';
     Future<void> getUnRead() async {
-      var result = await HhHttp().request(RequestUtils.unReadCount,method: DioMethod.get,params:map);
+      var result = await HhHttp().request(RequestUtils.treeDetail,method: DioMethod.get,params:map);
       HhLog.d("getUnRead -- $result");
       if(result["code"]==0 && result["data"]!=null){
         count.value = '${result["data"]}';

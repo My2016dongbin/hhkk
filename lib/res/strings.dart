@@ -1084,11 +1084,13 @@ class StrRes {
 
   static String get remenber => 'remenber'.tr;
 
-  static String get chatTab => '主页'.tr;
+  static String get mainTab => '主页'.tr;
 
-  static String get momentTab => '设备'.tr;
+  static String get videoTab => '视频'.tr;
 
-  static String get serviceTab => '消息'.tr;
+  static String get messageTab => '消息'.tr;
+
+  static String get mapTab => '消息'.tr;
 
   static String get mineTab => '我的'.tr;
 

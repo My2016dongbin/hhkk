@@ -1774,6 +1774,65 @@ class CommonUtils {
     }
   }
 
+
+
+  bool parseContainDevice(dynamic model, String search) {
+    List<dynamic> children = model["children"] ?? [];
+    List<dynamic> devices = model["devices"] ?? [];
+    if(devices.isNotEmpty){
+      for (var device in devices) {
+        if(device["name"]!=null && device["name"].toLowerCase().contains(search.toLowerCase())){
+          return true;
+        }
+      }
+    }
+    if(children.isNotEmpty){
+      for (var child in children) {
+        if(parseContainDevice(child, search)){
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  bool parseContainChannels(dynamic model, List<dynamic> channels) {
+    if(channels.isEmpty){
+      return false;
+    }
+    for (var channel in channels) {
+      if(channel["id"]!=null && model.toString().contains(channel["id"])){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool parseExpandNode(dynamic model, List<dynamic> list) {
+    if(list.isEmpty){
+      return false;
+    }
+    for (var node in list) {
+      if(node["id"]!=null && model.toString().contains(node["id"])){
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool parseChooseNode(dynamic model, List<dynamic> list) {
+    if(list.isEmpty){
+      return false;
+    }
+    for (var node in list) {
+      if(node["id"]!=null && "${model["id"]}"== "${node["id"]}"){
+        return true;
+      }
+    }
+    return false;
+  }
+
 }
 
 ///通用Button

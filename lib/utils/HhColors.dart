@@ -86,6 +86,8 @@ class HhColors {
   static const blackColor = Color(0xFF333333);
   static const shadowColor = Color(0xFFD2DCF0);
   static const black2Color = Color(0xFF232420);
+  static const gray6EColor = Color(0xFF6E6E6E);
+  static const grayB6Color = Color(0xFFB6B6B6);
   static const blackRealColor = Colors.black;
   static const backBlueInColor = Color(0xFFE1E9F7);
   static const backRedInColor = Color(0xFFFF5C5C);

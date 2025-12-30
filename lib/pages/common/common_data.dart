@@ -25,6 +25,8 @@ class CommonData{
   static const String loadingInfoFinal = "正在加载，请稍后…";
   static int versionTime = 0;
   static BuildContext? context;
+  static List<dynamic> checkedChannels = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},];
+  static String videoSearch = "";
 
 
 
@@ -32,5 +34,25 @@ class CommonData{
   static const String productKeyFireRiskFactor = "2QWASjR4T7aetr7G";
   ///智慧立杆卡口
   static const String productKeyFireSmartPole= "aSkWAXGKPh4zEcjE";
+
+
+  static void clear(){
+    tenant = CommonData.tenantDef;
+    tenantName = CommonData.tenantNameDef;
+    token = null;
+    checkedChannels = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},];
+    videoSearch = "";
+  }
+
+
+  static void removeChannel(String id){
+    for (int i = 0; i < checkedChannels.length; i++) {
+      dynamic channel = checkedChannels[i];
+      if(channel["id"]!=null && "${channel["id"]}" == id){
+        checkedChannels[i] = {};
+        return;
+      }
+    }
+  }
 
 }

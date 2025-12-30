@@ -5,8 +5,6 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_baidu_mapapi_map/flutter_baidu_mapapi_map.dart';
-import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -15,30 +13,22 @@ import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/common/share/share_binding.dart';
 import 'package:iot/pages/common/share/share_view.dart';
 import 'package:iot/pages/common/web/WebViewPage.dart';
+import 'package:iot/pages/home/cell/HhTap.dart';
 import 'package:iot/pages/home/device/add/device_add_binding.dart';
 import 'package:iot/pages/home/device/add/device_add_view.dart';
-import 'package:iot/pages/home/device/detail/device_detail_binding.dart';
-import 'package:iot/pages/home/device/detail/device_detail_view.dart';
 import 'package:iot/pages/home/home_controller.dart';
-import 'package:iot/pages/home/video/search/search_binding.dart';
-import 'package:iot/pages/home/video/search/search_view.dart';
 import 'package:iot/pages/home/message/message_controller.dart';
-import 'package:iot/pages/home/mqtt/mqtt_binding.dart';
-import 'package:iot/pages/home/mqtt/mqtt_controller.dart';
-import 'package:iot/pages/home/mqtt/mqtt_view.dart';
-import 'package:iot/pages/home/my/setting/edit_user/edit_binding.dart';
 import 'package:iot/pages/home/space/manage/space_manage_binding.dart';
 import 'package:iot/pages/home/space/manage/space_manage_view.dart';
-import 'package:iot/pages/home/space/space_binding.dart';
-import 'package:iot/pages/home/space/space_view.dart';
+import 'package:iot/pages/home/video/fijkplayer/fijkplayer.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
 import 'package:iot/utils/HhLog.dart';
-import 'package:iot/utils/ParseLocation.dart';
 import 'package:iot/utils/SPKeys.dart';
+import 'package:iot/widgets/pop_menu.dart';
 import 'package:overlay_tooltip/overlay_tooltip.dart';
-// import 'package:qc_amap_navi/qc_amap_navi.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'video_controller.dart';
@@ -52,230 +42,422 @@ class VideoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logic.context = context;
-    return OverlayTooltipScaffold(
-      overlayColor: Colors.red.withOpacity(.4),
-      tooltipAnimationCurve: Curves.linear,
-      tooltipAnimationDuration: const Duration(milliseconds: 0),
-      controller: logic.tipController,
-      preferredOverlay: GestureDetector(
-        onTap: () {
-          logic.tipController.dismiss();
-        },
-        child: Container(
-          height: double.infinity,
-          width: double.infinity,
-          color: HhColors.mainGrayColor,
-        ),
-      ),
-      builder: (BuildContext context) {
-        return Scaffold(
-          backgroundColor: HhColors.backColor,
-          body: Obx(
-                () => Container(
-              height: 1.sh,
-              width: 1.sw,
-              padding: EdgeInsets.zero,
-              child: logic.secondStatus.value?(logic.pageMapStatus.value ? mapPage() : containPage()) : firstPage(),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  ///地图视图-搜索
-  buildSearchView() {
-    return Container(
-      width: 178.w*3,
-      height: logic.searchDown.value?293.w*3:55.w*3,
-      margin: EdgeInsets.fromLTRB(14.w*3, 100.w*3, 0, 0),
-      padding: EdgeInsets.fromLTRB(8.w*3, 10.w*3, 6.w*3, 10.w*3),
-      decoration: BoxDecoration(
-          boxShadow: const [
-            BoxShadow(
-              color: HhColors.trans_77,
-
-              ///控制阴影的位置
-              offset: Offset(0, 10),
-
-              ///控制阴影的大小
-              blurRadius: 24.0,
-            ),
-          ],
-          color: HhColors.whiteColor,
-          borderRadius: BorderRadius.all(Radius.circular(8.w*3))),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ///搜索框
-                Container(
-                  height:28.w*3,
-                  padding: EdgeInsets.fromLTRB(8.w*3, 0, 8.w*3, 0),
-                  decoration: BoxDecoration(
-                      color: HhColors.whiteColor,
-                      border: Border.all(color: HhColors.mainBlueColor),
-                      borderRadius: BorderRadius.all(Radius.circular(16.w*3))),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        "assets/images/common/icon_search.png",
-                        width: 14.w*3,
-                        height: 14.w*3,
-                        fit: BoxFit.fill,
+    return Scaffold(
+      backgroundColor: HhColors.backColor,
+      body: Obx(
+            () => Container(
+          height: 1.sh,
+          width: 1.sw,
+          padding: EdgeInsets.zero,
+          // child: /*logic.secondStatus.value?*/(logic.pageListStatus.value ? listPage() : cardPage())/* : firstPage()*/,
+                child:Stack(
+                  children: [
+                    Container(
+                      height: 1.sh,
+                      width: 1.sw,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: CommonUtils().gradientColors()),
                       ),
-                      SizedBox(
-                        width: 5.w,
-                      ),
-                      Expanded(
-                        child: TextField(
-                          textAlign: TextAlign.left,
-                          maxLines: 1,
-                          cursorColor: HhColors.titleColor_99,
-                          controller: logic.searchController,
-                          keyboardType: TextInputType.text,
-                          textInputAction: TextInputAction.search,
-                          onSubmitted: (s){
-                            // if(logic.searchController!.text.isEmpty){
-                            //   EventBusUtil.getInstance().fire(HhToast(title: '请输入名称'));
-                            //   return;
-                            // }
-                            logic.deviceSearch();
-                          },
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            border: const OutlineInputBorder(
-                                borderSide: BorderSide.none
-                            ),
-                            hintText: '请输入名称',
-                            hintStyle: TextStyle(
-                                color: HhColors.gray9TextColor, fontSize: 12.sp*3),
-                          ),
-                          style:
-                              TextStyle(color: HhColors.textColor, fontSize: 12.sp*3),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: (){
-                          logic.searchDown.value = !logic.searchDown.value;
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(5.w),
-                          margin: EdgeInsets.only(bottom: 2.w),
-                          child: Image.asset(
-                            logic.searchDown.value?"assets/images/common/icon_top_status.png":"assets/images/common/icon_down_status.png",
-                            width: 15.w*3,
-                            height: 15.w*3,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                      // SizedBox(width: 20.w,),
-                    ],
-                  ),
-                ),
-                logic.searchDown.value?SizedBox(height: 5.w*3,):const SizedBox(),
-                ///列表数据
-                logic.searchDown.value?Expanded(
-                  child: PagedListView<int, dynamic>(
-                    pagingController: logic.deviceController,
-                    padding: EdgeInsets.zero,
-                    builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                      noItemsFoundIndicatorBuilder: (context) =>CommonUtils().noneWidgetSmall(image:'assets/images/common/icon_no_message_search.png',text: '没有找到匹配的结果'),
-                      itemBuilder: (context, item, index) =>
-                          InkWell(
-                            onTap: (){
-                              HhLog.d("touch ${item["latitude"]},${item["longitude"]}");
-                              List<double> point = ParseLocation.parseTypeToBd09(double.parse('${item["latitude"]}'), double.parse('${item["longitude"]}'),item['coordinateType']??"0");
-                              logic.controller?.setCenterCoordinate(
-                                BMFCoordinate(point[0],point[1]), false,
-                              );
-                              logic.controller?.setZoomTo(17);
-                              logic.searchDown.value = false;
-                              logic.searchListIndex.value = index;
-                              logic.model = item;
-                              logic.videoStatus.value = false;
-                              logic.videoStatus.value = true;
-                            },
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(4.w*3, 5.w*3, 16.w*3, 4.w*3),
-                                  decoration: BoxDecoration(
-                                      color: logic.searchListIndex.value == index?HhColors.blueBackColor:HhColors.whiteColor,
-                                      borderRadius: BorderRadius.all(Radius.circular(8.w*3))),
+                    ),
+                    Column(
+                      children: [
+                        ///模式切换&&搜索框&&添加按钮
+                        Container(
+                          margin: EdgeInsets.fromLTRB(20.w*3, 50.h*3, 0, 0),
+                          child: Row(
+                            children: [
+                              //列表模式
+                              BouncingWidget(
+                                duration: const Duration(milliseconds: 100),
+                                scaleFactor: 0.2,
+                                onPressed: (){
+                                  logic.pageListStatus.value = true;
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(right:14.w*3),
+                                  color: HhColors.trans,
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          "${item['name']}",
-                                          style: TextStyle(
-                                              color: HhColors.textBlackColor,
-                                              fontSize: 14.sp*3,fontWeight: FontWeight.bold),
-                                        ),
+                                      Image.asset(
+                                        logic.pageListStatus.value?"assets/images/common/video_list_select.png":"assets/images/common/video_list_un.png",
+                                        width: 22.w*3,
+                                        height: 22.w*3,
+                                        fit: BoxFit.fill,
                                       ),
-                                      "${item['location']}"=='null'?const SizedBox():Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Container(
-                                          margin: EdgeInsets.only(top: 10.w),
-                                          child: Text(
-                                            "${item['location']}",
-                                            style: TextStyle(
-                                                color: HhColors.gray9TextColor,
-                                                fontSize: 12.sp*3),
-                                          ),
-                                        ),
+                                      SizedBox(height: 2.w*3,),
+                                      Text('列表模式', style: TextStyle(color: logic.pageListStatus.value?HhColors.mainBlueColor:HhColors.gray9TextColor,fontSize: 10.sp*3,fontWeight: FontWeight.w200),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              //卡片模式
+                              BouncingWidget(
+                                duration: const Duration(milliseconds: 100),
+                                scaleFactor: 0.2,
+                                onPressed: (){
+                                  logic.pageListStatus.value = false;
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(right:14.w*3),
+                                  color: HhColors.trans,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image.asset(
+                                        logic.pageListStatus.value?"assets/images/common/video_card_un.png":"assets/images/common/video_card_select.png",
+                                        width: 22.w*3,
+                                        height: 22.w*3,
+                                        fit: BoxFit.fill,
                                       ),
-                                      "${item['longitude']}"=="null"?const SizedBox():Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Container(
-                                          margin: EdgeInsets.only(top: 10.w),
-                                          child: Text(
-                                            "(${CommonUtils().subString("${item['longitude']}", 8)},${CommonUtils().subString("${item['latitude']}", 8)})",
-                                            style: TextStyle(
-                                                color: HhColors.gray9TextColor,
-                                                fontSize: 12.sp*3),
-                                          ),
-                                        ),
+                                      SizedBox(height: 2.w*3,),
+                                      Text('卡片模式', style: TextStyle(color: logic.pageListStatus.value?HhColors.gray9TextColor:HhColors.mainBlueColor,fontSize: 10.sp*3,fontWeight: FontWeight.w200),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              //搜索框
+                              Expanded(
+                                child: Container(
+                                  height: 38.w*3,
+                                  margin: EdgeInsets.only(right: 14.w*3),
+                                  decoration: BoxDecoration(
+                                    color: HhColors.whiteColor,
+                                    borderRadius: BorderRadius.all(Radius.circular(19.w*3)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 12.w*3,
+                                      ),
+                                      Image.asset(
+                                        "assets/images/common/icon_search.png",
+                                        width: 24.w*3,
+                                        height: 24.w*3,
+                                        fit: BoxFit.fill,
+                                      ),
+                                      SizedBox(
+                                        width: 4.w*3,
+                                      ),
+                                      Expanded(
+                                          child:TextField(
+                                            textAlign: TextAlign.left,
+                                            maxLines: 1,
+                                            cursorColor: HhColors.titleColor_99,
+                                            controller: logic.searchController,
+                                            keyboardType: TextInputType.text,
+                                            textInputAction: TextInputAction.search,
+                                            onSubmitted: (s){
+                                              ///搜索
+                                              logic.getDeviceList(1, true);
+                                            },
+                                            decoration: InputDecoration(
+                                              contentPadding: EdgeInsets.zero,
+                                              border: const OutlineInputBorder(
+                                                  borderSide: BorderSide.none
+                                              ),
+                                              hintText: '搜索设备名称',
+                                              hintStyle: TextStyle(
+                                                  color: HhColors.gray9TextColor, fontSize: 14.sp*3),
+                                            ),
+                                            style:
+                                            TextStyle(color: HhColors.textColor, fontSize: 14.sp*3),
+                                          )
                                       ),
                                     ],
                                   ),
                                 ),
-                                Container(
-                                  height: 1.w*3,
-                                  width: 1.sw,
-                                  margin: EdgeInsets.fromLTRB(0, 5.w*3, 0, 10.w*3),
-                                  color: HhColors.grayF3TextColor,
-                                )
-                              ],
+                              ),
+                              //添加按钮
+                              BouncingWidget(
+                                duration: const Duration(milliseconds: 100),
+                                scaleFactor: 0.2,
+                                onPressed: (){
+                                  Get.to(()=>DeviceAddPage(snCode: '',),binding: DeviceAddBinding());
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(right:14.w*3),
+                                  color: HhColors.trans,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/common/ic_add.png",
+                                        width: 24.w*3,
+                                        height: 24.w*3,
+                                        fit: BoxFit.fill,
+                                      ),
+                                      SizedBox(height: 2.w*3,),
+                                      Text('添加', style: TextStyle(color: HhColors.textBlackColor,fontSize: 10.sp*3,fontWeight: FontWeight.w200),),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ///天气&&地区
+                        InkWell(
+                          onTap: (){
+                            Get.to(WebViewPage(title: '天气', url: 'https://www.qweather.com/weather/qingdao-101120201.html',));
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(top: 17.w*3),
+                            height: 36.w*3,
+                            alignment: Alignment.centerLeft,
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(logic.text.value.contains('未获取')?10.w*3:16.w*3, 0, 0, 10.w),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  logic.text.value.contains('未获取')?const SizedBox():SizedBox(
+                                    width: 22.w*3,
+                                    height: 22.w*3,
+                                    child: Stack(
+                                      children: [
+                                        SizedBox(
+                                            width: 22.w*3,
+                                            height: 22.w*3,
+                                            child: WebViewWidget(controller: logic.webController,)),
+                                        logic.iconStatus.value?const SizedBox():Image.asset(
+                                          "assets/images/common/icon_weather.png",
+                                          width: 22.w*3,
+                                          height: 22.w*3,
+                                          fit: BoxFit.fill,
+                                        ),
+                                        Container(
+                                            color: HhColors.trans,
+                                            width: 22.w*3,
+                                            height: 22.w*3),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: logic.text.value.contains('未获取')?2.w*3:6.w*3,
+                                  ),
+                                  Text(
+                                    logic.text.value.contains('未获取')?logic.text.value:"${logic.dateStr.value} ${logic.cityStr.value}",
+                                    style: TextStyle(
+                                        color: HhColors.blackTextColor,
+                                        fontSize: 14.sp*3),
+                                  ),
+                                  SizedBox(
+                                    width: 6.w*3,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 6.w),
+                                    child: Image.asset(
+                                      "assets/images/common/back_role.png",
+                                      width: 14.w*3,
+                                      height: 14.w*3,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          )
+                          ),
+                        ),
+
+                        ///列表模式页面&&卡片模式页面
+                        logic.pageListStatus.value?listPage(context):cardPage(context)
+                      ],
+                    ),
+
+                  ],
+                )
+        ),
+      ),
+    );
+  }
+
+  ///主页-列表模式视图
+  listPage(context) {
+    return logic.videoIndex.value == 999?const SizedBox():Expanded(
+      child: Column(
+        children: [
+          ///标题&&多画面切换
+          Container(
+            margin: EdgeInsets.fromLTRB(25.w*3, 10.w*3, 15.w*3, 5.w*3),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                InkWell(
+                  onTap: (){
+                    showVideoTreeDrawer(context);
+                  },
+                  child: Container(
+                    color: HhColors.trans,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/images/common/icon_video_tab.png",
+                          width: 29.w*3,
+                          height: 26.w*3,
+                          fit: BoxFit.fill,
+                        ),
+                        SizedBox(width: 10.w*3,),
+                        Text('视频树',style: TextStyle(color: HhColors.blackTextColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),),
+                      ],
                     ),
                   ),
-                ):const SizedBox(),
+                ),
+                const Spacer(),
+                GestureDetector(
+                  onTapDown: (details) {
+                    HhActionMenu.show(
+                      context: context,
+                      offset: details.globalPosition,
+                      direction: HhMenuDirection.bottom,
+                      //backgroundImage: 'assets/images/common/icon_pop_background.png',
+                      dx: 40.w*3,
+                      items: [
+                        HhTap(
+                          overlayColor: HhColors.trans,
+                          onTapUp: (){
+                            HhActionMenu.dismiss();
+                            logic.videoCount.value = 1;
+                          },
+                          child: Container(
+                            width: 0.33.sw,
+                            padding: EdgeInsets.fromLTRB(0, 20.w*3, 0, 15.w*3),
+                            color: HhColors.trans,
+                            child: Image.asset(
+                              logic.videoCount.value==1?"assets/images/common/icon_video_1_select.png":"assets/images/common/icon_video_1.png",
+                              width: 24.w * 3,
+                              height: 24.w * 3,
+                            ),
+                          ),
+                        ),
+                        HhTap(
+                          overlayColor: HhColors.trans,
+                          onTapUp: (){
+                            HhActionMenu.dismiss();
+                            logic.videoCount.value = 4;
+                          },
+                          child: Container(
+                            width: 0.33.sw,
+                            padding: EdgeInsets.fromLTRB(0, 20.w*3, 0, 15.w*3),
+                            color: HhColors.trans,
+                            child: Image.asset(
+                              logic.videoCount.value==4?"assets/images/common/icon_video_4_select.png":"assets/images/common/icon_video_4.png",
+                              width: 24.w * 3,
+                              height: 24.w * 3,
+                            ),
+                          ),
+                        ),
+                        HhTap(
+                          overlayColor: HhColors.trans,
+                          onTapUp: (){
+                            HhActionMenu.dismiss();
+                            logic.videoCount.value = 8;
+                          },
+                          child: Container(
+                            width: 0.33.sw,
+                            padding: EdgeInsets.fromLTRB(0, 20.w*3, 0, 15.w*3),
+                            color: HhColors.trans,
+                            child: Image.asset(
+                              logic.videoCount.value==8?"assets/images/common/icon_video_8_select.png":"assets/images/common/icon_video_8.png",
+                              width: 24.w * 3,
+                              height: 24.w * 3,
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                  child: Container(
+                    color: HhColors.trans,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/images/common/icon_video_${logic.videoCount.value}.png",
+                          width: 24.w*3,
+                          height: 24.w*3,
+                          fit: BoxFit.fill,
+                        ),
+                        SizedBox(height: 2.w*3,),
+                        Text('画面', style: TextStyle(color: HhColors.textBlackColor,fontSize: 10.sp*3,fontWeight: FontWeight.w200),),
+                      ],
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-          InkWell(
-            onTap: (){
-              logic.restartSearchClick();
-            },
+          ///视频卡片列表
+          Expanded(
             child: Container(
-              padding: EdgeInsets.fromLTRB(0, 30.w, 0, 30.w),
-              child: Image.asset(
-                'assets/images/common/icon_map_left.png',
-                width: 16.w*3,
-                height: 16.w*3,
-                fit: BoxFit.fill,
+              margin: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 0),
+              width: 1.sw,
+              alignment: Alignment.topCenter,
+              child: GridView.builder(
+                padding: EdgeInsets.fromLTRB(0, 10.w*3, 0, 10.w*3),
+                shrinkWrap: true,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: logic.videoCount.value==1?1:2/*sqrt(logic.videoCount.value).toInt()*/,
+                  crossAxisSpacing: 10.w*3,
+                  mainAxisSpacing: 10.w*3,
+                  childAspectRatio: 168 / 123,
+                ),
+                itemCount: logic.videoCount.value,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: (){
+                      if(CommonData.checkedChannels[index]["url"]==null){
+                        showVideoTreeDrawer(context);
+                      }
+                      logic.videoIndex.value = index;
+                    },
+                    child: Container(
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                          color: HhColors.gray6EColor,
+                          borderRadius: BorderRadius.circular(16.w*3)
+                      ),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          //边框
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.w*3),
+                              border: logic.videoIndex.value == index?Border.all(color: HhColors.mainBlueColor,width: 5.w):null,
+                            ),
+                          ),
+                          CommonData.checkedChannels[index]["url"]!=null?Padding(
+                            padding:EdgeInsets.all(5.w),
+                            child: VideoPlayerWidget(
+                              key: ValueKey("${CommonData.checkedChannels[index]["url"]}"),
+                              url: CommonData.checkedChannels[index]["url"],
+                              onOuterTap: () {
+                                logic.videoIndex.value = index;
+                              },
+                            ),
+                          ):Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(
+                                "assets/images/common/icon_video_adding.png",
+                                width: 28.w*3,
+                                height: 28.w*3,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(height: 10.w*3,),
+                              Text('请点击左侧视频树\n选择视频', textAlign: TextAlign.center,style: TextStyle(color: HhColors.grayB6Color,fontSize: 12.sp*3,fontWeight: FontWeight.w400),)
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -284,844 +466,155 @@ class VideoPage extends StatelessWidget {
     );
   }
 
-  ///主页-地图视图
-  mapPage() {
-    return Stack(
-      children: [
-        BMFMapWidget(
-          onBMFMapCreated: (controller) {
-            logic.onBMFMapCreated(controller);
-          },
-          mapOptions: BMFMapOptions(
-              center: BMFCoordinate(CommonData.latitude ?? 36.30865,
-                  CommonData.longitude ?? 120.314037),
-              zoomLevel: 12,
-              mapType: BMFMapType.Standard,
-              mapPadding:
-                  BMFEdgeInsets(left: 30.w, top: 0, right: 30.w, bottom: 0)),
-        ),
-        Container(
-          height: 88.w*3,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: CommonUtils().gradientColors()),
-          ),
-          child: Stack(
-            children: [
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: BouncingWidget(
-                  duration: const Duration(milliseconds: 100),
-                  scaleFactor: 1.2,
-                  onPressed: (){
-                    logic.pageMapStatus.value = false;
-                    logic.videoStatus.value = false;
-                    Future.delayed(const Duration(seconds: 5),(){
-                      logic.refreshMarkers();
-                    });
-                  },
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(16.w*3, 0, 0, 10.w*3),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Image.asset(
-                          "assets/images/common/back.png",
-                          height: 17.w*3,
-                          width: 10.w*3,
-                          fit: BoxFit.fill,
-                        ),
-                        SizedBox(width: 14.w*3,),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              CommonUtils().parseNameCount("${logic.spaceList[logic.spaceListIndex.value]['name']}", 10),
-                              style: TextStyle(
-                                  color: HhColors.blackTextColor,
-                                  fontSize: 18.sp*3,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              height: 3.w*3,
-                            ),
-                            Container(                                
-                              height:2.w*3,
-                              width: 10.w*3,
-                              decoration: BoxDecoration(
-                                color: HhColors.blackTextColor,
-                                borderRadius: BorderRadius.circular(2.w)
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    BouncingWidget(
-                      duration: const Duration(milliseconds: 100),
-                      scaleFactor: 1.2,
-                      onPressed: () {
-                        logic.pageMapStatus.value = false;
-                        logic.videoStatus.value = false;
-                        Future.delayed(const Duration(seconds: 5),(){
-                          logic.refreshMarkers();
-                        });
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: 10.w*3),
-                        padding:EdgeInsets.fromLTRB(11.w*3, 4.w*3, 11.w*3, 4.w*3),
-                        decoration: BoxDecoration(
-                          color: HhColors.whiteColor,
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(12.w*3)),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image.asset(
-                              "assets/images/common/ic_jk.png",
-                              width: 16.w*3,
-                              height: 16.w*3,
-                              fit: BoxFit.fill,
-                            ),
-                            SizedBox(
-                              width: 5.h,
-                            ),
-                            Text(
-                              "分组",
-                              style: TextStyle(
-                                  color: HhColors.blackTextColor,
-                                  fontSize: 14.sp*3),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 59.w*3,),
-                    /*BouncingWidget(
-                      duration: const Duration(milliseconds: 100),
-                      scaleFactor: 1.2,
-                      onPressed: (){
-                        logic.tipController.start();
-                      },
-                      child: OverlayTooltipItem(
-                        displayIndex: 0,
-                        tooltip: (controller) {
-                          return BouncingWidget(
-                            duration: const Duration(milliseconds: 100),
-                            scaleFactor: 1.2,
-                            onPressed: (){
-                              logic.tipController.dismiss();
-                              Get.to(() => SpaceManagePage(),
-                                  binding: SpaceManageBinding());
-                            },
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(0,8.w*3,14.w*3,0),
-                              padding: EdgeInsets.fromLTRB(22.w*3, 25.w*3, 15.w*3, 24.w*3),
-                              decoration: BoxDecoration(
-                                  color: HhColors.whiteColor,
-                                  borderRadius: BorderRadius.circular(16.w*3)
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text('管理分组', style: TextStyle(color: HhColors.textBlackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
-                                  SizedBox(width: 20.w*3,),
-                                  Image.asset(
-                                    "assets/images/common/ic_setting.png",
-                                    width: 18.w*3,
-                                    height: 18.w*3,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(18.w*3, 0, 18.w*3, 10.w),
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(
-                              color: HhColors.trans,
-                              borderRadius: BorderRadius.all(Radius.circular(20.w))
-                          ),
-                          child: Image.asset(
-                            "assets/images/common/icon_menu.png",
-                            width: 24.w*3,
-                            height: 24.w*3,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                    ),*/
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        Align(
-          alignment: Alignment.topLeft,
-          child: logic.searchStatus.value
-              ? buildSearchView()
-              : Column(
-                  children: [
-                    Row(
-                      children: [
-                        BouncingWidget(
-                          duration: const Duration(milliseconds: 100),
-                          scaleFactor: 1.2,
-                          onPressed: logic.onSearchClick,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: HhColors.whiteColor,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8.w*3)),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: HhColors.trans_77,
-
-                                  ///控制阴影的位置
-                                  offset: Offset(0, 10),
-
-                                  ///控制阴影的大小
-                                  blurRadius: 24.0,
-                                ),
-                              ],
-                            ),
-                            margin: EdgeInsets.fromLTRB(
-                                14.w*3, 100.w*3, 0, 0),
-                            padding:
-                                EdgeInsets.fromLTRB(10.w*3, 5.w*3, 10.w*3, 3.w*3),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  "assets/images/common/icon_search.png",
-                                  width: 24.w*3,
-                                  height: 24.w*3,
-                                  fit: BoxFit.fill,
-                                ),
-                                SizedBox(
-                                  height: 5.w,
-                                ),
-                                Text(
-                                  "搜索",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      color: HhColors.blackTextColor,
-                                      fontSize: 10.sp*3),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-        ),
-        logic.videoStatus.value
-            ? Align(
-                alignment: Alignment.bottomCenter,
-                child:
-                Container(
-                  width: 1.sw,
-                  margin: EdgeInsets.fromLTRB(14.w*3, 0, 14.w*3, 30.w*3),
-                  clipBehavior: Clip.hardEdge,
-                  //裁剪
-                  decoration: BoxDecoration(
-                      color: HhColors.whiteColor,
-                      borderRadius: BorderRadius.all(Radius.circular(16.w*3))),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: EdgeInsets.fromLTRB(16.w*3, 15.w*3, 0, 0),
-                        child: Text(
-                          "${logic.model["name"]}",
-                          style: TextStyle(
-                              color: HhColors.blackTextColor, fontSize: 14.sp*3,fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Container(
-                        color: HhColors.line252Color,
-                        height: 1,
-                        margin: EdgeInsets.fromLTRB(15.w*3, 15.w*3, 15.w*3, 0),
-                      ),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(16.w*3, 15.w*3, 16.w*3, 0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "设备类型",
-                              style: TextStyle(
-                                  color: HhColors.blackTextColor, fontSize: 14.sp*3,fontWeight: FontWeight.w500),
-                            ),
-                            const Expanded(child: SizedBox()),
-                            Text(
-                              "${logic.model["productName"]}",
-                              style: TextStyle(
-                                  color: HhColors.gray9TextColor, fontSize: 14.sp*3,fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        color: HhColors.line252Color,
-                        height: 1,
-                        margin: EdgeInsets.fromLTRB(15.w*3, 15.w*3, 15.w*3, 0),
-                      ),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(16.w*3, 15.w*3, 16.w*3, 0),
-                        child: Row(
-                          children: [
-                            Text(
-                              "经纬度",
-                              style: TextStyle(
-                                  color: HhColors.blackTextColor, fontSize: 14.sp*3,fontWeight: FontWeight.w500),
-                            ),
-                            const Expanded(child: SizedBox()),
-                            Text(
-                              "(${CommonUtils().parseDoubleNumber("${logic.model["longitude"]}", 6)},${CommonUtils().parseDoubleNumber("${logic.model["latitude"]}", 6)})",
-                              style: TextStyle(
-                                  color: HhColors.gray9TextColor, fontSize: 14.sp*3,fontWeight: FontWeight.w500),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        color: HhColors.line252Color,
-                        height: 1,
-                        margin: EdgeInsets.fromLTRB(15.w*3, 15.w*3, 15.w*3, 0),
-                      ),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(16.w*3, 15.w*3, 16.w*3, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "位置",
-                              style: TextStyle(
-                                  color: HhColors.blackTextColor, fontSize: 14.sp*3,fontWeight: FontWeight.w500),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 2.w*3),
-                              child: Text(
-                                "${logic.model["location"]}",
-                                maxLines: 2,
-                                style: TextStyle(
-                                    color: HhColors.gray9TextColor, fontSize: 14.sp*3,fontWeight: FontWeight.w500,overflow: TextOverflow.ellipsis),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        color: HhColors.line252Color,
-                        height: 1,
-                        margin: EdgeInsets.fromLTRB(15.w*3, 15.w*3, 15.w*3, 0),
-                      ),
-                      Container(
-                        margin: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 15.w*3),
-                        child: Center(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              BouncingWidget(
-                                duration: const Duration(milliseconds: 100),
-                                scaleFactor: 1.2,
-                                onPressed: () {
-                                  CommonUtils().parseRouteDetail(logic.model);
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.fromLTRB(0, 13.w*3, 0, 0),
-                                  padding: EdgeInsets.fromLTRB(50.w*3, 12.w*3, 50.w*3, 12.w*3),
-                                  decoration: BoxDecoration(
-                                      color: HhColors.whiteColor,
-                                      border: Border.all(color: HhColors.grayCCTextColor,width: 2.w),
-                                      borderRadius:
-                                      BorderRadius.all(Radius.circular(8.w*3))),
-                                  child: Text(
-                                    "查看",
-                                    style: TextStyle(
-                                        color: HhColors.blackTextColor, fontSize: 16.sp*3),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 15.w*3,),
-                              BouncingWidget(
-                                duration: const Duration(milliseconds: 100),
-                                scaleFactor: 1.2,
-                                onPressed: () {
-                                  /*try{
-                                    List<num> start = ParseLocation.bd09_To_Gcj02(num.parse("${CommonData.latitude!}"), num.parse("${CommonData.longitude}"));
-                                    List<num> end = ParseLocation.parseTypeToGcj02(num.parse("${logic.model["latitude"]}"), num.parse("${logic.model["longitude"]}"),logic.model['coordinateType']??"0");
-                                    QcAmapNavi.startNavigation(
-                                      fromLat: double.parse("${start[0]}"),
-                                      fromLng: double.parse("${start[1]}"),
-                                      fromName: "我的位置",
-                                      toLat: double.parse("${end[0]}"),
-                                      toLng: double.parse("${end[1]}"),
-                                      toName: "${logic.model["name"]}",
-                                    );
-                                  }catch(e){
-                                    HhLog.e(e.toString());
-                                  }*/
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.fromLTRB(0, 13.w*3, 0, 0),
-                                  padding: EdgeInsets.fromLTRB(50.w*3, 12.w*3, 50.w*3, 12.w*3),
-                                  decoration: BoxDecoration(
-                                      color: HhColors.mainBlueColor,
-                                      borderRadius:
-                                      BorderRadius.all(Radius.circular(6.w*3))),
-                                  child: Text(
-                                    "导航",
-                                    style: TextStyle(
-                                        color: HhColors.whiteColor, fontSize: 16.sp*3),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              )
-            : const SizedBox(),
-      ],
-    );
-  }
-
-  ///主页-我的分组视图
-  containPage() {
-    return logic.containStatus.value?Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: CommonUtils().gradientColors()),
-          ),
-        ),
-        Column(
-          children: [
-            ///搜索
-            BouncingWidget(
-              duration: const Duration(milliseconds: 100),
-              scaleFactor: 1.2,
-              onPressed: () {
-                Get.to(()=>SearchPage(),binding: SearchBinding());
-              },
-              child: Container(
-                height: 38.w*3,
-                margin: EdgeInsets.fromLTRB(14.w*3, 72.h*3, 14.w*3, 0),
-                decoration: BoxDecoration(
-                  color: HhColors.whiteColor,
-                  borderRadius: BorderRadius.all(Radius.circular(19.w*3)),
-                ),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 12.w*3,
-                    ),
-                    Image.asset(
-                      "assets/images/common/icon_search.png",
-                      width: 24.w*3,
-                      height: 24.w*3,
-                      fit: BoxFit.fill,
-                    ),
-                    SizedBox(
-                      width: 4.w*3,
-                    ),
-                    Expanded(
-                      child: Text(
-                        '搜索设备、分组、消息...',
-                        style: TextStyle(
-                            color: HhColors.gray9TextColor, fontSize: 14.sp*3),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15.w,
-                    ),
-                    /*Image.asset(
-                      "assets/images/common/ic_record.png",
-                      width: 44.w,
-                      height: 44.w,
-                      fit: BoxFit.fill,
-                    ),*/
-                    SizedBox(
-                      width: 40.w,
-                    )
-                  ],
-                ),
-              ),
-            ),
-            ///天气
-            InkWell(
-              onTap: (){
-                Get.to(WebViewPage(title: '天气', url: 'https://www.qweather.com/weather/qingdao-101120201.html',));
-                // Get.to(WebViewPage(title: '天气', url: 'https://www.qweather.com/',));
-              },
-              child: Container(
-                margin: EdgeInsets.only(top: 17.w*3),
-                height: 36.w*3,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        margin: EdgeInsets.fromLTRB(logic.text.value.contains('未获取')?10.w*3:16.w*3, 0, 0, 10.w),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            logic.text.value.contains('未获取')?const SizedBox():SizedBox(
-                              width: 22.w*3,
-                              height: 22.w*3,
-                              child: Stack(
-                                children: [
-                                  SizedBox(
-                                      width: 22.w*3,
-                                      height: 22.w*3,
-                                      child: WebViewWidget(controller: logic.webController,)),
-                                  logic.iconStatus.value?const SizedBox():Image.asset(
-                                    "assets/images/common/icon_weather.png",
-                                    width: 22.w*3,
-                                    height: 22.w*3,
-                                    fit: BoxFit.fill,
-                                  ),
-                                  Container(
-                                    color: HhColors.trans,
-                                      width: 22.w*3,
-                                      height: 22.w*3),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              width: logic.text.value.contains('未获取')?2.w*3:6.w*3,
-                            ),
-                            Text(
-                              logic.text.value.contains('未获取')?logic.text.value:"${logic.dateStr.value} ${logic.cityStr.value}",
-                              style: TextStyle(
-                                  color: HhColors.blackTextColor,
-                                  fontSize: 14.sp*3),
-                            ),
-                            SizedBox(
-                              width: 6.w*3,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(top: 6.w),
-                              child: Image.asset(
-                                "assets/images/common/back_role.png",
-                                width: 14.w*3,
-                                height: 14.w*3,
-                                fit: BoxFit.fill,
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
+  ///主页-卡片模式视图
+  cardPage(context) {
+    return logic.containStatus.value?Expanded(
+      child: Column(
+        children: [
+          ///分组列表滚动
+          SizedBox(
+            height: 45.w*3,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: logic.spaceListStatus.value?Container(
+                    margin: EdgeInsets.fromLTRB(10.w*3, 0, 70.w*3, 10.w),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
+                        children: buildSpaces(),
+                      ),
+                    ),
+                  ):const SizedBox(),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: BouncingWidget(
+                    duration: const Duration(milliseconds: 100),
+                    scaleFactor: 0.2,
+                    onPressed: (){
+
+                      Get.to(() => SpaceManagePage(),
+                          binding: SpaceManageBinding());
+                    },
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(0,0.w*3,14.w*3,0),
+                      // padding: EdgeInsets.fromLTRB(22.w*3, 25.w*3, 15.w*3, 24.w*3),
+                      color: HhColors.trans,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          BouncingWidget(
-                          duration: const Duration(milliseconds: 100),
-                          scaleFactor: 1.2,
-                          onPressed: (){
-                            //TODO Socket测试
-                            homeLogic.index.value = 2;
-                            // Get.to(()=>SocketPage(),binding: SocketBinding());
-                          },
-                            child: Container(
-                              width: 40.w*3,
-                              height: 36.w*3,
-                              margin: EdgeInsets.only(bottom: 10.w),
-                              child: Stack(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Image.asset(
-                                      "assets/images/common/icon_message_main.png",
-                                      width: 24.w*3,
-                                      height: 24.w*3,
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                  messageLogic.noticeCountInt.value+messageLogic.warnCountInt.value==0?const SizedBox():Align(
-                                    alignment: Alignment.topRight,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: HhColors.mainRedColor,
-                                        borderRadius: BorderRadius.all(Radius.circular(10.w*3))
-                                      ),
-                                      width: 15.w*3 + ((parseCount(messageLogic.noticeCountInt.value+messageLogic.warnCountInt.value>99?"99+":"${messageLogic.noticeCountInt.value+messageLogic.warnCountInt.value}")) * (3.w*3)),
-                                      height: 15.w*3,
-                                      child: Center(child: Text(messageLogic.noticeCountInt.value+messageLogic.warnCountInt.value>99?"99+":"${messageLogic.noticeCountInt.value+messageLogic.warnCountInt.value}",style: TextStyle(color: HhColors.whiteColor,fontSize: 10.sp*3),)),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                          Image.asset(
+                            "assets/images/common/ic_setting.png",
+                            width: 22.w*3,
+                            height: 22.w*3,
+                            fit: BoxFit.fill,
                           ),
-                          BouncingWidget(
-                            duration: const Duration(milliseconds: 100),
-                            scaleFactor: 1.2,
-                            onPressed: (){
-                              Get.to(()=>DeviceAddPage(snCode: '',),binding: DeviceAddBinding());
-                            },
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(10.w*3, 0, 14.w*3, 10.w),
-                              child: Image.asset(
-                                "assets/images/common/ic_add.png",
-                                width: 24.w*3,
-                                height: 24.w*3,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          )
+                          SizedBox(height: 2.w*3,),
+                          Text('分组设置', style: TextStyle(color: HhColors.textBlackColor,fontSize: 10.sp*3,fontWeight: FontWeight.w200),),
                         ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             ),
-            ///分组列表滚动
-            SizedBox(
-              height: 36.w*3,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: logic.spaceListStatus.value?Container(
-                      margin: EdgeInsets.fromLTRB(10.w*3, 0, 140.w*3, 10.w),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
+          ),
+          ///GridView
+          Expanded(
+            child: EasyRefresh(
+              onRefresh: (){
+                logic.pageNum = 1;
+                logic.getDeviceList(logic.pageNum,true);
+
+                DateTime dateTime = DateTime.now();
+                logic.dateStr.value = CommonUtils().parseLongTimeWithLength("${dateTime.millisecondsSinceEpoch}",16);
+                logic.getWeather();
+              },
+              onLoad: (){
+                logic.pageNum++;
+                logic.getDeviceList(logic.pageNum,false);
+              },
+              controller: logic.easyController,
+              canLoadAfterNoMore: false,
+              canRefreshAfterNoMore: true,
+              child: PagedGridView<int, dynamic>(
+                  pagingController: logic.pagingController,
+                  padding: EdgeInsets.zero,
+                  builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                    firstPageProgressIndicatorBuilder: (c){
+                      return Container();
+                    }, // 关闭首次加载动画
+                    newPageProgressIndicatorBuilder:  (c){
+                      return Container();
+                    },   // 关闭新页加载动画
+                    itemBuilder: (context, item, index) =>
+                        gridItemView(context, item, index),
+                    noItemsFoundIndicatorBuilder:  (context) =>
+                        Column(
                           mainAxisSize: MainAxisSize.min,
-                          children: buildSpaces(),
+                          children: [
+                            BouncingWidget(
+                              duration: const Duration(milliseconds: 100),
+                              scaleFactor: 0.2,
+                              onPressed: (){
+                                Get.to(()=>DeviceAddPage(snCode: '',),binding: DeviceAddBinding());
+                              },
+                              child: Container(
+                                margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 0),
+                                padding: EdgeInsets.fromLTRB(14.w*3, 13.w*3, 9.w*3, 14.w*3),
+                                width: 1.sw,
+                                decoration: BoxDecoration(
+                                  color: HhColors.whiteColor,
+                                  borderRadius: BorderRadius.circular(8.w*3),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/common/ic_camera.png",
+                                      width: 48.w*3,
+                                      height: 48.w*3,
+                                      fit: BoxFit.fill,
+                                    ),
+                                    SizedBox(width: 11.w*3,),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('添加新设备',style: TextStyle(color: HhColors.textBlackColor,fontSize: 16.sp*3,fontWeight: FontWeight.bold),),
+                                          SizedBox(height: 6.w*3,),
+                                          Text('按步骤将设备添加到APP',style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
+                                        ],
+                                      ),
+                                    ),
+                                    Image.asset(
+                                      "assets/images/common/icon_go.png",
+                                      width: 15.w*3,
+                                      height: 14.w*3,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ):const SizedBox(),
                   ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        BouncingWidget(
-                          duration: const Duration(milliseconds: 100),
-                          scaleFactor: 1.2,
-                          onPressed: () {
-                            logic.pageMapStatus.value = true;
-                          },
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 10.w),
-                            padding:
-                                EdgeInsets.fromLTRB(11.w*3, 4.w*3, 11.w*3, 4.w*3),
-                            decoration: BoxDecoration(
-                              color: HhColors.whiteColor,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(12.w*3)),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Image.asset(
-                                  "assets/images/common/icon_map.png",
-                                  width: 16.w*3,
-                                  height: 16.w*3,
-                                  fit: BoxFit.fill,
-                                ),
-                                SizedBox(
-                                  width: 2.w*3,
-                                ),
-                                Text(
-                                  "地图",
-                                  style: TextStyle(
-                                      color: HhColors.mainBlueColor,
-                                      fontSize: 14.sp*3),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        BouncingWidget(
-                          duration: const Duration(milliseconds: 100),
-                          scaleFactor: 1.2,
-                          onPressed: (){
-                            logic.tipController.start();
-                          },
-                          child: OverlayTooltipItem(
-                            displayIndex: 0,
-                            tooltip: (controller) {
-                              return BouncingWidget(
-                                duration: const Duration(milliseconds: 100),
-                                scaleFactor: 1.2,
-                                onPressed: (){
-                                  logic.tipController.dismiss();
-                                  Get.to(() => SpaceManagePage(),
-                                      binding: SpaceManageBinding());
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.fromLTRB(0,8.w*3,14.w*3,0),
-                                  padding: EdgeInsets.fromLTRB(22.w*3, 25.w*3, 15.w*3, 24.w*3),
-                                  decoration: BoxDecoration(
-                                    color: HhColors.whiteColor,
-                                    borderRadius: BorderRadius.circular(16.w*3)
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text('管理分组', style: TextStyle(color: HhColors.textBlackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
-                                      SizedBox(width: 20.w*3,),
-                                      Image.asset(
-                                        "assets/images/common/ic_setting.png",
-                                        width: 18.w*3,
-                                        height: 18.w*3,
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(16.w*3, 0, 18.w*3, 10.w),
-                              clipBehavior: Clip.hardEdge,
-                              decoration: BoxDecoration(
-                                color: HhColors.trans,
-                                borderRadius: BorderRadius.all(Radius.circular(20.w))
-                              ),
-                              child: Image.asset(
-                                "assets/images/common/icon_menu.png",
-                                width: 24.w*3,
-                                height: 24.w*3,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, //横轴n个子widget
+                      childAspectRatio: 1.35 //宽高比
+                  )),
             ),
-            ///GridView
-            Expanded(
-              child: EasyRefresh(
-                onRefresh: (){
-                  logic.pageNum = 1;
-                  logic.getDeviceList(logic.pageNum,true);
-
-                  DateTime dateTime = DateTime.now();
-                  logic.dateStr.value = CommonUtils().parseLongTimeWithLength("${dateTime.millisecondsSinceEpoch}",16);
-                  logic.getWeather();
-                },
-                onLoad: (){
-                  logic.pageNum++;
-                  logic.getDeviceList(logic.pageNum,false);
-                },
-                controller: logic.easyController,
-                canLoadAfterNoMore: false,
-                canRefreshAfterNoMore: true,
-                child: PagedGridView<int, dynamic>(
-                    pagingController: logic.pagingController,
-                    padding: EdgeInsets.zero,
-                    builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                      firstPageProgressIndicatorBuilder: (c){
-                        return Container();
-                      }, // 关闭首次加载动画
-                      newPageProgressIndicatorBuilder:  (c){
-                        return Container();
-                      },   // 关闭新页加载动画
-                      itemBuilder: (context, item, index) =>
-                          gridItemView(context, item, index),
-                      noItemsFoundIndicatorBuilder:  (context) =>
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              BouncingWidget(
-                                duration: const Duration(milliseconds: 100),
-                                scaleFactor: 1.2,
-                                onPressed: (){
-                                  Get.to(()=>DeviceAddPage(snCode: '',),binding: DeviceAddBinding());
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 0),
-                                  padding: EdgeInsets.fromLTRB(14.w*3, 13.w*3, 9.w*3, 14.w*3),
-                                  width: 1.sw,
-                                  decoration: BoxDecoration(
-                                    color: HhColors.whiteColor,
-                                    borderRadius: BorderRadius.circular(8.w*3),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Image.asset(
-                                        "assets/images/common/ic_camera.png",
-                                        width: 48.w*3,
-                                        height: 48.w*3,
-                                        fit: BoxFit.fill,
-                                      ),
-                                      SizedBox(width: 11.w*3,),
-                                      Expanded(
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text('添加新设备',style: TextStyle(color: HhColors.textBlackColor,fontSize: 16.sp*3,fontWeight: FontWeight.bold),),
-                                            SizedBox(height: 6.w*3,),
-                                            Text('按步骤将设备添加到APP',style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
-                                          ],
-                                        ),
-                                      ),
-                                      Image.asset(
-                                        "assets/images/common/icon_go.png",
-                                        width: 15.w*3,
-                                        height: 14.w*3,
-                                        fit: BoxFit.fill,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                    ),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, //横轴n个子widget
-                        childAspectRatio: 1.35 //宽高比
-                    )),
-              ),
-            ),
-            buttonView()
-          ],
-        ),
-
-      ],
+          ),
+        ],
+      ),
     ):const SizedBox();
   }
 
-  ///设备列表视图-网格列表itemView
+  ///主页-卡片模式设备列表视图-网格列表itemView
   gridItemView(BuildContext context, dynamic item, int index) {
     return Container(
       height: 123.w*3,
@@ -1153,13 +646,6 @@ class VideoPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                /*item['status']==1?const SizedBox():Container(
-                  height: 90.w*3,
-                  width: 0.5.sw,
-                  decoration: BoxDecoration(
-                      color: HhColors.grayEDBackColor.withAlpha(160),
-                      borderRadius: BorderRadius.vertical(top:Radius.circular(16.w*3))),
-                ),*/
                 item['status']==1?const SizedBox():Align(
                   alignment: Alignment.center,
                   child: InkWell(
@@ -1186,7 +672,7 @@ class VideoPage extends StatelessWidget {
           ),
           InkWell(
             onTap: (){
-              showEditDeviceDialog(item);
+              showEditDeviceDialog(item,context);
             },
             child: Container(
               height: 33.w*3,
@@ -1225,34 +711,6 @@ class VideoPage extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-
-  ///我的分组视图-添加分组按钮
-  buttonView() {
-    return
-      BouncingWidget(
-        duration: const Duration(milliseconds: 100),
-        scaleFactor: 1.2,
-      child: Container(
-        width: 1.sw,
-        height: 48.w*3,
-        margin: EdgeInsets.fromLTRB(36.w*3, 24.w*3, 36.w*3, 25.w*3),
-        decoration: BoxDecoration(
-            color: HhColors.mainBlueColor,
-            borderRadius: BorderRadius.all(Radius.circular(24.w*3))),
-        child: Center(
-          child: Text(
-            "添加新分组",
-            textAlign: TextAlign.center,
-            style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3),
-          ),
-        ),
-      ),
-      onPressed: () {
-        Get.to(()=>SpacePage(),binding: SpaceBinding());
-        // Get.to(()=>MqttPage(),binding: MqttBinding());///MQTT测试
-      },
     );
   }
 
@@ -1325,11 +783,9 @@ class VideoPage extends StatelessWidget {
                       children: [
                         BouncingWidget(
                           duration: const Duration(milliseconds: 100),
-                          scaleFactor: 1.2,
+                          scaleFactor: 0.2,
                           onPressed: (){
-                            //TODO Socket测试
                             homeLogic.index.value = 2;
-                            // Get.to(()=>SocketPage(),binding: SocketBinding());
                           },
                           child: Container(
                             width: 40.w*3,
@@ -1364,7 +820,7 @@ class VideoPage extends StatelessWidget {
                         ),
                         BouncingWidget(
                           duration: const Duration(milliseconds: 100),
-                          scaleFactor: 1.2,
+                          scaleFactor: 0.2,
                           onPressed: (){
                             Get.to(()=>DeviceAddPage(snCode: '',),binding: DeviceAddBinding());
                           },
@@ -1403,7 +859,7 @@ class VideoPage extends StatelessWidget {
                     alignment: Alignment.center,
                     child: BouncingWidget(
                       duration: const Duration(milliseconds: 100),
-                      scaleFactor: 1.2,
+                      scaleFactor: 0.2,
                       onPressed: () async {
                         logic.secondStatus.value = true;
                         /// 初次进入设置
@@ -1425,7 +881,7 @@ class VideoPage extends StatelessWidget {
             ),
             BouncingWidget(
               duration: const Duration(milliseconds: 100),
-              scaleFactor: 1.2,
+              scaleFactor: 0.2,
               onPressed: (){
                 Get.to(()=>DeviceAddPage(snCode: '',),binding: DeviceAddBinding());
               },
@@ -1521,8 +977,8 @@ class VideoPage extends StatelessWidget {
     return list;
   }
 
-  void showEditDeviceDialog(item) {
-    showCupertinoDialog(context: logic.context, builder: (context) => Center(
+  void showEditDeviceDialog(item,context) {
+    showCupertinoDialog(context: context, builder: (context) => Center(
       child: Container(
         width: 1.sw,
         height: 70.w*3,
@@ -1536,7 +992,7 @@ class VideoPage extends StatelessWidget {
             CommonData.personal?Expanded(
               child: BouncingWidget(
                 duration: const Duration(milliseconds: 100),
-                scaleFactor: 1.2,
+                scaleFactor: 0.2,
                 onPressed: (){
                   if(item["shareMark"]==2){
                     return;
@@ -1577,7 +1033,7 @@ class VideoPage extends StatelessWidget {
             Expanded(
               child: BouncingWidget(
                 duration: const Duration(milliseconds: 100),
-                scaleFactor: 1.2,
+                scaleFactor: 0.2,
                 onPressed: () {
                   Get.back();
                   Get.to(()=>DeviceAddPage(snCode: '${item['deviceNo']}',),binding: DeviceAddBinding(),arguments: item);
@@ -1602,7 +1058,7 @@ class VideoPage extends StatelessWidget {
             Expanded(
               child: BouncingWidget(
                 duration: const Duration(milliseconds: 100),
-                scaleFactor: 1.2,
+                scaleFactor: 0.2,
                 onPressed: () {
                   Get.back();
                   CommonUtils().showDeleteDialog(context, item["shareMark"]==2?'确定要删除“${item['name']}”?\n此设备是好友分享给你的设备':'确定要删除“${item['name']}”?\n删除设备后无法恢复', (){
@@ -1644,5 +1100,610 @@ class VideoPage extends StatelessWidget {
     }else{
       return 1;
     }
+  }
+
+
+  /// 显示左侧弹窗
+  void showVideoTreeDrawer(BuildContext context) {
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: "Dismiss",
+      barrierColor: Colors.black54,
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (context, animation1, animation2) {
+        double barHeight = MediaQuery.of(Get.context!).padding.top;
+        return Obx(() => Align(
+          alignment: Alignment.centerLeft,
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: Material(
+              color: HhColors.whiteBack,
+              child: Padding(
+                padding: EdgeInsets.only(top: barHeight),
+                child: EasyRefresh(
+                  onRefresh: () {
+                    logic.getTreeDetail();
+                  },
+                  child: SingleChildScrollView(
+                    child: SizedBox(
+                      height: 1.sh - barHeight,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 25.w*3,),
+                          /// 标题栏
+                          Container(
+                            height: 40.w*3,
+                            margin: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 0),
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: [
+                                HhTap(
+                                  overlayColor: HhColors.trans,
+                                  onTapUp: (){
+                                    logic.treeIndex.value = 0;
+                                    logic.getTreeDetail();
+                                  },
+                                  child: Container(
+                                    color: HhColors.trans,
+                                    height: 40.w*3,
+                                    margin: EdgeInsets.only(right: 20.w*3),
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "设备",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: logic.treeIndex.value==0?HhColors.blackTextColor:HhColors.gray9TextColor,
+                                            fontSize: logic.treeIndex.value==0?18.sp*3:14.sp*3,
+                                            fontWeight: logic.treeIndex.value==0?FontWeight.w600:FontWeight.w400,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2.w*3,),
+                                        logic.treeIndex.value==0?Container(
+                                          decoration: BoxDecoration(
+                                              color: HhColors.blackTextColor,
+                                              borderRadius: BorderRadius.circular(2.w*3)
+                                          ),
+                                          height: 3.w*3,
+                                          width: 15.w*3,
+                                        ):const SizedBox()
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                HhTap(
+                                  overlayColor: HhColors.trans,
+                                  onTapUp: (){
+                                    logic.treeIndex.value = 1;
+                                    logic.getTreeDetail();
+                                  },
+                                  child: Container(
+                                    color: HhColors.trans,
+                                    height: 40.w*3,
+                                    margin: EdgeInsets.only(right: 20.w*3),
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          "收藏",
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: logic.treeIndex.value==1?HhColors.blackTextColor:HhColors.gray9TextColor,
+                                            fontSize: logic.treeIndex.value==1?18.sp*3:14.sp*3,
+                                            fontWeight: logic.treeIndex.value==1?FontWeight.w600:FontWeight.w400,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2.w*3,),
+                                        logic.treeIndex.value==1?Container(
+                                          decoration: BoxDecoration(
+                                              color: HhColors.blackTextColor,
+                                              borderRadius: BorderRadius.circular(2.w*3)
+                                          ),
+                                          height: 3.w*3,
+                                          width: 15.w*3,
+                                        ):const SizedBox()
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          /// 搜索框
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 15.w*3, vertical: 10.w*3),
+                            padding: EdgeInsets.symmetric(horizontal: 5.w*3),
+                            decoration: BoxDecoration(
+                              color: HhColors.whiteBackSearch,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  "assets/images/common/icon_search.png",
+                                  height: 22.w*3,
+                                  width: 22.w*3,
+                                  fit: BoxFit.fill,
+                                ),
+                                SizedBox(width: 2.w*3),
+                                Expanded(
+                                  child: TextField(
+                                    controller: logic.searchTreeController,
+                                    decoration: const InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: "请输入设备名称",
+                                      hintStyle: TextStyle(color: HhColors.gray9TextColor),
+                                    ),
+                                    style: TextStyle(fontSize: 14.sp*3),
+                                    textInputAction: TextInputAction.search,
+                                    onSubmitted: (s){
+                                      HhLog.d("onSubmitted $s");
+                                      CommonData.videoSearch = s;
+                                      logic.treeDetail.clear();
+                                      logic.getTreeDetail();
+                                    },
+                                    onChanged: (s){
+                                      HhLog.d("onChanged $s");
+                                      CommonData.videoSearch = s;
+                                      logic.treeDetail.clear();
+                                      logic.getTreeDetail();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          ///视频树
+                          Expanded(
+                            child: Container(
+                              width: 1.sw,
+                              decoration: BoxDecoration(
+                                  color: HhColors.whiteColor,
+                                  borderRadius: BorderRadius.circular(8.w*3)
+                              ),
+                              margin: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 10.w*3),
+                              child: ListView.builder(
+                                padding: EdgeInsets.fromLTRB(10.w*3, 0, 10.w*3, 0),
+                                scrollDirection: Axis.vertical,
+                                itemCount: logic.treeDetail.length, itemBuilder: (context, index){
+                                return TreeNodeWidget(
+                                  node: logic.treeDetail.value[index],
+                                  onTap: (node) {
+                                    HhLog.d("${node["nodeName"]}");
+                                  },
+                                  onDeviceTap: (device) {
+                                    HhLog.d("${device["name"]}");
+                                  },
+                                  onStarTap: (channel,star,deviceType) {
+                                    HhLog.d("$channel $star");
+                                    HhLog.d("${channel["channelName"]} $star");
+                                    if(star){
+                                      logic.collection();
+                                    }else{
+                                      logic.disCollection();
+                                    }
+                                  },
+                                  onChannelTap: (channel,checked) {
+                                    HhLog.d("${channel["channelName"]} $checked");
+                                    if(checked){
+                                      logic.getStream(channel);
+                                    }else{
+                                      CommonData.removeChannel(channel["id"]);
+                                      logic.videoStatus.value = false;
+                                      logic.videoStatus.value = true;
+                                    }
+                                  },
+                                );
+                              },
+                              ),
+                            ),
+                          )
+
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ));
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        final offsetAnimation =
+        Tween<Offset>(begin: const Offset(-1, 0), end: Offset.zero)
+            .animate(animation);
+        return SlideTransition(position: offsetAnimation, child: child);
+      },
+    );
+  }
+
+}
+
+
+class TreeNodeWidget extends StatefulWidget {
+  final dynamic node;
+  final int level;
+  final ValueChanged<dynamic>? onTap;
+  final ValueChanged<dynamic>? onDeviceTap;
+  final void Function(dynamic device, bool star,String deviceType)? onStarTap;
+  final void Function(dynamic device, bool star)? onChannelTap;
+
+  const TreeNodeWidget({
+    Key? key,
+    required this.node,
+    this.level = 0,
+    this.onTap,
+    this.onDeviceTap,
+    this.onStarTap,
+    this.onChannelTap,
+  }) : super(key: key);
+
+  @override
+  State<TreeNodeWidget> createState() => _TreeNodeWidgetState();
+}
+
+class _TreeNodeWidgetState extends State<TreeNodeWidget> {
+  bool expanded = false; // 展开状态
+
+  bool show = true; //搜索显示状态
+
+  @override
+  void initState() {
+    expanded = CommonUtils().parseContainChannels(widget.node,CommonData.checkedChannels);
+    if(CommonData.videoSearch.isNotEmpty){
+      expanded = widget.node.toString().contains(CommonData.videoSearch);
+      //show = widget.node.toString().contains(CommonData.videoSearch);
+      show = CommonUtils().parseContainDevice(widget.node,CommonData.videoSearch);
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<dynamic> devices = widget.node["children"] ?? [];
+
+
+    return show?Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onTap: () {
+            setState(() {
+              expanded = !expanded;
+            });
+            if (widget.onTap != null) widget.onTap!(widget.node);
+          },
+          child: Container(
+            height: 48.w*3,
+            padding: EdgeInsets.only(left: widget.level * 15.w*3),
+            alignment: Alignment.centerLeft,
+            child: Row(
+              children: [
+                //展开箭头
+                AnimatedRotation(
+                  turns: expanded ? 0.25 : 0, //旋转90度
+                  duration: const Duration(milliseconds: 200),
+                  child: Image.asset(
+                    'assets/images/common/icon_down_choose2.png',
+                    height: 7.w*3,
+                    width: 9.w*3,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+
+                SizedBox(width: 5.w*3),
+
+                //节点
+                Expanded(
+                  child: Text(
+                    widget.node["nodeName"] ?? "未命名节点",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: HhColors.blackTextColor,
+                      fontSize: 14.sp*3,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        //分割线
+        Container(
+          color: HhColors.line25Color,
+          height: 2.w,
+        ),
+
+        //设备
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          switchInCurve: Curves.easeIn,
+          switchOutCurve: Curves.easeOut,
+          child: expanded
+              ? Column(
+            children: List.generate(devices.length, (i) {
+              return TreeDeviceWidget(
+                device: devices[i],
+                level: widget.level + 1,
+                onTap: widget.onDeviceTap,
+                onStarTap: widget.onStarTap,
+                onChannelTap: widget.onChannelTap,
+              );
+            }),
+          )
+              : const SizedBox.shrink(),
+        ),
+      ],
+    ):const SizedBox();
+  }
+}
+
+class TreeDeviceWidget extends StatefulWidget {
+  final dynamic device;
+  final int level;
+  final ValueChanged<dynamic>? onTap;
+  final void Function(dynamic channel, bool star,String deviceType)? onStarTap;
+  final void Function(dynamic channel, bool star)? onChannelTap;
+
+  const TreeDeviceWidget({
+    Key? key,
+    required this.device,
+    this.level = 0,
+    this.onTap,
+    this.onStarTap,
+    this.onChannelTap,
+  }) : super(key: key);
+
+  @override
+  State<TreeDeviceWidget> createState() => _TreeDeviceWidgetState();
+}
+
+class _TreeDeviceWidgetState extends State<TreeDeviceWidget> {
+  bool expanded = false; // 展开状态
+
+  bool show = true; //搜索显示状态
+
+  @override
+  void initState() {
+    expanded = CommonUtils().parseContainChannels(widget.device,CommonData.checkedChannels);
+    if(CommonData.videoSearch.isNotEmpty){
+      expanded = "${widget.device["name"]}".contains(CommonData.videoSearch);
+
+      show = "${widget.device["name"]}".contains(CommonData.videoSearch);
+    }
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<dynamic> channels = widget.device["children"] ?? [];
+
+    return show?Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onTap: () {
+            setState(() {
+              expanded = !expanded;
+            });
+            if (widget.onTap != null) widget.onTap!(widget.device);
+          },
+          child: Container(
+            height: 48.w*3,
+            padding: EdgeInsets.only(left: widget.level * 15.w*3),
+            alignment: Alignment.centerLeft,
+            child: Row(
+              children: [
+                //展开箭头
+                AnimatedRotation(
+                  turns: expanded ? 0.25 : 0, //旋转90度
+                  duration: const Duration(milliseconds: 200),
+                  child: Image.asset(
+                    'assets/images/common/icon_down_choose2.png',
+                    height: 7.w*3,
+                    width: 9.w*3,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+
+                SizedBox(width: 5.w*3),
+
+                //节点
+                Text(
+                  widget.device["name"] ?? "未命名设备",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: HhColors.blackTextColor,
+                    fontSize: 14.sp*3,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const Spacer()
+              ],
+            ),
+          ),
+        ),
+
+        //分割线
+        Container(
+          color: HhColors.line25Color,
+          height: 2.w,
+        ),
+
+        //子节点-channels
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          switchInCurve: Curves.easeIn,
+          switchOutCurve: Curves.easeOut,
+          child: expanded
+              ? Column(
+            children: List.generate(channels.length, (i) {
+              return TreeChannelWidget(
+                key: Key("${channels[i]["id"]}${Random().nextInt(100)}"),
+                channel: channels[i],
+                onChannelTap: widget.onChannelTap,
+                level: widget.level + 1,
+                onStarTap: (channel,star){
+                  widget.onStarTap!(channel, star,"${widget.device["deviceType"]}");
+                },
+              );
+            }),
+          )
+              : const SizedBox.shrink(),
+        ),
+      ],
+    ):const SizedBox();
+  }
+}
+
+class TreeChannelWidget extends StatefulWidget {
+  final dynamic channel;
+  final int level;
+  final void Function(dynamic channel, bool star)? onStarTap;
+  final void Function(dynamic channel, bool star)? onChannelTap;
+
+  const TreeChannelWidget({
+    Key? key,
+    required this.channel,
+    this.level = 0,
+    this.onStarTap,
+    this.onChannelTap,
+  }) : super(key: key);
+
+  @override
+  State<TreeChannelWidget> createState() => _TreeChannelWidgetState();
+}
+
+class _TreeChannelWidgetState extends State<TreeChannelWidget> {
+  bool checked = false; //选中状态
+  StreamSubscription? refreshSubscription;
+  bool star = false; // 收藏状态
+
+  @override
+  void initState() {
+    checked = CommonUtils().parseContainChannels(widget.channel,CommonData.checkedChannels);
+
+    refreshSubscription =
+        EventBusUtil.getInstance().on<TreeChannelRefresh>().listen((event) {
+          setState(() {
+            checked = CommonUtils().parseContainChannels(widget.channel,CommonData.checkedChannels);
+          });
+        });
+    star = "${widget.channel["collectionFlag"]}"=="1";
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    try {
+      refreshSubscription!.cancel();
+    } catch (e) {
+      //
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        InkWell(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          onTap: () {
+            setState(() {
+              checked = !checked;
+            });
+            if (widget.onChannelTap != null) widget.onChannelTap!(widget.channel,checked);
+          },
+          child: Container(
+            height: 48.w*3,
+            padding: EdgeInsets.only(left: widget.level * 15.w*3),
+            alignment: Alignment.centerLeft,
+            child: Row(
+              children: [
+                //选中状态
+                Image.asset(
+                  checked?'assets/images/common/yes.png':'assets/images/common/no.png',
+                  height: 17.w*3,
+                  width: 17.w*3,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(width: 10.w*3),
+                //图标
+                Image.asset(
+                  'assets/images/common/device_online.png',
+                  height: 17.w*3,
+                  width: 17.w*3,
+                  fit: BoxFit.contain,
+                ),
+
+                SizedBox(width: 5.w*3),
+
+                //频道
+                Expanded(
+                  child: Text(
+                    widget.channel["channelName"] ?? "未命名频道",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: checked?HhColors.mainBlueColor:HhColors.blackTextColor,
+                      fontSize: 14.sp*3,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ),
+                //收藏
+                InkWell(
+                  onTap: (){
+                    setState(() {
+                      star = !star;
+                    });
+                    if (widget.onStarTap != null) widget.onStarTap!(widget.channel,star);
+                  },
+                  child: Container(
+                    color: HhColors.trans,
+                    padding: EdgeInsets.all(10.w*3),
+                    child: Image.asset(
+                      star?'assets/images/common/device_star.png':'assets/images/common/device_un_star.png',
+                      height: 17.w*3,
+                      width: 17.w*3,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10.w*3)
+              ],
+            ),
+          ),
+        ),
+
+        //分割线
+        Container(
+          color: HhColors.line25Color,
+          height: 2.w,
+        ),
+
+      ],
+    );
   }
 }

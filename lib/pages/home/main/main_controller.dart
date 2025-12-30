@@ -131,7 +131,7 @@ class MainController extends GetxController {
     var result = await HhHttp()
         .request(RequestUtils.unReadCountWarn, method: DioMethod.get);
     HhLog.d("getWarnCount --  $result");
-    if (result["code"] == 200) {
+    if (result["code"] == 0) {
       int number = result["data"]??0;
       messageCount.value = number>99?"99+":"$number";
     } else {

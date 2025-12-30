@@ -7,11 +7,9 @@ import 'package:get/get.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/common/share/share_binding.dart';
 import 'package:iot/pages/common/share/share_view.dart';
-import 'package:iot/pages/home/device/detail/device_detail_binding.dart';
-import 'package:iot/pages/home/device/detail/device_detail_view.dart';
+import 'package:iot/pages/home/video/old/search/search_controller.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/HhColors.dart';
-import 'package:iot/pages/home/video/search/search_controller.dart';
 import 'package:iot/utils/HhLog.dart';
 
 class SearchPage extends StatelessWidget {

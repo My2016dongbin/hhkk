@@ -11,6 +11,9 @@ class HhLoading{
 
   HhLoading({required this.show,this.title});
 }
+class TreeChannelRefresh{
+  TreeChannelRefresh();
+}
 class LocText{
   String ?text;
 
