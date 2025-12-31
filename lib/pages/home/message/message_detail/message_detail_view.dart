@@ -1,16 +1,15 @@
 import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/HhColors.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-
+import 'package:iot/widgets/pop_menu.dart';
 import 'message_detail_controller.dart';
 
 class MessageDetailPage extends StatelessWidget {
@@ -20,7 +19,6 @@ class MessageDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logic.context = context;
     // 在这里设置状态栏字体为深色
     SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent, // 状态栏背景色
@@ -34,13 +32,13 @@ class MessageDetailPage extends StatelessWidget {
           height: 1.sh,
           width: 1.sw,
           padding: EdgeInsets.zero,
-          child: logic.testStatus.value ? modelPage() : const SizedBox(),
+          child: logic.testStatus.value ? modelPage(context) : const SizedBox(),
         ),
       ),
     );
   }
 
-  modelPage() {
+  modelPage(context) {
     return Stack(
       children: [
         ///背景-渐变色
@@ -72,246 +70,266 @@ class MessageDetailPage extends StatelessWidget {
                   fit: BoxFit.fill,
                 ),
                 SizedBox(width: 12.w*3,),
-                Text('今日报警',style: TextStyle(
-                    color: HhColors.blackTextColor,
-                    fontSize: 18.sp*3,
-                    fontWeight: FontWeight.w600
-                ),)
               ],
             ),
           ),
         ),
-
-        ///搜索
+        Align(
+          alignment: Alignment.topCenter,
+          child: Container(
+            margin: EdgeInsets.only(top: 42.w*3),
+            child: Text('报警详情',style: TextStyle(
+                color: HhColors.blackTextColor,
+                fontSize: 18.sp*3,
+                fontWeight: FontWeight.w600
+            ),),
+          ),
+        ),
         Align(
           alignment: Alignment.topRight,
-          child: Container(
-            height: 42.w*3,
-            width: 0.45.sw,
-            margin: EdgeInsets.fromLTRB(0, 42.w*3, 15.w*3, 0),
-            padding: EdgeInsets.fromLTRB(12.w*3, 0, 12.w*3, 0),
-            decoration: BoxDecoration(
-              color: HhColors.whiteColor,
-              borderRadius: BorderRadius.circular(20.w*3)
-            ),
-            child: Row(
-              children: [
-                Image.asset(
-                  "assets/images/common/icon_search.png",
-                  width: 23.w*3,
-                  height: 23.w*3,
-                  fit: BoxFit.fill,
-                ),
-                SizedBox(width: 3.w*3,),
-                Expanded(
-                  child: TextField(
-                    textAlign: TextAlign.left,
-                    maxLines: 1,
-                    cursorColor: HhColors.titleColor_99,
-                    controller: logic.searchController,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.search,
-                    onSubmitted: (s){
-                      logic.pageNum = 1;
-                      logic.refreshController.resetNoData();
-                      logic.fetchPage();
-                      logic.getWarnType();
-                    },
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.zero,
-                      border: const OutlineInputBorder(
-                          borderSide: BorderSide.none
-                      ),
-                      hintText: '搜索设备名称',
-                      hintStyle: TextStyle(
-                          color: HhColors.gray9TextColor, fontSize: 14.sp*3),
-                    ),
-                    style:
-                    TextStyle(color: HhColors.textColor, fontSize: 14.sp*3),
-                  ),
-                )
-              ],
+          child: HhTap(
+            overlayColor: HhColors.trans,
+            onTapUp: (){
+
+            },
+            child: Container(
+              height: 28.w*3,
+              width: 50.w*3,
+              alignment: Alignment.center,
+              margin: EdgeInsets.fromLTRB(0, 43.w*3, 15.w*3, 0),
+              decoration: BoxDecoration(
+                color: HhColors.mainBlueColor,
+                borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+              ),
+              child: Text('导航',style: TextStyle(
+                  color: HhColors.whiteColor,
+                  fontSize: 14.sp*3,
+                  fontWeight: FontWeight.w500
+              ),),
             ),
           ),
         ),
 
         ///菜单
         Container(
-          margin: EdgeInsets.fromLTRB(14.w*3, 95.w*3, 14.w*3, 20.w*3),
-          child: SmartRefresher(
-            controller: logic.refreshController,
-            enablePullUp: true,
+          margin: EdgeInsets.fromLTRB(14.w*3, 85.w*3, 14.w*3, 20.w*3),
+          child: EasyRefresh(
             onRefresh: (){
-              logic.refreshController.resetNoData();
-              logic.pageNum = 1;
-              logic.refreshController.refreshCompleted();
-              logic.fetchPage();
+              logic.getWarnType();
+              logic.getLiveWarningInfo(logic.id);
             },
-            onLoading: (){
-              logic.pageNum++;
-              logic.refreshController.loadComplete();
-              logic.fetchPage();
-            },
-            child: PagedListView<int, dynamic>(
-              padding: EdgeInsets.zero,
-              pagingController: logic.listController,
-              physics: const ClampingScrollPhysics(),
-              builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                noItemsFoundIndicatorBuilder: (context) => CommonUtils().noneWidget(image:'assets/images/common/icon_no_message_search.png',info: '暂无报警信息',mid: 20.w,
-                  height: 0.36.sw,
-                  width: 0.44.sw,),
-                firstPageProgressIndicatorBuilder: (context) => Container(),
-                itemBuilder: (context, item, index) {
-                  return InkWell(
-                    onTap: (){
-                      logic.readOne("${item["id"]}");
-
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(top: 10.w*3),
-                      padding: EdgeInsets.fromLTRB(8.w*3, 12.w*3, 10.w*3, 12.w*3),
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                          color: HhColors.whiteColor,
-                          borderRadius: BorderRadius.all(Radius.circular(8.w*3))
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 113.w*3,
-                            height: 70.w*3,
-                            child: Stack(
-                              children: [
-                                Container(
-                                  clipBehavior: Clip.hardEdge,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.w*3),
-                                  ),
-                                  child: item['alarmType']=='openCap'||item['alarmType']=='openSensor'||item['alarmType']=='tilt'?Image.asset(
-                                    "assets/images/common/icon_message_back.png",
-                                    width: 113.w*3,
-                                    height: 70.w*3,
-                                    fit: BoxFit.fill,
-                                  ):("${item['alarmType']}".contains("offline"))?Image.asset(
-                                    "assets/images/common/icon_offline_warn.png",
-                                    width: 113.w*3,
-                                    height: 70.w*3,
-                                    fit: BoxFit.fill,
-                                  ):InkWell(
-                                    onTap: (){
-                                      CommonUtils().showPictureDialog(context, url:"${CommonData.endpoint}${item['alarmImageUrl']}");
-                                      logic.readOne("${item["id"]}");
-                                    },
-                                    child: Image.network("${CommonData.endpoint}${item['alarmImageUrl']}",errorBuilder: (a,b,c){
-                                      return Image.asset(
-                                        "assets/images/common/ic_message_no.png",
-                                        width: 113.w*3,
-                                        height: 70.w*3,
-                                        fit: BoxFit.fill,
-                                      );
-                                    },
-                                      width: 113.w*3,
-                                      height: 70.w*3,
-                                      fit: BoxFit.fill,),
-                                  ),
-                                ),
-                                item['alarmType']=='tilt'?Align(
-                                  alignment:Alignment.center,
-                                  child: Image.asset(
-                                    "assets/images/common/icon_message_y.png",
-                                    width: 30.w*3,
-                                    height: 30.w*3,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ):item['alarmType']=='openCap'||item['alarmType']=='openSensor'?Align(
-                                  alignment:Alignment.center,
-                                  child: Image.asset(
-                                    "assets/images/common/icon_message_open.png",
-                                    width: 30.w*3,
-                                    height: 30.w*3,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ):const SizedBox(),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: SizedBox(
-                              height: 70.w*3,
-                              child: Stack(
-                                children: [
-                                  item['status'] == true?const SizedBox():Container(
-                                    height: 6.w*3,
-                                    width: 6.w*3,
-                                    margin: EdgeInsets.fromLTRB(0, 5.w, 0, 0),
-                                    decoration: BoxDecoration(
-                                        color: HhColors.backRedInColor,
-                                        borderRadius: BorderRadius.all(Radius.circular(3.w*3))
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(30.w, 5.w, 0, 0),
-                                    child: Text(
-                                      parseType("${item['alarmType']}"),
-                                      style: TextStyle(
-                                          color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.fromLTRB(30.w, 26.w*3, 0, 0),
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          CommonUtils().parseNull('${item['deviceName']}',""),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: HhColors.gray9TextColor, fontSize: 14.sp*3),
-                                        ),
-                                        SizedBox(height: 5.w,),
-                                        Text(
-                                          CommonUtils().parseNull('${item['spaceName']}', ""),
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                              color: HhColors.gray9TextColor, fontSize: 13.sp*3),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Align(
-                                    alignment: Alignment.topRight,
-                                    child: Container(
-                                      margin: EdgeInsets.only(top: 5.w*3),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            CommonUtils().parseLongTimeYearDay('${item['createTime']}'),
-                                            style: TextStyle(
-                                                color: HhColors.gray9TextColor, fontSize: 12.sp*3),
-                                          ),
-                                          SizedBox(height: 5.w*3,),
-                                          Text(
-                                            CommonUtils().parseLongTimeHourMinuteSecond('${item['createTime']}'),
-                                            style: TextStyle(
-                                                color: HhColors.gray9TextColor, fontSize: 12.sp*3),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  ///报警时间
+                  Container(
+                    margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                    child: Row(
+                      children: [
+                        Text('报警时间',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                        SizedBox(width: 10.w*3,),
+                        Expanded(child: Text(CommonUtils().parseLongTime('${logic.fireInfo["alarmTimestamp"]}'),textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                  ///报警类型
+                  Container(
+                    margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                    child: Row(
+                      children: [
+                        Text('报警类型',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                        SizedBox(width: 10.w*3,),
+                        Expanded(child: Text(parseAlarmType("${logic.fireInfo["alarmType"]}"),textAlign:TextAlign.end,style: TextStyle(color: HhColors.mainBlueColor,fontSize: 14.sp*3),)),
+                      ],
+                    ),
+                  ),
+                  ///报警经纬度
+                  Container(
+                    margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                    child: Row(
+                      children: [
+                        Text('报警经纬度',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                        SizedBox(width: 10.w*3,),
+                        Expanded(child: Text("${CommonUtils().parseNull('${logic.fireInfo["longitude"]}', "")},${CommonUtils().parseNull('${logic.fireInfo["latitude"]}', "")}",textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
+                      ],
+                    ),
+                  ),
+                  ///详细地址
+                  Container(
+                    width: 1.sw,
+                    margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('详细地址',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                        SizedBox(height: 5.w*3,),
+                        Text(CommonUtils().parseNull('${logic.fireInfo["location"]}', ""),style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
+                      ],
+                    ),
+                  ),
+                  ///报警图片
+                  Container(
+                    width: 1.sw,
+                    margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('报警图片',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                        SizedBox(height: 10.w*3,),
+                        HhTap(
+                          overlayColor: HhColors.trans,
+                          onTapUp: (){
+                            CommonUtils().showPictureDialog(Get.context, url:"${CommonData.endpoint}${logic.fireInfo['alarmImageUrl']}");
+                          },
+                          child: Image.network(
+                            "${CommonData.endpoint}${logic.fireInfo["alarmImageUrl"]}",
+                            width: 50.w*3,
+                            height: 50.w*3,
+                            fit: BoxFit.fill,
+                            errorBuilder: (BuildContext context,Object exception,StackTrace? stackTrace){
+                              return Image.asset(
+                                "assets/images/common/icon_no_picture_big.png",
+                                width: 1.sw,
+                                height: 0.45.sw,
+                                fit: BoxFit.fill,
+                              );
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  ///按钮
+                  Container(
+                    height: 32.w*3,
+                    width: 1.sw,
+                    margin: EdgeInsets.fromLTRB(20.w*3, 20.w*3, 20.w*3, 0),
+                    child: Row(
+                      children: [
+                        ///视频
+                        Expanded(
+                          child: HhTap(
+                            overlayColor: HhColors.trans,
+                            onTapUp: (){
+                              CommonUtils().parseRouteDetail(logic.fireInfo);
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: HhColors.whiteColor,
+                                borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                              ),
+                              child: Text('视频',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 15.w*3,),
+                        ///auditStatus处理状态 1已处理 0未处理   ///auditResult处理结果 1真实 0误报
+                        "${logic.fireInfo["auditStatus"]}" == "1"?Expanded(
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: HhColors.whiteColor,
+                              borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                              border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                            ),
+                            child: Text("${logic.fireInfo["auditResult"]}" == "1"?'真实':"误报",style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                          ),
+                        ):Expanded(
+                          child: GestureDetector(
+                            onTapDown: (details) {
+                              HhActionMenu.show(
+                                context: context,
+                                offset: details.globalPosition,
+                                direction: HhMenuDirection.top,
+                                itemDirection: HhItemDirection.vertical,
+                                //backgroundImage: 'assets/images/common/icon_pop_background.png',
+                                dx: 50.w*3,
+                                items: [
+                                  BouncingWidget(
+                                    duration: const Duration(milliseconds: 100),
+                                    scaleFactor: 1.2,
+                                    onPressed: (){
+                                      HhActionMenu.dismiss();
+                                      logic.alarmHandle("${logic.fireInfo["id"]}", "1");
+                                    },
+                                    child: Container(
+                                      color:HhColors.trans,
+                                      padding: EdgeInsets.fromLTRB(35.w*3, 10.w*3, 35.w*3, 10.w*3),
+                                      child: Text('真实', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                    ),
+                                  ),
+                                  BouncingWidget(
+                                    duration: const Duration(milliseconds: 100),
+                                    scaleFactor: 1.2,
+                                    onPressed: (){
+                                      HhActionMenu.dismiss();
+                                      logic.alarmHandle("${logic.fireInfo["id"]}", "0");
+                                    },
+                                    child: Container(
+                                      color:HhColors.trans,
+                                      padding: EdgeInsets.fromLTRB(35.w*3, 10.w*3, 35.w*3, 10.w*3),
+                                      child: Text('误报', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                    ),
+                                  )
+                                ],
+                              );
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: HhColors.whiteColor,
+                                borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                              ),
+                              child: Text('处理',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 15.w*3,),
+                        ///定位
+                        Expanded(
+                          child: HhTap(
+                            overlayColor: HhColors.trans,
+                            onTapUp: (){
+
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: HhColors.whiteColor,
+                                borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                                border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
+                              ),
+                              child: Text('定位',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 15.w*3,),
+                        ///导航
+                        Expanded(
+                          child: HhTap(
+                            overlayColor: HhColors.trans,
+                            onTapUp: (){
+
+                            },
+                            child: Container(
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                color: HhColors.mainBlueColor,
+                                borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
+                              ),
+                              child: Text('导航',style: TextStyle(color: HhColors.whiteColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ),
           ),
@@ -320,7 +338,7 @@ class MessageDetailPage extends StatelessWidget {
     );
   }
 
-  String parseType(String s) {
+  String parseAlarmType(String s) {
     for(int i = 0;i < logic.typeList.length;i++){
       dynamic model = logic.typeList[i];
       if(model["alarmType"] == s){

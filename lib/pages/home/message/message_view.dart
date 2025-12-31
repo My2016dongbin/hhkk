@@ -10,6 +10,9 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
+import 'package:iot/pages/home/cell/HhTap.dart';
+import 'package:iot/pages/home/message/message_detail/message_detail_binding.dart';
+import 'package:iot/pages/home/message/message_detail/message_detail_view.dart';
 import 'package:iot/pages/home/message/message_setting/warn_setting_binding.dart';
 import 'package:iot/pages/home/message/message_setting/warn_setting_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
@@ -259,7 +262,7 @@ class MessagePage extends StatelessWidget {
                                       children: [
                                         BouncingWidget(
                                           duration: const Duration(milliseconds: 100),
-                                          scaleFactor: 1.2,
+                                          scaleFactor: 0.2,
                                           onPressed: (){
                                             logic.tipController.dismiss();
                                             if(logic.tabIndex.value==0){
@@ -274,7 +277,7 @@ class MessagePage extends StatelessWidget {
                                           },
                                           child: Container(
                                             color:HhColors.trans,
-                                            padding: EdgeInsets.fromLTRB(22.w*3, 25.w*3, 15.w*3, 15.w*3),
+                                            padding: EdgeInsets.fromLTRB(22.w*3, 17.w*3, 15.w*3, 10.w*3),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
@@ -292,21 +295,21 @@ class MessagePage extends StatelessWidget {
                                         ),
                                         BouncingWidget(
                                           duration: const Duration(milliseconds: 100),
-                                          scaleFactor: 1.2,
+                                          scaleFactor: 0.2,
                                           onPressed: (){
                                             logic.tipController.dismiss();
                                             Get.to(()=>WarnSettingPage(),binding: WarnSettingBinding());
                                           },
                                           child: Container(
                                             color:HhColors.trans,
-                                            padding: EdgeInsets.fromLTRB(22.w*3, 15.w*3, 15.w*3, 24.w*3),
+                                            padding: EdgeInsets.fromLTRB(22.w*3, 10.w*3, 15.w*3, 17.w*3),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Text('报警设置', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
                                                 SizedBox(width: 20.w*3,),
                                                 Image.asset(
-                                                  "assets/images/common/ic_setting.png",
+                                                  "assets/images/common/icon_warn_setting.png",
                                                   width: 18.w*3,
                                                   height: 18.w*3,
                                                   fit: BoxFit.fill,
@@ -644,8 +647,9 @@ class MessagePage extends StatelessWidget {
                             ],
                           ),
                         ):const SizedBox(),
-                        InkWell(
-                          onTap: (){
+                        HhTap(
+                          overlayColor: HhColors.trans,
+                          onTapUp: (){
                             if(logic.editLeft.value){
                               item["selected"] == 1?item["selected"]=0:item["selected"]=1;
                               logic.pageStatus.value = false;
@@ -663,6 +667,9 @@ class MessagePage extends StatelessWidget {
                               HhLog.d("list -- ${logic.chooseListLeft}");
                             }else{
                               logic.readOneLeft("${item["id"]}");
+                              Get.to(()=>MessageDetailPage(),binding: MessageDetailBinding(),arguments: {
+                                "id": "${item["id"]}",
+                              });
                             }
                           },
                           child: Row(

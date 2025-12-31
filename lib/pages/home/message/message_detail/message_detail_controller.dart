@@ -1,67 +1,28 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response, FormData, MultipartFile;
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/RequestUtils.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MessageDetailController extends GetxController {
   final index = 0.obs;
   final Rx<bool> testStatus = true.obs;
-  final Rx<int> deviceType = 0.obs;
-  final Rx<int> deviceStatus = 0.obs;
-  late BuildContext context;
-  late TextEditingController? searchController = TextEditingController();
-  late int pageNum = 1;
-  late int pageSize = 100;
-  late int totalPage = 0;
-  final PagingController<int, dynamic> listController = PagingController(firstPageKey: 1);
-  final RefreshController refreshController = RefreshController(initialRefresh: false);
-  List<dynamic> dataList = [];
   late List<dynamic> typeList = [];
+  late String id = "";
+  late dynamic fireInfo = {};
 
   @override
   Future<void> onInit() async {
-    pageNum = 1;
-    refreshController.resetNoData();
-    fetchPage();
+    if(Get.arguments!=null){
+      id = Get.arguments["id"]??"";
+    }
     getWarnType();
+    getLiveWarningInfo(id);
     super.onInit();
   }
 
-  Future<void> fetchPage() async {
-    String now = CommonUtils().parseLongTimeYearDay("${DateTime.now().millisecondsSinceEpoch}");
-    EventBusUtil.getInstance().fire(HhLoading(show: true));
-    Map<String, dynamic> map = {
-      "pageNum":pageNum,
-      "pageSize":pageSize,
-      "createTime":"$now 00:00:00,$now 23:59:59",
-    };
-    if(searchController!.text.isNotEmpty){
-      map["deviceName"] = searchController!.text;
-    }
-    var result = await HhHttp().request(RequestUtils.liveWarningList,method: DioMethod.get,params: map);
-    EventBusUtil.getInstance().fire(HhLoading(show: false));
-    HhLog.d("fetchPage -- $map");
-    HhLog.d("fetchPage -- $result");
-    totalPage = CommonUtils().parseTotalPage("${result["total"]}", pageSize);
-    if(result["data"]!=null && result["data"]["list"]!=null){
-      List<dynamic> newItems = result["data"]["list"];
-      if (pageNum == 1) {
-        listController.itemList = [];
-      } else if(newItems.isEmpty){
-        refreshController.loadNoData();
-      }
-      listController.appendLastPage(newItems);
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
-    }
-
-  }
 
   Future<void> getWarnType() async {
     typeList.clear();
@@ -83,15 +44,38 @@ class MessageDetailController extends GetxController {
     }
   }
 
-  Future<void> readOne(String id) async {
-    Map<String, dynamic> map = {};
-    map['ids'] = [id];
-    var result = await HhHttp().request(RequestUtils.leftRead, method: DioMethod.post, params: map);
-    if (result["code"] == 0 && result["data"] == true) {
-      HhLog.d("readOne $result");
-      fetchPage();
-    } else {
 
+  Future<void> getLiveWarningInfo(String id) async {
+    dynamic param = {
+      "id": id,
+    };
+    var result = await HhHttp()
+        .request(RequestUtils.liveWarningInfo, method: DioMethod.get,params: param);
+    HhLog.d("liveWarningInfo --  $result");
+    if (result["code"] == 0 && result["data"]!=null) {
+      fireInfo = result["data"];
+      testStatus.value = false;
+      testStatus.value = true;
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    }
+  }
+
+  Future<void> alarmHandle(String id, String auditResult) async {
+    dynamic data = {
+      "id": id,
+      "auditResult": auditResult,
+    };
+    var result = await HhHttp()
+        .request(RequestUtils.alarmHandle, method: DioMethod.post,data: data);
+    HhLog.d("alarmHandle --  $result");
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: '操作成功',type: 0));
+      getLiveWarningInfo(id);
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
 

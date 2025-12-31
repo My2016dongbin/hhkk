@@ -164,10 +164,13 @@ class TodayWarningPage extends StatelessWidget {
                   width: 0.44.sw,),
                 firstPageProgressIndicatorBuilder: (context) => Container(),
                 itemBuilder: (context, item, index) {
-                  return InkWell(
-                    onTap: (){
+                  return HhTap(
+                    overlayColor: HhColors.trans,
+                    onTapUp: (){
                       logic.readOne("${item["id"]}");
-                      Get.to(()=>MessageDetailPage(),binding: MessageDetailBinding());
+                      Get.to(()=>MessageDetailPage(),binding: MessageDetailBinding(),arguments: {
+                        "id": "${item["id"]}",
+                      });
                     },
                     child: Container(
                       margin: EdgeInsets.only(top: 10.w*3),

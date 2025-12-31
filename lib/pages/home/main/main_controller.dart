@@ -362,20 +362,5 @@ class MainController extends GetxController {
     }
   }
 
-  Future<void> getLiveWarningInfo(String id) async {
-    dynamic param = {
-      "id": id,
-    };
-    var result = await HhHttp()
-        .request(RequestUtils.liveWarningInfo, method: DioMethod.get,params: param);
-    HhLog.d("liveWarningInfo --  $result");
-    if (result["code"] == 0) {
-
-    } else {
-      EventBusUtil.getInstance()
-          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
-    }
-  }
-
 
 }
