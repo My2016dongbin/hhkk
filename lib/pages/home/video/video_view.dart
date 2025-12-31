@@ -74,6 +74,10 @@ class VideoPage extends StatelessWidget {
                                 duration: const Duration(milliseconds: 100),
                                 scaleFactor: 0.2,
                                 onPressed: (){
+                                  //已在列表模式再次点击展示视频树
+                                  if(logic.pageListStatus.value){
+                                    showVideoTreeDrawer(context);
+                                  }
                                   logic.pageListStatus.value = true;
                                 },
                                 child: Container(
@@ -120,7 +124,7 @@ class VideoPage extends StatelessWidget {
                                 ),
                               ),
                               //搜索框
-                              Expanded(
+                              logic.pageListStatus.value?const Spacer():Expanded(
                                 child: Container(
                                   height: 38.w*3,
                                   margin: EdgeInsets.only(right: 14.w*3),
@@ -1282,13 +1286,15 @@ class VideoPage extends StatelessWidget {
                                   onDeviceTap: (device) {
                                     HhLog.d("${device["name"]}");
                                   },
-                                  onStarTap: (channel,star,deviceType) {
+                                  onStarTap: (channel,star,deviceType) async {
                                     HhLog.d("$channel $star");
                                     HhLog.d("${channel["channelName"]} $star");
+                                    final SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    String userId = prefs.getString(SPKeys().id)??"";
                                     if(star){
-                                      logic.collection();
+                                      logic.collection(userId,"${channel["id"]}");
                                     }else{
-                                      logic.disCollection();
+                                      logic.disCollection(userId,"${channel["id"]}");
                                     }
                                   },
                                   onChannelTap: (channel,checked) {
@@ -1361,8 +1367,6 @@ class _TreeNodeWidgetState extends State<TreeNodeWidget> {
     expanded = CommonUtils().parseContainChannels(widget.node,CommonData.checkedChannels);
     if(CommonData.videoSearch.isNotEmpty){
       expanded = widget.node.toString().contains(CommonData.videoSearch);
-      //show = widget.node.toString().contains(CommonData.videoSearch);
-      show = CommonUtils().parseContainDevice(widget.node,CommonData.videoSearch);
     }
     super.initState();
   }
@@ -1407,7 +1411,7 @@ class _TreeNodeWidgetState extends State<TreeNodeWidget> {
                 //节点
                 Expanded(
                   child: Text(
-                    widget.node["nodeName"] ?? "未命名节点",
+                    widget.node["name"] ?? "未命名节点",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -1482,8 +1486,6 @@ class _TreeDeviceWidgetState extends State<TreeDeviceWidget> {
     expanded = CommonUtils().parseContainChannels(widget.device,CommonData.checkedChannels);
     if(CommonData.videoSearch.isNotEmpty){
       expanded = "${widget.device["name"]}".contains(CommonData.videoSearch);
-
-      show = "${widget.device["name"]}".contains(CommonData.videoSearch);
     }
     super.initState();
   }
@@ -1606,7 +1608,7 @@ class _TreeChannelWidgetState extends State<TreeChannelWidget> {
             checked = CommonUtils().parseContainChannels(widget.channel,CommonData.checkedChannels);
           });
         });
-    star = "${widget.channel["collectionFlag"]}"=="1";
+    star = "${widget.channel["collectFlag"]}"=="1";
     super.initState();
   }
 
@@ -1662,7 +1664,7 @@ class _TreeChannelWidgetState extends State<TreeChannelWidget> {
                 //频道
                 Expanded(
                   child: Text(
-                    widget.channel["channelName"] ?? "未命名频道",
+                    widget.channel["name"] ?? "未命名频道",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(

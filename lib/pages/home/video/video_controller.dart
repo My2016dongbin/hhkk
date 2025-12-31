@@ -299,9 +299,47 @@ class VideoController extends GetxController {
     }
   }
 
-  void collection() {}
+  Future<void> collection(String userId,String channelId) async {
+    dynamic data = {
+      "userId":userId,
+      "channelId":channelId,
+    };
+    var result = await HhHttp().request(
+        RequestUtils.collect,
+        method: DioMethod.post,
+        data: data
+    );
+    HhLog.d("collection -- $data");
+    HhLog.d("collection -- $result");
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "收藏成功",type: 0));
+      getTreeDetail();
+    } else {
+      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().parseNull(result["msg"], "")));
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+    }
+  }
 
-  void disCollection() {}
+  Future<void> disCollection(String userId,String channelId) async {
+    dynamic data = {
+      "userId":userId,
+      "channelId":channelId,
+    };
+    var result = await HhHttp().request(
+        RequestUtils.disCollect,
+        method: DioMethod.post,
+        data: data
+    );
+    HhLog.d("disCollection -- $data");
+    HhLog.d("disCollection -- $result");
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "已取消收藏",type: 0));
+      getTreeDetail();
+    } else {
+      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().parseNull(result["msg"], "")));
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+    }
+  }
 
   Future<void> getStream(dynamic channel) async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));

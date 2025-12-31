@@ -95,6 +95,8 @@ class RequestUtils{
   static const alarmHandle = '$base/admin-api/mid/device-alarm-info/alarmAudit';
   static const streamFromId = '$base/admin-api';
   static const treeDetail = '$base/admin-api/mid/space/videoSpaceList';
+  static const collect = '$base/admin-api/mid/device-channel-collect/add';
+  static const disCollect = '$base/admin-api/mid/device-channel-collect/delete';
 
   /*
     Map<String, dynamic> map = {};
