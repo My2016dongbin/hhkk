@@ -171,7 +171,7 @@ class LaunchController extends GetxController {
     String? tenantUserType = prefs.getString(SPKeys().tenantUserType);
     String? tenantName = prefs.getString(SPKeys().tenantName);
     bool? second = prefs.getBool(SPKeys().second);
-    secondStatus.value = second == true;
+    //secondStatus.value = second == true;
     if (token != null) {
       //获取个人信息
       CommonData.token = token;
@@ -186,7 +186,9 @@ class LaunchController extends GetxController {
         });
       }else{
         ///首次进入
-
+        Future.delayed(const Duration(seconds: 2), () {
+          CommonUtils().toLogin();
+        });
       }
     }
   }

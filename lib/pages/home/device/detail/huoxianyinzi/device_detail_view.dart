@@ -1994,8 +1994,8 @@ class HXYZDeviceDetailPage extends StatelessWidget {
       list.add(InkWell(
         onTap: () {
           logic.liveIndex.value = i;
-          logic.deviceId = logic.liveList[logic.liveIndex.value]["deviceId"];
-          logic.channelNumber = logic.liveList[logic.liveIndex.value]["number"];
+          logic.deviceId = "${logic.liveList[logic.liveIndex.value]["deviceId"]}";
+          logic.channelNumber = "${logic.liveList[logic.liveIndex.value]["channelId"]}";
           logic.getPlayUrl(logic.deviceId, logic.channelNumber);
         },
         child: Container(
@@ -2008,7 +2008,7 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                 border: Border.all(
                     color: HhColors.grayDDTextColor, width: 0.5.h * 3)),
             child: Text(
-              '${live['positionName']}',
+              '${live['channelName']}',
               style: TextStyle(
                   color: logic.liveIndex.value == i
                       ? HhColors.mainBlueColor

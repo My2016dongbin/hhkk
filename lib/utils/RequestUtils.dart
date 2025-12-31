@@ -34,8 +34,10 @@ class RequestUtils{
   static const deviceVoiceTop = '$base/admin-api/mid/voice-resource/page';//设备音频列表
   static const deviceVersion = '$base/admin-api/mid/device-ota-file/page';//设备固件版本号
   static const deviceHistory = '$base/admin-api/mid/device-alarm-info/page';//设备详情-历史消息
-  static const deviceStream = '$base/admin-api/mid/device-base/findChannelListByDeviceNo';//设备通道查询
-  static const devicePlayUrl = '$base/admin-api/mid/videoAggregation/devicePreviewUrlApp';//设备视频流查询
+  // static const deviceStream = '$base/admin-api/mid/device-base/findChannelListByDeviceNo';//设备通道查询
+  // static const devicePlayUrl = '$base/admin-api/mid/videoAggregation/devicePreviewUrlApp';//设备视频流查询
+  static const deviceStream = '$base/admin-api/mid/device-base/findChannelListByDeviceId';//设备通道查询
+  static const devicePlayUrl = '$base/admin-api/mid/device-channel-rel/video/startPlay';//设备视频流查询
   static const deviceCreate = '$base/admin-api/mid/device-base/create';//设备添加
   static const deviceUpdate = '$base/admin-api/mid/device-base/update';//设备修改
   static const deviceDelete = '$base/admin-api/mid/device-base/delete';//设备删除
@@ -93,7 +95,6 @@ class RequestUtils{
   static const liveWarningInfo = '$base/admin-api/mid/device-alarm-info/get';
   static const mainDeviceList = '$base/admin-api/mid/device-base/page';
   static const alarmHandle = '$base/admin-api/mid/device-alarm-info/alarmAudit';
-  static const streamFromId = '$base/admin-api';
   static const treeDetail = '$base/admin-api/mid/space/videoSpaceList';
   static const collect = '$base/admin-api/mid/device-channel-collect/add';
   static const disCollect = '$base/admin-api/mid/device-channel-collect/delete';

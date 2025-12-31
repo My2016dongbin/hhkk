@@ -1802,7 +1802,7 @@ class CommonUtils {
       return false;
     }
     for (var channel in channels) {
-      if(channel["id"]!=null && model.toString().contains(channel["id"])){
+      if(channel["id"]!=null && model.toString().contains("${channel["id"]}")){
         return true;
       }
     }

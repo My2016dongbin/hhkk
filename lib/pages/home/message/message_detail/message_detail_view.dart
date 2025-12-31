@@ -7,18 +7,16 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
-import 'package:iot/pages/home/message/message_detail/message_detail_binding.dart';
-import 'package:iot/pages/home/message/message_detail/message_detail_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/HhColors.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'today_warning_controller.dart';
+import 'message_detail_controller.dart';
 
-class TodayWarningPage extends StatelessWidget {
-  final logic = Get.find<TodayWarningController>();
+class MessageDetailPage extends StatelessWidget {
+  final logic = Get.find<MessageDetailController>();
 
-  TodayWarningPage({super.key});
+  MessageDetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +165,7 @@ class TodayWarningPage extends StatelessWidget {
                   return InkWell(
                     onTap: (){
                       logic.readOne("${item["id"]}");
-                      Get.to(()=>MessageDetailPage(),binding: MessageDetailBinding());
+
                     },
                     child: Container(
                       margin: EdgeInsets.only(top: 10.w*3),

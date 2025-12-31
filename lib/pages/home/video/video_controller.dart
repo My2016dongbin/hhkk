@@ -31,7 +31,7 @@ class VideoController extends GetxController {
   StreamSubscription? catchSubscription;
   StreamSubscription? deviceListSubscription;
   final Rx<bool> containStatus = true.obs;
-  final Rx<bool> videoStatus = false.obs;
+  final Rx<bool> videoStatus = true.obs;
   ///true列表模式（视频树）  false卡片模式（设备卡片列表）
   final Rx<bool> pageListStatus = false.obs;
   final Rx<String> dateStr = ''.obs;
@@ -344,20 +344,18 @@ class VideoController extends GetxController {
   Future<void> getStream(dynamic channel) async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
-      "deviceId":"${channel["deviceId"]}",
-      "channelNumber":"${channel["number"]}",
-      "streamType":0,
-      "streamProtocol":"RTSP"
+      'channelId': "${channel["id"]}",
     };
     var result = await HhHttp().request(
-        RequestUtils.streamFromId,
+        RequestUtils.devicePlayUrl,
         method: DioMethod.post,
         data: data
     );
     EventBusUtil.getInstance().fire(HhLoading(show: false));
+    HhLog.d("getStream -- ${RequestUtils.devicePlayUrl}$data");
     HhLog.d("getStream -- $result");
-    if (result["code"] == 200 && result["data"] != null && result["data"]["url"] != null) {
-      String url = "${result["data"]["url"]}";
+    if (result["code"] == 0 && result["data"] != null) {
+      String url = "${result["data"]["appRelativePath"]}";
       HhLog.d("getStream -- $url");
 
       ///自适应播放数据到网格中

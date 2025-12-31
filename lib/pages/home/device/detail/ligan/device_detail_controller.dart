@@ -275,10 +275,10 @@ class LiGanDeviceDetailController extends GetxController {
 
   Future<void> getDeviceStream() async {
     Map<String, dynamic> map = {};
-    map['deviceNo'] = deviceNo;
+    map['id'] = id;
     var result = await HhHttp()
         .request(RequestUtils.deviceStream, method: DioMethod.get, params: map);
-    HhLog.d("getDeviceStream -- $deviceNo");
+    HhLog.d("getDeviceStream1 -- $map");
     HhLog.d("getDeviceStream -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       liveList = result["data"];
@@ -286,8 +286,8 @@ class LiGanDeviceDetailController extends GetxController {
       liveStatus.value = false;
       liveStatus.value = true;
       try {
-        deviceId = result["data"][liveIndex.value]["deviceId"];
-        channelNumber = result["data"][liveIndex.value]["number"];
+        deviceId = "${result["data"][liveIndex.value]["deviceId"]}";
+        channelNumber = "${result["data"][liveIndex.value]["channelId"]}";
         HhLog.d('getDeviceStream $deviceId , $channelNumber');
         getPlayUrl(deviceId, channelNumber);
       } catch (e) {
@@ -307,21 +307,15 @@ class LiGanDeviceDetailController extends GetxController {
 
   Future<void> getPlayUrl(String ids, String number) async {
     dynamic data = {
-      'deviceId': ids,
-      'channelNumber': number,
-      // 'deviceId':'2096e4bf4af411efa74f2a37f6c892cc',
-      // 'channelNumber':'24070888001320000082',
-      'streamProtocol': "RTSP",
-      'streamType': 0,
-      'transMode': "TCP"
+      'channelId': number,
     };
     var result = await HhHttp().request(RequestUtils.devicePlayUrl,
         method: DioMethod.post, data: data);
     HhLog.d("getPlayUrl data -- $data");
     HhLog.d("getPlayUrl result -- $result");
-    if (result["code"] == 200 && result["data"] != null) {
+    if (result["code"] == 0 && result["data"] != null) {
       try {
-        String url = /*RequestUtils.rtsp + */ result["data"][0]['url'];
+        String url = /*RequestUtils.rtsp + */ "${result["data"]["appRelativePath"]}";
         playLoadingTag.value = false;
         playTag.value = false;
         player.release();

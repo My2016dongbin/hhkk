@@ -396,7 +396,7 @@ class VideoPage extends StatelessWidget {
           ),
           ///视频卡片列表
           Expanded(
-            child: Container(
+            child: logic.videoStatus.value?Container(
               margin: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 0),
               width: 1.sw,
               alignment: Alignment.topCenter,
@@ -463,8 +463,7 @@ class VideoPage extends StatelessWidget {
                   );
                 },
               ),
-            ),
-          ),
+            ):const SizedBox()),
         ],
       ),
     );
@@ -1302,7 +1301,7 @@ class VideoPage extends StatelessWidget {
                                     if(checked){
                                       logic.getStream(channel);
                                     }else{
-                                      CommonData.removeChannel(channel["id"]);
+                                      CommonData.removeChannel("${channel["id"]}");
                                       logic.videoStatus.value = false;
                                       logic.videoStatus.value = true;
                                     }
@@ -1311,7 +1310,7 @@ class VideoPage extends StatelessWidget {
                               },
                               ),
                             ),
-                          )
+                          ),
 
                         ],
                       ),
@@ -1360,8 +1359,6 @@ class TreeNodeWidget extends StatefulWidget {
 class _TreeNodeWidgetState extends State<TreeNodeWidget> {
   bool expanded = false; // 展开状态
 
-  bool show = true; //搜索显示状态
-
   @override
   void initState() {
     expanded = CommonUtils().parseContainChannels(widget.node,CommonData.checkedChannels);
@@ -1376,7 +1373,7 @@ class _TreeNodeWidgetState extends State<TreeNodeWidget> {
     List<dynamic> devices = widget.node["children"] ?? [];
 
 
-    return show?Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
@@ -1452,7 +1449,7 @@ class _TreeNodeWidgetState extends State<TreeNodeWidget> {
               : const SizedBox.shrink(),
         ),
       ],
-    ):const SizedBox();
+    );
   }
 }
 
