@@ -355,25 +355,30 @@ class VideoController extends GetxController {
     HhLog.d("getStream -- ${RequestUtils.devicePlayUrl}$data");
     HhLog.d("getStream -- $result");
     if (result["code"] == 0 && result["data"] != null) {
-      String url = "${result["data"]["appRelativePath"]}";
-      HhLog.d("getStream -- $url");
+      try {
+        String url = "${result["data"]["appRelativePath"]}";
+        HhLog.d("getStream -- $url");
 
-      ///自适应播放数据到网格中
-      if(CommonData.checkedChannels[videoIndex.value]["id"]!=null && videoIndex.value < videoCount.value-1 && CommonData.checkedChannels[videoIndex.value+1]["id"]==null){
-        //当前选中的网格已有播放数据且不是最后一个网格-加载到下一网格
-        videoIndex.value = videoIndex.value+1;
-        CommonData.checkedChannels[videoIndex.value] = channel;
-        CommonData.checkedChannels[videoIndex.value]["url"] = url;
-      }else{
-        //当前选中的网格无播放数据-加载到当前网格
-        CommonData.checkedChannels[videoIndex.value] = channel;
-        CommonData.checkedChannels[videoIndex.value]["url"] = url;
+        ///自适应播放数据到网格中
+        if (CommonData.checkedChannels[videoIndex.value]["id"] != null &&
+            videoIndex.value < videoCount.value - 1 &&
+            CommonData.checkedChannels[videoIndex.value + 1]["id"] == null) {
+          //当前选中的网格已有播放数据且不是最后一个网格-加载到下一网格
+          videoIndex.value = videoIndex.value + 1;
+          CommonData.checkedChannels[videoIndex.value] = channel;
+          CommonData.checkedChannels[videoIndex.value]["url"] = url;
+        } else {
+          //当前选中的网格无播放数据-加载到当前网格
+          CommonData.checkedChannels[videoIndex.value] = channel;
+          CommonData.checkedChannels[videoIndex.value]["url"] = url;
+        }
+        videoStatus.value = false;
+        videoStatus.value = true;
+        //视频树-频道状态刷新
+        EventBusUtil.getInstance().fire(TreeChannelRefresh());
+      }catch(e){
+        EventBusUtil.getInstance().fire(HhToast(title: "视频流获取失败",type: 2));
       }
-      videoStatus.value = false;
-      videoStatus.value = true;
-      //视频树-频道状态刷新
-      EventBusUtil.getInstance().fire(TreeChannelRefresh());
-
     } else {
       EventBusUtil.getInstance().fire(HhToast(title: "视频流获取失败",type: 2));
     }

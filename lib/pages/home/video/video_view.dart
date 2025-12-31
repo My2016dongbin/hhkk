@@ -435,28 +435,60 @@ class VideoPage extends StatelessWidget {
                               border: logic.videoIndex.value == index?Border.all(color: HhColors.mainBlueColor,width: 5.w):null,
                             ),
                           ),
-                          CommonData.checkedChannels[index]["url"]!=null?Padding(
-                            padding:EdgeInsets.all(5.w),
-                            child: VideoPlayerWidget(
-                              key: ValueKey("${CommonData.checkedChannels[index]["url"]}"),
-                              url: CommonData.checkedChannels[index]["url"],
-                              onOuterTap: () {
-                                logic.videoIndex.value = index;
-                              },
-                            ),
+                          CommonData.checkedChannels[index]["url"]!=null?Column(
+                            children: [
+                              Expanded(
+                                child: VideoPlayerWidget(
+                                  key: ValueKey("${CommonData.checkedChannels[index]["url"]}"),
+                                  url: "${CommonData.checkedChannels[index]["url"]}",
+                                  onOuterTap: () {
+                                    logic.videoIndex.value = index;
+                                  },
+                                ),
+                              ),
+                              Container(
+                                color: HhColors.whiteColor,
+                                padding: logic.videoCount.value==1?EdgeInsets.fromLTRB(15.w*3, 8.w*3, 15.w*3, 8.w*3):EdgeInsets.fromLTRB(10.w*3, 4.w*3, 10.w*3, 4.w*3),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(CommonUtils().parseNull("${CommonData.checkedChannels[index]["id"]}", ""),style: TextStyle(color: HhColors.textBlackColor,fontSize: 12.sp*3),maxLines: 1,overflow: TextOverflow.ellipsis,),
+                                    ),
+                                    SizedBox(width: 5.w*3,),
+                                    InkWell(
+                                      onTap: (){
+                                        CommonData.removeChannel("${CommonData.checkedChannels[index]["id"]}");
+                                        logic.videoStatus.value = false;
+                                        logic.videoStatus.value = true;
+                                      },
+                                      child: Container(
+                                        color: HhColors.trans,
+                                        padding: EdgeInsets.all(2.w*3),
+                                        child: Image.asset(
+                                          "assets/images/common/icon_video_close.png",
+                                          width: logic.videoCount.value==1?16.w*3:12.w*3,
+                                          height: logic.videoCount.value==1?16.w*3:12.w*3,
+                                          fit: BoxFit.fill,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
                           ):Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Image.asset(
                                 "assets/images/common/icon_video_adding.png",
-                                width: 28.w*3,
-                                height: 28.w*3,
+                                width: logic.videoCount.value==1?32.w*3:28.w*3,
+                                height: logic.videoCount.value==1?32.w*3:28.w*3,
                                 fit: BoxFit.fill,
                               ),
                               SizedBox(height: 10.w*3,),
-                              Text('请点击左侧视频树\n选择视频', textAlign: TextAlign.center,style: TextStyle(color: HhColors.grayB6Color,fontSize: 12.sp*3,fontWeight: FontWeight.w400),)
+                              Text('请点击左侧视频树\n选择视频', textAlign: TextAlign.center,style: TextStyle(color: HhColors.grayB6Color,fontSize: logic.videoCount.value==1?14.sp*3:12.sp*3,fontWeight: FontWeight.w400),)
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),

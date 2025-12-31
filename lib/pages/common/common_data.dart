@@ -25,7 +25,7 @@ class CommonData{
   static const String loadingInfoFinal = "正在加载，请稍后…";
   static int versionTime = 0;
   static BuildContext? context;
-  static List<dynamic> checkedChannels = [{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},];
+  static List<dynamic> checkedChannels = [{},{},{},{},{},{},{},{},];
   static String videoSearch = "";
 
 
