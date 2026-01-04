@@ -119,127 +119,160 @@ class MessageDetailPage extends StatelessWidget {
               logic.getLiveWarningInfo(logic.id);
             },
             child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ///报警时间
-                  Container(
-                    margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
-                    child: Row(
-                      children: [
-                        Text('报警时间',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
-                        SizedBox(width: 10.w*3,),
-                        Expanded(child: Text(CommonUtils().parseLongTime('${logic.fireInfo["alarmTimestamp"]}'),textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
-                      ],
+              child: Container(
+                decoration: BoxDecoration(
+                  color: HhColors.whiteColor,
+                  borderRadius: BorderRadius.circular(8.w*3)
+                ),
+                child: Column(
+                  children: [
+                    ///报警时间
+                    Container(
+                      margin: EdgeInsets.fromLTRB(15.w*3, 12.w*3, 15.w*3, 0),
+                      child: Row(
+                        children: [
+                          Text('报警时间',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                          SizedBox(width: 10.w*3,),
+                          Expanded(child: Text(CommonUtils().parseLongTime('${logic.fireInfo["alarmTimestamp"]}'),textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
+                        ],
+                      ),
                     ),
-                  ),
-                  ///报警类型
-                  Container(
-                    margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
-                    child: Row(
-                      children: [
-                        Text('报警类型',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
-                        SizedBox(width: 10.w*3,),
-                        Expanded(child: Text(parseAlarmType("${logic.fireInfo["alarmType"]}"),textAlign:TextAlign.end,style: TextStyle(color: HhColors.mainBlueColor,fontSize: 14.sp*3),)),
-                      ],
+                    CommonUtils.line(
+                        margin: EdgeInsets.fromLTRB(15.w*3, 14.w*3, 15.w*3, 0.w*3)
                     ),
-                  ),
-                  ///报警经纬度
-                  Container(
-                    margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
-                    child: Row(
-                      children: [
-                        Text('报警经纬度',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
-                        SizedBox(width: 10.w*3,),
-                        Expanded(child: Text("${CommonUtils().parseNull('${logic.fireInfo["longitude"]}', "")},${CommonUtils().parseNull('${logic.fireInfo["latitude"]}', "")}",textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
-                      ],
+                    ///报警类型
+                    Container(
+                      margin: EdgeInsets.fromLTRB(15.w*3, 12.w*3, 15.w*3, 0),
+                      child: Row(
+                        children: [
+                          Text('报警类型',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                          SizedBox(width: 10.w*3,),
+                          Expanded(child: Text(parseAlarmType("${logic.fireInfo["alarmType"]}"),textAlign:TextAlign.end,style: TextStyle(color: HhColors.mainBlueColor,fontSize: 14.sp*3),)),
+                        ],
+                      ),
                     ),
-                  ),
-                  ///详细地址
-                  Container(
-                    width: 1.sw,
-                    margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('详细地址',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
-                        SizedBox(height: 5.w*3,),
-                        Text(CommonUtils().parseNull('${logic.fireInfo["location"]}', ""),style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
-                      ],
+                    CommonUtils.line(
+                        margin: EdgeInsets.fromLTRB(15.w*3, 14.w*3, 15.w*3, 0.w*3)
                     ),
-                  ),
-                  ///报警图片
-                  Container(
-                    width: 1.sw,
-                    margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 20.w*3, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('报警图片',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
-                        SizedBox(height: 10.w*3,),
-                        HhTap(
-                          overlayColor: HhColors.trans,
-                          onTapUp: (){
-                            CommonUtils().showPictureDialog(Get.context, url:"${CommonData.endpoint}${logic.fireInfo['alarmImageUrl']}");
-                          },
-                          child: Image.network(
-                            "${CommonData.endpoint}${logic.fireInfo["alarmImageUrl"]}",
-                            width: 50.w*3,
-                            height: 50.w*3,
-                            fit: BoxFit.fill,
-                            errorBuilder: (BuildContext context,Object exception,StackTrace? stackTrace){
-                              return Image.asset(
-                                "assets/images/common/icon_no_picture_big.png",
-                                width: 1.sw,
-                                height: 0.45.sw,
-                                fit: BoxFit.fill,
-                              );
-                            },
-                          ),
-                        )
-                      ],
+                    ///详细地址
+                    Container(
+                      width: 1.sw,
+                      margin: EdgeInsets.fromLTRB(15.w*3, 12.w*3, 15.w*3, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('详细地址',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                          SizedBox(height: 5.w*3,),
+                          Text(CommonUtils().parseNull('${logic.fireInfo["location"]}', ""),style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
+                        ],
+                      ),
                     ),
-                  ),
-                  ///按钮
-                  Container(
-                    height: 32.w*3,
-                    width: 1.sw,
-                    margin: EdgeInsets.fromLTRB(20.w*3, 20.w*3, 20.w*3, 0),
-                    child: Row(
-                      children: [
-                        ///视频
-                        Expanded(
-                          child: HhTap(
+                    CommonUtils.line(
+                        margin: EdgeInsets.fromLTRB(15.w*3, 12.w*3, 15.w*3, 0.w*3)
+                    ),
+                    ///报警经纬度
+                    Container(
+                      margin: EdgeInsets.fromLTRB(15.w*3, 12.w*3, 15.w*3, 0),
+                      child: Row(
+                        children: [
+                          Text('报警经纬度',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                          SizedBox(width: 10.w*3,),
+                          Expanded(child: Text("${CommonUtils().parseNull('${logic.fireInfo["longitude"]}', "")},${CommonUtils().parseNull('${logic.fireInfo["latitude"]}', "")}",textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
+                        ],
+                      ),
+                    ),
+                    CommonUtils.line(
+                        margin: EdgeInsets.fromLTRB(15.w*3, 14.w*3, 15.w*3, 0.w*3)
+                    ),
+                    ///报警图片
+                    Container(
+                      width: 1.sw,
+                      margin: EdgeInsets.fromLTRB(15.w*3, 10.w*3, 15.w*3, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('报警图片',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                          SizedBox(height: 10.w*3,),
+                          HhTap(
                             overlayColor: HhColors.trans,
                             onTapUp: (){
-                              CommonUtils().parseRouteDetail(logic.fireInfo);
+                              CommonUtils().showPictureDialog(Get.context, url:"${CommonData.endpoint}${logic.fireInfo['alarmImageUrl']}");
                             },
-                            child: Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: HhColors.whiteColor,
-                                borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
-                                border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
-                              ),
-                              child: Text('视频',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                            child: Image.network(
+                              "${CommonData.endpoint}${logic.fireInfo["alarmImageUrl"]}",
+                              width: 50.w*3,
+                              height: 50.w*3,
+                              fit: BoxFit.fill,
+                              errorBuilder: (BuildContext context,Object exception,StackTrace? stackTrace){
+                                return Image.asset(
+                                  "assets/images/common/icon_no_picture_big.png",
+                                  width: 1.sw,
+                                  height: 0.45.sw,
+                                  fit: BoxFit.fill,
+                                );
+                              },
                             ),
-                          ),
-                        ),
-                        SizedBox(width: 15.w*3,),
-                        ///auditStatus处理状态 1已处理 0未处理   ///auditResult处理结果 1真实 0误报
-                        "${logic.fireInfo["auditStatus"]}" == "1"?Expanded(
-                          child: Container(
+                          )
+                        ],
+                      ),
+                    ),
+                    CommonUtils.line(
+                        margin: EdgeInsets.fromLTRB(15.w*3, 12.w*3, 15.w*3, 0.w*3)
+                    ),
+                    ///报警地点
+                    Container(
+                      width: 1.sw,
+                      margin: EdgeInsets.fromLTRB(15.w*3, 10.w*3, 15.w*3, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('报警地点',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
+                          SizedBox(height: 10.w*3,),
+                          HhTap(
+                            overlayColor: HhColors.trans,
+                            onTapUp: (){
+                              CommonUtils().showPictureDialog(Get.context, url:"${CommonData.endpoint}${logic.fireInfo['alarmImageUrl']}");
+                            },
+                            child: Image.network(
+                              "${CommonData.endpoint}${logic.fireInfo["alarmImageUrl"]}",
+                              width: 50.w*3,
+                              height: 50.w*3,
+                              fit: BoxFit.fill,
+                              errorBuilder: (BuildContext context,Object exception,StackTrace? stackTrace){
+                                return Image.asset(
+                                  "assets/images/common/icon_no_picture_big.png",
+                                  width: 1.sw,
+                                  height: 0.45.sw,
+                                  fit: BoxFit.fill,
+                                );
+                              },
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    CommonUtils.line(
+                      margin: EdgeInsets.fromLTRB(15.w*3, 15.w*3, 15.w*3, 8.w*3)
+                    ),
+                    ///按钮
+                    Container(
+                      margin: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 12.w*3),
+                      child: Row(
+                        children: [
+                          Text('审核',style: TextStyle(color: HhColors.textBlackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                          const Spacer(),
+                          "${logic.fireInfo["auditStatus"]}" == "1"?Container(
+                            padding: EdgeInsets.fromLTRB(10.w*3, 5.w*3, 5.w*3, 5.w*3),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: HhColors.whiteColor,
+                              color: HhColors.trans,
                               borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
-                              border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
                             ),
-                            child: Text("${logic.fireInfo["auditResult"]}" == "1"?'真实':"误报",style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
-                          ),
-                        ):Expanded(
-                          child: GestureDetector(
+                            child: Text("${logic.fireInfo["auditResult"]}" == "1"?'真实':"误报",style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                          ):GestureDetector(
                             onTapDown: (details) {
                               HhActionMenu.show(
                                 context: context,
@@ -279,57 +312,34 @@ class MessageDetailPage extends StatelessWidget {
                               );
                             },
                             child: Container(
+                              padding: EdgeInsets.fromLTRB(10.w*3, 5.w*3, 5.w*3, 5.w*3),
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: HhColors.whiteColor,
-                                borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
-                                border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
-                              ),
-                              child: Text('处理',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 15.w*3,),
-                        ///定位
-                        Expanded(
-                          child: HhTap(
-                            overlayColor: HhColors.trans,
-                            onTapUp: (){
-
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: HhColors.whiteColor,
-                                borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
-                                border: Border.all(color: HhColors.grayEEBackColor,width: 3.w),
-                              ),
-                              child: Text('定位',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
-                            ),
-                          ),
-                        ),
-                        SizedBox(width: 15.w*3,),
-                        ///导航
-                        Expanded(
-                          child: HhTap(
-                            overlayColor: HhColors.trans,
-                            onTapUp: (){
-
-                            },
-                            child: Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: HhColors.mainBlueColor,
+                                color: HhColors.trans,
                                 borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
                               ),
-                              child: Text('导航',style: TextStyle(color: HhColors.whiteColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                              child: Row(
+                                children: [
+                                  Text('未处理',style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                                  SizedBox(
+                                    width: 14.w*3,
+                                    height: 14.w*3,
+                                    child: Image.asset(
+                                      "assets/images/common/down_choose.png",
+                                      width: 14.w*3,
+                                      height: 14.w*3,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
