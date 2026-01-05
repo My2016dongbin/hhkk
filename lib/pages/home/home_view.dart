@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/home/main/main_view.dart';
+import 'package:iot/pages/home/map/map_view.dart';
 import 'package:iot/pages/home/mqtt/mqtt_controller.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 
@@ -15,7 +15,6 @@ import '../../res/images.dart';
 import '../../res/strings.dart';
 import '../../res/styles.dart';
 import '../../utils/HhColors.dart';
-import 'device/device_view.dart';
 import 'home_controller.dart';
 import 'video/video_view.dart';
 import 'message/message_view.dart';
@@ -54,7 +53,7 @@ class HomePage extends StatelessWidget {
                 MainPage(),
                 VideoPage(),
                 MessagePage(),
-                DevicePage(),
+                MapPage(),
                 MyPage(),
               ],
             ),

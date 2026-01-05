@@ -5,12 +5,12 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bmflocation/flutter_bmflocation.dart';
 import 'package:flutter_bugly/flutter_bugly.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:iot/bus/bus_bean.dart';
+import 'package:iot/pages/common/amap_location/location_service.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/common/share/manage/share_manage_binding.dart';
 import 'package:iot/pages/common/share/manage/share_manage_view.dart';
@@ -23,14 +23,17 @@ import 'package:iot/utils/HhLog.dart';
 import 'package:iot/widgets/app_view.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:tpns_flutter_plugin/tpns_flutter_plugin.dart';
-import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
 
-void main() {
+Future<void> main() async {
   //1125, 2436
   WidgetsFlutterBinding.ensureInitialized();
   //竖屏
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
+  ///高德地图同意隐私政策（必须）
+  await AmapLocationService().init();
+
   FlutterError.onError = (FlutterErrorDetails details) {
     /*"<user:'${CustomerModel.phone}'>\n<token:'${CustomerModel.token}'>\n${details.stack}"*/
   };
@@ -84,20 +87,6 @@ class MyAppState extends State<HhApp> {
   void initState() {
     super.initState();
 
-    ///百度地图sdk初始化鉴权
-    /// 设置是否隐私政策
-    LocationFlutterPlugin myLocPlugin = LocationFlutterPlugin();
-    myLocPlugin.setAgreePrivacy(true);
-    BMFMapSDK.setAgreePrivacy(true);
-    if (Platform.isIOS) {
-      BMFMapSDK.setApiKeyAndCoordType(
-          'wARV9WoE9vC8q8QE7n7oTTC59541zYTy', BMF_COORD_TYPE.BD09LL);
-    } else if (Platform.isAndroid) {
-      // Android 目前不支持接口设置Apikey,
-      // 请在主工程的Manifest文件里设置，详细配置方法请参考官网(https://lbsyun.baidu.com/)demo
-      BMFMapSDK.setCoordType(BMF_COORD_TYPE.BD09LL);
-    }
-
     ///推送注册
     if (Platform.isIOS) {
       XgFlutterPlugin().startXg("1600040929", "II8XISAN9WTV");
@@ -126,13 +115,6 @@ class MyAppState extends State<HhApp> {
         try{
           dynamic custom = jsonDecode(msg['customMessage']);
           HhLog.d("HomePage -> $custom ");
-
-/*          //设备呼叫
-          if(custom!=null && custom['devCode']!=null ){
-            HhLog.d("HomePage  deviceNo ${custom['deviceNo']}");
-
-            Get.to(()=>CallPage('${custom['deviceNo']}','id',0),binding: CallBinding());
-          }*/
           //分享
           if(custom!=null && custom['otherInfomation']['messageType']== "deviceShare" && CommonData.personal){
             EventBusUtil.getInstance().fire(Share(model:custom['otherInfomation']));

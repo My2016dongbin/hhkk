@@ -5,9 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/bus/bus_bean.dart';
-import 'package:iot/pages/common/location/search/saerch_controller.dart';
-import 'package:iot/pages/common/location/search/search_binding.dart';
-import 'package:iot/pages/common/location/search/search_view.dart';
 import 'package:iot/pages/home/device/add/device_add_controller.dart';
 import 'package:iot/pages/home/home_binding.dart';
 import 'package:iot/pages/home/home_view.dart';
@@ -19,11 +16,9 @@ import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
 import 'package:iot/utils/HhLog.dart';
-// import 'package:qrscan/qrscan.dart' as scanner;
 
 class DeviceAddPage extends StatelessWidget {
   final logic = Get.find<DeviceAddController>();
-  final logicLocation = Get.find<SearchLocationController>();
 
   DeviceAddPage({super.key,required String snCode}){
     logic.snCode = snCode;
@@ -317,22 +312,16 @@ class DeviceAddPage extends StatelessWidget {
                         if(logic.isEdit.value){
                           logic.model["name"] = logic.nameController!.text;
                           logic.model["spaceId"] = logic.spaceId;
-                          if((!logicLocation.choose) && (logic.model["location"]==null || "${logic.model["location"]}".isEmpty)){
-                            logic.updateDevice(false);
-                          }else{
-                            logic.latitude.value = logicLocation.choose?logicLocation.latitude.value:CommonUtils().parseIsDouble("${logic.model["latitude"]}",0);
-                            logic.longitude.value = logicLocation.choose?logicLocation.longitude.value:CommonUtils().parseIsDouble("${logic.model["longitude"]}",0);
-                            logic.locText.value = logicLocation.choose?logicLocation.locText.value:logic.model["location"];
-                            logic.updateDevice(true);
-                          }
+                          //TODO 测试待修改
+                          // if((!logicLocation.choose) && (logic.model["location"]==null || "${logic.model["location"]}".isEmpty)){
+                          //   logic.updateDevice(false);
+                          // }else{
+                          //   logic.latitude.value = logicLocation.choose?logicLocation.latitude.value:CommonUtils().parseIsDouble("${logic.model["latitude"]}",0);
+                          //   logic.longitude.value = logicLocation.choose?logicLocation.longitude.value:CommonUtils().parseIsDouble("${logic.model["longitude"]}",0);
+                          //   logic.locText.value = logicLocation.choose?logicLocation.locText.value:logic.model["location"];
+                          //   logic.updateDevice(true);
+                          // }
                         }else{
-                          /*if(logicLocation.locText.value == '' || logicLocation.locText.value == '已搜索'){
-                            EventBusUtil.getInstance().fire(HhToast(title: '请选择设备定位'));
-                            return;
-                          }
-                          logic.latitude.value = logicLocation.latitude.value;
-                          logic.longitude.value = logicLocation.longitude.value;
-                          logic.locText.value = logicLocation.locText.value;*/
                           //TODO 测试待修改
                           logic.latitude.value = 36.888888;
                           logic.longitude.value = 130.888888;
@@ -483,12 +472,6 @@ class DeviceAddPage extends StatelessWidget {
                       EventBusUtil.getInstance().fire(HhToast(title: '无法修改设备定位',type: 0));
                       return;
                     }
-
-                    if(logic.isEdit.value){
-                      Get.to(()=>SearchLocationPage(),binding: SearchLocationBinding(),arguments: logic.model);
-                    }else{
-                      Get.to(()=>SearchLocationPage(),binding: SearchLocationBinding());
-                    }
                   },
                   child: Container(
                     width: 1.sw,
@@ -503,7 +486,7 @@ class DeviceAddPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            logic.isEdit.value?(logic.locText.value.isEmpty?'点击选择设备定位':logic.locText.value):((logicLocation.locText.value!=""&&logicLocation.locText.value!='已搜索')?logicLocation.locText.value:logic.location.value),
+                            logic.isEdit.value?(logic.locText.value.isEmpty?'点击选择设备定位':logic.locText.value):(logic.location.value),
                             maxLines: 1,
                             style: TextStyle(
                               overflow: TextOverflow.ellipsis,

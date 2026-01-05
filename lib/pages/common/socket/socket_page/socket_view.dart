@@ -1,18 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_baidu_mapapi_map/flutter_baidu_mapapi_map.dart';
-import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:iot/bus/bus_bean.dart';
-import 'package:iot/pages/common/common_data.dart';
-import 'package:iot/pages/common/location/location_controller.dart';
 import 'package:iot/pages/common/socket/socket_page/socket_controller.dart';
-import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
-import 'package:iot/utils/HhLog.dart';
-import 'package:web_socket_channel/io.dart';
 
 class SocketPage extends StatelessWidget {
   final logic = Get.find<SocketController>();

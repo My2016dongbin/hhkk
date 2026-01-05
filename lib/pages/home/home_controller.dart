@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:bouncing_widget/bouncing_widget.dart';
@@ -7,14 +6,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bmflocation/flutter_bmflocation.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:get/get.dart';
 import 'package:iot/bus/bus_bean.dart';
+import 'package:iot/pages/common/amap_location/location_service.dart';
 import 'package:iot/pages/common/common_data.dart';
-import 'package:iot/pages/home/home_binding.dart';
-import 'package:iot/pages/home/home_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/HhColors.dart';
 import 'package:iot/utils/HhHttp.dart';
@@ -27,9 +24,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
-// import 'package:rxdart/rxdart.dart';
-
-import '../../bus/event_class.dart';
 import '../../utils/EventBusUtils.dart';
 
 class HomeController extends GetxController {
@@ -41,7 +35,6 @@ class HomeController extends GetxController {
   final unhandledFriendApplicationCount = 0.obs;
   final unhandledGroupApplicationCount = 0.obs;
   final unhandledCount = 0.obs;
-  final LocationFlutterPlugin _myLocPlugin = LocationFlutterPlugin();
 
   Function()? onScrollToUnreadMessage;
   late StreamSubscription showToastSubscription;
@@ -62,23 +55,7 @@ class HomeController extends GetxController {
 
   switchTab(index) {
     this.index.value = index;
-    // IMViews.showToast(index.toString());
     var brightness = Platform.isAndroid ? Brightness.dark : Brightness.dark;
-    // switch(index){
-    //   case 0:
-    //   // 状态栏透明（Android）
-    //     brightness = Platform.isAndroid ? Brightness.dark : Brightness.light;
-    //     break;
-    //   case 1:
-    //     break;
-    //   case 2:
-    //     break;
-    //   case 3:
-    //     break;
-    //     default:
-    //       break;
-    //
-    // }
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarBrightness: brightness,
@@ -90,24 +67,6 @@ class HomeController extends GetxController {
     onScrollToUnreadMessage?.call();
   }
 
-  // Future<void> requestNotificationPermission() async {
-  //   // 检查是否已经获得通知权限
-  //   var status = await Permission.notification.status;
-  //   if (status.isDenied) {
-  //     // 申请权限
-  //     status = await Permission.notification.request();
-  //   }
-  //
-  //   if (status.isGranted) {
-  //   } else if (status.isPermanentlyDenied) {
-  //     openAppSettings(); // 引导用户前往设置开启通知权限
-  //   } else if (status.isDenied) {
-  //     EventBusUtil.getInstance().fire(HhToast(title: '请开启通知权限', type: 0));
-  //     Future.delayed(const Duration(milliseconds: 2000), () {
-  //       openAppSettings(); // 引导用户前往设置开启通知权限
-  //     });
-  //   }
-  // }
   Future<void> requestNotificationPermission() async {
     var status = await Permission.notification.status;
 
@@ -397,12 +356,26 @@ class HomeController extends GetxController {
                 ),
               ));
     });
-    getLocation();
     //获取通知权限
     Future.delayed(const Duration(milliseconds: 2000), () {
       requestNotificationPermission();
     });
     super.onInit();
+
+    ///定位服务
+    checkLocation();
+  }
+
+  void checkLocation(){
+    ///处理原生定位初始化延时问题
+    AmapLocationService().dispose();
+    AmapLocationService().init();
+    AmapLocationService().startLocation();
+    if(!AmapLocationService().hasResult){
+      Future.delayed(const Duration(milliseconds: 10000),(){
+        checkLocation();
+      });
+    }
   }
 
   Future<void> handleShare(String id, int status, String name) async {
@@ -427,101 +400,6 @@ class HomeController extends GetxController {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
-  }
-
-  Future<void> getLocation() async {
-    if (Platform.isIOS) {
-      //接受定位回调
-      _myLocPlugin.singleLocationCallback(callback: (BaiduLocation result) {
-        //result为定位结果
-        HhLog.e("location isIOS ${result.latitude},${result.longitude}");
-        if(result.longitude!=null){
-          CommonData.longitude = result.longitude;
-        }
-        if(result.latitude!=null){
-          CommonData.latitude = result.latitude;
-        }
-      });
-    } else if (Platform.isAndroid) {
-      //接受定位回调
-      _myLocPlugin.seriesLocationCallback(callback: (BaiduLocation result) {
-        //result为定位结果
-        HhLog.e("location isAndroid ${result.latitude},${result.longitude}");
-        if(result.longitude!=null){
-          CommonData.longitude = result.longitude;
-        }
-        if(result.latitude!=null){
-          CommonData.latitude = result.latitude;
-        }
-        EventBusUtil.getInstance().fire(Location());
-      });
-    }
-    //设置定位参数
-    Map iosMap = initIOSOptions().getMap();
-    Map androidMap = initAndroidOptions().getMap();
-    _myLocPlugin.prepareLoc(androidMap, iosMap);
-    //开启定位
-    if (Platform.isIOS) {
-      _myLocPlugin
-          .singleLocation({'isReGeocode': true, 'isNetworkState': true});
-    } else if (Platform.isAndroid) {
-      _myLocPlugin.startLocation();
-    }
-
-    Future.delayed(const Duration(milliseconds: 10000)).then((value) {
-      getLocation();
-    });
-  }
-
-  BaiduLocationAndroidOption initAndroidOptions() {
-    BaiduLocationAndroidOption options = BaiduLocationAndroidOption(
-// 定位模式，可选的模式有高精度、仅设备、仅网络。默认为高精度模式
-        locationMode: BMFLocationMode.hightAccuracy,
-// 是否需要返回地址信息
-        isNeedAddress: true,
-// 是否需要返回海拔高度信息
-        isNeedAltitude: true,
-// 是否需要返回周边poi信息
-        isNeedLocationPoiList: true,
-// 是否需要返回新版本rgc信息
-        isNeedNewVersionRgc: true,
-// 是否需要返回位置描述信息
-        isNeedLocationDescribe: true,
-// 是否使用gps
-        openGps: true,
-// 可选，设置场景定位参数，包括签到场景、运动场景、出行场景
-        locationPurpose: BMFLocationPurpose.sport,
-// 坐标系
-        coordType: BMFLocationCoordType.bd09ll,
-// 设置发起定位请求的间隔，int类型，单位ms
-// 如果设置为0，则代表单次定位，即仅定位一次，默认为0
-        scanspan: 0);
-    return options;
-  }
-
-  BaiduLocationIOSOption initIOSOptions() {
-    BaiduLocationIOSOption options = BaiduLocationIOSOption(
-      // 坐标系
-      coordType: BMFLocationCoordType.bd09ll,
-      // 位置获取超时时间
-      locationTimeout: 10,
-      // 获取地址信息超时时间
-      reGeocodeTimeout: 10,
-      // 应用位置类型 默认为automotiveNavigation
-      activityType: BMFActivityType.automotiveNavigation,
-      // 设置预期精度参数 默认为best
-      desiredAccuracy: BMFDesiredAccuracy.best,
-      // 是否需要最新版本rgc数据
-      isNeedNewVersionRgc: true,
-      // 指定定位是否会被系统自动暂停
-      pausesLocationUpdatesAutomatically: false,
-      // 指定是否允许后台定位,
-      // 允许的话是可以进行后台定位的，但需要项目配置允许后台定位，否则会报错，具体参考开发文档
-      allowsBackgroundLocationUpdates: false,
-      // 设定定位的最小更新距离
-      distanceFilter: 10,
-    );
-    return options;
   }
 
   Future<void> getVersion() async {

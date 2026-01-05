@@ -1,6 +1,5 @@
-import 'package:flutter/animation.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:iot/utils/HhColors.dart';
+import 'package:amap_flutter_base/amap_flutter_base.dart';
 
 class CommonData{
   static int time = 0;
@@ -29,6 +28,8 @@ class CommonData{
   static String videoSearch = "";
 
 
+  ///高德地图key
+  static AMapApiKey aMapApiKey = const AMapApiKey(iosKey: "6295f68aa97a93ae33c5fc6a8288475f",androidKey: "8d4bb2a0fa4f753898332bc1bb0a51e6");
 
   ///火险因子
   static const String productKeyFireRiskFactor = "2QWASjR4T7aetr7G";

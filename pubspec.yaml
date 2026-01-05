@@ -90,10 +90,10 @@ dependencies:
   flutter_sound: ^9.2.13 #any #^9.2.13
   fijkplayer: ^0.11.0
   shared_preferences: ^2.2.3
-  flutter_bmflocation: 3.8.3
-  flutter_baidu_mapapi_map: 3.9.8
-  flutter_baidu_mapapi_search: 3.9.8
-  flutter_baidu_mapapi_utils: 3.9.8
+#  flutter_bmflocation: 3.8.3
+#  flutter_baidu_mapapi_map: 3.9.8
+#  flutter_baidu_mapapi_search: 3.9.8
+#  flutter_baidu_mapapi_utils: 3.9.8
   pinput: ^4.0.0
   tpns_flutter_plugin:
     git:
@@ -105,8 +105,8 @@ dependencies:
   carousel_slider: ^4.2.1
   amap_flutter_map: ^3.0.0
   amap_flutter_location: ^3.0.0
-#  qc_amap_navi:
-#    path: ./qc_amap_navi
+  qc_amap_navi:
+    path: ./qc_amap_navi
 
 
 dev_dependencies:

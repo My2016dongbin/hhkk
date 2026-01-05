@@ -1090,7 +1090,7 @@ class StrRes {
 
   static String get messageTab => '消息'.tr;
 
-  static String get mapTab => '消息'.tr;
+  static String get mapTab => '地图'.tr;
 
   static String get mineTab => '我的'.tr;
 

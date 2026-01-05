@@ -318,46 +318,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.2.1+8"
-  flutter_baidu_mapapi_base:
-    dependency: transitive
-    description:
-      name: flutter_baidu_mapapi_base
-      sha256: "70501fa966de46330d7ececb1cc6f584eb570581b48fa01a30927b80a4798282"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.9.8+1"
-  flutter_baidu_mapapi_map:
-    dependency: "direct main"
-    description:
-      name: flutter_baidu_mapapi_map
-      sha256: a87bce2fbbf9385edc4dc9558f250cf7d336ece97bf052675ea0224d3d835ee9
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.9.8"
-  flutter_baidu_mapapi_search:
-    dependency: "direct main"
-    description:
-      name: flutter_baidu_mapapi_search
-      sha256: "0795877020f30cd1f87e84fd2c625561a64ce7e76a307aa48465fb4c11f93c8a"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.9.8"
-  flutter_baidu_mapapi_utils:
-    dependency: "direct main"
-    description:
-      name: flutter_baidu_mapapi_utils
-      sha256: f486e3cc82a5a9e412db9ec61cae0963117fc5ee5e80a3c4758282239e0500c5
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.9.8"
-  flutter_bmflocation:
-    dependency: "direct main"
-    description:
-      name: flutter_bmflocation
-      sha256: e3f35d91007665d171f48107b4715c3c1147c90ac416f8859202041ca8a19392
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "3.8.3"
   flutter_bugly:
     dependency: "direct main"
     description:
@@ -917,6 +877,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.0"
+  qc_amap_navi:
+    dependency: "direct main"
+    description:
+      path: qc_amap_navi
+      relative: true
+    source: path
+    version: "0.1.0"
   qr_code_scanner:
     dependency: "direct main"
     description:

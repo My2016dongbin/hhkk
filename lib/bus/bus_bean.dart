@@ -14,6 +14,31 @@ class HhLoading{
 class TreeChannelRefresh{
   TreeChannelRefresh();
 }
+class LocResult{
+  String title;
+  String detail;
+  double lat;
+  double lng;
+  String ?province;
+  String ?city;
+  String ?district;
+  String ?township;
+
+  LocResult(this.title,this.detail,this.lat,this.lng,{this.province,this.city,this.district,this.township});
+}
+class LocResultForDynamicParams{
+  String code;
+  String title;
+  String detail;
+  double lat;
+  double lng;
+  String ?province;
+  String ?city;
+  String ?district;
+  String ?township;
+
+  LocResultForDynamicParams(this.code,this.title,this.detail,this.lat,this.lng,{this.province,this.city,this.district,this.township});
+}
 class LocText{
   String ?text;
 

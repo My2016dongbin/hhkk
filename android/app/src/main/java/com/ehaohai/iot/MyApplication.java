@@ -1,8 +1,7 @@
 package com.ehaohai.iot;
+import io.flutter.app.FlutterApplication;
 
-import com.baidu.mapapi.base.BmfMapApplication;
-
-public class MyApplication extends BmfMapApplication {
+public class MyApplication extends FlutterApplication {
     @Override
     public void onCreate() {
         super.onCreate();

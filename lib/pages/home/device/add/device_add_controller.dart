@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_baidu_mapapi_search/flutter_baidu_mapapi_search.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/bus/bus_bean.dart';
-import 'package:flutter_baidu_mapapi_base/flutter_baidu_mapapi_base.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/home/device/status/device_status_binding.dart';
 import 'package:iot/pages/home/device/status/device_status_view.dart';
@@ -95,7 +93,7 @@ class DeviceAddController extends GetxController {
 
 
   Future<void> locSearched() async {
-    // 构造检索参数
+    /*// 构造检索参数
     BMFReverseGeoCodeSearchOption reverseGeoCodeSearchOption =
     BMFReverseGeoCodeSearchOption(
         location: BMFCoordinate(latitude.value!, longitude.value!));
@@ -115,7 +113,7 @@ class DeviceAddController extends GetxController {
       HhLog.d("-----------${locText.value }");
     });
     /// 发起检索
-    bool flag = await reverseGeoCodeSearch.reverseGeoCodeSearch(reverseGeoCodeSearchOption);
+    bool flag = await reverseGeoCodeSearch.reverseGeoCodeSearch(reverseGeoCodeSearchOption);*/
   }
 
 

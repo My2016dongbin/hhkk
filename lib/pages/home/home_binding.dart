@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
 import 'package:iot/pages/home/main/main_controller.dart';
+import 'package:iot/pages/home/map/map_controller.dart';
 import 'package:iot/pages/home/mqtt/mqtt_controller.dart';
 
-import 'device/device_controller.dart';
 import 'home_controller.dart';
 import 'video/video_controller.dart';
 import 'message/message_controller.dart';
@@ -14,7 +14,7 @@ class HomeBinding extends Bindings {
     Get.lazyPut(() => HomeController());
     Get.lazyPut(() => MainController());
     Get.lazyPut(() => VideoController());
-    Get.lazyPut(() => DeviceController());
+    Get.lazyPut(() => MapController());
     Get.lazyPut(() => MyController());
     Get.lazyPut(() => MessageController());
     Get.lazyPut(() => MqttController());
