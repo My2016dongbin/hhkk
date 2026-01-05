@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/bus/bus_bean.dart';
+import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhHttp.dart';
@@ -32,7 +33,7 @@ class MainController extends GetxController {
   final Rx<int> currentMenuPage = 0.obs;
   late Rx<int> menuPageCount = 1.obs;
   late Rx<String> messageCount = "0".obs;
-  late Rx<String> appLoc = "青岛市城阳区物联网产业园".obs;
+  late Rx<String> appLoc = "位置获取中…".obs;
   late Rx<bool> warnManageNoRead = false.obs;
   late Rx<bool> fireWarnNoRead = true.obs;
   late int menuCountInPage = 4;
@@ -66,6 +67,7 @@ class MainController extends GetxController {
     getFireLevelList();
     getLiveWarningList();
     getWarnType();
+    searchLocation();
     super.onInit();
   }
 
@@ -300,28 +302,6 @@ class MainController extends GetxController {
       EventBusUtil.getInstance().fire(HhLoading(show: false));
     }
 
-
-    /*await Future.delayed(const Duration(milliseconds: 2000),(){
-      EventBusUtil.getInstance().fire(HhLoading(show: false));
-      deviceController.itemList = [
-        {
-          "name":"北港沟庄户北坡",
-          "createTime":"2025-10-10 12:12:12",
-          "offlineTime":"离线10天以上",
-        },
-        {
-          "name":"曹家铺小龙潭",
-          "createTime":"2025-10-10 12:12:12",
-          "offlineTime":"离线10天以上",
-        },
-        {
-          "name":"摘唐山莲花坑",
-          "createTime":"2025-10-10 12:12:12",
-          "offlineTime":"离线10天",
-        },
-      ];
-      deviceController.appendLastPage([]);
-    });*/
   }
 
   Future<void> getWarnType() async {
@@ -360,6 +340,26 @@ class MainController extends GetxController {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
+  }
+
+
+  Future<void> searchLocation() async {
+    Future.delayed(const Duration(milliseconds: 5000),() async {
+      try{
+        if(CommonData.latitude != null && CommonData.latitude != 0){
+          var result = await HhHttp().request(
+              "https://restapi.amap.com/v3/geocode/regeo?key=a94a9e0e144b7a5cf77c229713275500&location=${CommonData.longitude},${CommonData.latitude}&extensions=all&radius=1000",
+              method: DioMethod.get);
+
+          HhLog.d("searchLocation -- $result");
+          appLoc.value = result["regeocode"]["formatted_address"]??"";
+        }else{
+          searchLocation();
+        }
+      }catch(e){
+        HhLog.e("$e");
+      }
+    });
   }
 
 

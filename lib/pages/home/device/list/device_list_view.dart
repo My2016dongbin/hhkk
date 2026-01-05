@@ -227,7 +227,7 @@ class DeviceListPage extends StatelessWidget {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(4.w*3)
                                     ),
-                                    child: item['status']==1?CommonUtils.parseCacheImageView('${item['deviceNo']}',item):Image.asset(
+                                    child: "${item['status']}"=="1"?CommonUtils.parseCacheImageView('${item['deviceNo']}',item):Image.asset(
                                       "assets/images/common/icon_offline_image.png",
                                       fit: BoxFit.cover,
                                     ),

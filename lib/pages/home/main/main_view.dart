@@ -80,14 +80,22 @@ class MainPage extends StatelessWidget {
               ),
               SizedBox(width: 4.w*3),
               Expanded(
-                child: Text(
-                  logic.appLoc.value,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                      color: HhColors.blackTextColor,
-                      fontSize: 14.sp * 3,
-                      fontWeight: FontWeight.w600),
+                child: InkWell(
+                  onTap: (){
+                    logic.searchLocation();
+                  },
+                  child: Container(
+                    color: HhColors.trans,
+                    child: Text(
+                      logic.appLoc.value,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: HhColors.blackTextColor,
+                          fontSize: 14.sp * 3,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ),
                 ),
               ),
             ],
