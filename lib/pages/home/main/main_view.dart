@@ -16,21 +16,20 @@ import 'package:iot/pages/home/device/add/device_add_binding.dart';
 import 'package:iot/pages/home/device/add/device_add_view.dart';
 import 'package:iot/pages/home/device/list/device_list_binding.dart';
 import 'package:iot/pages/home/device/list/device_list_view.dart';
+import 'package:iot/pages/home/home_controller.dart';
 import 'package:iot/pages/home/space/space_binding.dart';
 import 'package:iot/pages/home/space/space_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
-import 'package:iot/utils/HhLog.dart';
-import 'package:iot/utils/ParseLocation.dart';
 import 'package:iot/utils/Permissions.dart';
 import 'package:iot/widgets/pop_menu.dart';
-import 'package:overlay_tooltip/overlay_tooltip.dart';
 
 import 'main_controller.dart';
 
 class MainPage extends StatelessWidget {
   final logic = Get.find<MainController>();
+  final homeLogic = Get.find<HomeController>();
 
   MainPage({super.key});
 
@@ -114,7 +113,7 @@ class MainPage extends StatelessWidget {
                 duration: const Duration(milliseconds: 100),
                 scaleFactor: 0.5,
                 onPressed: () async {
-
+                  homeLogic.index.value = 2;
                 },
                 child: Container(
                   width: 35.w * 3,
@@ -1548,7 +1547,7 @@ class MainPage extends StatelessWidget {
       Get.to(() => DeviceListPage(), binding: DeviceListBinding(), arguments: {"productKey": CommonData.productKeyFireRiskFactor,"title": "火险因子"});
     }
     if (item["title"] == "报警管理") {
-
+      homeLogic.index.value = 2;
     }
     if (item["title"] == "全部设备") {
       Get.to(() => DeviceListPage(), binding: DeviceListBinding(), arguments: {"productKey": "","title": "全部"});
