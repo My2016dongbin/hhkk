@@ -176,7 +176,7 @@ class HomeController extends GetxController {
       int now = DateTime.now().millisecondsSinceEpoch;
       if (now - CommonData.time > 1000) {
         CommonData.time = now;
-        getVersion();
+        getVersion(info:event.info);
       }
     });
     progressSubscription =
@@ -364,6 +364,8 @@ class HomeController extends GetxController {
 
     ///定位服务
     checkLocation();
+    ///版本检测
+    getVersion();
   }
 
   void checkLocation(){
@@ -402,13 +404,19 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> getVersion() async {
+  Future<void> getVersion({bool? info}) async {
+    if(info==true){
+      EventBusUtil.getInstance().fire(HhLoading(show: true, title: '正在检查更新…'));
+    }
     Map<String, dynamic> map = {};
     map['operatingSystem'] = Platform.isAndroid?"Android":"IOS";
     map['version'] = buildNumber.value;
     map['type'] = CommonData.test ? (CommonData.personal ? 'testPersonal' : 'testCompany') : (CommonData.personal ? 'personal' : 'company');
     var result = await HhHttp()
         .request(RequestUtils.versionNew, method: DioMethod.get, params: map);
+    if(info==true){
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+    }
     HhLog.d("getVersion -- request ${RequestUtils.versionNew}");
     HhLog.d("getVersion -- map $map");
     HhLog.d("getVersion -- $result");
@@ -416,7 +424,9 @@ class HomeController extends GetxController {
       dynamic update = result["data"];
       showVersionDialog(update);
     } else {
-      // EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+      if(info==true){
+        EventBusUtil.getInstance().fire(HhToast(title: "当前已是最新版本",type: 0));
+      }
     }
   }
 

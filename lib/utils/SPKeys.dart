@@ -8,6 +8,7 @@ class SPKeys{
   final String sex = 'sex';
   final String avatar = 'avatar';
   final String roles = 'roles';
+  final String voice = 'voice';
   final String socialUsers = 'socialUsers';
   final String posts = 'posts';
 

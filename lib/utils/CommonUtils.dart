@@ -1327,6 +1327,7 @@ class CommonUtils {
   }
 
   toLogin() async {
+    CommonData.clear() ;
     if (CommonData.personal) {
       Get.offAll(() => PersonalLoginPage(),
           binding: PersonalLoginBinding(),

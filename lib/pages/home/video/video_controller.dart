@@ -104,9 +104,6 @@ class VideoController extends GetxController {
     getSpaceList(1,true);
     //获取设备树
     getTreeDetail();
-    Future.delayed(const Duration(milliseconds: 3000),(){
-      EventBusUtil.getInstance().fire(Version());
-    });
     super.onInit();
   }
 

@@ -254,6 +254,7 @@ class MainPage extends StatelessWidget {
               logic.getFireLevelList();
               logic.getLiveWarningList();
               logic.getWarnType();
+              EventBusUtil.getInstance().fire(Version());
             },
             child: SingleChildScrollView(
               child: Column(

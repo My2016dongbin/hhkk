@@ -15,6 +15,9 @@ import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/RequestUtils.dart';
 import 'package:iot/utils/SPKeys.dart';
+import 'package:iot/utils/Utils.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MyController extends GetxController {
@@ -27,9 +30,12 @@ class MyController extends GetxController {
   final Rx<String> ?avatar = ''.obs;
   final Rx<int> ?deviceNum = 0.obs;
   final Rx<int> ?spaceNum = 0.obs;
+  final Rx<bool> warningVoice = true.obs;
   late StreamSubscription infoSubscription;
   StreamSubscription ?spaceListSubscription;
   late dynamic detail;
+  final Rx<double> cache = 0.0.obs;
+  final Rx<String> version = ''.obs;
 
   @override
   Future<void> onInit() async {
@@ -52,6 +58,9 @@ class MyController extends GetxController {
         });
     getSpaceList();
     deviceList();
+    getCacheSize();
+    getVersion();
+    getVoice();
     super.onInit();
   }
 
@@ -90,161 +99,34 @@ class MyController extends GetxController {
     }
   }
 
-  Future<void> getShareDetail(String requestUrl) async {
-    var result = await HhHttp().request(requestUrl,method: DioMethod.get);
-    HhLog.d("getShareDetail $result");
-    if(result["code"]==0 && result["data"]!=null){
-      try{
-        detail = result["data"];
-        if (!context.mounted) return;
-        showCupertinoDialog(context: context, builder: (context) => Center(
-          child: Container(
-            width: 1.sw,
-            height: 650.w,
-            margin: EdgeInsets.fromLTRB(50.w, 0, 50.w, 0),
-            padding: EdgeInsets.fromLTRB(30.w, 35.w, 45.w, 25.w),
-            decoration: BoxDecoration(
-                color: HhColors.whiteColor,
-                borderRadius: BorderRadius.all(Radius.circular(20.w))),
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.topRight,
-                  child: BouncingWidget(
-                    duration: const Duration(milliseconds: 100),
-                    scaleFactor: 1.2,
-                    onPressed: () {
-                      Get.back();
-                    },
-                    child: Image.asset(
-                      "assets/images/common/ic_x.png",
-                      width: 35.w,
-                      height: 35.w,
-                      fit: BoxFit.fill,
-                    ),
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    margin: EdgeInsets.only(top: 25.w),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          CommonUtils().parseNull("${detail["shareUrerName"]}", ""),
-                          style: TextStyle(
-                              color: HhColors.blackTextColor,
-                              fontSize: 32.sp,
-                              decoration: TextDecoration.none,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 10.w,),
-                        Text(
-                          "邀请您共享",
-                          style: TextStyle(
-                              color: HhColors.blackTextColor,
-                              fontSize: 32.sp,
-                              decoration: TextDecoration.none,
-                              fontWeight: FontWeight.w200),
-                        ),
-                        SizedBox(height: 20.w,),
-                        Image.asset(
-                          "assets/images/common/icon_camera_space.png",
-                          width: 260.w,
-                          height: 260.w,
-                          fit: BoxFit.fill,
-                        ),
-                        SizedBox(height: 20.w,),
-                        Text(
-                          CommonUtils().parseNull("${detail["shareDetailDOList"][0]["deviceName"]}", ""),
-                          style: TextStyle(
-                              color: HhColors.gray6TextColor,
-                              fontSize: 32.sp,
-                              decoration: TextDecoration.none,
-                              fontWeight: FontWeight.w200),
-                        ),
-                        BouncingWidget(
-                          duration: const Duration(milliseconds: 100),
-                          scaleFactor: 1.2,
-                          onPressed: (){
-                            shareReceive();
-                          },
-                          child: Container(
-                            height: 90.w,
-                            width: 1.sw,
-                            margin: EdgeInsets.fromLTRB(20.w, 20.w, 20.w, 0),
-                            decoration: BoxDecoration(
-                                color: HhColors.mainBlueColor,
-                                borderRadius: BorderRadius.all(Radius.circular(20.w))),
-                            child: Center(
-                              child: Text(
-                                "同意分享",
-                                style: TextStyle(
-                                  color: HhColors.whiteColor,
-                                  decoration: TextDecoration.none,
-                                  fontSize: 30.sp,),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ));
-      }catch(e){
-        HhLog.e(e.toString());
-      }
+  Future<void> getCacheSize() async {
+    final tempDir = await getTemporaryDirectory();
+    cache.value = await Utils.getTotalSizeOfFilesInDir(tempDir);
+    HhLog.d("cache ${cache.value/1000000}");
+  }
+  Future<void> clearCache() async {
+    try {
+      final tempDir = await getTemporaryDirectory();
+      EventBusUtil.getInstance().fire(HhLoading(show: true));
+      await Utils.requestPermission(tempDir);
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+      EventBusUtil.getInstance().fire(CatchRefresh());
+      EventBusUtil.getInstance().fire(HhToast(title: '已清除缓存',type: 1));
+      getCacheSize();
+    } catch (err) {
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+      EventBusUtil.getInstance().fire(HhToast(title: '缓存清除失败',type: 0));
     }
   }
 
+  Future<void> getVersion() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    version.value = packageInfo.version;
+    HhLog.d('getVersion ${version.value}');
+  }
 
-  Future<void> shareReceive() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String id = prefs.getString(SPKeys().id)!;
-    String nickname = prefs.getString(SPKeys().nickname)!;
-    dynamic content = {
-      "id":null,
-      "shareType":"2",
-      "shareUrerId":"${detail["shareUrerId"]}",
-      "shareUrerName":"${detail["shareUrerId"]}",
-      "receiveUrerId":id,
-      "receiveUrerName":nickname,
-      "shareLogId":null,
-      "appReceiveDetailSaveReqVOList":[
-        {
-          "id":null,
-          "spaceId":"${detail["shareDetailDOList"][0]["spaceId"]}",
-          "spaceName":"${detail["shareDetailDOList"][0]["spaceName"]}",
-          "deviceId":"${detail["shareDetailDOList"][0]["deviceId"]}",
-          "deviceName":"${detail["shareDetailDOList"][0]["deviceName"]}",
-          "shareType":"2",
-          "shareUrerId":"${detail["shareUrerId"]}",
-          "shareUrerName":"${detail["shareUrerId"]}",
-          "receiveUrerId":id,
-          "receiveUrerName":nickname,
-          "receiveLogId":null,
-        }
-      ],
-    };
-    EventBusUtil.getInstance().fire(HhLoading(show: true));
-    var shareReceiveResult = await HhHttp().request(
-        RequestUtils.shareReceive,
-        method: DioMethod.post,
-        data: content
-    );
-    HhLog.d("shareReceive shareReceiveResult -- $shareReceiveResult");
-    EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if (shareReceiveResult["code"] == 0 && shareReceiveResult["data"] != null) {
-      EventBusUtil.getInstance().fire(HhToast(title: "设备已接收",type: 0));
-      Get.back();
-    } else {
-      EventBusUtil.getInstance()
-          .fire(HhToast(title: CommonUtils().msgString(shareReceiveResult["msg"]),type: 2));
-    }
+  Future<void> getVoice() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    warningVoice.value = preferences.getBool(SPKeys().voice)??true;
   }
 }

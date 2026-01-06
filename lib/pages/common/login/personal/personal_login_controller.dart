@@ -231,6 +231,7 @@ class PersonalLoginController extends GetxController {
       await prefs.setString(
           SPKeys().socialUsers, '${result["data"]["socialUsers"]}');
       await prefs.setString(SPKeys().posts, '${result["data"]["posts"]}');
+      await prefs.setBool(SPKeys().voice, true);
 
 
       // XgFlutterPlugin().setTags(["${result["data"]["id"]}"]);

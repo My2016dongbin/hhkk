@@ -48,7 +48,8 @@ class CatchRefresh{
   CatchRefresh();
 }
 class Version{
-  Version();
+  bool? info;
+  Version({this.info});
 }
 class DownProgress{
   int progress;

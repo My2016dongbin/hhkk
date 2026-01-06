@@ -1,35 +1,27 @@
-import 'dart:convert';
-
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iot/bus/bus_bean.dart';
-import 'package:iot/pages/common/common_data.dart';
-import 'package:iot/pages/common/share/manage/share_manage_binding.dart';
-import 'package:iot/pages/common/share/manage/share_manage_view.dart';
-import 'package:iot/pages/home/device/add/device_add_binding.dart';
-import 'package:iot/pages/home/device/add/device_add_view.dart';
 import 'package:iot/pages/home/device/manage/device_manage_binding.dart';
 import 'package:iot/pages/home/device/manage/device_manage_view.dart';
-import 'package:iot/pages/home/my/help/help_binding.dart';
-import 'package:iot/pages/home/my/help/help_view.dart';
-import 'package:iot/pages/home/my/network/network_binding.dart';
-import 'package:iot/pages/home/my/network/network_view.dart';
+import 'package:iot/pages/home/my/info/setting_binding.dart';
+import 'package:iot/pages/home/my/info/setting_view.dart';
 import 'package:iot/pages/home/my/scan/scan_binding.dart';
 import 'package:iot/pages/home/my/scan/scan_view.dart';
+import 'package:iot/pages/home/my/setting/by_us/us_binding.dart';
+import 'package:iot/pages/home/my/setting/by_us/us_view.dart';
 import 'package:iot/pages/home/my/setting/setting_binding.dart';
 import 'package:iot/pages/home/my/setting/setting_view.dart';
 import 'package:iot/pages/home/space/manage/space_manage_binding.dart';
 import 'package:iot/pages/home/space/manage/space_manage_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
-import 'package:iot/utils/HhLog.dart';
-import 'package:iot/utils/RequestUtils.dart';
+import 'package:iot/utils/SPKeys.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../utils/HhColors.dart';
 import 'my_controller.dart';
-// import 'package:qrscan/qrscan.dart' as scanner;
 
 class MyPage extends StatelessWidget {
   final logic = Get.find<MyController>();
@@ -57,10 +49,6 @@ class MyPage extends StatelessWidget {
       children: [
         ///背景-渐变色
         Container(
-          color: HhColors.themeBackColor,
-        ),
-        Container(
-          height: 240.w*3,
           decoration: BoxDecoration(
             gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -86,54 +74,31 @@ class MyPage extends StatelessWidget {
             duration: const Duration(milliseconds: 100),
             scaleFactor: 1.2,
             onPressed: () async {
-              /*String? barcodeScanRes = await scanner.scan();
-              HhLog.d("barCode $barcodeScanRes");
-              if(barcodeScanRes!.isNotEmpty){
-                try{
-                  dynamic model = jsonDecode(barcodeScanRes);
-                  if(model["type"] == "share"){
-                    String requestUrl = RequestUtils.base + model["shareUrl"];
-                    logic.getShareDetail(requestUrl);
-                  }else{
-                    Get.to(()=>DeviceAddPage(snCode: barcodeScanRes,),binding: DeviceAddBinding());
-                  }
-                }catch(e){
-                  Get.to(()=>DeviceAddPage(snCode: barcodeScanRes,),binding: DeviceAddBinding());
-                }
-              }*/
-
               Get.to(() => ScanPage(), binding: ScanBinding());
             },
             child: Container(
               margin: EdgeInsets.fromLTRB(0, 53.w*3, 14.w*3, 0),
-              child: Image.asset(
-                "assets/images/common/icon_scanner.png",
-                width: 24.w*3,
-                height: 24.w*3,
-                fit: BoxFit.fill,
+              color: HhColors.trans,
+              child: Column(
+                children: [
+                  Image.asset(
+                    "assets/images/common/icon_scanner.png",
+                    width: 22.w*3,
+                    height: 22.w*3,
+                    fit: BoxFit.fill,
+                  ),
+                  Text(
+                    "扫一扫",
+                    style: TextStyle(
+                        color: HhColors.blackTextColor,
+                        fontSize: 10.sp*3,
+                        fontWeight: FontWeight.w500),
+                  )
+                ],
               ),
             ),
           ),
         ),
-        /*Align(
-          alignment: Alignment.topRight,
-          child: BouncingWidget(
-            duration: const Duration(milliseconds: 100),
-            scaleFactor: 1.2,
-            onPressed: () {
-              Get.to(() => SettingPage(), binding: SettingBinding());
-            },
-            child: Container(
-              margin: EdgeInsets.fromLTRB(0, 90.w, 40.w, 0),
-              child: Image.asset(
-                "assets/images/common/icon_set.png",
-                width: 45.w,
-                height: 45.w,
-                fit: BoxFit.fill,
-              ),
-            ),
-          ),
-        ),*/
 
         Container(
           margin: EdgeInsets.only(top: 114.w*3),
@@ -141,6 +106,9 @@ class MyPage extends StatelessWidget {
             onRefresh: () {
               logic.getSpaceList();
               logic.deviceList();
+              logic.getVersion();
+              logic.getCacheSize();
+              logic.getVoice();
             },
             child: SingleChildScrollView(
               child: Column(
@@ -154,7 +122,7 @@ class MyPage extends StatelessWidget {
                         duration: const Duration(milliseconds: 100),
                         scaleFactor: 1.2,
                         onPressed: () {
-                          Get.to(() => SettingPage(), binding: SettingBinding());
+                          Get.to(() => UserInfoPage(), binding: UserInfoBinding());
                         },
                         child: Container(
                           clipBehavior: Clip.hardEdge,
@@ -164,7 +132,6 @@ class MyPage extends StatelessWidget {
                               borderRadius: BorderRadius.all(Radius.circular(25.w*3))),
                           child: Image.network(
                             logic.avatar!.value,
-                            // 'https://i-blog.csdnimg.cn/blog_migrate/5e75d62a5497d2d0da5f65ba2a2e1748.png',
                             width: 50.w*3,
                             height: 50.w*3,
                             fit: BoxFit.fill,
@@ -181,7 +148,7 @@ class MyPage extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          Get.to(() => SettingPage(), binding: SettingBinding());
+                          Get.to(() => UserInfoPage(), binding: UserInfoBinding());
                         },
                         child: Container(
                           margin: EdgeInsets.fromLTRB(80.w*3, 0, 0, 0),
@@ -196,7 +163,7 @@ class MyPage extends StatelessWidget {
                       ),
                       InkWell(
                         onTap: () {
-                          Get.to(() => SettingPage(), binding: SettingBinding());
+                          Get.to(() => UserInfoPage(), binding: UserInfoBinding());
                         },
                         child: Container(
                           margin: EdgeInsets.fromLTRB(80.w*3, 30.w*3, 0, 0),
@@ -347,83 +314,10 @@ class MyPage extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ///分组网络
-                        /*InkWell(
-                          onTap: () {
-                            // Get.to(() => NetWorkPage(), binding: NetWorkBinding());
-                            EventBusUtil.getInstance().fire(HhToast(title: '暂未开放'));
-                          },
-                          child: Container(
-                            height: 110.w,
-                            color: HhColors.trans,
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 20.w),
-                                    child: Image.asset(
-                                      "assets/images/common/ic_jk.png",
-                                      width: 36.w,
-                                      height: 36.w,
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Container(
-                                    margin: EdgeInsets.only(left: 70.w),
-                                    child: Text(
-                                      "分组网络",
-                                      style: TextStyle(
-                                          color: HhColors.textBlackColor,
-                                          fontSize: 28.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Container(
-                                    margin: EdgeInsets.only(right: 65.w),
-                                    child: Text(
-                                      "优秀",
-                                      style: TextStyle(
-                                          color: HhColors.gray9TextColor,
-                                          fontSize: 26.sp),
-                                    ),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(0, 6.w, 30.w, 0),
-                                    child: Image.asset(
-                                      "assets/images/common/back_role.png",
-                                      width: 25.w,
-                                      height: 25.w,
-                                      fit: BoxFit.fill,
-                                    ),
-                                  ),
-                                ),
-                                Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Container(
-                                      height: 0.5.w,
-                                      width: 1.sw,
-                                      margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
-                                      color: HhColors.grayDDTextColor,
-                                    ))
-                              ],
-                            ),
-                          ),
-                        ),*/
-
-                        ///设置
+                        ///个人信息
                         InkWell(
                           onTap: () {
-                            Get.to(() => SettingPage(), binding: SettingBinding());
+                            Get.to(() => UserInfoPage(), binding: UserInfoBinding());
                           },
                           child: Container(
                             height: 50.w*3,
@@ -447,7 +341,66 @@ class MyPage extends StatelessWidget {
                                   child: Container(
                                     margin: EdgeInsets.only(left: 40.w*3),
                                     child: Text(
-                                      "设置",
+                                      "个人信息",
+                                      style: TextStyle(
+                                          color: HhColors.textBlackColor,
+                                          fontSize: 15.sp*3,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Container(
+                                    margin: EdgeInsets.fromLTRB(0, 6.w, 30.w, 0),
+                                    child: Image.asset(
+                                      "assets/images/common/back_role.png",
+                                      width: 14.w*3,
+                                      height: 14.w*3,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                      height: 0.5.w,
+                                      width: 1.sw,
+                                      margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+                                      color: HhColors.grayDDTextColor,
+                                    ))
+                              ],
+                            ),
+                          ),
+                        ),
+                        ///安全设置
+                        InkWell(
+                          onTap: () {
+                            Get.to(() => SettingPage(), binding: SettingBinding());
+                          },
+                          child: Container(
+                            height: 50.w*3,
+                            color: HhColors.trans,
+                            child: Stack(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 10.w*3),
+                                    child: Image.asset(
+                                      "assets/images/common/mine_safe.png",
+                                      width: 20.w*3,
+                                      height: 20.w*3,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 40.w*3),
+                                    child: Text(
+                                      "安全设置",
                                       style: TextStyle(
                                           color: HhColors.textBlackColor,
                                           fontSize: 15.sp*3,
@@ -480,14 +433,13 @@ class MyPage extends StatelessWidget {
                           ),
                         ),
 
-                        ///分享管理
-                        CommonData.personal?InkWell(
+                        ///更新
+                        InkWell(
                           onTap: () {
-                            Get.to(() => ShareManagePage(), binding: ShareManageBinding());
+                            EventBusUtil.getInstance().fire(Version(info: true));
                           },
-                          child: Container(
+                          child: SizedBox(
                             height: 50.w*3,
-                            color: HhColors.trans,
                             child: Stack(
                               children: [
                                 Align(
@@ -495,7 +447,7 @@ class MyPage extends StatelessWidget {
                                   child: Container(
                                     margin: EdgeInsets.only(left: 10.w*3),
                                     child: Image.asset(
-                                      "assets/images/common/icon_edit_share.png",
+                                      "assets/images/common/mine_update.png",
                                       width: 20.w*3,
                                       height: 20.w*3,
                                       fit: BoxFit.fill,
@@ -507,7 +459,7 @@ class MyPage extends StatelessWidget {
                                   child: Container(
                                     margin: EdgeInsets.only(left: 40.w*3),
                                     child: Text(
-                                      "分享管理",
+                                      "更新",
                                       style: TextStyle(
                                           color: HhColors.textBlackColor,
                                           fontSize: 15.sp*3,
@@ -518,7 +470,19 @@ class MyPage extends StatelessWidget {
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: Container(
-                                    margin: EdgeInsets.fromLTRB(0, 6.w, 30.w, 0),
+                                    margin: EdgeInsets.only(right: 28.w*3),
+                                    child: Text(
+                                      "版本V${logic.version.value}",
+                                      style: TextStyle(
+                                          color: HhColors.gray9TextColor,
+                                          fontSize: 15.sp*3),
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Container(
+                                    margin: EdgeInsets.fromLTRB(0, 6.w, 11.w*3, 0),
                                     child: Image.asset(
                                       "assets/images/common/back_role.png",
                                       width: 14.w*3,
@@ -532,23 +496,106 @@ class MyPage extends StatelessWidget {
                                     child: Container(
                                       height: 0.5.w,
                                       width: 1.sw,
-                                      margin: EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+                                      margin:
+                                      EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
                                       color: HhColors.grayDDTextColor,
                                     ))
                               ],
                             ),
                           ),
-                        ):const SizedBox(),
+                        ),
 
-                        ///帮助与反馈
+                        ///清除缓存
                         InkWell(
                           onTap: () {
-                            // Get.to(() => HelpPage(), binding: HelpBinding());
-                            EventBusUtil.getInstance().fire(HhToast(title: '暂未开放',type: 3));
+                            CommonUtils().showConfirmDialog(
+                                logic.context, '确定要清除缓存吗？', () {
+                              Get.back();
+                            }, () {
+                              Get.back();
+                              logic.clearCache();
+                            }, () {
+                              Get.back();
+                            });
                           },
-                          child: Container(
+                          child: SizedBox(
                             height: 50.w*3,
-                            color: HhColors.trans,
+                            child: Stack(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 10.w*3),
+                                    child: Image.asset(
+                                      "assets/images/common/mine_clear_cache.png",
+                                      width: 20.w*3,
+                                      height: 20.w*3,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    margin: EdgeInsets.only(left: 40.w*3),
+                                    child: Text(
+                                      "清除缓存",
+                                      style: TextStyle(
+                                          color: HhColors.textBlackColor,
+                                          fontSize: 15.sp*3,
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Container(
+                                    margin: EdgeInsets.only(right: 28.w*3),
+                                    child: Text(
+                                      logic.cache.value == 0
+                                          ? "无缓存"
+                                          : "${CommonUtils().parseCache(logic.cache.value)}",
+                                      style: TextStyle(
+                                          color: HhColors.gray9TextColor,
+                                          fontSize: 15.sp*3),
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Container(
+                                    margin: EdgeInsets.fromLTRB(0, 6.w, 11.w*3, 0),
+                                    child: Image.asset(
+                                      "assets/images/common/back_role.png",
+                                      width: 14.w*3,
+                                      height: 14.w*3,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                      height: 0.5.w,
+                                      width: 1.sw,
+                                      margin:
+                                      EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+                                      color: HhColors.grayDDTextColor,
+                                    ))
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        ///关于我们
+                        InkWell(
+                          onTap: () {
+                            Get.to(
+                                    () => UsPage(),
+                                binding: UsBinding());
+                          },
+                          child: SizedBox(
+                            height: 50.w*3,
                             child: Stack(
                               children: [
                                 Align(
@@ -568,7 +615,7 @@ class MyPage extends StatelessWidget {
                                   child: Container(
                                     margin: EdgeInsets.only(left: 40.w*3),
                                     child: Text(
-                                      "帮助与反馈",
+                                      "关于我们",
                                       style: TextStyle(
                                           color: HhColors.textBlackColor,
                                           fontSize: 15.sp*3,
@@ -579,7 +626,7 @@ class MyPage extends StatelessWidget {
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: Container(
-                                    margin: EdgeInsets.fromLTRB(0, 6.w, 30.w, 0),
+                                    margin: EdgeInsets.fromLTRB(0, 6.w, 11.w*3, 0),
                                     child: Image.asset(
                                       "assets/images/common/back_role.png",
                                       width: 14.w*3,
@@ -587,16 +634,85 @@ class MyPage extends StatelessWidget {
                                       fit: BoxFit.fill,
                                     ),
                                   ),
-                                )
+                                ),
+                                Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Container(
+                                      height: 0.5.w,
+                                      width: 1.sw,
+                                      margin:
+                                      EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+                                      color: HhColors.grayDDTextColor,
+                                    ))
                               ],
                             ),
+                          ),
+                        ),
+
+                        ///预警提示音
+                        SizedBox(
+                          height: 50.w*3,
+                          child: Stack(
+                            children: [
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 10.w*3),
+                                  child: Image.asset(
+                                    "assets/images/common/mine_voice.png",
+                                    width: 20.w*3,
+                                    height: 20.w*3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 40.w*3),
+                                  child: Text(
+                                    "预警提示音",
+                                    style: TextStyle(
+                                        color: HhColors.textBlackColor,
+                                        fontSize: 15.sp*3,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  margin: EdgeInsets.only(right: 12.w*3),
+                                  child: Switch(
+                                    value: logic.warningVoice.value,
+                                    thumbColor: MaterialStateProperty.all(HhColors.whiteColor),
+                                    trackColor: logic.warningVoice.value?MaterialStateProperty.all(HhColors.mainBlueColor):MaterialStateProperty.all(HhColors.grayEEBackColor),
+                                    trackOutlineColor: logic.warningVoice.value?MaterialStateProperty.all(HhColors.mainBlueColor):MaterialStateProperty.all(HhColors.grayEEBackColor),
+                                    onChanged: (bool value) async {
+                                    logic.warningVoice.value = value;
+                                    SharedPreferences preferences = await SharedPreferences.getInstance();
+                                    preferences.setBool(SPKeys().voice,value);
+                                    EventBusUtil.getInstance().fire(HhToast(title: "设置成功",type: 0));
+                                  },),
+                                ),
+                              ),
+                              Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Container(
+                                    height: 0.5.w,
+                                    width: 1.sw,
+                                    margin:
+                                    EdgeInsets.fromLTRB(20.w, 0, 20.w, 0),
+                                    color: HhColors.grayDDTextColor,
+                                  ))
+                            ],
                           ),
                         ),
                       ],
                     ),
                   ),
 
-                  SizedBox(height: 0.4.sh,),
+                  SizedBox(height: 0.2.sh,),
                 ],
               ),
             ),
