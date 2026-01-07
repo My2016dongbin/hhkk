@@ -58,18 +58,19 @@ class MapPage extends StatelessWidget {
         Align(
           alignment: Alignment.topLeft,
           child: Container(
-            height: 40.w*3,
-            margin: EdgeInsets.only(top: 47.w*3),
+            height: 42.w*3,
+            margin: EdgeInsets.only(top: 42.w*3),
             color: HhColors.trans,
             child: Stack(
               children: [
                 ///火险因子
-                Container(
+                logic.searchMode.value?const SizedBox():Container(
                   margin: EdgeInsets.only(left: 145.w*3),
                   child: HhTap(
                     overlayColor: HhColors.trans,
                     onTapUp: () async {
                       logic.tabIndex.value = 2;
+                      logic.pageNum = 1;
                       logic.deviceCount.value = "-1";
                       await logic.fetchPage();
                     },
@@ -132,12 +133,13 @@ class MapPage extends StatelessWidget {
                   ),
                 ),
                 ///智慧立杆
-                Container(
+                logic.searchMode.value?const SizedBox():Container(
                   margin: EdgeInsets.only(left: 65.w*3),
                   child: HhTap(
                     overlayColor: HhColors.trans,
                     onTapUp: () async {
                       logic.tabIndex.value = 1;
+                      logic.pageNum = 1;
                       logic.deviceCount.value = "-1";
                       await logic.fetchPage();
                     },
@@ -200,12 +202,13 @@ class MapPage extends StatelessWidget {
                   ),
                 ),
                 ///全部
-                Container(
+                logic.searchMode.value?const SizedBox():Container(
                   margin: EdgeInsets.only(left: 15.w*3),
                   child: HhTap(
                     overlayColor: HhColors.trans,
                     onTapUp: () async {
                       logic.tabIndex.value = 0;
+                      logic.pageNum = 1;
                       logic.deviceCount.value = "-1";
                       await logic.fetchPage();
                     },
@@ -268,12 +271,13 @@ class MapPage extends StatelessWidget {
                   ),
                 ),
                 ///搜索
-                Align(
+                logic.searchMode.value?const SizedBox():Align(
                   alignment: Alignment.topRight,
                   child: HhTap(
                     overlayColor: HhColors.trans,
                     onTapUp: (){
-
+                      logic.searchMode.value = true;
+                      logic.tabIndex.value = 0;
                     },
                     child: Container(
                       padding: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 0),
@@ -292,7 +296,85 @@ class MapPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                )
+                ),
+                logic.searchMode.value?Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    height: 42.w*3,
+                    width: 1.sw,
+                    margin: EdgeInsets.fromLTRB(10.w*3, 0, 10.w*3, 0),
+                    padding: EdgeInsets.fromLTRB(0, 0, 12.w*3, 0),
+                    decoration: BoxDecoration(
+                        color: HhColors.whiteColor,
+                        borderRadius: BorderRadius.circular(12.w*3)
+                    ),
+                    child: Row(
+                      children: [
+                        ///返回
+                        InkWell(
+                          onTap: () {
+                            logic.searchMode.value = false;
+                            logic.tabIndex.value = 0;
+                            logic.pageNum = 1;
+                            logic.fetchPage();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(12.w*3, 7.w*3, 15.w*3, 7.w*3),
+                            color: HhColors.trans,
+                            child: Image.asset(
+                              "assets/images/common/icon_back_left.png",
+                              width: 9.w*3,
+                              height: 16.w*3,
+                              fit: BoxFit.fill,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: TextField(
+                            textAlign: TextAlign.left,
+                            maxLines: 1,
+                            cursorColor: HhColors.titleColor_99,
+                            controller: logic.searchController,
+                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.search,
+                            onSubmitted: (s){
+                              logic.pageNum = 1;
+                              logic.fetchPage();
+                            },
+                            decoration: InputDecoration(
+                              contentPadding: EdgeInsets.zero,
+                              border: const OutlineInputBorder(
+                                  borderSide: BorderSide.none
+                              ),
+                              hintText: '搜索设备名称',
+                              hintStyle: TextStyle(
+                                  color: HhColors.gray9TextColor, fontSize: 14.sp*3),
+                            ),
+                            style:
+                            TextStyle(color: HhColors.textColor, fontSize: 14.sp*3),
+                          ),
+                        ),
+                        Container(
+                          width: 3.w,
+                          margin: EdgeInsets.fromLTRB(10.w*3, 5.w*3, 0, 5.w*3),
+                          color: HhColors.lineColorMain,
+                        ),
+                        //搜索
+                        InkWell(
+                          onTap: () {
+                            logic.pageNum = 1;
+                            logic.fetchPage();
+                          },
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(10.w*3, 5.w*3, 0, 5.w*3),
+                            color: HhColors.trans,
+                            child: Text("搜索",style: TextStyle(color: HhColors.mainBlueColor,fontSize: 14.sp*3),),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ):const SizedBox(),
               ],
             ),
           ),

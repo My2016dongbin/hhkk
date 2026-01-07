@@ -21,6 +21,7 @@ import 'package:qc_amap_navi/qc_amap_navi.dart';
 class MapController extends GetxController {
   final index = 0.obs;
   final Rx<bool> testStatus = true.obs;
+  final Rx<bool> searchMode = false.obs;
   ///0全部 1智慧立杆 2火险因子
   final Rx<int> tabIndex = 0.obs;
   final Rx<String> deviceCount = "-1".obs;
@@ -31,6 +32,7 @@ class MapController extends GetxController {
   final PagingController<int, dynamic> deviceController = PagingController(firstPageKey: 1);
   final ScrollController deviceScrollController = ScrollController();
   late EasyRefreshController deviceEasyController = EasyRefreshController();
+  late TextEditingController? searchController = TextEditingController();
 
   @override
   Future<void> onInit() async {
@@ -110,9 +112,9 @@ class MapController extends GetxController {
     if(tabIndex.value!=0){
       map["productKey"] = tabIndex.value==1?CommonData.productKeyFireSmartPole:CommonData.productKeyFireRiskFactor;
     }
-    /*if(searchController!.text.isNotEmpty){
+    if(searchMode.value && searchController!.text.isNotEmpty){
       map["name"] = searchController!.text;
-    }*/
+    }
     var result = await HhHttp().request(RequestUtils.mainDeviceList,method: DioMethod.get,params: map);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("fetchPage -- $map");
