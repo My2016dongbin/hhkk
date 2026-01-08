@@ -5,9 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/bus/bus_bean.dart';
+import 'package:iot/pages/common/amap_location/location_binding.dart';
+import 'package:iot/pages/common/amap_location/location_view.dart';
 import 'package:iot/pages/home/device/add/device_add_controller.dart';
-import 'package:iot/pages/home/home_binding.dart';
-import 'package:iot/pages/home/home_view.dart';
 import 'package:iot/pages/home/my/scan/scan_binding.dart';
 import 'package:iot/pages/home/my/scan/scan_view.dart';
 import 'package:iot/pages/home/space/space_binding.dart';
@@ -27,7 +27,6 @@ class DeviceAddPage extends StatelessWidget {
 
   //复写返回监听
   Future<bool> onBackPressed() {
-    Get.offAll(() => HomePage(), binding: HomeBinding());
     bool exit = true;
     return Future.value(exit);
   }
@@ -71,8 +70,7 @@ class DeviceAddPage extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      // Get.back();
-                      Get.offAll(() => HomePage(), binding: HomeBinding());
+                      Get.back();
                     },
                     child: Container(
                       margin: EdgeInsets.fromLTRB(23.w*3, 59.h*3, 0, 0),
@@ -312,20 +310,16 @@ class DeviceAddPage extends StatelessWidget {
                         if(logic.isEdit.value){
                           logic.model["name"] = logic.nameController!.text;
                           logic.model["spaceId"] = logic.spaceId;
-                          //TODO 测试待修改
-                          // if((!logicLocation.choose) && (logic.model["location"]==null || "${logic.model["location"]}".isEmpty)){
-                          //   logic.updateDevice(false);
-                          // }else{
-                          //   logic.latitude.value = logicLocation.choose?logicLocation.latitude.value:CommonUtils().parseIsDouble("${logic.model["latitude"]}",0);
-                          //   logic.longitude.value = logicLocation.choose?logicLocation.longitude.value:CommonUtils().parseIsDouble("${logic.model["longitude"]}",0);
-                          //   logic.locText.value = logicLocation.choose?logicLocation.locText.value:logic.model["location"];
-                          //   logic.updateDevice(true);
-                          // }
+                          if(logic.location.value.contains("点击选择设备定位")){
+                            logic.updateDevice(false);
+                          }else{
+                            logic.updateDevice(true);
+                          }
                         }else{
-                          //TODO 测试待修改
-                          logic.latitude.value = 36.888888;
-                          logic.longitude.value = 130.888888;
-                          logic.locText.value = "物联网产业园";
+                          if(logic.location.value.contains("点击选择设备定位")){
+                            EventBusUtil.getInstance().fire(HhToast(title: '点击选择设备定位'));
+                            return;
+                          }
                           logic.createDevice();
                         }
                       },
@@ -468,10 +462,7 @@ class DeviceAddPage extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: (){
-                    if(logic.isEdit.value && logic.model['shareMark']==2){
-                      EventBusUtil.getInstance().fire(HhToast(title: '无法修改设备定位',type: 0));
-                      return;
-                    }
+                    Get.to(() => LocationPage(), binding: LocationBinding());
                   },
                   child: Container(
                     width: 1.sw,
@@ -486,7 +477,7 @@ class DeviceAddPage extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            logic.isEdit.value?(logic.locText.value.isEmpty?'点击选择设备定位':logic.locText.value):(logic.location.value),
+                            (logic.location.value),
                             maxLines: 1,
                             style: TextStyle(
                               overflow: TextOverflow.ellipsis,

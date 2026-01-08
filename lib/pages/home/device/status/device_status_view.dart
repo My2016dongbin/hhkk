@@ -233,10 +233,9 @@ class DeviceStatusPage extends StatelessWidget {
                   duration: const Duration(milliseconds: 100),
                   scaleFactor: 1.2,
                   onPressed: (){
-                    // Get.to(()=>DeviceListPage(),binding: DeviceListBinding());
-                    if(logicAdd.addingStatus.value == 1){
+                    /*if(logicAdd.addingStatus.value == 1){
                       Get.offAll(() => HomePage(), binding: HomeBinding());
-                    }
+                    }*/
                     Get.back();
                   },
                   child: Container(

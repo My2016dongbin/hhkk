@@ -660,16 +660,7 @@ class HomeController extends GetxController {
                                       Future.delayed(
                                           const Duration(milliseconds: 1600),
                                           () async {
-                                        /*var installStatus = await Permission.requestInstallPackages.request();*/
-                                        /*if (installStatus.isGranted) {
-                                        versionStatus.value = 1;
-                                        downloadStep.value = 0;
-                                        downloadDir();
-                                      } else {
-                                        //未开启权限
-                                      }*/
 
-                                        // Get.offAll(() => HomePage(), binding: HomeBinding());
                                         try {
                                           await Permission
                                               .requestInstallPackages

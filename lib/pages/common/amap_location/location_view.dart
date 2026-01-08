@@ -45,7 +45,7 @@ class LocationPage extends StatelessWidget {
       children: [
         ///背景-渐变色
         Image.asset(
-          "assets/images/common/iot/main_background.png",
+          "assets/images/common/main_background.png",
           width: 1.sw,
           height: 1.sh,
           fit: BoxFit.fill,

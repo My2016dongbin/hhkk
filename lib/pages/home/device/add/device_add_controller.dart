@@ -5,8 +5,6 @@ import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/home/device/status/device_status_binding.dart';
 import 'package:iot/pages/home/device/status/device_status_view.dart';
-import 'package:iot/pages/home/home_binding.dart';
-import 'package:iot/pages/home/home_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhHttp.dart';
@@ -28,11 +26,10 @@ class DeviceAddController extends GetxController {
   late dynamic model = {};
   late String snCode = '';
   late String spaceId = '';
-  final Rx<String> locText = ''.obs;
   TextEditingController ?snController = TextEditingController();
   TextEditingController ?nameController = TextEditingController(text:'新的设备');
   List<dynamic> newItems = [];
-  StreamSubscription ?locTextSubscription;
+  StreamSubscription ?locationSubscription;
   StreamSubscription ?spaceListSubscription;
   StreamSubscription ?toastSubscription;
   final Rx<double?> latitude = CommonData.latitude.obs;
@@ -41,11 +38,13 @@ class DeviceAddController extends GetxController {
   @override
   void onInit() {
     getSpaceList();
-    locTextSubscription = EventBusUtil.getInstance()
-        .on<LocText>()
-        .listen((event) {
-          HhLog.d("逆地理编码 event ${event.text}");
-      locText.value = event.text!;
+    locationSubscription = EventBusUtil.getInstance()
+        .on<LocResult>()
+        .listen((event) async {
+      location.value = event.detail;
+      latitude.value = event.lat;
+      longitude.value = event.lng;
+
     });
     spaceListSubscription = EventBusUtil.getInstance()
         .on<SpaceList>()
@@ -74,11 +73,10 @@ class DeviceAddController extends GetxController {
     if(isEdit.value){
       snController!.text = model['deviceNo']??"";
       nameController!.text = model['name']??"";
-      locText.value = model['location']??"";
+      location.value = model['location']??"";
 
       if(model['longitude']!=null && model['longitude']!=0 && model['longitude']!=""){
-        // dynamic map = CommonUtils().gdToBd(double.parse(model['longitude']), double.parse(model['latitude']));
-        List<double> map = ParseLocation.parseTypeToBd09(double.parse("${model['latitude']}"), double.parse("${model['longitude']}"),model['coordinateType']??"0");
+        List<double> map = ParseLocation.parseTypeToBd09(double.parse("${model['latitude']}"), double.parse("${model['longitude']}"),"${model['coordinateType']}"??"0");
         model['longitude'] = "${map[1]}";
         model['latitude'] = "${map[0]}";
 
@@ -89,6 +87,13 @@ class DeviceAddController extends GetxController {
       }
     }
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    locationSubscription?.cancel();
+    spaceListSubscription?.cancel();
+    toastSubscription?.cancel();
   }
 
 
@@ -164,8 +169,9 @@ class DeviceAddController extends GetxController {
     "spaceId":spaceId,
     "longitude":"${longitude.value!}",
     "latitude":"${latitude.value!}",
-    "location":locText.value,
-    "coordinateType":2
+    "location":location.value,
+      /// 0:84   1:火星  2:百度
+    "coordinateType":1
     };
     var result = await HhHttp().request(RequestUtils.deviceCreate,method: DioMethod.post,data: data);
     HhLog.d("createDevice data -- $data");
@@ -194,10 +200,11 @@ class DeviceAddController extends GetxController {
         // List<num> map = ParseLocation.bd09_To_gps84(num.parse("${latitude.value!}"), num.parse("${longitude.value!}"));
         model['longitude'] = "${longitude.value!}";
         model['latitude'] = "${latitude.value!}";
-        model['location'] = locText.value;
-        model['coordinateType'] = 2;
+        model['location'] = location.value;
+        /// 0:84   1:火星  2:百度
+        model['coordinateType'] = 1;
       }
-      HhLog.d("model $model ，${locText.value}");
+      HhLog.d("model $model ，${location.value}");
     }catch(e){
       //
     }
@@ -211,8 +218,7 @@ class DeviceAddController extends GetxController {
       EventBusUtil.getInstance().fire(DeviceList());
       EventBusUtil.getInstance().fire(SpaceList());
       EventBusUtil.getInstance().fire(DeviceInfo());
-      // Get.back();
-      Get.offAll(() => HomePage(), binding: HomeBinding());
+      Get.back();
     }else{
       EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
       addingStatus.value = 2;

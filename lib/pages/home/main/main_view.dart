@@ -765,7 +765,7 @@ class MainPage extends StatelessWidget {
                           child: HhTap(
                             overlayColor: HhColors.trans,
                             onTapUp: (){
-
+                              EventBusUtil.getInstance().fire(TabIndex(index: 2));
                             },
                             child: Container(
                               margin: EdgeInsets.only(right: 10.w * 3),

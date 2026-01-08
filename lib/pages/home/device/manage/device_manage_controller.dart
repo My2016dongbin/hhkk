@@ -25,11 +25,24 @@ class DeviceManageController extends GetxController {
   late int pageSize = 20;
   late List<dynamic> spaceList = [];
   late EasyRefreshController easyController = EasyRefreshController();
+  StreamSubscription ?spaceListSubscription;
 
   @override
   void onInit() {
     getSpaceList();
+    spaceListSubscription = EventBusUtil.getInstance()
+        .on<SpaceList>()
+        .listen((event) {
+      pageNum = 1;
+      getSpaceList();
+    });
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    spaceListSubscription?.cancel();
+    super.onClose();
   }
 
   void fetchPageDevice(int pageKey) {

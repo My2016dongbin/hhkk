@@ -24,6 +24,7 @@ class DeviceListController extends GetxController {
   late int totalPage = 0;
   final PagingController<int, dynamic> listController = PagingController(firstPageKey: 1);
   final RefreshController refreshController = RefreshController(initialRefresh: false);
+  StreamSubscription ?deviceListSubscription;
 
   @override
   Future<void> onInit() async {
@@ -35,6 +36,13 @@ class DeviceListController extends GetxController {
     pageNum = 1;
     refreshController.resetNoData();
     fetchPage();
+    deviceListSubscription = EventBusUtil.getInstance()
+        .on<DeviceList>()
+        .listen((event) {
+      pageNum = 1;
+      refreshController.resetNoData();
+      fetchPage();
+    });
     super.onInit();
   }
 
@@ -42,6 +50,7 @@ class DeviceListController extends GetxController {
   void onClose() {
     super.onClose();
     HhActionMenu.dismiss();
+    deviceListSubscription?.cancel();
   }
 
   Future<void> fetchPage() async {

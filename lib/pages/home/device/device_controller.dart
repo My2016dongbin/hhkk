@@ -28,7 +28,6 @@ class DeviceController extends GetxController {
 
   @override
   void onInit() {
-
     spaceListSubscription = EventBusUtil.getInstance()
         .on<SpaceList>()
         .listen((event) {
@@ -37,6 +36,12 @@ class DeviceController extends GetxController {
     });
     getSpaceList();
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    spaceListSubscription?.cancel();
+    super.onClose();
   }
 
   void fetchPageDevice(int pageKey) {
