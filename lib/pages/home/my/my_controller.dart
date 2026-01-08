@@ -64,6 +64,13 @@ class MyController extends GetxController {
     super.onInit();
   }
 
+  @override
+  Future<void> onClose() async {
+    spaceListSubscription?.cancel();
+    infoSubscription.cancel();
+    super.onClose();
+  }
+
 
   Future<void> getSpaceList() async {
     Map<String, dynamic> map = {};

@@ -16,7 +16,6 @@ import 'package:iot/pages/common/web/WebViewPage.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
 import 'package:iot/pages/home/device/add/device_add_binding.dart';
 import 'package:iot/pages/home/device/add/device_add_view.dart';
-import 'package:iot/pages/home/home_controller.dart';
 import 'package:iot/pages/home/message/message_controller.dart';
 import 'package:iot/pages/home/space/manage/space_manage_binding.dart';
 import 'package:iot/pages/home/space/manage/space_manage_view.dart';
@@ -27,16 +26,12 @@ import 'package:iot/utils/HhColors.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/SPKeys.dart';
 import 'package:iot/widgets/pop_menu.dart';
-import 'package:overlay_tooltip/overlay_tooltip.dart';
-import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'video_controller.dart';
 
 class VideoPage extends StatelessWidget {
   final logic = Get.find<VideoController>();
-  final homeLogic = Get.find<HomeController>();
-  final messageLogic = Get.find<MessageController>();
 
   VideoPage({super.key});
 
@@ -746,222 +741,6 @@ class VideoPage extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-
-  ///首次进入页面
-  firstPage(){
-    return Stack(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: CommonUtils().gradientColors()),
-          ),
-        ),
-        Column(
-          children: [
-            ///位置
-            Container(
-              margin: EdgeInsets.fromLTRB(9.w*3, 54.w*3, 0, 10.w),
-              height: 36.w*3,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                          width: 24.w*3,
-                          height: 24.w*3,
-                          child: Stack(
-                            children: [
-                              Image.asset(
-                                "assets/images/common/icon_loc.png",
-                                width: 24.w*3,
-                                height: 24.w*3,
-                                fit: BoxFit.fill,
-                              ),
-                              Container(
-                                  color: HhColors.trans,
-                                  width: 24.w*3,
-                                  height: 24.w*3),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          width: 8.w,
-                        ),
-                        Expanded(
-                          child: Text(
-                            logic.locText.value,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color: HhColors.blackTextColor,
-                                fontSize: 14.sp*3,fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 210.w*3,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        BouncingWidget(
-                          duration: const Duration(milliseconds: 100),
-                          scaleFactor: 0.2,
-                          onPressed: (){
-                            homeLogic.index.value = 2;
-                          },
-                          child: Container(
-                            width: 40.w*3,
-                            height: 36.w*3,
-                            margin: EdgeInsets.only(bottom: 10.w),
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Image.asset(
-                                    "assets/images/common/icon_message_main.png",
-                                    width: 24.w*3,
-                                    height: 24.w*3,
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                                messageLogic.noticeCountInt.value+messageLogic.warnCountInt.value==0?const SizedBox():Align(
-                                  alignment: Alignment.topRight,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        color: HhColors.mainRedColor,
-                                        borderRadius: BorderRadius.all(Radius.circular(10.w*3))
-                                    ),
-                                    width: 15.w*3 + ((parseCount(messageLogic.noticeCountInt.value+messageLogic.warnCountInt.value>99?"99+":"${messageLogic.noticeCountInt.value+messageLogic.warnCountInt.value}")) * (3.w*3)),
-                                    height: 15.w*3,
-                                    child: Center(child: Text(messageLogic.noticeCountInt.value+messageLogic.warnCountInt.value>99?"99+":"${messageLogic.noticeCountInt.value+messageLogic.warnCountInt.value}",style: TextStyle(color: HhColors.whiteColor,fontSize: 10.sp*3),)),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        BouncingWidget(
-                          duration: const Duration(milliseconds: 100),
-                          scaleFactor: 0.2,
-                          onPressed: (){
-                            Get.to(()=>DeviceAddPage(snCode: '',),binding: DeviceAddBinding());
-                          },
-                          child: Container(
-                            margin: EdgeInsets.fromLTRB(15.w*3, 0, 14.w*3, 10.w),
-                            child: Image.asset(
-                              "assets/images/common/ic_add.png",
-                              width: 24.w*3,
-                              height: 24.w*3,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.fromLTRB(14.w*3, 21.w*3, 14.w*3, 0),
-              width: 1.sw,
-              height: 0.53.sw,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.w*3)
-              ),
-              child: Stack(
-                children: [
-                  Image.asset(
-                    "assets/images/common/icon_default.png",
-                    width: 1.sw,
-                    height: 0.53.sw,
-                    fit: BoxFit.fill,
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: BouncingWidget(
-                      duration: const Duration(milliseconds: 100),
-                      scaleFactor: 0.2,
-                      onPressed: () async {
-                        logic.secondStatus.value = true;
-                        /// 初次进入设置
-                        final SharedPreferences prefs = await SharedPreferences.getInstance();
-                        await prefs.setBool(SPKeys().second, true);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(18.w*3, 3.w*3, 18.w*3, 4.w*3),
-                        decoration: BoxDecoration(
-                          color: HhColors.transBlack,
-                          borderRadius: BorderRadius.circular(12.w*3)
-                        ),
-                        child: Text('进入默认分组',style: TextStyle(color: HhColors.whiteColor,fontSize: 13.sp*3),),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            BouncingWidget(
-              duration: const Duration(milliseconds: 100),
-              scaleFactor: 0.2,
-              onPressed: (){
-                Get.to(()=>DeviceAddPage(snCode: '',),binding: DeviceAddBinding());
-              },
-              child: Container(
-                margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 0),
-                padding: EdgeInsets.fromLTRB(14.w*3, 13.w*3, 9.w*3, 14.w*3),
-                width: 1.sw,
-                decoration: BoxDecoration(
-                  color: HhColors.whiteColor,
-                  borderRadius: BorderRadius.circular(8.w*3),
-                ),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      "assets/images/common/ic_camera.png",
-                      width: 48.w*3,
-                      height: 48.w*3,
-                      fit: BoxFit.fill,
-                    ),
-                    SizedBox(width: 11.w*3,),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('添加新设备',style: TextStyle(color: HhColors.textBlackColor,fontSize: 16.sp*3,fontWeight: FontWeight.bold),),
-                          SizedBox(height: 6.w*3,),
-                          Text('按步骤将设备添加到APP',style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
-                        ],
-                      ),
-                    ),
-                    Image.asset(
-                      "assets/images/common/icon_go.png",
-                      width: 15.w*3,
-                      height: 14.w*3,
-                      fit: BoxFit.fill,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-
-      ],
     );
   }
 

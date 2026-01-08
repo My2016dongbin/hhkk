@@ -18,17 +18,12 @@ import 'package:iot/pages/home/message/message_setting/warn_setting_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhLog.dart';
-import 'package:iot/utils/SPKeys.dart';
 import 'package:overlay_tooltip/overlay_tooltip.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:toggle_switch/toggle_switch.dart';
 import '../../../utils/HhColors.dart';
-import '../home_controller.dart';
 import 'message_controller.dart';
 
 class MessagePage extends StatelessWidget {
   final logic = Get.find<MessageController>();
-  final logicHome = Get.find<HomeController>();
 
   MessagePage({super.key});
 
@@ -60,10 +55,12 @@ class MessagePage extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 child: Stack(
                   children: [
-                    Container(
-                      height: logic.tabIndex.value==0?132.h*3:90.h*3,
+                    ///背景-渐变色
+                    Image.asset(
+                      "assets/images/common/main_background.png",
                       width: 1.sw,
-                      color: HhColors.whiteColor,
+                      height: 1.sh,
+                      fit: BoxFit.fill,
                     ),
                     (logic.editLeft.value||logic.editRight.value)?BouncingWidget(
                       duration: const Duration(milliseconds: 100),
@@ -81,7 +78,6 @@ class MessagePage extends StatelessWidget {
                       child: Container(
                         margin: EdgeInsets.fromLTRB(12.w*3, 58.h*3, 0, 0),
                         padding: EdgeInsets.all(10.w),
-                        color: HhColors.whiteColor,
                         child: Image.asset(
                           "assets/images/common/ic_x.png",
                           height: 17.w*3,
@@ -222,7 +218,7 @@ class MessagePage extends StatelessWidget {
                           children: [
                             BouncingWidget(
                               duration: const Duration(milliseconds: 100),
-                              scaleFactor: 1.0,
+                              scaleFactor: 0.2,
                               onPressed: (){
                                 CommonUtils().showDeleteDialog(context, "确定要已读所有消息记录？", (){
                                   Get.back();
@@ -233,18 +229,33 @@ class MessagePage extends StatelessWidget {
                                   Get.back();
                                 },leftStr: "取消",rightStr: "确定");
                               },
-                              child: Image.asset(
-                                "assets/images/common/icon_clear_message.png",
-                                width: 24.w*3,
-                                height: 24.w*3,
-                                fit: BoxFit.fill,
+                              child: Container(
+                                color: HhColors.trans,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Image.asset(
+                                      "assets/images/common/icon_clear_message.png",
+                                      width: 22.w*3,
+                                      height: 22.w*3,
+                                      fit: BoxFit.fill,
+                                    ),
+                                    Text(
+                                      "一键已读",
+                                      style: TextStyle(
+                                          color: HhColors.blackTextColor,
+                                          fontSize: 10.sp*3,
+                                          fontWeight: FontWeight.w500),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
-                            SizedBox(width: 15.w,),
+                            SizedBox(width: 10.w*3,),
 
                             BouncingWidget(
                               duration: const Duration(milliseconds: 100),
-                              scaleFactor: 1.2,
+                              scaleFactor: 0,
                               onPressed: (){
                                 logic.tipController.start();
                               },
@@ -322,11 +333,26 @@ class MessagePage extends StatelessWidget {
                                     ),
                                   );
                                 },
-                                child: Image.asset(
-                                  "assets/images/common/icon_more_message.png",
-                                  width: 24.w*3,
-                                  height: 24.w*3,
-                                  fit: BoxFit.fill,
+                                child: Container(
+                                  color: HhColors.trans,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Image.asset(
+                                        "assets/images/common/icon_more_message.png",
+                                        width: 22.w*3,
+                                        height: 22.w*3,
+                                        fit: BoxFit.fill,
+                                      ),
+                                      Text(
+                                        "更多",
+                                        style: TextStyle(
+                                            color: HhColors.blackTextColor,
+                                            fontSize: 10.sp*3,
+                                            fontWeight: FontWeight.w500),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -356,16 +382,18 @@ class MessagePage extends StatelessWidget {
           Container(
             width: 1.sw,
             height: 44.w*3,
-            color: HhColors.whiteColor,
+            color: HhColors.trans,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Row(
                 children: [
                   SizedBox(width: 14.w*3,),
+                  ///搜索
                   Container(
                     width: 118.w*3,
                       padding:EdgeInsets.fromLTRB(7.w*3, 0, 8.w*3, 0),
                       decoration: BoxDecoration(
+                        color: HhColors.whiteColor,
                           borderRadius: BorderRadius.circular(8.w*3),
                           border: Border.all(width: 0.5.w,color: HhColors.gray9TextColor)
                       ),
@@ -414,6 +442,7 @@ class MessagePage extends StatelessWidget {
                         ],
                       )
                   ),
+                  ///分组
                   InkWell(
                     onTap: (){
                       logic.isChooseType.value = false;
@@ -425,6 +454,7 @@ class MessagePage extends StatelessWidget {
                         margin: EdgeInsets.only(left: 24.w*3),
                         padding:EdgeInsets.fromLTRB(12.w*3, 0, 12.w*3, 0),
                         decoration: BoxDecoration(
+                            color: HhColors.whiteColor,
                             borderRadius: BorderRadius.circular(8.w*3),
                             border: Border.all(width: logic.isChooseSpace.value?1.5.w:0.5.w,color: logic.isChooseSpace.value?HhColors.mainBlueColor:HhColors.gray9TextColor)
                         ),
@@ -441,6 +471,7 @@ class MessagePage extends StatelessWidget {
                           ],
                         )),
                   ),
+                  ///类型
                   InkWell(
                     onTap: (){
                       logic.isChooseSpace.value = false;
@@ -452,6 +483,7 @@ class MessagePage extends StatelessWidget {
                         margin: EdgeInsets.only(left: 24.w*3),
                         padding:EdgeInsets.fromLTRB(12.w*3, 0, 12.w*3, 0),
                         decoration: BoxDecoration(
+                            color: HhColors.whiteColor,
                             borderRadius: BorderRadius.circular(8.w*3),
                             border: Border.all(width: logic.isChooseType.value?1.5.w:0.5.w,color: logic.isChooseType.value?HhColors.mainBlueColor:HhColors.gray9TextColor)
                         ),child: Row(
@@ -467,6 +499,7 @@ class MessagePage extends StatelessWidget {
                           ],
                         )),
                   ),
+                  ///日期
                   InkWell(
                     onTap: (){
                       logic.isChooseSpace.value = false;
@@ -481,6 +514,7 @@ class MessagePage extends StatelessWidget {
                         margin: EdgeInsets.only(left: 24.w*3),
                         padding:EdgeInsets.fromLTRB(7.w*3, 0, 8.w*3, 0),
                         decoration: BoxDecoration(
+                            color: HhColors.whiteColor,
                             borderRadius: BorderRadius.circular(8.w*3),
                             border: Border.all(width: logic.isChooseDate.value?1.5.w:0.5.w,color: logic.isChooseDate.value?HhColors.mainBlueColor:HhColors.gray9TextColor)
                         ),child: Row(
@@ -502,96 +536,109 @@ class MessagePage extends StatelessWidget {
             ),
           ),
           //分组
-          logic.isChooseSpace.value?Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 5.w*3,),
-              Wrap(
-                children: logic.spaceListStatus.value?buildSpaceListView():const SizedBox(),
+          logic.isChooseSpace.value?Container(
+            width: 1.sw,
+            decoration: BoxDecoration(
+              color: HhColors.whiteColor,
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(8.w*3),
+                  bottomRight: Radius.circular(8.w*3)
               ),
-              SizedBox(height: 5.w*3,),
-              Stack(
-                children: [
-                  Container(
-                    height: 50.w*3,
-                    width: 1.sw,
-                    color: HhColors.whiteColor,
-                  ),
-                  BouncingWidget(
-                    duration: const Duration(milliseconds: 100),
-                    scaleFactor: 1.2,
-                    child: Container(
-                      width: 1.sw,
-                      height: 44.w*3,
-                      margin: EdgeInsets.fromLTRB(14.w*3, 10.w, 14.w*3, 10.w),
-                      decoration: BoxDecoration(
-                          color: HhColors.mainBlueColor,
-                          borderRadius: BorderRadius.all(Radius.circular(24.w*3))),
-                      child: Center(
-                        child: Text(
-                          "确定",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 5.w*3,),
+                Wrap(
+                  children: logic.spaceListStatus.value?buildSpaceListView():const SizedBox(),
+                ),
+                SizedBox(height: 5.w*3,),
+                Stack(
+                  children: [
+                    BouncingWidget(
+                      duration: const Duration(milliseconds: 100),
+                      scaleFactor: 1.2,
+                      child: Container(
+                        width: 1.sw,
+                        height: 44.w*3,
+                        margin: EdgeInsets.fromLTRB(14.w*3, 10.w, 14.w*3, 10.w),
+                        decoration: BoxDecoration(
+                            color: HhColors.mainBlueColor,
+                            borderRadius: BorderRadius.all(Radius.circular(24.w*3))),
+                        child: Center(
+                          child: Text(
+                            "确定",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3),
+                          ),
                         ),
                       ),
-                    ),
-                    onPressed: () {
-                      logic.isChooseSpace.value = false;
-                      logic.dateListLeft = [];
-                      logic.pageNumLeft = 1;
-                      logic.fetchPageLeft(1);
-                    },
-                  )
-                ],
-              ),
-            ],
+                      onPressed: () {
+                        logic.isChooseSpace.value = false;
+                        logic.dateListLeft = [];
+                        logic.pageNumLeft = 1;
+                        logic.fetchPageLeft(1);
+                      },
+                    )
+                  ],
+                ),
+                SizedBox(height: 5.w*3,),
+              ],
+            ),
           ):const SizedBox(),
           //类型
-          logic.isChooseType.value?Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 5.w*3,),
-              Wrap(
-                children: buildTypeListView(),
+          logic.isChooseType.value?
+          Container(
+            width: 1.sw,
+            decoration: BoxDecoration(
+              color: HhColors.whiteColor,
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(8.w*3),
+                  bottomRight: Radius.circular(8.w*3)
               ),
-              SizedBox(height: 5.w*3,),
-              Stack(
-                children: [
-                  Container(
-                    height: 50.w*3,
-                    width: 1.sw,
-                    color: HhColors.whiteColor,
-                  ),
-                  BouncingWidget(
-                    duration: const Duration(milliseconds: 100),
-                    scaleFactor: 1.2,
-                    child: Container(
-                      width: 1.sw,
-                      height: 44.w*3,
-                      margin: EdgeInsets.fromLTRB(14.w*3, 10.w, 14.w*3, 10.w),
-                      decoration: BoxDecoration(
-                          color: HhColors.mainBlueColor,
-                          borderRadius: BorderRadius.all(Radius.circular(24.w*3))),
-                      child: Center(
-                        child: Text(
-                          "确定",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(height: 5.w*3,),
+                Wrap(
+                  children: buildTypeListView(),
+                ),
+                SizedBox(height: 5.w*3,),
+                Stack(
+                  children: [
+                    BouncingWidget(
+                      duration: const Duration(milliseconds: 100),
+                      scaleFactor: 1.2,
+                      child: Container(
+                        width: 1.sw,
+                        height: 44.w*3,
+                        margin: EdgeInsets.fromLTRB(14.w*3, 10.w, 14.w*3, 10.w),
+                        decoration: BoxDecoration(
+                            color: HhColors.mainBlueColor,
+                            borderRadius: BorderRadius.all(Radius.circular(24.w*3))),
+                        child: Center(
+                          child: Text(
+                            "确定",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3),
+                          ),
                         ),
                       ),
-                    ),
-                    onPressed: () {
-                      logic.isChooseType.value = false;
-                      logic.dateListLeft = [];
-                      logic.pageNumLeft = 1;
-                      logic.fetchPageLeft(1);
-                    },
-                  )
-                ],
-              )
-            ],
+                      onPressed: () {
+                        logic.isChooseType.value = false;
+                        logic.dateListLeft = [];
+                        logic.pageNumLeft = 1;
+                        logic.fetchPageLeft(1);
+                      },
+                    )
+                  ],
+                ),
+                SizedBox(height: 5.w*3,),
+              ],
+            ),
           ):const SizedBox(),
           ///报警列表
           Expanded(
@@ -626,7 +673,7 @@ class MessagePage extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         item["showDate"]==1?Container(
-                          margin: EdgeInsets.fromLTRB(14.w*3, 20.w, 14.w*3, 0),
+                          margin: EdgeInsets.fromLTRB(14.w*3, 15.w, 14.w*3, 0),
                           child: Row(
                             children: [
                               Text(
@@ -1526,8 +1573,8 @@ class MessagePage extends StatelessWidget {
                 SizedBox(width: 10.w,),
                 logic.spaceSelectIndex.value == i?Image.asset(
                   "assets/images/common/icon_yes.png",
-                  width: 30.w,
-                  height: 30.w,
+                  width: 15.w*3,
+                  height: 15.w*3,
                   fit: BoxFit.fill,
                 ):const SizedBox(),
               ],
@@ -1558,8 +1605,8 @@ class MessagePage extends StatelessWidget {
                 SizedBox(width: 10.w,),
                 logic.typeSelectIndex.value == i?Image.asset(
                   "assets/images/common/icon_yes.png",
-                  width: 30.w,
-                  height: 30.w,
+                  width: 15.w*3,
+                  height: 15.w*3,
                   fit: BoxFit.fill,
                 ):const SizedBox(),
               ],

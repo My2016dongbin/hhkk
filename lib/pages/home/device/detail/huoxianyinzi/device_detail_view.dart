@@ -11,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
+import 'package:iot/pages/common/map_location_search/map_location_search_binding.dart';
+import 'package:iot/pages/common/map_location_search/map_location_search_view.dart';
 import 'package:iot/pages/common/share/share_binding.dart';
 import 'package:iot/pages/common/share/share_view.dart';
 import 'package:iot/pages/home/device/add/device_add_binding.dart';
@@ -342,22 +344,30 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                 alignment: Alignment.topRight,
                 child: InkWell(
                   onTap: () {
-                    // QcAmapNavi.startNavigation(
-                    //   fromLat: 39.90882,
-                    //   fromLng: 116.39750,
-                    //   fromName: "起点",
-                    //   toLat: 39.99016,
-                    //   toLng: 116.48118,
-                    //   toName: "终点",
-                    // );
+
                   },
                   child: Container(
                     margin: EdgeInsets.fromLTRB(0, 57.h * 3, 50.h * 3, 0),
-                    child: BatteryWidget(
-                      width: 14.w*3,
-                      height: 20.w*3,
-                      batteryLevel: parseBatteryValue(logic.energyQuantity.value),
-                      // charging: true, //启用充电动画
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        BatteryWidget(
+                          width: 14.w*3,
+                          height: 20.w*3,
+                          batteryLevel: parseBatteryValue(logic.energyQuantity.value),
+                          // charging: true, //启用充电动画
+                        ),
+                        SizedBox(
+                          height:2.w*3,
+                        ),
+                        Text(
+                          "电量",
+                          style: TextStyle(
+                              color: HhColors.whiteColor,
+                              fontSize: 10.sp*3,
+                              fontWeight: FontWeight.w500),
+                        )
+                      ],
                     ),
                   ),
                 ),
@@ -376,11 +386,23 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                   },
                   child: Container(
                     margin: EdgeInsets.fromLTRB(0, 57.h * 3, 14.h * 3, 0),
-                    child: Image.asset(
-                      "assets/images/common/icon_video_set.png",
-                      width: 24.h * 3,
-                      height: 24.h * 3,
-                      fit: BoxFit.fill,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Image.asset(
+                          "assets/images/common/icon_detail_more.png",
+                          width: 24.w * 3,
+                          height: 24.w * 3,
+                          fit: BoxFit.fill,
+                        ),
+                        Text(
+                          "更多",
+                          style: TextStyle(
+                              color: HhColors.whiteColor,
+                              fontSize: 10.sp*3,
+                              fontWeight: FontWeight.w500),
+                        )
+                      ],
                     ),
                   ),
                 ),
@@ -1889,6 +1911,46 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             ),
                             Text(
                               '修改',
+                              style: TextStyle(
+                                  color: HhColors.blackTextColor,
+                                  fontSize: 14.sp * 3,
+                                  decoration: TextDecoration.none,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 50.h,
+                    ),
+                    Expanded(
+                      child: BouncingWidget(
+                        duration: const Duration(milliseconds: 100),
+                        scaleFactor: 1.2,
+                        onPressed: () {
+                          Get.back();
+                          Get.to(
+                                  () => MapLocationSearchPage(),
+                              binding: MapLocationSearchBinding(),
+                              arguments: {
+                                "name": CommonUtils().parseNull("${item['name']}", "")
+                              });
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image.asset(
+                              "assets/images/common/icon_pop_map.png",
+                              width: 24.h * 3,
+                              height: 24.h * 3,
+                              fit: BoxFit.fill,
+                            ),
+                            SizedBox(
+                              height: 2.h * 3,
+                            ),
+                            Text(
+                              '地图',
                               style: TextStyle(
                                   color: HhColors.blackTextColor,
                                   fontSize: 14.sp * 3,

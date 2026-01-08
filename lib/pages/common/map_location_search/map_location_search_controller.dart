@@ -18,14 +18,9 @@ import 'package:iot/utils/ParseLocation.dart';
 import 'package:iot/utils/RequestUtils.dart';
 import 'package:qc_amap_navi/qc_amap_navi.dart';
 
-class MapController extends GetxController {
+class MapLocationSearchController extends GetxController {
   final index = 0.obs;
   final Rx<bool> testStatus = true.obs;
-  final Rx<bool> searchMode = false.obs;
-  ///0全部 1智慧立杆 2火险因子
-  final Rx<int> tabIndex = 0.obs;
-  final Rx<String> deviceCount = "-1".obs;
-  late BuildContext context;
   late AMapController gdMapController;
   final RxSet<Marker> aMapMarkers = <Marker>{}.obs;
   late int pageNum = 1;
@@ -33,18 +28,13 @@ class MapController extends GetxController {
   final ScrollController deviceScrollController = ScrollController();
   late EasyRefreshController deviceEasyController = EasyRefreshController();
   late TextEditingController? searchController = TextEditingController();
-  StreamSubscription ? mapSearchSubscription;
 
   @override
   Future<void> onInit() async {
-    mapSearchSubscription = EventBusUtil.getInstance()
-      .on<MapSearch>()
-      .listen((event) {
-        searchController!.text = event.name;
-        searchMode.value = true;
-        pageNum = 1;
-        fetchPage();
-  });
+    dynamic arguments = Get.arguments;
+    if(arguments!=null && arguments["name"]!=null){
+      searchController!.text = arguments["name"];
+    }
     super.onInit();
     //加载设备列表
     fetchPage();
@@ -52,7 +42,6 @@ class MapController extends GetxController {
 
   @override
   Future<void> onClose() async {
-    mapSearchSubscription?.cancel();
     super.onClose();
   }
 
@@ -124,18 +113,12 @@ class MapController extends GetxController {
       "status":null,
       "activeStatus":1,
     };
-    if(tabIndex.value!=0){
-      map["productKey"] = tabIndex.value==1?CommonData.productKeyFireSmartPole:CommonData.productKeyFireRiskFactor;
-    }
-    if(searchMode.value && searchController!.text.isNotEmpty){
-      map["name"] = searchController!.text;
-    }
+    map["name"] = searchController!.text;
     var result = await HhHttp().request(RequestUtils.mainDeviceList,method: DioMethod.get,params: map);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("fetchPage -- $map");
     HhLog.d("fetchPage -- total ${result['data']["total"]}");
     HhLog.d("fetchPage -- $result");
-    deviceCount.value = "${result['data']["total"]??-1}";
     if(result["data"]!=null && result["data"]["list"]!=null){
       List<dynamic> newItems = result["data"]["list"];
       if (pageNum == 1) {

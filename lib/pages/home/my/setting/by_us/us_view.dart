@@ -86,11 +86,18 @@ class UsPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(height: 55.w*3,),
-                Image.asset(
-                  "assets/images/common/logo_slide.png",
-                  height: 56.w*3,
-                  width: 56.w*3,
-                  fit: BoxFit.fill,
+                Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.w*3),
+                    border: Border.all(color: HhColors.grayLineColor, width: 2.w),
+                  ),
+                  child: Image.asset(
+                    "assets/images/common/logo_slide.png",
+                    height: 56.w*3,
+                    width: 56.w*3,
+                    fit: BoxFit.fill,
+                  ),
                 ),
                 SizedBox(height: 8.w*3,),
                 Text(

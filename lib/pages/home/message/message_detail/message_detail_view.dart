@@ -5,11 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
 import 'package:iot/utils/CommonUtils.dart';
+import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
+import 'package:iot/utils/HhLog.dart';
+import 'package:iot/utils/ParseLocation.dart';
 import 'package:iot/widgets/pop_menu.dart';
+import 'package:qc_amap_navi/qc_amap_navi.dart';
 import 'message_detail_controller.dart';
 
 class MessageDetailPage extends StatelessWidget {
@@ -89,8 +94,23 @@ class MessageDetailPage extends StatelessWidget {
           alignment: Alignment.topRight,
           child: HhTap(
             overlayColor: HhColors.trans,
-            onTapUp: (){
-
+            onTapUp: () async {
+              try{
+                List<double> end = ParseLocation.gps84_To_Gcj02(double.parse("${logic.fireInfo['latitude']}"), double.parse("${logic.fireInfo['longitude']}"),);
+                EventBusUtil.getInstance().fire(HhLoading(show: true));
+                await QcAmapNavi.startNavigation(
+                  fromLat: double.parse("${CommonData.latitude}"),
+                  fromLng: double.parse("${CommonData.longitude}"),
+                  fromName: "我的位置",
+                  toLat: double.parse("${end[0]}"),
+                  toLng: double.parse("${end[1]}"),
+                  toName: "${logic.fireInfo['name']}",
+                );
+                EventBusUtil.getInstance().fire(HhLoading(show: false));
+              }catch(e){
+                HhLog.e(e.toString());
+                EventBusUtil.getInstance().fire(HhToast(title: "该定位不可用"));
+              }
             },
             child: Container(
               height: 28.w*3,

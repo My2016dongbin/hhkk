@@ -24,7 +24,6 @@ import 'device_controller.dart';
 
 class DevicePage extends StatelessWidget {
   final logic = Get.find<DeviceController>();
-  final logicHome = Get.find<HomeController>();
 
   DevicePage({super.key});
 

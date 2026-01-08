@@ -39,6 +39,7 @@ class HomeController extends GetxController {
   Function()? onScrollToUnreadMessage;
   late StreamSubscription showToastSubscription;
   StreamSubscription? versionSubscription;
+  StreamSubscription? tabIndexSubscription;
   StreamSubscription? progressSubscription;
   StreamSubscription? downloadProgressSubscription;
   late StreamSubscription showLoadingSubscription;
@@ -96,6 +97,7 @@ class HomeController extends GetxController {
   void onClose() {
     try {
       versionSubscription!.cancel();
+      tabIndexSubscription!.cancel();
       showToastSubscription.cancel();
       progressSubscription!.cancel();
       downloadProgressSubscription!.cancel();
@@ -178,6 +180,10 @@ class HomeController extends GetxController {
         CommonData.time = now;
         getVersion(info:event.info);
       }
+    });
+    tabIndexSubscription =
+        EventBusUtil.getInstance().on<TabIndex>().listen((event) {
+          switchTab(event.index);
     });
     progressSubscription =
         EventBusUtil.getInstance().on<DownProgress>().listen((event) {

@@ -9,6 +9,8 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
+import 'package:iot/pages/common/map_location_search/map_location_search_binding.dart';
+import 'package:iot/pages/common/map_location_search/map_location_search_view.dart';
 import 'package:iot/pages/common/today_warning/today_warning_binding.dart';
 import 'package:iot/pages/common/today_warning/today_warning_view.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
@@ -16,20 +18,21 @@ import 'package:iot/pages/home/device/add/device_add_binding.dart';
 import 'package:iot/pages/home/device/add/device_add_view.dart';
 import 'package:iot/pages/home/device/list/device_list_binding.dart';
 import 'package:iot/pages/home/device/list/device_list_view.dart';
-import 'package:iot/pages/home/home_controller.dart';
 import 'package:iot/pages/home/space/space_binding.dart';
 import 'package:iot/pages/home/space/space_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
+import 'package:iot/utils/HhLog.dart';
+import 'package:iot/utils/ParseLocation.dart';
 import 'package:iot/utils/Permissions.dart';
 import 'package:iot/widgets/pop_menu.dart';
+import 'package:qc_amap_navi/qc_amap_navi.dart';
 
 import 'main_controller.dart';
 
 class MainPage extends StatelessWidget {
   final logic = Get.find<MainController>();
-  final homeLogic = Get.find<HomeController>();
 
   MainPage({super.key});
 
@@ -113,7 +116,7 @@ class MainPage extends StatelessWidget {
                 duration: const Duration(milliseconds: 100),
                 scaleFactor: 0.5,
                 onPressed: () async {
-                  homeLogic.index.value = 2;
+                  EventBusUtil.getInstance().fire(TabIndex(index: 2));
                 },
                 child: Container(
                   width: 35.w * 3,
@@ -1499,24 +1502,12 @@ class MainPage extends StatelessWidget {
             HhTap(
               borderRadius: BorderRadius.circular(4.w * 3),
               onTapUp: () async {
-                ///设备
-                /*try{
-                  List<double> end = ParseLocation.gps84_To_Gcj02(double.parse("${logic.fireLevelList.value[index]['latitude']}"), double.parse("${logic.fireLevelList.value[index]['longitude']}"),);
-                  EventBusUtil.getInstance().fire(HhLoading(show: true));
-                  *//*await QcAmapNavi.startNavigation(
-                      fromLat: double.parse("${CommonData.latitude}"),
-                      fromLng: double.parse("${CommonData.longitude}"),
-                      fromName: "我的位置",
-                      toLat: double.parse("${end[0]}"),
-                      toLng: double.parse("${end[1]}"),
-                      toName: "${logic.fireLevelList.value[index]['stationName']}",
-                    );*//*
-                  EventBusUtil.getInstance().fire(HhLoading(show: false));
-                }catch(e){
-                  HhLog.e(e.toString());
-                  EventBusUtil.getInstance().fire(HhToast(title: "该定位不可用"));
-                }*/
-                EventBusUtil.getInstance().fire(HhToast(title: "跳转地图 - 地图暂未开发"));
+                Get.to(
+                        () => MapLocationSearchPage(),
+                    binding: MapLocationSearchBinding(),
+                    arguments: {
+                      "name": CommonUtils().parseNull("${logic.fireLevelList.value[index]['name']}", "")
+                    });
               },
               child: Container(
                 padding:
@@ -1547,7 +1538,7 @@ class MainPage extends StatelessWidget {
       Get.to(() => DeviceListPage(), binding: DeviceListBinding(), arguments: {"productKey": CommonData.productKeyFireRiskFactor,"title": "火险因子"});
     }
     if (item["title"] == "报警管理") {
-      homeLogic.index.value = 2;
+      EventBusUtil.getInstance().fire(TabIndex(index: 2));
     }
     if (item["title"] == "全部设备") {
       Get.to(() => DeviceListPage(), binding: DeviceListBinding(), arguments: {"productKey": "","title": "全部"});
@@ -1816,7 +1807,12 @@ class MainPage extends StatelessWidget {
                               child: HhTap(
                                 overlayColor: HhColors.trans,
                                 onTapUp: (){
-
+                                  Get.to(
+                                          () => MapLocationSearchPage(),
+                                      binding: MapLocationSearchBinding(),
+                                      arguments: {
+                                        "name": CommonUtils().parseNull("${fireInfo['deviceName']}", "")
+                                      });
                                 },
                                 child: Container(
                                   alignment: Alignment.center,
@@ -1834,8 +1830,23 @@ class MainPage extends StatelessWidget {
                             Expanded(
                               child: HhTap(
                                 overlayColor: HhColors.trans,
-                                onTapUp: (){
-
+                                onTapUp: () async {
+                                  try{
+                                    List<double> end = ParseLocation.gps84_To_Gcj02(double.parse("${fireInfo['latitude']}"), double.parse("${fireInfo['longitude']}"),);
+                                    EventBusUtil.getInstance().fire(HhLoading(show: true));
+                                    await QcAmapNavi.startNavigation(
+                                      fromLat: double.parse("${CommonData.latitude}"),
+                                      fromLng: double.parse("${CommonData.longitude}"),
+                                      fromName: "我的位置",
+                                      toLat: double.parse("${end[0]}"),
+                                      toLng: double.parse("${end[1]}"),
+                                      toName: "${fireInfo['location']}",
+                                    );
+                                    EventBusUtil.getInstance().fire(HhLoading(show: false));
+                                  }catch(e){
+                                    HhLog.e(e.toString());
+                                    EventBusUtil.getInstance().fire(HhToast(title: "该定位不可用"));
+                                  }
                                 },
                                 child: Container(
                                   alignment: Alignment.center,

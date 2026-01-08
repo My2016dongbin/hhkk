@@ -5,13 +5,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
+import 'package:iot/pages/common/map_location_search/map_location_search_binding.dart';
+import 'package:iot/pages/common/map_location_search/map_location_search_view.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
 import 'package:iot/pages/home/device/add/device_add_binding.dart';
 import 'package:iot/pages/home/device/add/device_add_view.dart';
 import 'package:iot/pages/home/my/scan/scan_binding.dart';
 import 'package:iot/pages/home/my/scan/scan_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
+import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/widgets/pop_menu.dart';
@@ -334,7 +338,14 @@ class DeviceListPage extends StatelessWidget {
                                                 binding: DeviceAddBinding(),
                                                 arguments: item);
                                           }),
-                                          PopMenuItem(title: "地图", image: "assets/images/common/icon_pop_map.png", onTap: (){}),
+                                          PopMenuItem(title: "地图", image: "assets/images/common/icon_pop_map.png", onTap: (){
+                                            Get.to(
+                                                    () => MapLocationSearchPage(),
+                                                binding: MapLocationSearchBinding(),
+                                                arguments: {
+                                                      "name":"${item['name']}"
+                                                });
+                                          }),
                                           PopMenuItem(title: "删除", image: "assets/images/common/icon_pop_delete.png", color: HhColors.mainRedColor, onTap: (){
                                             CommonUtils().showDeleteDialog(
                                                 context,

@@ -44,12 +44,21 @@ class LocText{
 
   LocText({required this.text});
 }
+class MapSearch{
+  String name;
+
+  MapSearch({required this.name});
+}
 class CatchRefresh{
   CatchRefresh();
 }
 class Version{
   bool? info;
   Version({this.info});
+}
+class TabIndex{
+  int index;
+  TabIndex({required this.index});
 }
 class DownProgress{
   int progress;
