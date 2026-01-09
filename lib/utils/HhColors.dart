@@ -63,6 +63,11 @@ class HhColors {
   static const videoControlInnerColor = Color(0xFFADC6F9);//视频控制图标内线
   static const videoControlIconColor = Color(0xFFE1E2E5);//视频控制图标边框线
   static const videoControlShadowColor = Color(0xFFEBF0F7);//视频控制拖动外阴影色
+  static const weather1 = Color(0xFFE88368);
+  static const weather2 = Color(0xFFB98195);
+  static const weather3 = Color(0xFF9780B5);
+  static const weather4 = Color(0xFF757FD6);
+  static const weather5 = Color(0xFF4D7EFB);
 
 
 
@@ -114,6 +119,10 @@ class HhColors {
   static const levelColorBack = Color(0xFFF4F7FF);
   static const levelBtnBack = Color(0xFFF1F5FF);
   static const levelBtnBackGreen = Color(0xFFDFFCFF);
+  static const weatherLeft = Color(0xFFE6ECFF);
+  static const weatherLeft2 = Color(0xFFE8EEFF);
+  static const weatherMid = Color(0xFFEDF1FB);
+  static const weatherRight = Color(0xFFFEF1E4);
 
   static const discoverBackground = Color(0xFFE6FdFF);
   static const discoverTag = Color(0xFF359A9F);

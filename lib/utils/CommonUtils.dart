@@ -1834,6 +1834,49 @@ class CommonUtils {
     return false;
   }
 
+  String parseWeek(String str) {
+    String week = str.replaceAll(" ", "");
+    try{
+      DateTime dateTime = DateTime.parse(week);
+      if(dateTime.weekday==1){
+        week = "周一";
+      }
+      if(dateTime.weekday==2){
+        week = "周二";
+      }
+      if(dateTime.weekday==3){
+        week = "周三";
+      }
+      if(dateTime.weekday==4){
+        week = "周四";
+      }
+      if(dateTime.weekday==5){
+        week = "周五";
+      }
+      if(dateTime.weekday==6){
+        week = "周六";
+      }
+      if(dateTime.weekday==7){
+        week = "周天";
+      }
+    }catch(e){
+      HhLog.e("parseWeek$e");
+    }
+
+    return week;
+  }
+
+  String parseTime(String str) {
+    String time = str.replaceAll(" ", "");
+    try{
+      DateTime dateTime = DateTime.parse(time);
+      time = "${parseZero(dateTime.month)}月${dateTime.day}日";
+    }catch(e){
+      HhLog.e("parseTime$e");
+    }
+    return time;
+  }
+
 }
 
 ///通用Button

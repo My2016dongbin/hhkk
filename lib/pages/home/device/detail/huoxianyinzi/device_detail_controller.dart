@@ -16,6 +16,7 @@ import 'package:iot/pages/common/model/model_class.dart';
 import 'package:iot/pages/common/socket/WebSocketManager.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
+import 'package:iot/utils/HhColors.dart';
 import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/RequestUtils.dart';
@@ -25,6 +26,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:screen_recorder/screen_recorder.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class HXYZDeviceDetailController extends GetxController {
   final index = 0.obs;
@@ -108,6 +110,14 @@ class HXYZDeviceDetailController extends GetxController {
     },
   ];
 
+  final Rx<int> weatherIndex = 0.obs;
+  final RxList<dynamic> weatherList = [].obs;
+  final Rx<dynamic> weatherModel = Rx<dynamic>({});
+  late WebViewController webController = WebViewController()
+    ..setBackgroundColor(HhColors.trans)..runJavaScript(
+        "document.documentElement.style.overflow = 'hidden';"
+            "document.body.style.overflow = 'hidden';");
+
   @override
   void onInit() {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
@@ -119,6 +129,9 @@ class HXYZDeviceDetailController extends GetxController {
       getWarnType();
       getDataInfo();
       getDataPage();
+      getLocationByDeviceNo();
+      getNowWeatherByDeviceNo();
+      get7daysWeatherByDeviceNo();
     });
     moveSubscription =
         EventBusUtil.getInstance().on<Move>().listen((event) {
@@ -716,5 +729,85 @@ class HXYZDeviceDetailController extends GetxController {
       return "六级";
     }
     return "";
+  }
+
+
+  Future<void> getLocationByDeviceNo() async {
+    weatherModel.value["time"] = CommonUtils().parseLongTime("${DateTime.now().millisecondsSinceEpoch}");
+    Map<String, dynamic> map = {};
+    map['deviceNo'] = deviceNo;
+    var result = await HhHttp()
+        .request(RequestUtils.getLocationByDeviceNo, method: DioMethod.get,params: map);
+    HhLog.d("getLocationByDeviceNo --  $result");
+    if (result["code"] == 0 && result["data"]!=null) {
+      weatherModel.value["adm2"] = result["data"]["adm2"];
+      weatherModel.value["adm1"] = result["data"]["adm1"];
+      weatherModel.value["country"] = result["data"]["country"];
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    }
+  }
+  Future<void> getNowWeatherByDeviceNo() async {
+    Map<String, dynamic> map = {};
+    map['deviceNo'] = deviceNo;
+    var result = await HhHttp()
+        .request(RequestUtils.getNowWeatherByDeviceNo, method: DioMethod.get,params: map);
+    HhLog.d("getNowWeatherByDeviceNo --  $result");
+    if (result["code"] == 0 && result["data"]!=null && result["data"]["now"]!=null) {
+      dynamic now = result["data"]["now"];
+      weatherModel.value["temp"] = now["temp"];
+      weatherModel.value["text"] = now["text"];
+      weatherModel.value["icon"] = now["icon"];
+      weatherModel.value["humidity"] = now["humidity"];
+      weatherModel.value["windDir"] = now["windDir"];
+      weatherModel.value["windScale"] = now["windScale"];
+      weatherModel.value["pressure"] = now["pressure"];
+      weatherModel.value["precip"] = now["precip"];
+
+      String weatherUrl = CommonUtils().getHeFengIcon(
+          (now['text'].contains("晴") ? "FFB615" : "368EFF"), now['icon'], "260");
+      webController.setJavaScriptMode(JavaScriptMode.unrestricted);
+      webController.loadRequest(Uri.parse(weatherUrl));
+      webController.enableZoom(true);
+      webController.runJavaScript(
+          "document.documentElement.style.overflow = 'hidden';"
+              "document.body.style.overflow = 'hidden';");
+      webController.setBackgroundColor(HhColors.trans);
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    }
+  }
+  Future<void> get7daysWeatherByDeviceNo() async {
+    EventBusUtil.getInstance().fire(HhLoading(show: true));
+    Map<String, dynamic> map = {};
+    map['deviceNo'] = deviceNo;
+    var result = await HhHttp()
+        .request(RequestUtils.get7daysWeatherByDeviceNo, method: DioMethod.get,params: map);
+    EventBusUtil.getInstance().fire(HhLoading(show: false));
+    HhLog.d("get7daysWeatherByDeviceNo --  $result");
+    if (result["code"] == 0 && result["data"]!=null && result["data"]["daily"]!=null) {
+      weatherList.value = result["data"]["daily"];
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    }
+  }
+  Future<void> getHistoricalWeatherByDeviceNo() async {
+    EventBusUtil.getInstance().fire(HhLoading(show: true));
+    Map<String, dynamic> map = {};
+    map['deviceNo'] = deviceNo;
+    map['day'] = 7;
+    var result = await HhHttp()
+        .request(RequestUtils.getHistoricalWeatherByDeviceNo, method: DioMethod.get,params: map);
+    EventBusUtil.getInstance().fire(HhLoading(show: false));
+    HhLog.d("getHistoricalWeatherByDeviceNo --  $result");
+    if (result["code"] == 0 && result["data"]!=null) {
+      weatherList.value = result["data"];
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    }
   }
 }

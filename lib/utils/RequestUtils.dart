@@ -98,6 +98,14 @@ class RequestUtils{
   static const treeDetail = '$base/admin-api/mid/space/videoSpaceList';
   static const collect = '$base/admin-api/mid/device-channel-collect/add';
   static const disCollect = '$base/admin-api/mid/device-channel-collect/delete';
+  static const getLocationByDeviceNo = '$base/admin-api/mid/weather-now/getLocationByDeviceNo';
+  static const getNowWeatherByDeviceNo = '$base/admin-api/mid/weather-now/getNowWeatherByDeviceNo';
+  static const get7daysWeatherByDeviceNo = '$base/admin-api/mid/weather-now/get7daysWeatherByDeviceNo';
+  static const getHistoricalWeatherByDeviceNo = '$base/admin-api/mid/weather-now/getHistoricalWeatherByDeviceNo';
+  static const getLocation = '$base/admin-api/mid/weather-now/getLocation';
+  static const getNowWeatherByLocation = '$base/admin-api/mid/weather-now/getNowWeatherByLocation';
+  static const get7daysWeatherByLocation = '$base/admin-api/mid/weather-now/get7daysWeatherByLocation';
+  static const getHistoricalWeatherByLocation = '$base/admin-api/mid/weather-now/getHistoricalWeatherByLocation';
 
   /*
     Map<String, dynamic> map = {};

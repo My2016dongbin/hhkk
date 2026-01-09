@@ -1,11 +1,11 @@
 import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/common/map_location_search/map_location_search_binding.dart';
 import 'package:iot/pages/common/map_location_search/map_location_search_view.dart';
@@ -15,12 +15,8 @@ import 'package:iot/pages/home/device/add/device_add_view.dart';
 import 'package:iot/pages/home/my/scan/scan_binding.dart';
 import 'package:iot/pages/home/my/scan/scan_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
-import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
-import 'package:iot/utils/HhLog.dart';
 import 'package:iot/widgets/pop_menu.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:screenshot/screenshot.dart';
 
 import 'device_list_controller.dart';
 
@@ -124,7 +120,6 @@ class DeviceListPage extends StatelessWidget {
                     textInputAction: TextInputAction.search,
                     onSubmitted: (s){
                       logic.pageNum = 1;
-                      logic.refreshController.resetNoData();
                       logic.fetchPage();
                     },
                     decoration: InputDecoration(
@@ -180,24 +175,19 @@ class DeviceListPage extends StatelessWidget {
             color: HhColors.whiteColor,
             borderRadius: BorderRadius.circular(8.w*3)
           ),
-          child: SmartRefresher(
-            controller: logic.refreshController,
-            enablePullUp: true,
+          child: EasyRefresh(
+            controller: logic.easyController,
             onRefresh: (){
-              logic.refreshController.resetNoData();
               logic.pageNum = 1;
-              logic.refreshController.refreshCompleted();
               logic.fetchPage();
             },
-            onLoading: (){
+            onLoad: (){
               logic.pageNum++;
-              logic.refreshController.loadComplete();
               logic.fetchPage();
             },
             child: PagedListView<int, dynamic>(
               padding: EdgeInsets.zero,
               pagingController: logic.listController,
-              physics: const ClampingScrollPhysics(),
               builderDelegate: PagedChildBuilderDelegate<dynamic>(
                 noItemsFoundIndicatorBuilder: (context) => CommonUtils().noneWidget(image:'assets/images/common/icon_no_message.png',info: '暂无设备',mid: 20.w,
                   height: 0.36.sw,

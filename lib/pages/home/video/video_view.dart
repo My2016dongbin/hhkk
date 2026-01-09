@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,11 +11,12 @@ import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/common/share/share_binding.dart';
 import 'package:iot/pages/common/share/share_view.dart';
+import 'package:iot/pages/common/weather/weather_binding.dart';
+import 'package:iot/pages/common/weather/weather_view.dart';
 import 'package:iot/pages/common/web/WebViewPage.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
 import 'package:iot/pages/home/device/add/device_add_binding.dart';
 import 'package:iot/pages/home/device/add/device_add_view.dart';
-import 'package:iot/pages/home/message/message_controller.dart';
 import 'package:iot/pages/home/space/manage/space_manage_binding.dart';
 import 'package:iot/pages/home/space/manage/space_manage_view.dart';
 import 'package:iot/pages/home/video/fijkplayer/fijkplayer.dart';
@@ -201,7 +201,8 @@ class VideoPage extends StatelessWidget {
                         ///天气&&地区
                         InkWell(
                           onTap: (){
-                            Get.to(WebViewPage(title: '天气', url: 'https://www.qweather.com/weather/qingdao-101120201.html',));
+                            //Get.to(WebViewPage(title: '天气', url: 'https://www.qweather.com/weather/qingdao-101120201.html',));
+                            Get.to(() => WeatherPage(), binding: WeatherBinding());
                           },
                           child: Container(
                             margin: EdgeInsets.only(top: 17.w*3),
@@ -525,7 +526,6 @@ class VideoPage extends StatelessWidget {
                     duration: const Duration(milliseconds: 100),
                     scaleFactor: 0.2,
                     onPressed: (){
-
                       Get.to(() => SpaceManagePage(),
                           binding: SpaceManageBinding());
                     },

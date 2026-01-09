@@ -1,3 +1,4 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response, FormData, MultipartFile;
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -8,7 +9,6 @@ import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/RequestUtils.dart';
 import 'package:iot/widgets/pop_menu.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class DeviceListController extends GetxController {
   final index = 0.obs;
@@ -23,7 +23,7 @@ class DeviceListController extends GetxController {
   late int pageSize = 100;
   late int totalPage = 0;
   final PagingController<int, dynamic> listController = PagingController(firstPageKey: 1);
-  final RefreshController refreshController = RefreshController(initialRefresh: false);
+  late EasyRefreshController easyController = EasyRefreshController();
   StreamSubscription ?deviceListSubscription;
 
   @override
@@ -34,13 +34,11 @@ class DeviceListController extends GetxController {
       productKey = arguments["productKey"]??"";
     }
     pageNum = 1;
-    refreshController.resetNoData();
     fetchPage();
     deviceListSubscription = EventBusUtil.getInstance()
         .on<DeviceList>()
         .listen((event) {
       pageNum = 1;
-      refreshController.resetNoData();
       fetchPage();
     });
     super.onInit();
@@ -68,14 +66,27 @@ class DeviceListController extends GetxController {
     var result = await HhHttp().request(RequestUtils.mainDeviceList,method: DioMethod.get,params: map);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("fetchPage -- $map");
-    HhLog.d("fetchPage -- total ${result["total"]}");
+    HhLog.d("fetchPage -- total ${result["data"]["total"]}");
     HhLog.d("fetchPage -- $result");
     if(result["data"]!=null && result["data"]["list"]!=null){
       List<dynamic> newItems = result["data"]["list"];
-      if (pageNum == 1) {
+      /*if (pageNum == 1) {
+        listController.itemList = [];
+      }else if(newItems.isEmpty){
+        easyController.finishLoad(IndicatorResult.noMore,true);
+      }
+      listController.appendLastPage(newItems);*/
+
+      totalPage = CommonUtils().parseTotalPage("${result["data"]["total"]}", pageSize);
+      if(pageNum == 1){
         listController.itemList = [];
       }
-      listController.appendLastPage(newItems);
+      if(pageNum > totalPage){
+        listController.appendLastPage([]);
+        easyController.finishLoad(IndicatorResult.noMore,true);
+      }else{
+        listController.appendLastPage(newItems);
+      }
     }else{
       EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
@@ -98,7 +109,6 @@ class DeviceListController extends GetxController {
       EventBusUtil.getInstance().fire(SpaceList());
       EventBusUtil.getInstance().fire(DeviceList());
       pageNum = 1;
-      refreshController.resetNoData();
       fetchPage();
     } else {
       EventBusUtil.getInstance()

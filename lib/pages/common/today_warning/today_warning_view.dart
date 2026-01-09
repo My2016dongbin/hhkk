@@ -1,4 +1,5 @@
 import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,7 +12,6 @@ import 'package:iot/pages/home/message/message_detail/message_detail_binding.dar
 import 'package:iot/pages/home/message/message_detail/message_detail_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/HhColors.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'today_warning_controller.dart';
 
@@ -115,7 +115,6 @@ class TodayWarningPage extends StatelessWidget {
                     textInputAction: TextInputAction.search,
                     onSubmitted: (s){
                       logic.pageNum = 1;
-                      logic.refreshController.resetNoData();
                       logic.fetchPage();
                       logic.getWarnType();
                     },
@@ -140,24 +139,26 @@ class TodayWarningPage extends StatelessWidget {
         ///菜单
         Container(
           margin: EdgeInsets.fromLTRB(14.w*3, 95.w*3, 14.w*3, 20.w*3),
-          child: SmartRefresher(
-            controller: logic.refreshController,
-            enablePullUp: true,
+          child: EasyRefresh(
+            controller: logic.easyController,
             onRefresh: (){
-              logic.refreshController.resetNoData();
               logic.pageNum = 1;
-              logic.refreshController.refreshCompleted();
               logic.fetchPage();
             },
-            onLoading: (){
+            onLoad: () async {
+              // logic.pageNum++;
+              // logic.fetchPage();
+              if (logic.isLoading) return;
+              logic.isLoading = true;
               logic.pageNum++;
-              logic.refreshController.loadComplete();
               logic.fetchPage();
+              Future.delayed(const Duration(milliseconds: 500),(){
+                logic.isLoading = false;
+              });
             },
             child: PagedListView<int, dynamic>(
               padding: EdgeInsets.zero,
               pagingController: logic.listController,
-              physics: const ClampingScrollPhysics(),
               builderDelegate: PagedChildBuilderDelegate<dynamic>(
                 noItemsFoundIndicatorBuilder: (context) => CommonUtils().noneWidget(image:'assets/images/common/icon_no_message_search.png',info: '暂无报警信息',mid: 20.w,
                   height: 0.36.sw,

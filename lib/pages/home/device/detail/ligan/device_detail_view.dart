@@ -15,6 +15,7 @@ import 'package:iot/pages/common/map_location_search/map_location_search_binding
 import 'package:iot/pages/common/map_location_search/map_location_search_view.dart';
 import 'package:iot/pages/common/share/share_binding.dart';
 import 'package:iot/pages/common/share/share_view.dart';
+import 'package:iot/pages/home/cell/HhTap.dart';
 import 'package:iot/pages/home/device/add/device_add_binding.dart';
 import 'package:iot/pages/home/device/add/device_add_view.dart';
 import 'package:iot/pages/home/device/detail/fijkpanel.dart';
@@ -28,6 +29,7 @@ import 'package:iot/utils/HhLog.dart';
 import 'package:iot/widgets/battery.dart';
 import 'package:screen_recorder/screen_recorder.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class LiGanDeviceDetailPage extends StatelessWidget {
   final logic = Get.find<LiGanDeviceDetailController>();
@@ -438,204 +440,272 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                 height: 45.h * 3,
                 color: HhColors.whiteColor,
                 margin: EdgeInsets.fromLTRB(0, 259.h * 3, 0, 0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          BouncingWidget(
-                            duration: const Duration(milliseconds: 300),
-                            scaleFactor: 1.2,
-                            onPressed: () {
-                              logic.tabIndex.value = 0;
-                            },
-                            child: Container(
-                              height: 40.h * 3,
-                              color: HhColors.trans,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(top: 5.h),
-                                    child: Image.asset(
-                                      logic.tabIndex.value == 0
-                                          ? "assets/images/common/icon_live.png"
-                                          : "assets/images/common/icon_live_.png",
-                                      width: 16.h * 3,
-                                      height: 16.h * 3,
-                                      fit: BoxFit.fill,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 0.3.sw,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            HhTap(
+                              overlayColor: Colors.transparent,
+                              onTapUp: () {
+                                logic.tabIndex.value = 0;
+                              },
+                              child: Container(
+                                height: 40.h * 3,
+                                color: HhColors.trans,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(top: 5.h),
+                                      child: Image.asset(
+                                        logic.tabIndex.value == 0
+                                            ? "assets/images/common/icon_live.png"
+                                            : "assets/images/common/icon_live_.png",
+                                        width: 16.h * 3,
+                                        height: 16.h * 3,
+                                        fit: BoxFit.fill,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 6.h,
-                                  ),
-                                  Text(
-                                    '实时视频',
-                                    style: TextStyle(
-                                        color: logic.tabIndex.value == 0
-                                            ? HhColors.mainBlueColor
-                                            : HhColors.gray6TextColor,
-                                        fontSize: logic.tabIndex.value == 0
-                                            ? 14.sp * 3
-                                            : 14.sp * 3,
-                                        fontWeight: logic.tabIndex.value == 0
-                                            ? FontWeight.w500
-                                            : FontWeight.w200),
-                                  ),
-                                ],
+                                    SizedBox(
+                                      width: 6.h,
+                                    ),
+                                    Text(
+                                      '实时视频',
+                                      style: TextStyle(
+                                          color: logic.tabIndex.value == 0
+                                              ? HhColors.mainBlueColor
+                                              : HhColors.gray6TextColor,
+                                          fontSize: logic.tabIndex.value == 0
+                                              ? 14.sp * 3
+                                              : 14.sp * 3,
+                                          fontWeight: logic.tabIndex.value == 0
+                                              ? FontWeight.w500
+                                              : FontWeight.w200),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          logic.tabIndex.value == 0
-                              ? Container(
-                                  height: 4.h,
-                                  width: 140.h,
-                                  decoration: BoxDecoration(
-                                      color: HhColors.mainBlueColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(2.h))),
-                                )
-                              : const SizedBox()
-                        ],
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            logic.tabIndex.value == 0
+                                ? Container(
+                                    height: 4.h,
+                                    width: 140.h,
+                                    decoration: BoxDecoration(
+                                        color: HhColors.mainBlueColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(2.h))),
+                                  )
+                                : const SizedBox()
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          BouncingWidget(
-                            duration: const Duration(milliseconds: 300),
-                            scaleFactor: 1.2,
-                            onPressed: () {
-                              logic.tabIndex.value = 1;
-                            },
-                            child: Container(
-                              height: 40.h * 3,
-                              color: HhColors.trans,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(top: 5.h),
-                                    child: Image.asset(
-                                      logic.tabIndex.value == 1
-                                          ? "assets/images/common/icon_datas.png"
-                                          : "assets/images/common/icon_datas_un.png",
-                                      width: 16.h * 3,
-                                      height: 16.h * 3,
-                                      fit: BoxFit.fill,
+                      SizedBox(
+                        width: 0.3.sw,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            HhTap(
+                              overlayColor: Colors.transparent,
+                              onTapUp: () {
+                                logic.tabIndex.value = 1;
+                              },
+                              child: Container(
+                                height: 40.h * 3,
+                                color: HhColors.trans,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(top: 5.h),
+                                      child: Image.asset(
+                                        logic.tabIndex.value == 1
+                                            ? "assets/images/common/icon_datas.png"
+                                            : "assets/images/common/icon_datas_un.png",
+                                        width: 16.h * 3,
+                                        height: 16.h * 3,
+                                        fit: BoxFit.fill,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 6.h,
-                                  ),
-                                  Text(
-                                    '数据统计',
-                                    style: TextStyle(
-                                        color: logic.tabIndex.value == 1
-                                            ? HhColors.mainBlueColor
-                                            : HhColors.gray6TextColor,
-                                        fontSize: logic.tabIndex.value == 1
-                                            ? 14.sp * 3
-                                            : 14.sp * 3,
-                                        fontWeight: logic.tabIndex.value == 1
-                                            ? FontWeight.w500
-                                            : FontWeight.w200),
-                                  ),
-                                ],
+                                    SizedBox(
+                                      width: 6.h,
+                                    ),
+                                    Text(
+                                      '数据统计',
+                                      style: TextStyle(
+                                          color: logic.tabIndex.value == 1
+                                              ? HhColors.mainBlueColor
+                                              : HhColors.gray6TextColor,
+                                          fontSize: logic.tabIndex.value == 1
+                                              ? 14.sp * 3
+                                              : 14.sp * 3,
+                                          fontWeight: logic.tabIndex.value == 1
+                                              ? FontWeight.w500
+                                              : FontWeight.w200),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          logic.tabIndex.value == 1
-                              ? Container(
-                                  height: 4.h,
-                                  width: 140.h,
-                                  decoration: BoxDecoration(
-                                      color: HhColors.mainBlueColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(2.h))),
-                                )
-                              : const SizedBox()
-                        ],
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            logic.tabIndex.value == 1
+                                ? Container(
+                                    height: 4.h,
+                                    width: 140.h,
+                                    decoration: BoxDecoration(
+                                        color: HhColors.mainBlueColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(2.h))),
+                                  )
+                                : const SizedBox()
+                          ],
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          BouncingWidget(
-                            duration: const Duration(milliseconds: 300),
-                            scaleFactor: 1.2,
-                            onPressed: () {
-                              logic.tabIndex.value = 2;
-                            },
-                            child: Container(
-                              height: 40.h * 3,
-                              color: HhColors.trans,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    margin: EdgeInsets.only(top: 3.h),
-                                    child: Image.asset(
-                                      logic.tabIndex.value == 2
-                                          ? "assets/images/common/icon_msg_.png"
-                                          : "assets/images/common/icon_msg.png",
-                                      width: 16.h * 3,
-                                      height: 16.h * 3,
-                                      fit: BoxFit.fill,
+                      SizedBox(
+                        width: 0.3.sw,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            HhTap(
+                              overlayColor: Colors.transparent,
+                              onTapUp: () {
+                                logic.tabIndex.value = 2;
+                              },
+                              child: Container(
+                                height: 40.h * 3,
+                                color: HhColors.trans,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(top: 3.h),
+                                      child: Image.asset(
+                                        logic.tabIndex.value == 2
+                                            ? "assets/images/common/icon_msg_.png"
+                                            : "assets/images/common/icon_msg.png",
+                                        width: 16.h * 3,
+                                        height: 16.h * 3,
+                                        fit: BoxFit.fill,
+                                      ),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 6.h,
-                                  ),
-                                  Text(
-                                    '历史消息',
-                                    style: TextStyle(
-                                        color: logic.tabIndex.value == 2
-                                            ? HhColors.mainBlueColor
-                                            : HhColors.gray6TextColor,
-                                        fontSize: logic.tabIndex.value == 2
-                                            ? 14.sp * 3
-                                            : 14.sp * 3,
-                                        fontWeight: logic.tabIndex.value == 2
-                                            ? FontWeight.w500
-                                            : FontWeight.w200),
-                                  ),
-                                ],
+                                    SizedBox(
+                                      width: 6.h,
+                                    ),
+                                    Text(
+                                      '历史消息',
+                                      style: TextStyle(
+                                          color: logic.tabIndex.value == 2
+                                              ? HhColors.mainBlueColor
+                                              : HhColors.gray6TextColor,
+                                          fontSize: logic.tabIndex.value == 2
+                                              ? 14.sp * 3
+                                              : 14.sp * 3,
+                                          fontWeight: logic.tabIndex.value == 2
+                                              ? FontWeight.w500
+                                              : FontWeight.w200),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 5.h,
-                          ),
-                          logic.tabIndex.value == 2
-                              ? Container(
-                                  height: 4.h,
-                                  width: 140.h,
-                                  decoration: BoxDecoration(
-                                      color: HhColors.mainBlueColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(2.h))),
-                                )
-                              : const SizedBox()
-                        ],
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            logic.tabIndex.value == 2
+                                ? Container(
+                                    height: 4.h,
+                                    width: 140.h,
+                                    decoration: BoxDecoration(
+                                        color: HhColors.mainBlueColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(2.h))),
+                                  )
+                                : const SizedBox()
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        width: 0.3.sw,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            HhTap(
+                              overlayColor: Colors.transparent,
+                              onTapUp: () {
+                                logic.tabIndex.value = 3;
+                                logic.getLocationByDeviceNo();
+                                logic.getNowWeatherByDeviceNo();
+                              },
+                              child: Container(
+                                height: 40.h * 3,
+                                color: HhColors.trans,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      margin: EdgeInsets.only(top: 3.h),
+                                      child: Image.asset(
+                                        logic.tabIndex.value == 3
+                                            ? "assets/images/common/icon_weather_select.png"
+                                            : "assets/images/common/icon_weather_un.png",
+                                        width: 16.h * 3,
+                                        height: 16.h * 3,
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 6.h,
+                                    ),
+                                    Text(
+                                      '天气信息',
+                                      style: TextStyle(
+                                          color: logic.tabIndex.value == 3
+                                              ? HhColors.mainBlueColor
+                                              : HhColors.gray6TextColor,
+                                          fontSize: logic.tabIndex.value == 3
+                                              ? 14.sp * 3
+                                              : 14.sp * 3,
+                                          fontWeight: logic.tabIndex.value == 3
+                                              ? FontWeight.w500
+                                              : FontWeight.w200),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 5.h,
+                            ),
+                            logic.tabIndex.value == 3
+                                ? Container(
+                                    height: 4.h,
+                                    width: 140.h,
+                                    decoration: BoxDecoration(
+                                        color: HhColors.mainBlueColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(2.h))),
+                                  )
+                                : const SizedBox()
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
               Container(
                 margin: EdgeInsets.fromLTRB(0, 305.h * 3, 0, 0),
-                child: logic.tabIndex.value == 0 ? livePage() :  (logic.tabIndex.value==1?dataPage():historyPage()),
+                child: parsePager(),
               ),
 
               logic.testStatus.value ? const SizedBox() : const SizedBox(),
@@ -644,6 +714,472 @@ class LiGanDeviceDetailPage extends StatelessWidget {
         ),
       ),
     );
+  }
+  parsePager() {
+    if(logic.tabIndex.value == 0){
+      return livePage();
+    }
+    if(logic.tabIndex.value == 1){
+      return dataPage();
+    }
+    if(logic.tabIndex.value == 2){
+      return historyPage();
+    }
+    if(logic.tabIndex.value == 3){
+      return weatherPage();
+    }
+    return Container();
+  }
+
+  weatherPage() {
+    return EasyRefresh(
+      onRefresh: (){
+        logic.getLocationByDeviceNo();
+        logic.getNowWeatherByDeviceNo();
+        if(logic.weatherIndex.value==0){
+          logic.get7daysWeatherByDeviceNo();
+        }else{
+          logic.getHistoricalWeatherByDeviceNo();
+        }
+      },
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            ///现在天气
+            Container(
+              height: 194.w*3,
+              margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 10.w*3),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.w*3),
+                gradient: const LinearGradient(
+                  colors: [
+                    HhColors.weatherLeft,
+                    HhColors.weatherLeft2,
+                    HhColors.weatherMid,
+                    HhColors.weatherRight,
+                  ],
+                  begin: Alignment.bottomLeft,
+                  end: Alignment.topRight,
+                ),
+              ),
+              child: Column(
+                children: [
+                  ///省市国家&&时间
+                  Container(
+                    margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 0),
+                    child: Row(
+                      children: [
+                        Text(
+                          CommonUtils().parseNull("${logic.weatherModel.value["adm2"]}", ""),
+                          style: TextStyle(
+                              color: HhColors.blackTextColor,
+                              fontSize: 14.sp * 3,fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(width: 10.w*3,),
+                        Text(
+                          CommonUtils().parseNull("${logic.weatherModel.value["adm1"]}", ""),
+                          style: TextStyle(
+                              color: HhColors.gray9TextColor,
+                              fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                        ),
+                        Text(
+                          "/",
+                          style: TextStyle(
+                              color: HhColors.gray9TextColor,
+                              fontSize: 11.sp * 3,fontWeight: FontWeight.w400),
+                        ),
+                        Text(
+                          CommonUtils().parseNull("${logic.weatherModel.value["country"]}", ""),
+                          style: TextStyle(
+                              color: HhColors.gray9TextColor,
+                              fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                        ),
+                        const Spacer(),
+                        Text(
+                          CommonUtils().parseNull("${logic.weatherModel.value["time"]}", ""),
+                          style: TextStyle(
+                              color: HhColors.gray9TextColor,
+                              fontSize: 11.sp * 3,fontWeight: FontWeight.w400),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ///天气
+                  logic.weatherModel.value["temp"]!=null?Container(
+                    margin: EdgeInsets.only(top: 10.w*3),
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                            width: 62.w*3,
+                            height: 62.w*3,
+                            child: WebViewWidget(controller: logic.webController,)),
+                        SizedBox(width: 10.w*3,),
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              CommonUtils().parseNull("${logic.weatherModel.value["temp"]}°", ""),
+                              style: TextStyle(
+                                  color: HhColors.blackTextColor,
+                                  fontSize: 32.sp * 3,fontWeight: FontWeight.w600),
+                            ),
+                            Text(
+                              CommonUtils().parseNull("${logic.weatherModel.value["text"]}", ""),
+                              style: TextStyle(
+                                  color: HhColors.blackTextColor,
+                                  fontSize: 14.sp * 3,fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ):const SizedBox(),
+                  Container(
+                    height: 56.w*3,
+                    width: 1.sw,
+                    margin: EdgeInsets.only(top: 15.w*3,left: 14.w*3,right: 14.w*3),
+                    decoration: BoxDecoration(
+                        color: HhColors.whiteColor,
+                        borderRadius: BorderRadius.circular(10.w*3)
+                    ),
+                    child: Row(
+                      children: [
+                        SizedBox(width: 15.w*3,),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(left: 5.w*3),
+                                child: Text(
+                                  "湿度",
+                                  style: TextStyle(
+                                      color: HhColors.blackTextColor,
+                                      fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              SizedBox(height: 5.w*3,),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/common/icon_weather_sd.png",
+                                    width: 20.w * 3,
+                                    height: 20.w * 3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  SizedBox(width: 2.w*3,),
+                                  Expanded(
+                                    child: Text(
+                                      "${CommonUtils().parseNull("${logic.weatherModel.value["humidity"]}", "")}%",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: HhColors.blackTextColor,
+                                          fontSize: 13.sp * 3,fontWeight: FontWeight.w500),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(left: 5.w*3),
+                                child: Text(
+                                  CommonUtils().parseNull("${logic.weatherModel.value["windDir"]}", ""),
+                                  style: TextStyle(
+                                      color: HhColors.blackTextColor,
+                                      fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              SizedBox(height: 5.w*3,),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/common/icon_weather_wind.png",
+                                    width: 20.w * 3,
+                                    height: 20.w * 3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  SizedBox(width: 2.w*3,),
+                                  Expanded(
+                                    child: Text(
+                                      "${CommonUtils().parseNull("${logic.weatherModel.value["windScale"]}", "")}级",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: HhColors.blackTextColor,
+                                          fontSize: 13.sp * 3,fontWeight: FontWeight.w500),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(left: 5.w*3),
+                                child: Text(
+                                  "气压",
+                                  style: TextStyle(
+                                      color: HhColors.blackTextColor,
+                                      fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              SizedBox(height: 5.w*3,),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/common/icon_weather_sd.png",
+                                    width: 20.w * 3,
+                                    height: 20.w * 3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  SizedBox(width: 2.w*3,),
+                                  Expanded(
+                                    child: Text(
+                                      "${CommonUtils().parseNull("${logic.weatherModel.value["pressure"]}", "")}hpa",
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: HhColors.blackTextColor,
+                                          fontSize: 13.sp * 3,fontWeight: FontWeight.w500),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(left: 5.w*3),
+                                child: Text(
+                                  "降水量",
+                                  style: TextStyle(
+                                      color: HhColors.blackTextColor,
+                                      fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                                ),
+                              ),
+                              SizedBox(height: 5.w*3,),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/common/icon_weather_water.png",
+                                    width: 20.w * 3,
+                                    height: 20.w * 3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  SizedBox(width: 2.w*3,),
+                                  Expanded(
+                                    child: Text(
+                                      CommonUtils().parseNull("${logic.weatherModel.value["precip"]}", ""),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                          color: HhColors.blackTextColor,
+                                          fontSize: 13.sp * 3,fontWeight: FontWeight.w500),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            ///tab
+            Row(
+              children: [
+                SizedBox(width: 14.w*3,),
+                HhTap(
+                  overlayColor: HhColors.trans,
+                  onTapUp: (){
+                    logic.weatherIndex.value = 0;
+                    logic.get7daysWeatherByDeviceNo();
+                  },
+                  child: Container(
+                    height: 40.w*3,
+                    width: 88.w*3,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: HhColors.whiteColor,
+                        borderRadius: BorderRadius.circular(8.w*3),
+                        border: Border.all(color: HhColors.grayDDTextColor, width: 2.w)
+                    ),
+                    child: Text(
+                      '最新天气',
+                      style: TextStyle(
+                          color: logic.weatherIndex.value == 0
+                              ? HhColors.mainBlueColor
+                              : HhColors.blackTextColor,
+                          fontSize: 14.sp * 3),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 20.w*3,),
+                HhTap(
+                  overlayColor: HhColors.trans,
+                  onTapUp: (){
+                    logic.weatherIndex.value = 1;
+                    logic.getHistoricalWeatherByDeviceNo();
+                  },
+                  child: Container(
+                    height: 40.w*3,
+                    width: 88.w*3,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: HhColors.whiteColor,
+                        borderRadius: BorderRadius.circular(8.w*3),
+                        border: Border.all(color: HhColors.grayDDTextColor, width: 2.w)
+                    ),
+                    child: Text(
+                      '过去7天',
+                      style: TextStyle(
+                          color: logic.weatherIndex.value == 1
+                              ? HhColors.mainBlueColor
+                              : HhColors.blackTextColor,
+                          fontSize: 14.sp * 3),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+
+            ///七天天气
+            Container(
+              width: 1.sw,
+              margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 10.w*3),
+              padding: EdgeInsets.only(bottom: 15.w*3),
+              decoration: BoxDecoration(
+                color: HhColors.whiteColor,
+                borderRadius: BorderRadius.circular(8.w*3),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: build7Days(),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  build7Days() {
+    List<Widget> list = [];
+    for (int i = 0; i < logic.weatherList.length; i++) {
+      dynamic model = logic.weatherList.value[i];
+      late WebViewController webController = WebViewController()
+        ..setBackgroundColor(HhColors.trans)..runJavaScript(
+            "document.documentElement.style.overflow = 'hidden';"
+                "document.body.style.overflow = 'hidden';");
+      webController.setJavaScriptMode(JavaScriptMode.unrestricted);
+      webController.enableZoom(true);
+      webController.runJavaScript(
+          "document.documentElement.style.overflow = 'hidden';"
+              "document.body.style.overflow = 'hidden';");
+      webController.setBackgroundColor(HhColors.trans);
+      String weatherUrl = CommonUtils().getHeFengIcon(
+          ((logic.weatherIndex.value==0?"${model['textDay']}".contains("晴"):"${model['text']}".contains("晴") )? "FFB615" : "368EFF"), logic.weatherIndex.value==0?"${model['iconDay']}":"${model['icon']}", "100");
+      webController.loadRequest(Uri.parse(weatherUrl));
+      String week = CommonUtils().parseWeek(logic.weatherIndex.value==0?CommonUtils().parseNull('${model["fxDate"]}', "")
+          :CommonUtils().parseNull('${model["date"]}', ""));
+      String time = CommonUtils().parseTime(logic.weatherIndex.value==0?CommonUtils().parseNull('${model["fxDate"]}', "")
+          :CommonUtils().parseNull('${model["date"]}', ""));
+      list.add(
+          Container(
+            margin: EdgeInsets.fromLTRB(20.w*3, 15.w*3, 20.w*3, 0),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 100.w*3,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        week,
+                        style: TextStyle(
+                            color: HhColors.blackTextColor,
+                            fontSize: 14.sp * 3),
+                      ),
+                      Text(
+                        time,
+                        style: TextStyle(
+                            color: HhColors.gray9TextColor,
+                            fontSize: 12.sp * 3),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                    width: 26.w*3,
+                    height: 26.w*3,
+                    child: WebViewWidget(controller: webController,)),
+                const Spacer(),
+                Text(
+                  '${CommonUtils().parseNull("${model["tempMax"]}", "")}°',
+                  style: TextStyle(
+                      color: HhColors.blackTextColor,
+                      fontSize: 14.sp * 3),
+                ),
+                SizedBox(width: 3.w*3,),
+                Container(
+                  height: 4.w*3,
+                  width: 63.w*3,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(2.w*3),
+                    gradient: const LinearGradient(
+                      colors: [
+                        HhColors.weather1,
+                        HhColors.weather2,
+                        HhColors.weather3,
+                        HhColors.weather4,
+                        HhColors.weather5,
+                      ],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 5.w*3,),
+                Text(
+                  '${CommonUtils().parseNull("${model["tempMin"]}", "")}°',
+                  style: TextStyle(
+                      color: HhColors.blackTextColor,
+                      fontSize: 14.sp * 3),
+                ),
+                SizedBox(width: 10.w*3,),
+              ],
+            ),
+          )
+      );
+      webController.loadRequest(Uri.parse(weatherUrl));
+    }
+    return list;
   }
 
   livePage() {
@@ -1970,4 +2506,5 @@ class LiGanDeviceDetailPage extends StatelessWidget {
     }
     return battery;
   }
+
 }

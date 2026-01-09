@@ -1,3 +1,4 @@
+import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' hide Response, FormData, MultipartFile;
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -7,7 +8,6 @@ import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/RequestUtils.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class TodayWarningController extends GetxController {
   final index = 0.obs;
@@ -17,17 +17,17 @@ class TodayWarningController extends GetxController {
   late BuildContext context;
   late TextEditingController? searchController = TextEditingController();
   late int pageNum = 1;
-  late int pageSize = 100;
+  late int pageSize = 20;
   late int totalPage = 0;
   final PagingController<int, dynamic> listController = PagingController(firstPageKey: 1);
-  final RefreshController refreshController = RefreshController(initialRefresh: false);
+  late EasyRefreshController easyController = EasyRefreshController();
   List<dynamic> dataList = [];
   late List<dynamic> typeList = [];
+  late bool isLoading = false;
 
   @override
   Future<void> onInit() async {
     pageNum = 1;
-    refreshController.resetNoData();
     fetchPage();
     getWarnType();
     super.onInit();
@@ -48,15 +48,26 @@ class TodayWarningController extends GetxController {
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("fetchPage -- $map");
     HhLog.d("fetchPage -- $result");
-    totalPage = CommonUtils().parseTotalPage("${result["total"]}", pageSize);
+    HhLog.d("fetchPage -- total ${result["data"]["total"]}");
     if(result["data"]!=null && result["data"]["list"]!=null){
       List<dynamic> newItems = result["data"]["list"];
-      if (pageNum == 1) {
+      /*if (pageNum == 1) {
         listController.itemList = [];
       } else if(newItems.isEmpty){
-        refreshController.loadNoData();
+        easyController.finishLoad(IndicatorResult.noMore,true);
       }
-      listController.appendLastPage(newItems);
+      listController.appendLastPage(newItems);*/
+      totalPage = CommonUtils().parseTotalPage("${result["data"]["total"]}", pageSize);
+      HhLog.d("fetchPage -- total $totalPage");
+      if(pageNum == 1){
+        listController.itemList = [];
+      }
+      if(pageNum > totalPage){
+        listController.appendLastPage([]);
+        easyController.finishLoad(IndicatorResult.noMore,true);
+      }else{
+        listController.appendLastPage(newItems);
+      }
     }else{
       EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
