@@ -7,6 +7,7 @@ import 'package:get/get.dart' hide Response, FormData, MultipartFile;
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
+import 'package:iot/pages/common/model/model_class.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
@@ -34,6 +35,7 @@ class MapController extends GetxController {
   late EasyRefreshController deviceEasyController = EasyRefreshController();
   late TextEditingController? searchController = TextEditingController();
   StreamSubscription ? mapSearchSubscription;
+  StreamSubscription ? deviceListSubscription;
 
   @override
   Future<void> onInit() async {
@@ -45,6 +47,12 @@ class MapController extends GetxController {
         pageNum = 1;
         fetchPage();
   });
+    deviceListSubscription = EventBusUtil.getInstance()
+      .on<DeviceList>()
+      .listen((event) {
+        pageNum = 1;
+        fetchPage();
+  });
     super.onInit();
     //加载设备列表
     fetchPage();
@@ -53,6 +61,7 @@ class MapController extends GetxController {
   @override
   Future<void> onClose() async {
     mapSearchSubscription?.cancel();
+    deviceListSubscription?.cancel();
     super.onClose();
   }
 
