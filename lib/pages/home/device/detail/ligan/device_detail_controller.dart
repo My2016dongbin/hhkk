@@ -551,7 +551,7 @@ class LiGanDeviceDetailController extends GetxController {
   Future<void> connect() async {
     HhLog.d("socket nickname $nickname");
     /*final channel =
-        IOWebSocketChannel.connect('ws://172.16.50.85:6002/$nickname');
+        IOWebSocketChannel.connect('${CommonData.webSocketUrl}$nickname');
 
     channel.stream.listen((event) {
       HhLog.e("socket listen $nickname -- ${event.toString()}");
@@ -559,8 +559,8 @@ class LiGanDeviceDetailController extends GetxController {
     channel.sink.add({"CallType": "Active", "Dest": "000001"});*/
 
     manager =
-        // WebSocketManager('ws://172.16.50.85:6002/$nickname', '');
-        WebSocketManager('ws://117.132.5.139:18030/$nickname', '');
+        // WebSocketManager('${CommonData.webSocketUrl}$nickname', '');
+        WebSocketManager('${CommonData.webSocketUrl}$nickname', '');
     manager.sendMessage({"CallType": "Active", "Dest": deviceNo});
     CommonData.deviceNo = deviceNo;
   }

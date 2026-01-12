@@ -46,8 +46,8 @@ class MqttController extends GetxController {
   Future<void> initMqtt() async {
     clientId = getRandomId();
     ///创建并配置 MQTT 客户端
-    client = MqttServerClient('222.173.83.190', 'flutter_mqtt-client-$clientId');
-    client.port = 10060;
+    client = MqttServerClient(CommonData.mqttIP, 'flutter_mqtt-client-$clientId');
+    client.port = CommonData.mqttPORT;
     client.logging(on: true); // 开启日志输出
     client.keepAlivePeriod = 20; // 设置保活时间
     client.onDisconnected = onDisconnected; // 断开连接回调
@@ -62,8 +62,8 @@ class MqttController extends GetxController {
     ///通过 MqttConnectMessage 设置连接参数
     final connMessage = MqttConnectMessage()
         .withClientIdentifier(clientId) // 客户端 ID
-        .authenticateAs('admin', 'QIyG0!bhfS') // 设置用户名和密码
-        .withWillTopic('/device/pole/chat/$id') // 遗嘱消息主题
+        .authenticateAs(CommonData.mqttAccount, CommonData.mqttPassword) // 设置用户名和密码
+        .withWillTopic('${CommonData.chatTopic}$id') // 遗嘱消息主题
         .withWillMessage('Disconnected') // 遗嘱消息内容
         .startClean() // 清理会话
         .withWillQos(MqttQos.atLeastOnce); // 遗嘱消息的 QoS 等级
@@ -82,7 +82,7 @@ class MqttController extends GetxController {
 
 
     ///连接成功后，订阅主题
-    client.subscribe('/device/pole/chat/$id', MqttQos.atLeastOnce);
+    client.subscribe('${CommonData.chatTopic}$id', MqttQos.atLeastOnce);
 
 
     ///监听消息更新，通过 updates 或 published 流处理收到的消息
