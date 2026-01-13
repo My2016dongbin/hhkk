@@ -19,6 +19,7 @@ class CommonData{
   static String ?deviceNo;
   static String ?sessionId;
   static String ?endpoint = "http://117.132.5.139:18033/iot-file";
+  static String html = "assets/file/privacy.html";
   static String info = "";
   static String loadingInfo = "正在加载，请稍后…";
   static const String loadingInfoFinal = "正在加载，请稍后…";

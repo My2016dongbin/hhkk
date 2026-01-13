@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/HhColors.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -71,7 +72,7 @@ class WebViewPageState extends State<WebViewPage> {
           onPageStarted: (String url) {},
           onPageFinished: (String url) {
             controller.runJavaScript(_removeGoogleAdsJS);
-            },
+          },
           onHttpError: (HttpResponseError error) {},
           onWebResourceError: (WebResourceError error) {},
           // onNavigationRequest: (NavigationRequest request) {
@@ -82,47 +83,57 @@ class WebViewPageState extends State<WebViewPage> {
           // },
         ),
       )
-      ..loadRequest(Uri.parse(widget.url));
+    //..loadRequest(Uri.parse(widget.url))
+      ..loadFlutterAsset(widget.url);
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: HhColors.whiteColor,
-      appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            Get.back();
-          },
-          child: Center(
-            child: Container(
-              padding: EdgeInsets.fromLTRB(0, 10.w, 20.w, 10.w),
-              color: HhColors.trans,
-              child: Image.asset(
-                "assets/images/common/back.png",
-                height: 17.w*3,
-                width: 10.w*3,
-                fit: BoxFit.fill,
-              ),
+    return WillPopScope(
+      onWillPop: onBackPressed,
+      child: Scaffold(
+        backgroundColor: HhColors.whiteColor,
+        appBar: AppBar(
+          leadingWidth: 100.w*3,
+          leading: SizedBox(
+            width: 100.w*3,
+            child: InkWell(
+              onTap: () {
+                Get.back();
+              },
+              child: CommonUtils.backView(white: false,padding: EdgeInsets.zero,margin: EdgeInsets.only(left: 20.w*3)),
             ),
           ),
+          title: Text(
+            widget.title,
+            style: TextStyle(
+                color: HhColors.blackTextColor,
+                fontSize: 17.sp*3,
+                fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: HhColors.whiteColor,
+          centerTitle: true,
+          elevation: 0,
         ),
-        title: Text(
-          widget.title,
-          style: TextStyle(
-              color: HhColors.blackTextColor,
-              fontSize: 17.sp*3,
-              fontWeight: FontWeight.bold),
+        body: Container(
+            width: 1.sw,
+            height: 1.sh,
+            padding: EdgeInsets.all(20.w),
+            child: WebViewWidget(controller: controller,)
         ),
-        backgroundColor: HhColors.whiteColor,
-        centerTitle: true,
-        elevation: 0,
-      ),
-      body: Container(
-        width: 1.sw,
-        height: 1.sh,
-          padding: EdgeInsets.all(20.w),
-          child: WebViewWidget(controller: controller,)
       ),
     );
+  }
+
+
+  //复写返回监听
+  Future<bool> onBackPressed() async {
+    bool exit = false;
+    if (await controller.canGoBack()) {
+      controller.goBack();
+      exit = false;
+    } else {
+      exit = true;
+    }
+    return Future.value(exit);
   }
 }

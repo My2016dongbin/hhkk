@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 import 'package:get/get.dart';
 import 'package:iot/bus/bus_bean.dart';
+import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/common/login/regist/regist_controller.dart';
 import 'package:iot/pages/common/web/WebViewPage.dart';
 import 'package:iot/utils/CommonUtils.dart';
@@ -366,7 +367,7 @@ class RegisterPage extends StatelessWidget {
                       duration: const Duration(milliseconds: 100),
                       scaleFactor: 1.2,
                       onPressed: () {
-                        Get.to(WebViewPage(title: '隐私协议', url: 'http://117.132.5.139:18034/admin-file/iot-test/public/2024/9/24/haohai_iot_privacy_agreement.html',));
+                        Get.to(WebViewPage(title: '隐私协议', url: CommonData.html));
                       },
                       child: Text('《浩海卡口平台隐私政策》',
                         style: TextStyle(color: HhColors.backBlueOutColor,fontSize: 12.sp*3,fontWeight: FontWeight.w500),
@@ -477,7 +478,7 @@ class RegisterPage extends StatelessWidget {
                               duration: const Duration(milliseconds: 100),
                               scaleFactor: 1.2,
                               onPressed: () {
-                                Get.to(WebViewPage(title: '隐私协议', url: 'http://117.132.5.139:18034/admin-file/iot-test/public/2024/9/24/haohai_iot_privacy_agreement.html',));
+                                Get.to(WebViewPage(title: '隐私协议', url: CommonData.html));
                               },
                               child: Text(
                                 '《浩海卡口平台隐私政策》',

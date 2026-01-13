@@ -233,7 +233,7 @@ class PersonalLoginPage extends StatelessWidget {
                             scaleFactor: 1.2,
                             onPressed: (){
                               // showWebDialog();
-                              Get.to(WebViewPage(title: '隐私协议', url: 'http://117.132.5.139:18034/admin-file/iot-test/public/2024/9/24/haohai_iot_privacy_agreement.html',));
+                              Get.to(WebViewPage(title: '隐私协议', url: CommonData.html));
                             },
                             child: Text('《浩海卡口平台隐私政策》',
                               style: TextStyle(color: HhColors.backBlueOutColor,fontSize: 12.sp*3,fontWeight: FontWeight.w500),
@@ -479,7 +479,7 @@ class PersonalLoginPage extends StatelessWidget {
                               duration: const Duration(milliseconds: 100),
                               scaleFactor: 1.2,
                               onPressed: () {
-                                Get.to(WebViewPage(title: '隐私协议', url: 'http://117.132.5.139:18034/admin-file/iot-test/public/2024/9/24/haohai_iot_privacy_agreement.html',));
+                                Get.to(WebViewPage(title: '隐私协议', url: CommonData.html));
                               },
                               child: Text(
                                 '《浩海卡口平台隐私政策》',

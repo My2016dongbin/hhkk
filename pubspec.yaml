@@ -137,6 +137,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
 
   assets:
+  - assets/file/
   - assets/images/common/
 
   # An image asset can refer to one or more resolution-specific "variants", see
