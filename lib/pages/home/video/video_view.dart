@@ -1096,15 +1096,15 @@ class VideoPage extends StatelessWidget {
                                   onDeviceTap: (device) {
                                     HhLog.d("${device["name"]}");
                                   },
-                                  onStarTap: (channel,star,deviceType) async {
+                                  onStarTap: (channel,star,deviceType,device) async {
                                     HhLog.d("$channel $star");
                                     HhLog.d("${channel["channelName"]} $star");
                                     final SharedPreferences prefs = await SharedPreferences.getInstance();
                                     String userId = prefs.getString(SPKeys().id)??"";
                                     if(star){
-                                      logic.collection(userId,"${channel["id"]}");
+                                      logic.collection(userId,"${channel["id"]}","${device["deviceId"]}");
                                     }else{
-                                      logic.disCollection(userId,"${channel["id"]}");
+                                      logic.disCollection(userId,"${channel["id"]}","${device["deviceId"]}");
                                     }
                                   },
                                   onChannelTap: (channel,checked) {
@@ -1150,7 +1150,7 @@ class TreeNodeWidget extends StatefulWidget {
   final int level;
   final ValueChanged<dynamic>? onTap;
   final ValueChanged<dynamic>? onDeviceTap;
-  final void Function(dynamic device, bool star,String deviceType)? onStarTap;
+  final void Function(dynamic channel, bool star,String deviceType,dynamic device)? onStarTap;
   final void Function(dynamic device, bool star)? onChannelTap;
 
   const TreeNodeWidget({
@@ -1268,7 +1268,7 @@ class TreeDeviceWidget extends StatefulWidget {
   final dynamic device;
   final int level;
   final ValueChanged<dynamic>? onTap;
-  final void Function(dynamic channel, bool star,String deviceType)? onStarTap;
+  final void Function(dynamic channel, bool star,String deviceType,dynamic device)? onStarTap;
   final void Function(dynamic channel, bool star)? onChannelTap;
 
   const TreeDeviceWidget({
@@ -1371,7 +1371,7 @@ class _TreeDeviceWidgetState extends State<TreeDeviceWidget> {
                 onChannelTap: widget.onChannelTap,
                 level: widget.level + 1,
                 onStarTap: (channel,star){
-                  widget.onStarTap!(channel, star,"${widget.device["deviceType"]}");
+                  widget.onStarTap!(channel, star,"${widget.device["deviceType"]}",widget.device);
                 },
               );
             }),

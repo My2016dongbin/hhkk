@@ -1238,11 +1238,11 @@ class MainPage extends StatelessWidget {
                               ),
                             ),
                             Expanded(
-                              child: ListView.builder(
+                              child: logic.fireLevelList.isNotEmpty?ListView.builder(
                                   padding: EdgeInsets.zero,
                                   scrollDirection: Axis.vertical,
                                   itemCount: logic.fireLevelList.length,
-                                  itemBuilder: fireLevelBuilder),
+                                  itemBuilder: fireLevelBuilder):Center(child: CommonUtils().noneWidgetSmall(top: 20.w*3)),
                             ),
                             SizedBox(height: 10.w*3,)
                           ],
@@ -1758,8 +1758,8 @@ class MainPage extends StatelessWidget {
                                     offset: details.globalPosition,
                                     direction: HhMenuDirection.top,
                                     itemDirection: HhItemDirection.vertical,
-                                    //backgroundImage: 'assets/images/common/icon_pop_background.png',
-                                    dx: 50.w*3,
+                                    backgroundImage: 'assets/images/common/pop_black_top.png',
+                                    dx: 60.w*3,
                                     items: [
                                       BouncingWidget(
                                         duration: const Duration(milliseconds: 100),
@@ -1771,7 +1771,7 @@ class MainPage extends StatelessWidget {
                                         child: Container(
                                           color:HhColors.trans,
                                           padding: EdgeInsets.fromLTRB(35.w*3, 10.w*3, 35.w*3, 10.w*3),
-                                          child: Text('真实', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                          child: Text('真实', style: TextStyle(color: HhColors.whiteColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
                                         ),
                                       ),
                                       BouncingWidget(
@@ -1784,9 +1784,10 @@ class MainPage extends StatelessWidget {
                                         child: Container(
                                           color:HhColors.trans,
                                           padding: EdgeInsets.fromLTRB(35.w*3, 10.w*3, 35.w*3, 10.w*3),
-                                          child: Text('误报', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                          child: Text('误报', style: TextStyle(color: HhColors.whiteColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
                                         ),
-                                      )
+                                      ),
+                                      SizedBox(height: 12.w*3,)
                                     ],
                                   );
                                 },

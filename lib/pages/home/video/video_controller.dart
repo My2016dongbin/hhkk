@@ -296,10 +296,11 @@ class VideoController extends GetxController {
     }
   }
 
-  Future<void> collection(String userId,String channelId) async {
+  Future<void> collection(String userId,String channelId,String deviceId) async {
     dynamic data = {
       "userId":userId,
       "channelId":channelId,
+      "deviceId":deviceId,
     };
     var result = await HhHttp().request(
         RequestUtils.collect,
@@ -317,10 +318,11 @@ class VideoController extends GetxController {
     }
   }
 
-  Future<void> disCollection(String userId,String channelId) async {
+  Future<void> disCollection(String userId,String channelId,String deviceId) async {
     dynamic data = {
       "userId":userId,
       "channelId":channelId,
+      "deviceId":deviceId,
     };
     var result = await HhHttp().request(
         RequestUtils.disCollect,

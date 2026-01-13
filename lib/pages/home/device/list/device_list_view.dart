@@ -317,7 +317,8 @@ class DeviceListPage extends StatelessWidget {
                                         context: context,
                                         offset: details.globalPosition,
                                         direction: HhMenuDirection.bottom,
-                                        backgroundImage: 'assets/images/common/icon_pop_background.png',
+                                        margin: EdgeInsets.only(top: 5.w*3),
+                                        backgroundImage: 'assets/images/common/pop_white_bottom.png',
                                         dx: 40.w*3,
                                         items: [
                                           PopMenuItem(title: "修改", image: "assets/images/common/icon_pop_edit.png", onTap: (){

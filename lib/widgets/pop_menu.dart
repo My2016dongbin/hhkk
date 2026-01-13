@@ -25,6 +25,7 @@ class HhActionMenu {
     required BuildContext context,
     required Offset offset,
     required List<Widget> items,
+    EdgeInsets ?margin,
     HhMenuDirection direction = HhMenuDirection.bottom,
     HhItemDirection itemDirection = HhItemDirection.horizontal,
     String? backgroundImage,
@@ -105,12 +106,15 @@ class HhActionMenu {
                         ),
 
                         /// 内容决定尺寸
-                        itemDirection==HhItemDirection.horizontal?Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: items,
-                        ):Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: items,
+                        Container(
+                          margin: margin??EdgeInsets.zero,
+                          child: itemDirection==HhItemDirection.horizontal?Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: items,
+                          ):Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: items,
+                          ),
                         ),
                       ],
                     ),

@@ -1140,11 +1140,17 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                     height: 26.w*3,
                     child: WebViewWidget(controller: webController,)),
                 const Spacer(),
-                Text(
-                  '${CommonUtils().parseNull("${model["tempMax"]}", "")}°',
-                  style: TextStyle(
-                      color: HhColors.blackTextColor,
-                      fontSize: 14.sp * 3),
+                Container(
+                  color: HhColors.trans,
+                  alignment: Alignment.center,
+                  width: 35.w*3,
+                  height: 35.w*3,
+                  child: Text(
+                    '${CommonUtils().parseNull("${model["tempMax"]}", "")}°',
+                    style: TextStyle(
+                        color: HhColors.blackTextColor,
+                        fontSize: 14.sp * 3),
+                  ),
                 ),
                 SizedBox(width: 3.w*3,),
                 Container(
@@ -1166,11 +1172,17 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(width: 5.w*3,),
-                Text(
-                  '${CommonUtils().parseNull("${model["tempMin"]}", "")}°',
-                  style: TextStyle(
-                      color: HhColors.blackTextColor,
-                      fontSize: 14.sp * 3),
+                Container(
+                  color: HhColors.trans,
+                  alignment: Alignment.center,
+                  width: 35.w*3,
+                  height: 35.w*3,
+                  child: Text(
+                    '${CommonUtils().parseNull("${model["tempMin"]}", "")}°',
+                    style: TextStyle(
+                        color: HhColors.blackTextColor,
+                        fontSize: 14.sp * 3),
+                  ),
                 ),
                 SizedBox(width: 10.w*3,),
               ],
