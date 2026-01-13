@@ -104,7 +104,7 @@ class MessageDetailPage extends StatelessWidget {
                   fromName: "我的位置",
                   toLat: double.parse("${end[0]}"),
                   toLng: double.parse("${end[1]}"),
-                  toName: "${logic.fireInfo['name']}",
+                  toName: "${logic.fireInfo['location']}",
                 );
                 EventBusUtil.getInstance().fire(HhLoading(show: false));
               }catch(e){

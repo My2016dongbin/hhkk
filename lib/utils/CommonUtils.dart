@@ -450,6 +450,7 @@ class CommonUtils {
     String? url,
     String? asset,
   }) {
+    HhLog.d("$url $asset");
     showCupertinoDialog(
         context: context,
         builder: (BuildContext context) {

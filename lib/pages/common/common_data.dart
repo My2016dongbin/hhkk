@@ -27,9 +27,9 @@ class CommonData{
   static BuildContext? context;
   static List<dynamic> checkedChannels = [{},{},{},{},{},{},{},{},];
   static String videoSearch = "";
-  static String webSocketUrl = "ws://117.132.5.139:18030/";
-  static String mqttIP = "222.173.83.190";
-  static int mqttPORT = 10060;
+  static String webSocketUrl = "ws://192.168.1.2:6003/";
+  static String mqttIP = "192.168.1.2";
+  static int mqttPORT = 11889;
   static String mqttAccount = "admin";
   static String mqttPassword = "QIyG0!bhfS";
   static String chatTopic = "/device/pole/chat/";//$id
