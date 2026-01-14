@@ -1416,19 +1416,21 @@ class CommonUtils {
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }*/
 
+    HhLog.d("item $item");
+
     if(item['productKey'] == '5MiTcinKdSasKdKQ'){
       ///道闸
       Get.to(()=>DaoZhaDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: DaoZhaDetailBinding());
-    // }else if(item['productKey'] == 'R45bbC4eBxm3555D'){//TODO 测试调试
+    // }else if(item['productKey'] == 'R45bbC4eBxm3555D'){
     }else if(item['productKey'] == 'Dhs5Kt8bbZaKrCCz'){
       ///运维箱
       Get.to(()=>YunWeiDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2),binding: YunWeiDetailBinding());
     }else if (item['productKey'] == CommonData.productKeyFireSmartPole){
-      ///浩海智慧立杆
-      Get.to(()=>LiGanDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: LiGanDeviceDetailBinding());
+      ///浩海智慧立杆-已对接
+      Get.to(()=>LiGanDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: LiGanDeviceDetailBinding());
     }else if (item['productKey'] == CommonData.productKeyFireRiskFactor){
-      ///火险因子监测站
-      Get.to(()=>HXYZDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: HXYZDeviceDetailBinding());
+      ///火险因子监测站-已对接
+      Get.to(()=>HXYZDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: HXYZDeviceDetailBinding());
     }else if (item['productKey'] == 'R45bbC4eBxm3555D'){
       ///一体机
       Get.to(()=>DeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: DeviceDetailBinding());

@@ -419,6 +419,7 @@ class HXYZDeviceDetailController extends GetxController {
       name.value = CommonUtils().parseNull(result["data"]["name"] ?? '', "");
       productName.value = result["data"]["productName"] ?? '';
       functionItem.value = item['functionItem'];
+      offlineTag.value = ("${item["status"]}"=="false" || "${item["status"]}"=="0");
     } else {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));

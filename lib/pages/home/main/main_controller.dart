@@ -275,6 +275,7 @@ class MainController extends GetxController {
   }
 
   Future<void> mainDeviceList() async {
+    getDeviceStatistics();
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic params = {
       "pageNo":devicePageNo,

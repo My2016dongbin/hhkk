@@ -409,7 +409,7 @@ class LiGanDeviceDetailController extends GetxController {
   Future<void> getDeviceInfo() async {
     Map<String, dynamic> map = {};
     map['id'] = id;
-    map['shareMark'] = shareMark;
+    // map['shareMark'] = shareMark;
     var result = await HhHttp()
         .request(RequestUtils.deviceInfo, method: DioMethod.get, params: map);
     HhLog.d("getDeviceInfo -- $id");
@@ -419,6 +419,7 @@ class LiGanDeviceDetailController extends GetxController {
       name.value = CommonUtils().parseNull(result["data"]["name"] ?? '', "");
       productName.value = result["data"]["productName"] ?? '';
       functionItem.value = item['functionItem'];
+      offlineTag.value = ("${item["status"]}"=="false" || "${item["status"]}"=="0");
     } else {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));

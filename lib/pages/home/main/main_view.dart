@@ -1725,7 +1725,14 @@ class MainPage extends StatelessWidget {
                               child: HhTap(
                                 overlayColor: HhColors.trans,
                                 onTapUp: (){
-                                  CommonUtils().parseRouteDetail(fireInfo);
+                                  HhLog.d("fireInfo $fireInfo");
+                                  CommonUtils().parseRouteDetail({
+                                    "deviceNo": fireInfo["deviceNo"],
+                                    "productKey": fireInfo["productKey"],
+                                    "id": fireInfo["deviceId"],
+                                    "shareMark": fireInfo["shareMark"],
+                                    "status": ("${fireInfo["status"]}"=="true" || "${fireInfo["status"]}"=="1")?"1":"0",
+                                  });
                                 },
                                 child: Container(
                                   alignment: Alignment.center,

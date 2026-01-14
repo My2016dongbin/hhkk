@@ -35,11 +35,10 @@ import 'package:webview_flutter/webview_flutter.dart';
 class HXYZDeviceDetailPage extends StatelessWidget {
   final logic = Get.find<HXYZDeviceDetailController>();
 
-  HXYZDeviceDetailPage(String deviceNo, String id, int shareMark, bool offlineTag, {super.key}) {
+  HXYZDeviceDetailPage(String deviceNo, String id, int shareMark, {super.key}) {
     logic.deviceNo = deviceNo;
     logic.id = id;
     logic.shareMark = shareMark;
-    logic.offlineTag.value = offlineTag;
   }
 
   Widget buildCustomPanel() {
