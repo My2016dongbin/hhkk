@@ -1397,26 +1397,6 @@ class CommonUtils {
   }
 
   Future<void> parseRouteDetail(item) async {
-    /*EventBusUtil.getInstance().fire(HhLoading(show: true));
-    Map<String, dynamic> map = {};
-    map['pageNo'] = 1;
-    map['pageSize'] = 10;
-    // map['label'] = "";
-    map['dictType'] = "device_type";
-    var result = await HhHttp().request(RequestUtils.productType,
-        method: DioMethod.get, params: map);
-    HhLog.d("productType -- $item");
-    HhLog.d("productType -- $map");
-    HhLog.d("productType -- $result");
-    EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if (result["code"] == 0) {
-      // EventBusUtil.getInstance().fire(HhToast(title: "操作成功", type: 1));
-    } else {
-      EventBusUtil.getInstance()
-          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
-    }*/
-
-    HhLog.d("item $item");
 
     if(item['productKey'] == '5MiTcinKdSasKdKQ'){
       ///道闸

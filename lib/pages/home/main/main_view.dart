@@ -1731,7 +1731,6 @@ class MainPage extends StatelessWidget {
                                     "productKey": fireInfo["productKey"],
                                     "id": fireInfo["deviceId"],
                                     "shareMark": fireInfo["shareMark"],
-                                    "status": ("${fireInfo["status"]}"=="true" || "${fireInfo["status"]}"=="1")?"1":"0",
                                   });
                                 },
                                 child: Container(
