@@ -33,6 +33,7 @@ class CommonData{
   static String mqttAccount = "admin";
   static String mqttPassword = "QIyG0!bhfS";
   static String chatTopic = "/device/pole/chat/";//$id
+  static String alarmTopic = "/deviceAlarm/kakouApp/";//$id
 
 
   ///高德地图key

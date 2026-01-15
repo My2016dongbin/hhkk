@@ -8,7 +8,6 @@ import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/home/device/detail/call/call_binding.dart';
 import 'package:iot/pages/home/device/detail/call/call_view.dart';
-import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
@@ -17,6 +16,7 @@ import 'package:iot/utils/SPKeys.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class MqttController extends GetxController {
   final Rx<bool> test = true.obs;
@@ -83,23 +83,42 @@ class MqttController extends GetxController {
 
     ///连接成功后，订阅主题
     client.subscribe('${CommonData.chatTopic}$id', MqttQos.atLeastOnce);
+    client.subscribe('${CommonData.alarmTopic}$id', MqttQos.atLeastOnce);
 
 
     ///监听消息更新，通过 updates 或 published 流处理收到的消息
-    client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> messages) {
+    client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> messages) async {
       try{
         final recMessage = messages[0].payload as MqttPublishMessage;
         final payload = MqttPublishPayload.bytesToStringAsString(recMessage.payload.message);
         HhLog.d('mqtt_page Received message: $payload from topic: ${messages[0].topic}   $clientId');
-        dynamic model = jsonDecode(payload);
-        //被呼叫
-        if(model['cmd'] == 'deviceReqChart'){
-          /// chatReceive(model['deviceNo'],model['reqChatCode']);
-          Get.to(()=>CallPage('${model['deviceNo']}','id',0),binding: CallBinding());
+        ///对讲Topic
+        if(messages[0].topic.contains(CommonData.chatTopic)){
+          dynamic model = jsonDecode(payload);
+          //被呼叫
+          if(model['cmd'] == 'deviceReqChart'){
+            /// chatReceive(model['deviceNo'],model['reqChatCode']);
+            Get.to(()=>CallPage('${model['deviceNo']}','id',0),binding: CallBinding());
+          }
+          //准备接听
+          if(model['cmd'] == "deviceReqSession"){
+            /// Get.to(()=>CallPage('${model['deviceNo']}','id',0),binding: CallBinding());
+          }
         }
-        //准备接听
-        if(model['cmd'] == "deviceReqSession"){
-          /// Get.to(()=>CallPage('${model['deviceNo']}','id',0),binding: CallBinding());
+        ///通知Topic
+        if(messages[0].topic.contains(CommonData.alarmTopic)){
+          dynamic model = jsonDecode(payload);
+          //设备报警
+          if("${model["messageType"]}" == "deviceAlarm"){
+            EventBusUtil.getInstance().fire(Message());
+            //语音播报
+            final SharedPreferences prefs = await SharedPreferences.getInstance();
+            bool voice = prefs.getBool(SPKeys().voice)??false;
+            if(voice){
+              final AudioPlayer audioPlayer = AudioPlayer();
+              audioPlayer.play(AssetSource('audio/common/find_fire.mp3'));
+            }
+          }
         }
       }catch(e){
         HhLog.e("mqtt_listen_error ${e.toString()}");

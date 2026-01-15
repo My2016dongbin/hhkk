@@ -368,6 +368,7 @@ class LiGanDeviceDetailController extends GetxController {
         // 添加播放器状态变化监听
         player.addListener(() {
           if (player.state == FijkState.started) {
+            playErrorTag.value = false;
             // 播放成功开始
             HhLog.d('Playback started successfully ${player.state}');
             //截图并保存
