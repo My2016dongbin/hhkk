@@ -435,7 +435,7 @@ class VideoPage extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: VideoPlayerWidget(
-                                  key: ValueKey("${CommonData.checkedChannels[index]["url"]}"),
+                                  key: ValueKey("${CommonData.checkedChannels[index]["url"]}${Random().nextInt(10000000)}"),
                                   url: "${CommonData.checkedChannels[index]["url"]}",
                                   onOuterTap: () {
                                     logic.videoIndex.value = index;
@@ -1366,7 +1366,7 @@ class _TreeDeviceWidgetState extends State<TreeDeviceWidget> {
               ? Column(
             children: List.generate(channels.length, (i) {
               return TreeChannelWidget(
-                key: Key("${channels[i]["id"]}${Random().nextInt(100)}"),
+                key: Key("${channels[i]["id"]}${Random().nextInt(10000000)}"),
                 channel: channels[i],
                 onChannelTap: widget.onChannelTap,
                 level: widget.level + 1,
