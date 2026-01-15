@@ -21,9 +21,8 @@ class MainController extends GetxController {
   final Rx<int> ?deviceOnlineRatio = 0.obs;
   //fireLevelIndex 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
   final Rx<int> fireLevelIndex = 5.obs;
-  StreamSubscription ?fireMessageSubscription;
-  StreamSubscription ?fireWarningSubscription;
   StreamSubscription ?messageSubscription;
+  StreamSubscription ?deviceListSubscription;
   final Rx<int> ?headerIndex = 0.obs;
   final RxList<String> ?headerList = ["assets/images/common/main_image.png"].obs;
   late List<dynamic> menuList = [];
@@ -60,6 +59,11 @@ class MainController extends GetxController {
         .listen((event) {
       getWarnCount();
     });
+    deviceListSubscription = EventBusUtil.getInstance()
+        .on<DeviceList>()
+        .listen((event) {
+      getDeviceStatistics();
+    });
     getWarnCount();
     getMenuList();
     getDeviceStatistics();
@@ -74,8 +78,7 @@ class MainController extends GetxController {
   @override
   Future<void> onClose() async {
     try{
-      fireMessageSubscription?.cancel();
-      fireWarningSubscription?.cancel();
+      deviceListSubscription?.cancel();
       messageSubscription?.cancel();
     }catch(e){
       //

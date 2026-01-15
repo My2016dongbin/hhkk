@@ -160,7 +160,7 @@ class DeviceAddPage extends StatelessWidget {
                               ),
                               hintText: '请输入SN码',
                               hintStyle: TextStyle(
-                                  color: HhColors.gray9TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                  color: HhColors.gray9TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                             ),
                             enabled: !logic.isEdit.value,
                             style:
@@ -234,7 +234,7 @@ class DeviceAddPage extends StatelessWidget {
                               counterText: '',
                               hintText: '请输入设备名称',
                               hintStyle: TextStyle(
-                                  color: HhColors.gray9TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                  color: HhColors.gray9TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                             ),
                             style:
                             TextStyle(color: HhColors.blackTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
@@ -443,7 +443,7 @@ class DeviceAddPage extends StatelessWidget {
                           "新增分组",
                           style: TextStyle(
                               color: HhColors.gray4TextColor,
-                              fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                              fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                         ),
                       ],
                     ),
