@@ -211,7 +211,7 @@ class MainController extends GetxController {
     HhLog.d("getFireLevelList -- $result");
     fireLevelList.value = [];
     if (result["data"] != null && result["data"]["list"] != null) {
-      fireLevelList.value = result["data"]["list"];
+      // fireLevelList.value = result["data"]["list"];///TODO 暂时隐藏火险等级列表
     } else {
       EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"]),type: 2));
       EventBusUtil.getInstance().fire(HhLoading(show: false));
