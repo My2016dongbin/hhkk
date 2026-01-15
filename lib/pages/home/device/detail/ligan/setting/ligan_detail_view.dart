@@ -2699,7 +2699,7 @@ class LiGanDetailPage extends StatelessWidget {
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                /*Container(
+                                Container(
                                   margin: EdgeInsets.fromLTRB(
                                       16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
                                   child: Row(
@@ -2723,13 +2723,13 @@ class LiGanDetailPage extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                ),*/
-                                /*logic.versionStatus.value
+                                ),
+                                logic.versionStatus.value
                                     ? Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: buildVersionChild(),
                                       )
-                                    : const SizedBox(),*/
+                                    : const SizedBox(),
                                 logic.versionStatus.value
                                     ? BouncingWidget(
                                       duration: const Duration(milliseconds: 100),
@@ -2778,7 +2778,11 @@ class LiGanDetailPage extends StatelessWidget {
                                 Get.back();
                               }, (){
                                 Get.back();
-                                logic.versionUpdate();
+                                if(logic.versionList.isNotEmpty){
+                                  logic.versionUpdate();
+                                }else{
+                                  EventBusUtil.getInstance().fire(HhToast(title: "当前版本已是该版本号"));
+                                }
                               });
                             },
                             child: Container(
@@ -3281,13 +3285,13 @@ class LiGanDetailPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          ///过冲恢复//锂电 liVR
+                          ///过充恢复//锂电 liVR
                           logic.energySetType.value==0?Container(
                             padding: EdgeInsets.fromLTRB(10.w*3, 10.w*3, 0.w*3, 10.w*3),
                             child:Row(
                               children: [
                                 Text(
-                                  '过冲恢复',
+                                  '过充恢复',
                                   style: TextStyle(
                                     color: HhColors.blackColor,
                                     fontSize: 15.sp * 3,

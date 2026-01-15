@@ -7,6 +7,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
+import 'package:iot/pages/common/map_location_search/map_location_search_binding.dart';
+import 'package:iot/pages/common/map_location_search/map_location_search_view.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
 import 'package:iot/utils/CommonUtils.dart';
 import 'package:iot/utils/EventBusUtils.dart';
@@ -16,6 +18,8 @@ import 'package:iot/utils/ParseLocation.dart';
 import 'package:iot/widgets/pop_menu.dart';
 import 'package:qc_amap_navi/qc_amap_navi.dart';
 import 'message_detail_controller.dart';
+import 'package:amap_flutter_map/amap_flutter_map.dart';
+import 'package:amap_flutter_base/amap_flutter_base.dart';
 
 class MessageDetailPage extends StatelessWidget {
   final logic = Get.find<MessageDetailController>();
@@ -251,26 +255,47 @@ class MessageDetailPage extends StatelessWidget {
                         children: [
                           Text('报警地点',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
                           SizedBox(height: 10.w*3,),
-                          HhTap(
-                            overlayColor: HhColors.trans,
-                            onTapUp: (){
-                              CommonUtils().showPictureDialog(Get.context, url:"${CommonData.endpoint}${logic.fireInfo['alarmImageUrl']}");
-                            },
-                            child: Image.network(
-                              "${CommonData.endpoint}${logic.fireInfo["alarmImageUrl"]}",
-                              width: 50.w*3,
-                              height: 50.w*3,
-                              fit: BoxFit.fill,
-                              errorBuilder: (BuildContext context,Object exception,StackTrace? stackTrace){
-                                return Image.asset(
-                                  "assets/images/common/icon_no_picture_big.png",
-                                  width: 1.sw,
-                                  height: 0.45.sw,
-                                  fit: BoxFit.fill,
-                                );
+                          Container(
+                            height: 0.45.sw,
+                            width: 1.sw,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4.w*3),
+                            ),
+                            clipBehavior: Clip.hardEdge,
+                            child: AMapWidget(
+                              apiKey: CommonData.aMapApiKey,
+                              privacyStatement: const AMapPrivacyStatement(
+                                  hasContains: true, hasShow: true, hasAgree: true),
+                              onMapCreated: logic.onGDMapCreated,
+                              mapType: MapType.normal,
+                              tiltGesturesEnabled: false,
+                              buildingsEnabled: true,
+                              compassEnabled: false,
+                              scaleEnabled: false,
+                              rotateGesturesEnabled: false,
+                              zoomGesturesEnabled: false,
+                              scrollGesturesEnabled: false,
+                              markers: logic.aMapMarkers.toSet(),
+                              onTap: (LatLng latLng){
+                                FocusScope.of(Get.context!).requestFocus(FocusNode());
+                                Get.to(
+                                        () => MapLocationSearchPage(),
+                                    binding: MapLocationSearchBinding(),
+                                    arguments: {
+                                      "name": CommonUtils().parseNull("${logic.fireInfo['deviceName']}", "")
+                                    });
+                              },
+                              onPoiTouched: (poi){
+                                FocusScope.of(Get.context!).requestFocus(FocusNode());
+                                Get.to(
+                                        () => MapLocationSearchPage(),
+                                    binding: MapLocationSearchBinding(),
+                                    arguments: {
+                                      "name": CommonUtils().parseNull("${logic.fireInfo['deviceName']}", "")
+                                    });
                               },
                             ),
-                          )
+                          ),
                         ],
                       ),
                     ),

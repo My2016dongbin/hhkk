@@ -88,7 +88,7 @@ class LiGanDetailController extends GetxController {
 
   //锂电
   final Rx<double> liVP = 0.0.obs;//太阳能 过充保护
-  final Rx<double> liVR = 0.0.obs;//太阳能 过冲恢复
+  final Rx<double> liVR = 0.0.obs;//太阳能 过充恢复
   final Rx<int> liS = 0.obs;//太阳能 零度充电 （正常、禁冲、慢充）index
   final List<String> liSList = ["正常","禁冲","慢充"];//太阳能 零度充电 （正常、禁冲、慢充）
   //液体、胶体、AMG
@@ -240,6 +240,7 @@ class LiGanDetailController extends GetxController {
       time2Controller!.text = weatherDelay.value;
       time3Controller!.text = soilDelay.value;
       deviceVer.value = '${config["deviceVer"]}';
+      versionStr.value = '${config["deviceVer"]}';
       deviceFireLevel.value = config["deviceFireLevel"];
       fireLevel.value = deviceFireLevel.value;
       direction.value = config["ledDirection"]=="down"?1:0;
@@ -255,7 +256,7 @@ class LiGanDetailController extends GetxController {
       energySetType.value = config["energySetType"];//太阳能 能源类型（锂电、液体、胶体、AMG）
       //锂电
       liVP.value = config["liVP"];//太阳能 过充保护
-      liVR.value = config["liVR"];//太阳能 过冲恢复
+      liVR.value = config["liVR"];//太阳能 过充恢复
       liS.value = config["liS"];//太阳能 零度充电 （正常、禁冲、慢充）
       //液体、胶体、AMG
       equalV.value = config["equalV"];//太阳能 均衡充电压
