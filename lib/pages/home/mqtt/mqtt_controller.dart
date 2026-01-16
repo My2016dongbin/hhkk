@@ -29,7 +29,7 @@ class MqttController extends GetxController {
   void onClose() {
     try {
       ///通过 disconnect 方法安全断开连接
-      // client.disconnect();
+      client.disconnect();
     } catch (e) {
       //
     }
