@@ -42,6 +42,7 @@ class CallController extends GetxController {
   late WebSocketManager manager;
   late String? endpoint;
   late dynamic item = {};
+  late StreamSubscription? chatCloseSubscription;
 
   @override
   void onInit() {
@@ -50,6 +51,10 @@ class CallController extends GetxController {
     });
     /*callStatus.value = true;
     timer();*/
+    chatCloseSubscription =
+        EventBusUtil.getInstance().on<ChatClose>().listen((event) {
+          chatClose();
+        });
     super.onInit();
   }
 
@@ -57,6 +62,14 @@ class CallController extends GetxController {
   void dispose() {
     callStatus.value = false;
     super.dispose();
+  }
+
+  @override
+  void onClose() {
+    chatCloseSubscription?.cancel();
+    player.release();
+    manager.dispose();
+    super.onClose();
   }
 
 

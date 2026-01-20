@@ -96,6 +96,7 @@ class HXYZDeviceDetailController extends GetxController {
   late StreamSubscription? scaleSubscription;
   late StreamSubscription? deviceSubscription;
   late StreamSubscription? recordSubscription;
+  late StreamSubscription? chatCloseSubscription;
   late TransformationController transformationController = TransformationController();
   late ScreenshotController screenshotController = ScreenshotController();
   late ScreenRecorderController recordController = ScreenRecorderController(
@@ -161,6 +162,10 @@ class HXYZDeviceDetailController extends GetxController {
         EventBusUtil.getInstance().on<Record>().listen((event) {
           recordTag2.value = true;
     });
+    chatCloseSubscription =
+        EventBusUtil.getInstance().on<ChatClose>().listen((event) {
+          chatClose();
+        });
 
     ///TODO 测试缓存视频流截图
     /*Future.delayed(const Duration(milliseconds: 5000),(){
@@ -168,6 +173,18 @@ class HXYZDeviceDetailController extends GetxController {
     });*/
 
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    moveSubscription?.cancel();
+    scaleSubscription?.cancel();
+    deviceSubscription?.cancel();
+    recordSubscription?.cancel();
+    chatCloseSubscription?.cancel();
+    player.release();
+    manager.dispose();
+    super.onClose();
   }
 
   saveImageToGallery() async {

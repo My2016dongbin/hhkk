@@ -97,6 +97,9 @@ class DeviceInfo{
 class Record{
   Record();
 }
+class ChatClose{
+  ChatClose();
+}
 class Share{
   dynamic model;
   Share({required this.model});
