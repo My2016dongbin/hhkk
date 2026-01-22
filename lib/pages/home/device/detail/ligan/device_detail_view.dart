@@ -1743,10 +1743,12 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                                   logic.videoTag.value = !logic.videoTag.value;
                                   if (logic.videoTag.value) {
                                     //开启录像
-                                    logic.startRecord();
+                                    // logic.startRecord();
+                                    logic.startRecordFFMPEG(logic.url);
                                   } else {
                                     //关闭录像
-                                    logic.stopRecord();
+                                    // logic.stopRecord();
+                                    logic.stopRecordFFMPEG();
                                   }
                                 },
                                 child: Container(

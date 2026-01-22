@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:draggable_widget/draggable_widget.dart';
+import 'package:ffmpeg_kit_flutter_full_gpl/ffmpeg_kit.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/physics.dart';
@@ -118,6 +119,7 @@ class LiGanDeviceDetailController extends GetxController {
     ..setBackgroundColor(HhColors.trans)..runJavaScript(
         "document.documentElement.style.overflow = 'hidden';"
             "document.body.style.overflow = 'hidden';");
+  late String url = "";
 
   @override
   void onInit() {
@@ -177,13 +179,23 @@ class LiGanDeviceDetailController extends GetxController {
 
   @override
   void onClose() {
+    HhLog.d("onClose()");
     moveSubscription?.cancel();
     scaleSubscription?.cancel();
     deviceSubscription?.cancel();
     recordSubscription?.cancel();
     chatCloseSubscription?.cancel();
     player.release();
-    manager.dispose();
+    try{
+      manager.dispose();
+    }catch(e){
+      //
+    }
+    try{
+      stopRecordFFMPEG();
+    }catch(e){
+      //
+    }
     super.onClose();
   }
 
@@ -285,6 +297,66 @@ class LiGanDeviceDetailController extends GetxController {
     }
   }
 
+  Future<void> startRecordFFMPEG(String url) async {
+    // 你的 UI/计时逻辑
+    recordController.start();
+    videoSecond.value = 0;
+    videoMinute.value = 0;
+    runRecordTimer();
+
+    // 生成保存路径
+    final tempDir = await getDownloadsDirectory();
+    final filePath =
+        '${tempDir!.path}/video_${DateTime.now().millisecondsSinceEpoch}.mp4';
+
+    // FFmpeg 命令，一行字符串
+    final cmd = '-y '
+        '-rw_timeout 5000000 '
+        '-f flv -i "$url" '
+        '-c:v libx264 -preset ultrafast -tune zerolatency '
+        '-c:a aac -b:a 128k '
+        '-movflags frag_keyframe+empty_moov '
+        '"$filePath"';
+
+    HhLog.d("FFmpeg cmd: $cmd");
+
+    // 执行命令
+    FFmpegKit.executeAsync(
+      cmd,
+          (session) async {
+        final rc = await session.getReturnCode();
+        final logs = await session.getAllLogsAsString();
+        HhLog.d("FFmpeg logs:\n$logs");
+
+        // 判断成功或用户取消
+        if (rc?.isValueSuccess() == true || rc?.getValue() == 255) {
+          HhLog.d('录制完成或已取消，文件可用: $filePath');
+
+          // 确认 FFmpeg 完全结束再保存
+          if(videoSecond.value < 5){
+            EventBusUtil.getInstance().fire(HhToast(title: '录像时长太短请重新录制',type: 0));
+            return;
+          }
+          final result = await ImageGallerySaver.saveFile(filePath);
+          if (result['isSuccess'] == true) {
+            EventBusUtil.getInstance().fire(HhToast(title: '录像已保存至相册',type: 0));
+          } else {
+            EventBusUtil.getInstance().fire(HhToast(title: '录制失败',type: 0));
+          }
+        } else {
+          HhLog.e('录制失败 rc=$rc');
+          EventBusUtil.getInstance().fire(HhToast(title: '视频播放异常请重试',type: 0));
+          videoTag.value = false;
+        }
+      },
+    );
+
+  }
+
+  void stopRecordFFMPEG(){
+    FFmpegKit.cancel();
+  }
+
   void fetchPageDevice(int pageKey) {
     List<Device> newItems = [
       Device("人员入侵报警", "08:59:06", "", "", true, true),
@@ -343,7 +415,7 @@ class LiGanDeviceDetailController extends GetxController {
     HhLog.d("getPlayUrl result -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       try {
-        String url = /*RequestUtils.rtsp + */ "${result["data"]["appRelativePath"]}";
+        url = /*RequestUtils.rtsp + */ "${result["data"]["appRelativePath"]}";
         playLoadingTag.value = false;
         playTag.value = false;
         player.release();
