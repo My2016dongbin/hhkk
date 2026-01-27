@@ -686,7 +686,7 @@ class LiGanDetailPage extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Slider(
-                                            value: logic.voiceHuman.value * 1.0,
+                                            value: min(5,logic.voiceHuman.value * 1.0),
                                             max: 5,
                                             min: 0,
                                             thumbColor: HhColors.mainBlueColor,
@@ -909,7 +909,7 @@ class LiGanDetailPage extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Slider(
-                                            value: logic.voiceCar.value * 1.0,
+                                            value: min(5,logic.voiceCar.value * 1.0),
                                             max: 5,
                                             min: 0,
                                             thumbColor: HhColors.mainBlueColor,
@@ -1132,7 +1132,7 @@ class LiGanDetailPage extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Slider(
-                                            value: logic.voiceCap.value * 1.0,
+                                            value: min(5,logic.voiceCap.value * 1.0),
                                             max: 5,
                                             min: 0,
                                             thumbColor: HhColors.mainBlueColor,
@@ -1333,7 +1333,7 @@ class LiGanDetailPage extends StatelessWidget {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Slider(
-                                            value: logic.speed.value * 1.0,
+                                            value: min(10,logic.speed.value * 1.0),
                                             max: 10,
                                             min: 0,
                                             thumbColor: HhColors.mainBlueColor,

@@ -76,7 +76,7 @@ class DeviceAddController extends GetxController {
       location.value = model['location']??"";
 
       if(model['longitude']!=null && model['longitude']!=0 && model['longitude']!=""){
-        List<double> map = ParseLocation.parseTypeToBd09(double.parse("${model['latitude']}"), double.parse("${model['longitude']}"),"${model['coordinateType']}"??"0");
+        List<double> map = ParseLocation.parseTypeToGcj02(double.parse("${model['latitude']}"), double.parse("${model['longitude']}"),"${model['coordinateType']}"??"0");
         model['longitude'] = "${map[1]}";
         model['latitude'] = "${map[0]}";
 
@@ -94,6 +94,7 @@ class DeviceAddController extends GetxController {
     locationSubscription?.cancel();
     spaceListSubscription?.cancel();
     toastSubscription?.cancel();
+    super.onClose();
   }
 
 

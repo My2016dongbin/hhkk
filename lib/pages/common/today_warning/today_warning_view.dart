@@ -193,7 +193,7 @@ class TodayWarningPage extends StatelessWidget {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8.w*3),
                                   ),
-                                  child: item['alarmType']=='openCap'||item['alarmType']=='openSensor'||item['alarmType']=='tilt'?Image.asset(
+                                  child: item['alarmType']=='openCap'||item['alarmType']=='openSensor'||item['alarmType']=='tilt'||item['alarmType']=='humanSensor'?Image.asset(
                                     "assets/images/common/icon_message_back.png",
                                     width: 113.w*3,
                                     height: 70.w*3,
@@ -225,16 +225,24 @@ class TodayWarningPage extends StatelessWidget {
                                   alignment:Alignment.center,
                                   child: Image.asset(
                                     "assets/images/common/icon_message_y.png",
-                                    width: 30.w*3,
-                                    height: 30.w*3,
+                                    width: 113.w*3,
+                                    height: 70.w*3,
                                     fit: BoxFit.fill,
                                   ),
                                 ):item['alarmType']=='openCap'||item['alarmType']=='openSensor'?Align(
                                   alignment:Alignment.center,
                                   child: Image.asset(
                                     "assets/images/common/icon_message_open.png",
-                                    width: 30.w*3,
-                                    height: 30.w*3,
+                                    width: 113.w*3,
+                                    height: 70.w*3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ):item['alarmType']=='humanSensor'?Align(
+                                  alignment:Alignment.center,
+                                  child: Image.asset(
+                                    "assets/images/common/icon_message_human_sensor.png",
+                                    width: 113.w*3,
+                                    height: 70.w*3,
                                     fit: BoxFit.fill,
                                   ),
                                 ):const SizedBox(),

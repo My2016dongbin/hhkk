@@ -462,7 +462,10 @@ class DeviceAddPage extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: (){
-                    Get.to(() => LocationPage(), binding: LocationBinding());
+                    Get.to(() => LocationPage(), binding: LocationBinding(),arguments: logic.location.value.contains("点击选择")?null:{
+                      "latitude":logic.latitude.value,
+                      "longitude":logic.longitude.value,
+                    });
                   },
                   child: Container(
                     width: 1.sw,

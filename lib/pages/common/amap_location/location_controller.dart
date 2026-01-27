@@ -26,15 +26,22 @@ class LocationController extends GetxController {
   final RxSet<Marker> aMapMarkers = <Marker>{}.obs;
   late bool forDynamicParameter = false;
   late String dynamicParameterCode = "";
+  dynamic arg;
 
   @override
   Future<void> onInit() async {
-    dynamic arg = Get.arguments;
+    arg = Get.arguments;
     if(arg!=null){
       forDynamicParameter = arg["forDynamicParameter"]??false;
       dynamicParameterCode = arg["dynamicParameterCode"]??"";
+
     }
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
   }
 
   /// 创建完成回调
@@ -43,6 +50,13 @@ class LocationController extends GetxController {
 
     if(CommonData.latitude!=0){
       gdMapController.moveCamera(CameraUpdate.newLatLngZoom(LatLng(CommonData.latitude!,CommonData.longitude!), 14));
+    }
+
+    ///初始化地图位置
+    if(arg["latitude"]!=null && arg["longitude"]!=null){
+      updateMarker(LatLng(arg["latitude"], arg["longitude"]));
+      gdMapController.moveCamera(CameraUpdate.newLatLngZoom(LatLng(arg["latitude"], arg["longitude"]), 16));
+      searchLocation(arg["longitude"],arg["latitude"]);
     }
   }
 

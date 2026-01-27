@@ -222,6 +222,9 @@ class MessageDetailPage extends StatelessWidget {
                           HhTap(
                             overlayColor: HhColors.trans,
                             onTapUp: (){
+                              if(logic.fireInfo["alarmImageUrl"]==null){
+                                return;
+                              }
                               CommonUtils().showPictureDialog(Get.context, url:"${CommonData.endpoint}${logic.fireInfo['alarmImageUrl']}");
                             },
                             child: Image.network(
