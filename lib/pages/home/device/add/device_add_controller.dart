@@ -82,6 +82,9 @@ class DeviceAddController extends GetxController {
 
         longitude.value = double.parse(model['longitude']);
         latitude.value = double.parse(model['latitude']);
+        if(location.value.isEmpty){
+          parseLocation(longitude.value!,latitude.value!);
+        }
         HhLog.d("isEdit ${longitude.value},${latitude.value}");
         // locSearched();
       }
@@ -235,4 +238,14 @@ class DeviceAddController extends GetxController {
       futureStep();
     });
   }
+
+  Future<void> parseLocation(double lng,double lat) async {
+    var result = await HhHttp().request(
+        "https://restapi.amap.com/v3/geocode/regeo?key=a94a9e0e144b7a5cf77c229713275500&location=$lng,$lat&extensions=all&radius=1000",
+        method: DioMethod.get);
+
+    HhLog.d("searchLocation -- $result");
+    location.value = result["regeocode"]["formatted_address"];
+  }
+
 }

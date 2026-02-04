@@ -1397,6 +1397,7 @@ class CommonUtils {
   }
 
   Future<void> parseRouteDetail(item) async {
+    HhLog.d("parseRouteDetail $item");
 
     if(item['productKey'] == '5MiTcinKdSasKdKQ'){
       ///道闸
@@ -1415,7 +1416,8 @@ class CommonUtils {
       ///一体机
       Get.to(()=>DeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: DeviceDetailBinding());
     }else{
-      Get.to(()=>DeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: DeviceDetailBinding());
+      ///默认火险因子监测站-已对接
+      Get.to(()=>HXYZDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: HXYZDeviceDetailBinding());
     }
   }
 

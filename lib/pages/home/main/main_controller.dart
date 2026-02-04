@@ -198,20 +198,22 @@ class MainController extends GetxController {
 
   Future<void> getFireLevelList() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
+    dynamic params = {
+      "pageNo":"1",
+      "pageSize":"100",
+      "fireLevel":"${fireLevelIndex.value}",
+    };
     var result = await HhHttp().request(
       RequestUtils.fireLevelList,
       method: DioMethod.get,
-      params: {
-        "pageNo":"1",
-        "pageSize":"100",
-        "fireLevel":"${fireLevelIndex.value}",
-      }
+      params: params
     );
     EventBusUtil.getInstance().fire(HhLoading(show: false));
+    HhLog.d("getFireLevelList -- $params");
     HhLog.d("getFireLevelList -- $result");
     fireLevelList.value = [];
     if (result["data"] != null && result["data"]["list"] != null) {
-      // fireLevelList.value = result["data"]["list"];///TODO 暂时隐藏火险等级列表
+      fireLevelList.value = result["data"]["list"];
     } else {
       EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"]),type: 2));
       EventBusUtil.getInstance().fire(HhLoading(show: false));

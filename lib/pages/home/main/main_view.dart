@@ -16,6 +16,8 @@ import 'package:iot/pages/common/today_warning/today_warning_view.dart';
 import 'package:iot/pages/home/cell/HhTap.dart';
 import 'package:iot/pages/home/device/add/device_add_binding.dart';
 import 'package:iot/pages/home/device/add/device_add_view.dart';
+import 'package:iot/pages/home/device/detail/huoxianyinzi/device_detail_binding.dart';
+import 'package:iot/pages/home/device/detail/huoxianyinzi/device_detail_view.dart';
 import 'package:iot/pages/home/device/list/device_list_binding.dart';
 import 'package:iot/pages/home/device/list/device_list_view.dart';
 import 'package:iot/pages/home/space/space_binding.dart';
@@ -1329,7 +1331,8 @@ class MainPage extends StatelessWidget {
   Widget deviceListItemBuilder(BuildContext context, item, int index) {
     return InkWell(
       onTap: () async {
-        CommonUtils().parseRouteDetail(item);
+        ///默认火险因子监测站-已对接（主页火险因子设备列表）
+        Get.to(()=>HXYZDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: HXYZDeviceDetailBinding());
       },
       child: Container(
         margin: EdgeInsets.only(top: 17.w*3),
