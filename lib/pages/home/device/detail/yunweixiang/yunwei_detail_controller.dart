@@ -355,7 +355,7 @@ class YunWeiDetailController extends GetxController {
   Future<void> getDeviceInfo() async {
     Map<String, dynamic> map = {};
     map['id'] = id;
-    map['shareMark'] = shareMark;
+    // map['shareMark'] = shareMark;
     var result = await HhHttp()
         .request(RequestUtils.deviceInfo, method: DioMethod.get, params: map);
     HhLog.d("getDeviceInfo -- $id");
@@ -507,7 +507,7 @@ class YunWeiDetailController extends GetxController {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     Map<String, dynamic> map = {};
     map['id'] = '${item['id']}';
-    map['shareMark'] = '${item['shareMark']}';
+    // map['shareMark'] = '${item['shareMark']}';
     var result = await HhHttp().request(RequestUtils.deviceDelete,
         method: DioMethod.delete, params: map);
     EventBusUtil.getInstance().fire(HhLoading(show: false));

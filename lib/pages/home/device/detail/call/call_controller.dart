@@ -76,7 +76,7 @@ class CallController extends GetxController {
   Future<void> getDeviceInfo() async {
     Map<String, dynamic> map = {};
     map['id'] = id;
-    map['shareMark'] = shareMark;
+    // map['shareMark'] = shareMark;
     var result = await HhHttp().request(
         RequestUtils.deviceInfo, method: DioMethod.get, params: map);
     HhLog.d("getDeviceInfo -- $id");

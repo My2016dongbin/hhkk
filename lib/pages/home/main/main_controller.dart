@@ -63,6 +63,8 @@ class MainController extends GetxController {
         .on<DeviceList>()
         .listen((event) {
       getDeviceStatistics();
+      getDeviceStatistics();
+      getFireLevelStatistics();
     });
     getWarnCount();
     getMenuList();

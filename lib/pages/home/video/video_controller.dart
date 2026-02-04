@@ -218,7 +218,7 @@ class VideoController extends GetxController {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     Map<String, dynamic> map = {};
     map['id'] = '${item['id']}';
-    map['shareMark'] = '${item['shareMark']}';
+    // map['shareMark'] = '${item['shareMark']}';
     var result = await HhHttp().request(RequestUtils.deviceDelete,method: DioMethod.delete,params: map);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("deleteDevice -- $map");
