@@ -142,6 +142,7 @@ class MainController extends GetxController {
       try{
         String number = "${result["data"]??0}";
         messageCount.value = int.parse(number)>99?"99+":number;
+        HhLog.d("getWarnCount messageCount.value --  ${messageCount.value}");
       }catch(e){
         HhLog.e("getWarnCount error $e");
       }
