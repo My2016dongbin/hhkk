@@ -1653,8 +1653,8 @@ class MessagePage extends StatelessWidget {
                       Get.back();
                     },
                     child: Container(
-                      padding: EdgeInsets.fromLTRB(20.w, 20.w, 30.w, 20.w),
-                      margin: EdgeInsets.only(right: 10.w),
+                      color: HhColors.trans,
+                      padding: EdgeInsets.fromLTRB(40.w, 30.w, 40.w, 40.w),
                       child: Image.asset(
                         "assets/images/common/ic_x.png",
                         width: 15.w*3,
