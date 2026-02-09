@@ -1416,8 +1416,10 @@ class CommonUtils {
       ///一体机
       Get.to(()=>DeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: DeviceDetailBinding());
     }else{
-      ///默认火险因子监测站-已对接
-      Get.to(()=>HXYZDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: HXYZDeviceDetailBinding());
+      /*///默认火险因子监测站-已对接
+      Get.to(()=>HXYZDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: HXYZDeviceDetailBinding());*/
+      ///默认浩海智慧立杆-已对接
+      Get.to(()=>LiGanDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: LiGanDeviceDetailBinding());
     }
   }
 

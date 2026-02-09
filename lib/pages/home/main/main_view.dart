@@ -1474,7 +1474,8 @@ class MainPage extends StatelessWidget {
     return HhTap(
       overlayColor: HhColors.trans,
       onTapUp: () {
-        CommonUtils().parseRouteDetail(logic.fireLevelList.value[index]);
+        //CommonUtils().parseRouteDetail(logic.fireLevelList.value[index]);
+        Get.to(()=>HXYZDeviceDetailPage('${logic.fireLevelList.value[index]['deviceNo']}','${logic.fireLevelList.value[index]['id']}',logic.fireLevelList.value[index]['shareMark']??2,),binding: HXYZDeviceDetailBinding());
       },
       child: Container(
         margin: EdgeInsets.fromLTRB(15.w * 3, 12.w * 3, 15.w * 3, 0),
@@ -1700,8 +1701,8 @@ class MainPage extends StatelessWidget {
                               },
                               child: Image.network(
                                 "${CommonData.endpoint}${fireInfo["alarmImageUrl"]}",
-                                width: 50.w*3,
-                                height: 50.w*3,
+                                width: 1.sw,
+                                height: 0.45.sw,
                                 fit: BoxFit.fill,
                                 errorBuilder: (BuildContext context,Object exception,StackTrace? stackTrace){
                                   return Image.asset(

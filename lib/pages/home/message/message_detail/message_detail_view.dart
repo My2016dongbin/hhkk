@@ -229,8 +229,8 @@ class MessageDetailPage extends StatelessWidget {
                             },
                             child: Image.network(
                               "${CommonData.endpoint}${logic.fireInfo["alarmImageUrl"]}",
-                              width: 50.w*3,
-                              height: 50.w*3,
+                              width: 1.sw,
+                              height: 0.45.sw,
                               fit: BoxFit.fill,
                               errorBuilder: (BuildContext context,Object exception,StackTrace? stackTrace){
                                 return Image.asset(

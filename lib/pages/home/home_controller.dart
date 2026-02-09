@@ -415,9 +415,9 @@ class HomeController extends GetxController {
       EventBusUtil.getInstance().fire(HhLoading(show: true, title: '正在检查更新…'));
     }
     Map<String, dynamic> map = {};
-    map['operatingSystem'] = Platform.isAndroid?"Android":"IOS";
+    map['operatingSystem'] = Platform.isAndroid?"HarmonyOS":"IOS";
     map['version'] = buildNumber.value;
-    map['type'] = CommonData.test ? (CommonData.personal ? 'testPersonal' : 'testCompany') : (CommonData.personal ? 'personal' : 'company');
+    map['type'] = "testCompany";
     var result = await HhHttp()
         .request(RequestUtils.versionNew, method: DioMethod.get, params: map);
     if(info==true){
