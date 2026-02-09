@@ -138,9 +138,13 @@ class MainController extends GetxController {
     var result = await HhHttp()
         .request(RequestUtils.unReadCountWarn, method: DioMethod.get);
     HhLog.d("getWarnCount --  $result");
-    if (result["code"] == 0) {
-      int number = result["data"]??0;
-      messageCount.value = number>99?"99+":"$number";
+    if ("${result["code"]}" == "0") {
+      try{
+        String number = "${result["data"]??0}";
+        messageCount.value = int.parse(number)>99?"99+":number;
+      }catch(e){
+        HhLog.e("getWarnCount error $e");
+      }
     } else {
       //EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
