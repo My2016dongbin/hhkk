@@ -539,7 +539,7 @@ class HXYZDeviceDetailController extends GetxController {
     ///火险因子信息数据
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
-      "deviceId":id,
+      "deviceCode":deviceNo,
       "pageNo":dataPageNum,
       "pageSize":1,
     };

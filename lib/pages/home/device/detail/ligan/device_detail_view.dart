@@ -1944,14 +1944,14 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                 Row(
                   children: [
                     Text("电量",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text(logic.energyQuantity.value,style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
+                    Expanded(child: Text("${logic.energyQuantity.value}%",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
                 CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
                 Row(
                   children: [
                     Text("当日用电量",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text(logic.energyConsumption.value,style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
+                    Expanded(child: Text("${logic.energyConsumption.value}KWH",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
               ],

@@ -1919,14 +1919,14 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                 Row(
                   children: [
                     Text("电量",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text(logic.energyQuantity.value,style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
+                    Expanded(child: Text("${logic.energyQuantity.value}%",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
                 CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
                 Row(
                   children: [
                     Text("当日用电量",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text(logic.energyConsumption.value,style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
+                    Expanded(child: Text("${logic.energyConsumption.value}KWH",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
               ],
@@ -2208,13 +2208,13 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                     Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["rainfall"]??"0"}",3)}mm",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
+                /*CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
                 Row(
                   children: [
                     Text("降雪",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
                     Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["snowfall"]??"0"}",3)}mm",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
-                ),
+                ),*/
               ],
             ),
           ),
