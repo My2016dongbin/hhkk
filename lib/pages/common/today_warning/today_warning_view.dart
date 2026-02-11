@@ -303,13 +303,13 @@ class TodayWarningPage extends StatelessWidget {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            CommonUtils().parseLongTimeYearDay('${item['createTime']}'),
+                                            CommonUtils().parseLongTimeYearDay('${item['alarmTimestamp']}'),
                                             style: TextStyle(
                                                 color: HhColors.gray9TextColor, fontSize: 12.sp*3),
                                           ),
                                           SizedBox(height: 5.w*3,),
                                           Text(
-                                            CommonUtils().parseLongTimeHourMinuteSecond('${item['createTime']}'),
+                                            CommonUtils().parseLongTimeHourMinuteSecond('${item['alarmTimestamp']}'),
                                             style: TextStyle(
                                                 color: HhColors.gray9TextColor, fontSize: 12.sp*3),
                                           ),
