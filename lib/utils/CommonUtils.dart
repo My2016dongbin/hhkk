@@ -460,24 +460,29 @@ class CommonUtils {
             color: HhColors.blackRealColor,
             child: Stack(
               children: [
-                Container(
-                  margin: EdgeInsets.only(top: 80.h),
-                  width: 1.sw,
-                  child: Center(
-                    child: PhotoView(
-                      imageProvider: /*url==null?AssetImage(asset!):*/
-                          NetworkImage(url!),
-                      errorBuilder: (c, o, s) {
-                        return Container(
-                          clipBehavior: Clip.hardEdge,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(4.w * 3)),
-                          child: Image.asset(
-                            "assets/images/common/ic_message_no.png",
-                            fit: BoxFit.fill,
-                          ),
-                        );
-                      },
+                GestureDetector(
+                  onTap: (){
+                    Get.back();
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(top: 80.h),
+                    width: 1.sw,
+                    child: Center(
+                      child: PhotoView(
+                        imageProvider: /*url==null?AssetImage(asset!):*/
+                            NetworkImage(url!),
+                        errorBuilder: (c, o, s) {
+                          return Container(
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4.w * 3)),
+                            child: Image.asset(
+                              "assets/images/common/ic_message_no.png",
+                              fit: BoxFit.fill,
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -508,8 +513,7 @@ class CommonUtils {
                             Get.back();
                           },
                           child: Container(
-                            margin: EdgeInsets.fromLTRB(23.w * 3, 0, 0, 0),
-                            padding: EdgeInsets.fromLTRB(0, 10.w, 20.w, 10.w),
+                            padding: EdgeInsets.fromLTRB(23.w * 3, 10.w, 20.w * 3, 10.w),
                             color: HhColors.trans,
                             child: Image.asset(
                               "assets/images/common/back.png",
