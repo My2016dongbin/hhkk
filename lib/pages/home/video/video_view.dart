@@ -435,7 +435,8 @@ class VideoPage extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: VideoPlayerWidget(
-                                  key: ValueKey("${CommonData.checkedChannels[index]["url"]}${Random().nextInt(10000000)}"),
+                                  key: ValueKey("${CommonData.checkedChannels[index]["url"]}$index"),
+                                  // key: ValueKey("${CommonData.checkedChannels[index]["url"]}${Random().nextInt(10000000)}"),
                                   url: "${CommonData.checkedChannels[index]["url"]}",
                                   onOuterTap: () {
                                     logic.videoIndex.value = index;
