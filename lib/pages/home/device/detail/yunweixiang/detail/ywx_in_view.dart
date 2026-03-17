@@ -10,6 +10,7 @@ import 'package:iot/pages/home/my/network/network_controller.dart';
 import 'package:iot/pages/home/my/setting/setting_controller.dart';
 import 'package:iot/utils/HhColors.dart';
 import 'package:screenshot/screenshot.dart';
+import 'dart:io';
 class YWXInPage extends StatelessWidget {
   final logic = Get.find<YWXInController>();
   YWXInPage(dynamic item, {super.key}) {
@@ -20,11 +21,15 @@ class YWXInPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 在这里设置状态栏字体为深色
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent, // 状态栏背景色
-      statusBarBrightness: Brightness.dark, // 状态栏字体亮度
-      statusBarIconBrightness: Brightness.dark, // 状态栏图标亮度
-    ));
+    final overlayStyle = Platform.isAndroid
+        ? const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    )
+        : const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.light,
+    );
     return Scaffold(
       backgroundColor: HhColors.backColor,
       body: Obx(

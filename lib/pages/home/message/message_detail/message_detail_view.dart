@@ -20,6 +20,7 @@ import 'package:qc_amap_navi/qc_amap_navi.dart';
 import 'message_detail_controller.dart';
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
+import 'dart:io';
 
 class MessageDetailPage extends StatelessWidget {
   final logic = Get.find<MessageDetailController>();
@@ -29,11 +30,15 @@ class MessageDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 在这里设置状态栏字体为深色
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent, // 状态栏背景色
-      statusBarBrightness: Brightness.dark, // 状态栏字体亮度
-      statusBarIconBrightness: Brightness.dark, // 状态栏图标亮度
-    ));
+    final overlayStyle = Platform.isAndroid
+        ? const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    )
+        : const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.light,
+    );
     return Scaffold(
       backgroundColor: HhColors.backColor,
       body: Obx(

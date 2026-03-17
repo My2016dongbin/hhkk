@@ -15,6 +15,7 @@ import 'package:iot/utils/HhColors.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 
 import 'map_controller.dart';
+import 'dart:io';
 
 class MapPage extends StatelessWidget {
   final logic = Get.find<MapController>();
@@ -25,11 +26,15 @@ class MapPage extends StatelessWidget {
   Widget build(BuildContext context) {
     logic.context = context;
     // 在这里设置状态栏字体为深色
-    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent, // 状态栏背景色
-      statusBarBrightness: Brightness.dark, // 状态栏字体亮度
-      statusBarIconBrightness: Brightness.dark, // 状态栏图标亮度
-    ));
+    final overlayStyle = Platform.isAndroid
+        ? const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.dark,
+    )
+        : const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.light,
+    );
     return Scaffold(
       backgroundColor: HhColors.backColor,
       body: Obx(
