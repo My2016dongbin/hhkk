@@ -1,0 +1,15 @@
+name: qc_amap_navi
+description: Flutter plugin for AMap navigation (supports in-app navigation on Android and iOS).
+version: 0.1.0
+author: Your Name <email@example.com>
+homepage: https://example.com
+
+environment:
+  sdk: ">=2.17.0 <4.0.0"
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.qc.qc_amap_navi
+        pluginClass: QcAmapNaviPlugin

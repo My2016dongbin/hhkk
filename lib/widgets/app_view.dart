@@ -29,54 +29,59 @@ class AppView extends StatelessWidget {
       data: MediaQuery.of(context).copyWith(
         //textScaleFactor: Config.textScaleFactor,
       ),
-      child: LoaderOverlay(
-        overlayColor: HhColors.trans,
-        closeOnBackButton: true,
-        useDefaultLoading: false,
-        overlayWidgetBuilder: (_) { //ignored progress for the moment
-          return  Center(
-            child: Container(
-              height: 100.w*3,
-              width: 125.w*3,
-              decoration: BoxDecoration(
-                color: HhColors.whiteColor,
-                borderRadius: BorderRadius.circular(10.w*3),
-              ),
-              clipBehavior: Clip.hardEdge,
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: 10.w*3,),
-                    SpinKitDualRing(
-                      color: HhColors.mainBlueColor,
-                      size: 24.w*3,
-                      lineWidth: 2.5.w*3,
-                    ),
-                    SizedBox(height: 13.w*3,),
-                    Text(CommonData.loadingInfo,style: TextStyle(color: HhColors.gray3TextColor,fontSize: 12.sp*3,fontWeight: FontWeight.w500,decoration: TextDecoration.none,),
-                      maxLines: 1,textAlign: TextAlign.center,)
-                  ],
+      child: GestureDetector(
+        onTap: () {
+          context.loaderOverlay.hide();
+        },
+        child: LoaderOverlay(
+          overlayColor: HhColors.trans,
+          closeOnBackButton: true,
+          useDefaultLoading: false,
+          overlayWidgetBuilder: (_) { //ignored progress for the moment
+            return  Center(
+              child: Container(
+                height: 100.w*3,
+                width: 125.w*3,
+                decoration: BoxDecoration(
+                  color: HhColors.whiteColor,
+                  borderRadius: BorderRadius.circular(10.w*3),
+                ),
+                clipBehavior: Clip.hardEdge,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 10.w*3,),
+                      SpinKitDualRing(
+                        color: HhColors.mainBlueColor,
+                        size: 24.w*3,
+                        lineWidth: 2.5.w*3,
+                      ),
+                      SizedBox(height: 13.w*3,),
+                      Text(CommonData.loadingInfo,style: TextStyle(color: HhColors.gray3TextColor,fontSize: 12.sp*3,fontWeight: FontWeight.w500,decoration: TextDecoration.none,),
+                        maxLines: 1,textAlign: TextAlign.center,)
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
-        child: GestureDetector(
-          onTap: () {
-            //全局空白焦点
-            FocusScopeNode focusScopeNode = FocusScope.of(context);
-            if (!focusScopeNode.hasPrimaryFocus &&
-                focusScopeNode.focusedChild != null) {
-              FocusManager.instance.primaryFocus?.unfocus();
-            }
-            //easyLoading
-            FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
+            );
           },
-          child: widget!,
+          child: GestureDetector(
+            onTap: () {
+              //全局空白焦点
+              FocusScopeNode focusScopeNode = FocusScope.of(context);
+              if (!focusScopeNode.hasPrimaryFocus &&
+                  focusScopeNode.focusedChild != null) {
+                FocusManager.instance.primaryFocus?.unfocus();
+              }
+              //easyLoading
+              FocusScopeNode currentFocus = FocusScope.of(context);
+              if (!currentFocus.hasPrimaryFocus) {
+                currentFocus.unfocus();
+              }
+            },
+            child: widget!,
+          ),
         ),
       ),
     );

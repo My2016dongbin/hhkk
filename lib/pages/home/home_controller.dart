@@ -56,12 +56,15 @@ class HomeController extends GetxController {
 
   switchTab(index) {
     this.index.value = index;
-    var brightness = Platform.isAndroid ? Brightness.dark : Brightness.dark;
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    final overlayStyle = Platform.isAndroid
+        ? const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
-      statusBarBrightness: brightness,
-      statusBarIconBrightness: brightness,
-    ));
+      statusBarIconBrightness: Brightness.dark,
+    )
+        : const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarBrightness: Brightness.light,
+    );
   }
 
   scrollToUnreadMessage(index) {

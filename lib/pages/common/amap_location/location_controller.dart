@@ -81,6 +81,7 @@ class LocationController extends GetxController {
     aMapMarkers.clear();
     Marker mk = Marker(
         anchor: const Offset(0.5,0.5),
+        infoWindowEnable: false,
         position: latLng,
         icon: BitmapDescriptor.fromIconPath('assets/images/common/icon_blue_loc.png'),
         onTap: (v){

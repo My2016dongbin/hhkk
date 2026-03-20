@@ -88,6 +88,7 @@ class MessageDetailController extends GetxController {
       Marker mk = Marker(
           anchor: const Offset(0.5, 1.0),
           position: latLng,
+          infoWindowEnable: false,
           icon: BitmapDescriptor.fromIconPath("${fireInfo["status"]}"=="1"?'assets/images/common/ic_device_online2.png':'assets/images/common/ic_device_offline2.png'),
           onTap: (v){
             gdMapController.moveCamera(CameraUpdate.newLatLngZoom(latLng, 12));

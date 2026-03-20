@@ -105,10 +105,13 @@ dependencies:
   video_player: ^2.9.1
   video_thumbnail: 0.5.3
   carousel_slider: ^4.2.1
-  amap_flutter_map: ^3.0.0
+
   amap_flutter_location: ^3.0.0
   qc_amap_navi:
-    path: ./qc_amap_navi
+    path: ./qc_amap/qc_amap_navi
+  #  amap_flutter_map: ^3.0.0
+  amap_flutter_map:
+    path: ./qc_amap/amap_flutter_map
 
 
 dev_dependencies:

@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.qc.qc_amap_navi">
+
+    <application>
+        <!-- Android 高德导航 SDK API Key -->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="bc4cc96f5e72f529f67c5295ade91b92" />
+    </application>
+
+</manifest>

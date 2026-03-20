@@ -10,6 +10,11 @@
         xmlns:tools="http://schemas.android.com/tools"
         tools:replace="android:icon"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/OfflineMapTheme"  />
         <meta-data
             android:name="io.flutter.embedding.android.SplashScreenDrawable"
             android:resource="@drawable/launch_background"

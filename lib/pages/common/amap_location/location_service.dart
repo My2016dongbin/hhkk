@@ -58,8 +58,8 @@ class AmapLocationService {
       final lon = result['longitude'];
 
       if (lat != null && lon != null) {
-        CommonData.latitude = lat as double?;
-        CommonData.longitude = lon as double?;
+        CommonData.latitude = double.parse("$lat");
+        CommonData.longitude = double.parse("$lon");
       }
     });
 

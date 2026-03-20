@@ -20,10 +20,9 @@ packages:
   amap_flutter_map:
     dependency: "direct main"
     description:
-      name: amap_flutter_map
-      sha256: "9cebb0b2f5fc7d3ae0427e99c41edc883e8f5459f6a28bc850f0f9e16918cf2f"
-      url: "https://pub.flutter-io.cn"
-    source: hosted
+      path: "qc_amap/amap_flutter_map"
+      relative: true
+    source: path
     version: "3.0.0"
   archive:
     dependency: transitive
@@ -952,7 +951,7 @@ packages:
   qc_amap_navi:
     dependency: "direct main"
     description:
-      path: qc_amap_navi
+      path: "qc_amap/qc_amap_navi"
       relative: true
     source: path
     version: "0.1.0"

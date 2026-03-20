@@ -81,6 +81,7 @@ class MapController extends GetxController {
       LatLng myLoc = LatLng(CommonData.latitude!,CommonData.longitude!);
       Marker mk = Marker(
           anchor: const Offset(0.5, 1.0),
+          infoWindowEnable: false,
           position: myLoc,
           icon: BitmapDescriptor.fromIconPath('assets/images/common/icon_point.png'),
           onTap: (v){
@@ -97,6 +98,7 @@ class MapController extends GetxController {
         LatLng latLng = LatLng(double.parse("${model["latitude"]}"),double.parse("${model["longitude"]}"));
         Marker mk = Marker(
             anchor: const Offset(0.5, 1.0),
+            infoWindowEnable: false,
             position: latLng,
             icon: BitmapDescriptor.fromIconPath("${model["status"]}"=="1"?'assets/images/common/ic_device_online2.png':'assets/images/common/ic_device_offline2.png'),
             onTap: (v){

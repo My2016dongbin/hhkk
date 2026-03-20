@@ -1,0 +1,2 @@
+-keep class com.amap.api.** { *; }
+-dontwarn com.amap.api.**

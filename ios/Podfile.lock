@@ -1,40 +1,34 @@
 PODS:
+  - amap_flutter_location (0.0.1):
+    - AMapLocation
+    - Flutter
+  - amap_flutter_map (0.0.1):
+    - AMapNavi (= 8.1.0)
+    - Flutter
+  - AMapFoundation (1.6.9)
+  - AMapLocation (2.8.0):
+    - AMapFoundation (~> 1.6.9)
+  - AMapNavi (8.1.0):
+    - AMapFoundation (~> 1.6.9)
   - audio_session (0.0.1):
     - Flutter
-  - BaiduMapKit/Base (6.6.2)
-  - BaiduMapKit/Map (6.6.2):
-    - BaiduMapKit/Base
-  - BaiduMapKit/Search (6.6.2):
-    - BaiduMapKit/Base
-  - BaiduMapKit/Utils (6.6.2):
-    - BaiduMapKit/Base
+  - audioplayers_darwin (0.0.1):
+    - Flutter
   - BIJKPlayer (0.7.16)
-  - BMKLocationKit (2.1.2)
   - Bugly (2.6.1)
   - device_info_plus (0.0.1):
+    - Flutter
+  - ffmpeg-kit-ios-full (6.0)
+  - ffmpeg_kit_flutter_full_gpl (6.0.3):
+    - ffmpeg_kit_flutter_full_gpl/full-gpl (= 6.0.3)
+    - Flutter
+  - ffmpeg_kit_flutter_full_gpl/full-gpl (6.0.3):
+    - ffmpeg-kit-ios-full (= 6.0)
     - Flutter
   - fijkplayer (0.11.0):
     - BIJKPlayer (~> 0.7.16)
     - Flutter
   - Flutter (1.0.0)
-  - flutter_baidu_mapapi_base (3.8.0):
-    - BaiduMapKit/Utils (= 6.6.2)
-    - Flutter
-  - flutter_baidu_mapapi_map (3.7.2):
-    - BaiduMapKit/Map (= 6.6.2)
-    - Flutter
-    - flutter_baidu_mapapi_base
-  - flutter_baidu_mapapi_search (3.8.0):
-    - BaiduMapKit/Search (= 6.6.2)
-    - Flutter
-    - flutter_baidu_mapapi_base
-  - flutter_baidu_mapapi_utils (3.8.0):
-    - BaiduMapKit/Utils (= 6.6.2)
-    - Flutter
-    - flutter_baidu_mapapi_base
-  - flutter_bmflocation (3.5.0):
-    - BMKLocationKit (~> 2.1.0)
-    - Flutter
   - flutter_bugly (0.0.1):
     - Bugly (= 2.6.1)
     - Flutter
@@ -48,6 +42,18 @@ PODS:
     - Flutter
   - just_audio (0.0.1):
     - Flutter
+  - libwebp (1.5.0):
+    - libwebp/demux (= 1.5.0)
+    - libwebp/mux (= 1.5.0)
+    - libwebp/sharpyuv (= 1.5.0)
+    - libwebp/webp (= 1.5.0)
+  - libwebp/demux (1.5.0):
+    - libwebp/webp
+  - libwebp/mux (1.5.0):
+    - libwebp/demux
+  - libwebp/sharpyuv (1.5.0)
+  - libwebp/webp (1.5.0):
+    - libwebp/sharpyuv
   - MTBBarcodeScanner (5.0.11)
   - open_file (0.0.1):
     - Flutter
@@ -75,19 +81,25 @@ PODS:
   - tpns_flutter_plugin (1.3.0):
     - Flutter
     - TPNS-iOS (= 1.4.0.1)
+  - video_player_avfoundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - video_thumbnail (0.0.1):
+    - Flutter
+    - libwebp
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
 
 DEPENDENCIES:
+  - amap_flutter_location (from `.symlinks/plugins/amap_flutter_location/ios`)
+  - amap_flutter_map (from `.symlinks/plugins/amap_flutter_map/ios`)
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
+  - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
+  - ffmpeg-kit-ios-full (from `https://raw.githubusercontent.com/luthviar/ffmpeg-kit-ios-full/main/ffmpeg-kit-ios-full.podspec`)
+  - ffmpeg_kit_flutter_full_gpl (from `.symlinks/plugins/ffmpeg_kit_flutter_full_gpl/ios`)
   - fijkplayer (from `.symlinks/plugins/fijkplayer/ios`)
   - Flutter (from `Flutter`)
-  - flutter_baidu_mapapi_base (from `.symlinks/plugins/flutter_baidu_mapapi_base/ios`)
-  - flutter_baidu_mapapi_map (from `.symlinks/plugins/flutter_baidu_mapapi_map/ios`)
-  - flutter_baidu_mapapi_search (from `.symlinks/plugins/flutter_baidu_mapapi_search/ios`)
-  - flutter_baidu_mapapi_utils (from `.symlinks/plugins/flutter_baidu_mapapi_utils/ios`)
-  - flutter_bmflocation (from `.symlinks/plugins/flutter_bmflocation/ios`)
   - flutter_bugly (from `.symlinks/plugins/flutter_bugly/ios`)
   - flutter_sound (from `.symlinks/plugins/flutter_sound/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
@@ -103,37 +115,41 @@ DEPENDENCIES:
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - smart_auth (from `.symlinks/plugins/smart_auth/ios`)
   - tpns_flutter_plugin (from `.symlinks/plugins/tpns_flutter_plugin/ios`)
+  - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/darwin`)
+  - video_thumbnail (from `.symlinks/plugins/video_thumbnail/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   trunk:
-    - BaiduMapKit
+    - AMapFoundation
+    - AMapLocation
+    - AMapNavi
     - BIJKPlayer
-    - BMKLocationKit
     - Bugly
     - flutter_sound_core
+    - libwebp
     - MTBBarcodeScanner
     - TPNS-iOS
 
 EXTERNAL SOURCES:
+  amap_flutter_location:
+    :path: ".symlinks/plugins/amap_flutter_location/ios"
+  amap_flutter_map:
+    :path: ".symlinks/plugins/amap_flutter_map/ios"
   audio_session:
     :path: ".symlinks/plugins/audio_session/ios"
+  audioplayers_darwin:
+    :path: ".symlinks/plugins/audioplayers_darwin/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
+  ffmpeg-kit-ios-full:
+    :podspec: https://raw.githubusercontent.com/luthviar/ffmpeg-kit-ios-full/main/ffmpeg-kit-ios-full.podspec
+  ffmpeg_kit_flutter_full_gpl:
+    :path: ".symlinks/plugins/ffmpeg_kit_flutter_full_gpl/ios"
   fijkplayer:
     :path: ".symlinks/plugins/fijkplayer/ios"
   Flutter:
     :path: Flutter
-  flutter_baidu_mapapi_base:
-    :path: ".symlinks/plugins/flutter_baidu_mapapi_base/ios"
-  flutter_baidu_mapapi_map:
-    :path: ".symlinks/plugins/flutter_baidu_mapapi_map/ios"
-  flutter_baidu_mapapi_search:
-    :path: ".symlinks/plugins/flutter_baidu_mapapi_search/ios"
-  flutter_baidu_mapapi_utils:
-    :path: ".symlinks/plugins/flutter_baidu_mapapi_utils/ios"
-  flutter_bmflocation:
-    :path: ".symlinks/plugins/flutter_bmflocation/ios"
   flutter_bugly:
     :path: ".symlinks/plugins/flutter_bugly/ios"
   flutter_sound:
@@ -164,29 +180,35 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/smart_auth/ios"
   tpns_flutter_plugin:
     :path: ".symlinks/plugins/tpns_flutter_plugin/ios"
+  video_player_avfoundation:
+    :path: ".symlinks/plugins/video_player_avfoundation/darwin"
+  video_thumbnail:
+    :path: ".symlinks/plugins/video_thumbnail/ios"
   webview_flutter_wkwebview:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
+  amap_flutter_location: f033c983c2d4319203ff7b523775579534d0d557
+  amap_flutter_map: 76b74f403dffd0d6f705390073a62bfcebc6ec99
+  AMapFoundation: 8d8ecbb0b2e9ce5487995360d26c885d94642bfd
+  AMapLocation: 5ef44a1117be7dc541cb7a7d43d03c5ee91e4387
+  AMapNavi: 257ceddc7f4e26012e284e7b6c08f72e95fd1759
   audio_session: f08db0697111ac84ba46191b55488c0563bb29c6
-  BaiduMapKit: 4d550ad25eca16aa49586c736456984125b92d8a
+  audioplayers_darwin: ccf9c770ee768abb07e26d90af093f7bab1c12ab
   BIJKPlayer: 4c5d66e5cb99ae5bade6f22a4fcc031722a81c64
-  BMKLocationKit: 7048cb9f9e6cd21d803a71013d175fce57db7f77
   Bugly: 217ac2ce5f0f2626d43dbaa4f70764c953a26a31
   device_info_plus: 335f3ce08d2e174b9fdc3db3db0f4e3b1f66bd89
+  ffmpeg-kit-ios-full: 2da77324b0e9fb007195ab6661f64be4cf31dc12
+  ffmpeg_kit_flutter_full_gpl: a5c7412093c5325acd5eaf102d1d5c2bdef9d974
   fijkplayer: 2dd31ec312ba554bb6a9163cb2f44cdb528e50da
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  flutter_baidu_mapapi_base: 68abadce7e52b64892f67233f36fa3e997ec3d56
-  flutter_baidu_mapapi_map: e1578b111800a666811bfd25e053510c3011e2fc
-  flutter_baidu_mapapi_search: 5aad89380f9e9abf84e92e647cb924181690db6f
-  flutter_baidu_mapapi_utils: 3b70b478ef4e7524bd52e1a1ff9f443e4d6ab3af
-  flutter_bmflocation: 742d9bbac517a5150d5606fbd01bdd234f4ac15d
   flutter_bugly: a77131ff7b385a481c594830dc89aa53e8e7fbee
   flutter_sound: 49be32081884d275fe91d48262f4b1fcd86e10d3
   flutter_sound_core: 26c10e5832e76aaacfae252d8925232281c486ae
   image_gallery_saver: 14711d79da40581063e8842a11acf1969d781ed7
   image_picker_ios: a768de0d44b0925de635738f5030f9f2727eb996
   just_audio: 6c031bb61297cf218b4462be616638e81c058e97
+  libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   open_file: 898f23092cb034fda4ae3b268d782fe25d525e6b
   package_info_plus: 566e1b7a2f3900e4b0020914ad3fc051dcc95596
@@ -199,8 +221,10 @@ SPEC CHECKSUMS:
   smart_auth: 33668081c5f646af84f10492a067d25fdcd16951
   TPNS-iOS: 9f44112691033ac9ab7183851396de704ad49e40
   tpns_flutter_plugin: 01f4d8ea81c8710302325a37ba936f023b4f2bc8
+  video_player_avfoundation: 2cef49524dd1f16c5300b9cd6efd9611ce03639b
+  video_thumbnail: b637e0ad5f588ca9945f6e2c927f73a69a661140
   webview_flutter_wkwebview: 45a041c7831641076618876de3ba75c712860c6b
 
-PODFILE CHECKSUM: 819463e6a0290f5a72f145ba7cde16e8b6ef0796
+PODFILE CHECKSUM: 6423931baab4f889b7e853fb67a1b76dd3e72235
 
 COCOAPODS: 1.16.2
