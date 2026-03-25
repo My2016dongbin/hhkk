@@ -25,6 +25,7 @@ class ConfirmPage extends StatelessWidget {
       statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.light,
     );
+    SystemChrome.setSystemUIOverlayStyle(overlayStyle);
     return Scaffold(
       backgroundColor: HhColors.backColor,
       body: Obx(

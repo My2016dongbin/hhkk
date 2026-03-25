@@ -40,6 +40,7 @@ class HomePage extends StatelessWidget {
       statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.light,
     );
+    SystemChrome.setSystemUIOverlayStyle(overlayStyle);
 
     return Obx(() => WillPopScope(
       onWillPop: onBackPressed,

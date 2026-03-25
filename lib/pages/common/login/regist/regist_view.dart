@@ -34,6 +34,7 @@ class RegisterPage extends StatelessWidget {
       statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.light,
     );
+    SystemChrome.setSystemUIOverlayStyle(overlayStyle);
     return Scaffold(
       backgroundColor: HhColors.backColorRegister,
       body: Obx(

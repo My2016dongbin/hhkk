@@ -65,6 +65,7 @@ class HomeController extends GetxController {
       statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.light,
     );
+    SystemChrome.setSystemUIOverlayStyle(overlayStyle);
   }
 
   scrollToUnreadMessage(index) {

@@ -35,6 +35,7 @@ class CompanyLoginPage extends StatelessWidget {
       statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.light,
     );
+    SystemChrome.setSystemUIOverlayStyle(overlayStyle);
     return WillPopScope(
       onWillPop: onBackPressed,
       child: Scaffold(

@@ -29,6 +29,7 @@ class MqttPage extends StatelessWidget {
       statusBarColor: Colors.transparent,
       statusBarBrightness: Brightness.light,
     );
+    SystemChrome.setSystemUIOverlayStyle(overlayStyle);
 
     return Obx(() => Scaffold(
       backgroundColor: HhColors.backColor,
