@@ -575,17 +575,52 @@ class LiGanDetailController extends GetxController {
     recording();
   }
 
-  void stopRecord() {
+  Future<void> stopRecord() async {
+    if (!videoTag.value) return;
+
     visualizerKey.currentState?.stop();
     videoTag.value = false;
-    recordingComplete();
 
-    CommonUtils().showCommonInputDialog(context, "录音", controller, (){
-      Get.back();
-    }, (){
-      Get.back();
-      uploadFile(_pcmPath??"","${controller.text}.pcm");
-    });
+    // 必须等录音真正停止
+    await recordingComplete();
+
+    // 给部分机型一点落盘时间，红米尤其需要
+    await Future.delayed(const Duration(milliseconds: 800));
+
+    final String path = (_pcmPath ?? "").trim();
+    if (path.isEmpty) {
+      EventBusUtil.getInstance().fire(HhToast(title: "录音文件路径为空"));
+      return;
+    }
+
+    final file = File(path);
+    if (!await file.exists()) {
+      EventBusUtil.getInstance().fire(HhToast(title: "录音文件不存在"));
+      return;
+    }
+
+    final int length = await file.length();
+    if (length <= 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "录音文件为空，请重试"));
+      return;
+    }
+
+    CommonUtils().showCommonInputDialog(
+      context,
+      "录音",
+      controller,
+          () {
+        Get.back();
+      },
+          () async {
+        final String name = controller.text.trim().isEmpty
+            ? "录音_${DateTime.now().millisecondsSinceEpoch}.pcm"
+            : "${controller.text.trim()}.pcm";
+
+        Get.back();
+        uploadFile(path, name);
+      },
+    );
   }
 
   late TextEditingController controller = TextEditingController();
@@ -609,23 +644,28 @@ class LiGanDetailController extends GetxController {
   bool isRecording = false;
   String? _pcmPath;
   Future<void> recording() async {
-    await Permission.microphone.request();
-    if (await Permission.microphone.isGranted) {
-      _pcmPath = await _getPCMPath();
+    final status = await Permission.microphone.request();
 
-      await _recorder.startRecorder(
-        toFile: _pcmPath,
-        codec: Codec.pcm16,
-        sampleRate: 16000,
-        numChannels: 1,
-        bitRate: 16000 * 16,
-      );
-    } else {
+    if (!status.isGranted) {
       EventBusUtil.getInstance().fire(HhToast(title: "麦克风权限未授权"));
-
       videoTag.value = false;
-      Get.back();
+      return;
     }
+
+    _pcmPath = await _getPCMPath();
+
+    final file = File(_pcmPath!);
+    if (!await file.parent.exists()) {
+      await file.parent.create(recursive: true);
+    }
+
+    await _recorder.startRecorder(
+      toFile: _pcmPath,
+      codec: Codec.pcm16,
+      sampleRate: 16000,
+      numChannels: 1,
+      bitRate: 16000 * 16,
+    );
   }
   Future<void> recordingComplete() async {
     await _recorder.stopRecorder();
@@ -633,7 +673,7 @@ class LiGanDetailController extends GetxController {
 
   Future<String> _getPCMPath() async {
     final dir = await getApplicationCacheDirectory();
-    return '${dir.path}/recording.pcm';
+    return '${dir.path}/recording_${DateTime.now().millisecondsSinceEpoch}.pcm';
   }
 
 

@@ -4657,7 +4657,7 @@ class LiGanDetailPage extends StatelessWidget {
     });
 
     ///默认开启录音
-    Future.delayed(const Duration(microseconds: 2000),(){
+    Future.delayed(const Duration(milliseconds: 500),(){
       logic.startRecord();
       EventBusUtil.getInstance().fire(HhToast(title: "开始录音",type: 0));
     });
