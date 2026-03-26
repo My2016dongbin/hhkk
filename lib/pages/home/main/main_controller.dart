@@ -45,6 +45,7 @@ class MainController extends GetxController {
   late EasyRefreshController deviceEasyController = EasyRefreshController();
   final Rx<int> deviceStatus = 2.obs;//2全部设备  1在线  0离线
   late int devicePageNo = 1;
+  late int totalPage = 0;
   late List<dynamic> typeList = [
     {
       "alarmName":"类型",
@@ -303,17 +304,24 @@ class MainController extends GetxController {
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("mainDeviceList -- REQUEST ${RequestUtils.mainDeviceList}");
     HhLog.d("mainDeviceList -- params $params");
-    HhLog.d("mainDeviceList -- result $result");
+    HhLog.d("mainDeviceList -- result result");
     if (result["data"] != null && result["data"]["list"] != null) {
+      totalPage = CommonUtils().parseTotalPage("${result["data"]["total"]}", 100);
+      HhLog.d("mainDeviceList -- $totalPage , $devicePageNo");
       if(devicePageNo == 1){
         deviceController.itemList = [];
       }
-      deviceController.appendLastPage(result["data"]["list"]);
+      if(devicePageNo > totalPage){
+        deviceController.appendLastPage([]);
+        deviceEasyController.finishLoad(IndicatorResult.noMore,true);
+      }else{
+        deviceController.appendLastPage(result["data"]["list"]);
+      }
     } else {
-      deviceController.itemList = [];
-      devicePageNo = 1;
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"]),type: 2));
-      EventBusUtil.getInstance().fire(HhLoading(show: false));
+      if(devicePageNo>1){
+        deviceController.appendLastPage([]);
+        deviceEasyController.finishLoad(IndicatorResult.noMore,true);
+      }
     }
 
   }

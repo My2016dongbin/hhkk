@@ -35,8 +35,8 @@ class HhHttp {
     // 初始化基本选项
     BaseOptions options = BaseOptions(
         baseUrl: 'http://你的服务器地址',
-        connectTimeout: const Duration(seconds: 15),
-        receiveTimeout: const Duration(seconds: 15));
+        connectTimeout: const Duration(seconds: 30),
+        receiveTimeout: const Duration(seconds: 30));
     _instance = this;
     // 初始化dio
     _dio = Dio(options);
@@ -122,8 +122,9 @@ class HhHttp {
     } on DioException catch (e) {
       HhLog.e("发送请求异常: $e");
       EventBusUtil.getInstance().fire(HhLoading(show: false));
-      EventBusUtil.getInstance().fire(HhToast(title: '服务器异常请稍后重试'));
-      return {"msg": "服务器异常请稍后重试"} as T;
+      //EventBusUtil.getInstance().fire(HhToast(title: '服务器异常请稍后重试'));
+      // return {"msg": "服务器异常请稍后重试"} as T;
+      return {"msg": ""} as T;
     }
   }
 

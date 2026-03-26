@@ -27,6 +27,7 @@ class MessageController extends GetxController {
   final Rx<int> warnCountInt = 0.obs;
   final Rx<int> noticeCountInt = 0.obs;
   final Rx<String> test = 'test'.obs;
+  final ScrollController deviceScrollController = ScrollController();
   final PagingController<int, dynamic> deviceController =
       PagingController(firstPageKey: 1);
   final PagingController<int, dynamic> warnController =

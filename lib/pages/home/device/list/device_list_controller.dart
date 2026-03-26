@@ -78,6 +78,7 @@ class DeviceListController extends GetxController {
       listController.appendLastPage(newItems);*/
 
       totalPage = CommonUtils().parseTotalPage("${result["data"]["total"]}", pageSize);
+      HhLog.d("fetchPage -- totalPage $totalPage");
       if(pageNum == 1){
         listController.itemList = [];
       }

@@ -391,6 +391,7 @@ class MainPage extends StatelessWidget {
                                 InkWell(
                                   onTap: () async {
                                     logic.deviceStatus.value = 2;
+                                    logic.devicePageNo = 1;
                                     await logic.mainDeviceList();
                                     deviceListDialog();
                                   },
@@ -467,6 +468,7 @@ class MainPage extends StatelessWidget {
                                 InkWell(
                                   onTap: () async {
                                     logic.deviceStatus.value = 1;
+                                    logic.devicePageNo = 1;
                                     await logic.mainDeviceList();
                                     deviceListDialog();
                                   },
@@ -542,6 +544,7 @@ class MainPage extends StatelessWidget {
                                 InkWell(
                                   onTap: () async {
                                     logic.deviceStatus.value = 0;
+                                    logic.devicePageNo = 1;
                                     await logic.mainDeviceList();
                                     deviceListDialog();
                                   },
@@ -1270,66 +1273,68 @@ class MainPage extends StatelessWidget {
 
   void deviceListDialog() {
     showModalBottomSheet(context: Get.context!, builder: (a){
-      return Container(
-        width: 1.sw,
-        height: 0.6.sh,
-        decoration: BoxDecoration(
-            color: HhColors.whiteColor,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(6.w*3))
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            SizedBox(height: 12.w*3,),
-            Row(
-              children: [
-                SizedBox(width: 15.w*3,),
-                SizedBox(width: 50.w*3,child: Text('序号',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w600),)),
-                SizedBox(width: 145.w*3,child: Text('设备名称',textAlign:TextAlign.start,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w600),)),
-                Expanded(child: Text(logic.deviceStatus.value == 0?'离线状态':'创建时间',textAlign:TextAlign.start,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w600),)),
-                HhTap(
-                  onTapUp: (){
-                    Get.back();
-                  },
-                  child: Container(
-                      color: HhColors.trans,
-                      padding: EdgeInsets.all(10.w*3),
-                      child: Image.asset('assets/images/common/icon_up_x.png',width:12.w*3,height: 12.w*3,fit: BoxFit.fill,)
-                  ),
-                ),
-                SizedBox(width: 15.w*3,),
-              ],
-            ),
-            SizedBox(height: 10.w*3,),
-            CommonUtils.line(margin: EdgeInsets.fromLTRB(20.w*3, 0, 20.w*3, 0),),
-            Expanded(
-              child: EasyRefresh(
-                onRefresh: (){
-                  logic.devicePageNo = 1;
-                  logic.mainDeviceList();
-                },
-                onLoad: (){
-                  logic.devicePageNo++;
-                  logic.mainDeviceList();
-                },
-                controller: logic.deviceEasyController,
-                child: PagedListView<int, dynamic>(
-                  padding: EdgeInsets.zero,
-                  pagingController: logic.deviceController,
-                  scrollController: logic.deviceScrollController,
-                  builderDelegate: PagedChildBuilderDelegate<dynamic>(
-                    noItemsFoundIndicatorBuilder: (context) => CommonUtils().noneWidget(image:'assets/images/common/icon_no_message_search.png',info: '暂无设备信息',mid: 10.w,top: 0.2.sw,
-                      height: 0.24.sw,
-                      width: 0.3.sw,),
-                    firstPageProgressIndicatorBuilder: (context) => Container(),
-                    newPageProgressIndicatorBuilder: (context) => Container(),
-                    itemBuilder: deviceListItemBuilder,
-                  ),
-                ),
+      return Obx(
+            () => Container(
+              width: 1.sw,
+              height: 0.6.sh,
+              decoration: BoxDecoration(
+                  color: HhColors.whiteColor,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(6.w*3))
               ),
-            )
-          ],
-        ),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  SizedBox(height: 12.w*3,),
+                  Row(
+                    children: [
+                      SizedBox(width: 15.w*3,),
+                      SizedBox(width: 50.w*3,child: Text('序号',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w600),)),
+                      SizedBox(width: 145.w*3,child: Text('设备名称',textAlign:TextAlign.start,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w600),)),
+                      Expanded(child: Text(logic.deviceStatus.value == 0?'离线状态':'创建时间',textAlign:TextAlign.start,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w600),)),
+                      HhTap(
+                        onTapUp: (){
+                          Get.back();
+                        },
+                        child: Container(
+                            color: HhColors.trans,
+                            padding: EdgeInsets.all(10.w*3),
+                            child: Image.asset('assets/images/common/icon_up_x.png',width:12.w*3,height: 12.w*3,fit: BoxFit.fill,)
+                        ),
+                      ),
+                      SizedBox(width: 15.w*3,),
+                    ],
+                  ),
+                  SizedBox(height: 10.w*3,),
+                  CommonUtils.line(margin: EdgeInsets.fromLTRB(20.w*3, 0, 20.w*3, 0),),
+                  Expanded(
+                    child: EasyRefresh(
+                      onRefresh: (){
+                        logic.devicePageNo = 1;
+                        logic.mainDeviceList();
+                      },
+                      onLoad: (){
+                        logic.devicePageNo++;
+                        logic.mainDeviceList();
+                      },
+                      controller: logic.deviceEasyController,
+                      child: PagedListView<int, dynamic>(
+                        padding: EdgeInsets.zero,
+                        pagingController: logic.deviceController,
+                        scrollController: logic.deviceScrollController,
+                        builderDelegate: PagedChildBuilderDelegate<dynamic>(
+                          noItemsFoundIndicatorBuilder: (context) => CommonUtils().noneWidget(image:'assets/images/common/icon_no_message_search.png',info: '暂无设备信息',mid: 10.w,top: 0.2.sw,
+                            height: 0.24.sw,
+                            width: 0.3.sw,),
+                          firstPageProgressIndicatorBuilder: (context) => Container(),
+                          newPageProgressIndicatorBuilder: (context) => Container(),
+                          itemBuilder: deviceListItemBuilder,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
       );
     },isDismissible: true,enableDrag: false,isScrollControlled: true);
   }

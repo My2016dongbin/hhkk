@@ -422,6 +422,8 @@ class MessagePage extends StatelessWidget {
                                   logic.dateListLeft = [];
                                   logic.pageNumLeft = 1;
                                   logic.fetchPageLeft(1);
+
+                                  logic.deviceScrollController.jumpTo(0);
                                 },
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.zero,
@@ -579,6 +581,7 @@ class MessagePage extends StatelessWidget {
                         logic.dateListLeft = [];
                         logic.pageNumLeft = 1;
                         logic.fetchPageLeft(1);
+                        logic.deviceScrollController.jumpTo(0);
                       },
                     )
                   ],
@@ -632,6 +635,7 @@ class MessagePage extends StatelessWidget {
                         logic.dateListLeft = [];
                         logic.pageNumLeft = 1;
                         logic.fetchPageLeft(1);
+                        logic.deviceScrollController.jumpTo(0);
                       },
                     )
                   ],
@@ -654,6 +658,7 @@ class MessagePage extends StatelessWidget {
               },
               controller: logic.easyControllerLeft,
               child: PagedListView<int, dynamic>(
+                scrollController: logic.deviceScrollController,
                 padding: EdgeInsets.zero,
                 pagingController: logic.deviceController,
                 builderDelegate: PagedChildBuilderDelegate<dynamic>(
@@ -1677,6 +1682,7 @@ class MessagePage extends StatelessWidget {
                       logic.dateListLeft = [];
                       logic.pageNumLeft = 1;
                       logic.fetchPageLeft(1);
+                      logic.deviceScrollController.jumpTo(0);
                     },
                     child: Container(
                       padding: EdgeInsets.fromLTRB(50.w, 20.w, 20.w, 20.w),
