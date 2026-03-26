@@ -254,6 +254,8 @@ class MessageController extends GetxController {
       pageStatus.value = true;
       pageNumRight = 1;
       EventBusUtil.getInstance().fire(Message());
+      warnCount.value = "0";
+      noticeCount.value = "0";
     } else {
       EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(resultR["msg"])));
     }

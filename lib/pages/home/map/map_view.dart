@@ -548,10 +548,14 @@ class MapPage extends StatelessWidget {
   Widget deviceListItemBuilder(BuildContext context, item, int index) {
     return InkWell(
       onTap: () async {
-        LatLng latLng = LatLng(double.parse("${item["latitude"]}"),double.parse("${item["longitude"]}"));
-        logic.gdMapController.moveCamera(CameraUpdate.newLatLngZoom(latLng, 16));
-        Get.back();
-        logic.deviceDetailDialog(item);
+        try{
+          LatLng latLng = LatLng(double.parse("${item["latitude"]}"),double.parse("${item["longitude"]}"));
+          logic.gdMapController.moveCamera(CameraUpdate.newLatLngZoom(latLng, 16));
+          Get.back();
+          logic.deviceDetailDialog(item);
+        }catch(e){
+          EventBusUtil.getInstance().fire(HhToast(title: "定位不可用"));
+        }
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 15.w*3),
@@ -560,7 +564,7 @@ class MapPage extends StatelessWidget {
             SizedBox(width: 20.w*3,),
             SizedBox(width: 40.w*3,child: Text('${index+1}',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
             SizedBox(width: 125.w*3,child: Text(CommonUtils().parseNull('${item["name"]}', ""),textAlign:TextAlign.start,maxLines:1,overflow: TextOverflow.ellipsis,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
-            Expanded(child: Text("${item["longitude"]},${item["latitude"]}",textAlign:TextAlign.start,maxLines:1,overflow: TextOverflow.ellipsis,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
+            Expanded(child: Text("${CommonUtils().parseNull(item["longitude"], "")},${CommonUtils().parseNull(item["latitude"], "")}",textAlign:TextAlign.start,maxLines:1,overflow: TextOverflow.ellipsis,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
             SizedBox(width: 15.w*3,),
           ],
         ),

@@ -27,7 +27,6 @@ class MessageDetailController extends GetxController {
       id = Get.arguments["id"]??"";
     }
     getWarnType();
-    getLiveWarningInfo(id);
     super.onInit();
   }
 
@@ -38,6 +37,8 @@ class MessageDetailController extends GetxController {
     if(CommonData.latitude!=null && CommonData.latitude!=0){
       gdMapController.moveCamera(CameraUpdate.newLatLngZoom(LatLng(CommonData.latitude!,CommonData.longitude!), 12));
     }
+
+    getLiveWarningInfo(id);
   }
 
 

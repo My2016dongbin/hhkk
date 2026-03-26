@@ -301,8 +301,9 @@ class MainController extends GetxController {
       params: params,
     );
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    HhLog.d("mainDeviceList -- $params");
-    HhLog.d("mainDeviceList -- $result");
+    HhLog.d("mainDeviceList -- REQUEST ${RequestUtils.mainDeviceList}");
+    HhLog.d("mainDeviceList -- params $params");
+    HhLog.d("mainDeviceList -- result $result");
     if (result["data"] != null && result["data"]["list"] != null) {
       if(devicePageNo == 1){
         deviceController.itemList = [];

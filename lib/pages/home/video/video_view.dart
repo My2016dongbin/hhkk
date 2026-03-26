@@ -449,7 +449,7 @@ class VideoPage extends StatelessWidget {
                                 child: Row(
                                   children: [
                                     Expanded(
-                                      child: Text(CommonUtils().parseNull("${CommonData.checkedChannels[index]["id"]}", ""),style: TextStyle(color: HhColors.textBlackColor,fontSize: 12.sp*3),maxLines: 1,overflow: TextOverflow.ellipsis,),
+                                      child: Text(CommonUtils().parseNull("${CommonData.checkedChannels[index]["name"]}", ""),style: TextStyle(color: HhColors.textBlackColor,fontSize: 12.sp*3),maxLines: 1,overflow: TextOverflow.ellipsis,),
                                     ),
                                     SizedBox(width: 5.w*3,),
                                     InkWell(
