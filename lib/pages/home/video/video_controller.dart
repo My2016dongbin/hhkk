@@ -97,6 +97,7 @@ class VideoController extends GetxController {
         EventBusUtil.getInstance().on<DeviceList>().listen((event) {
           pageNum = 1;
           getDeviceList(1,false);
+          getTreeDetail();
         });
     //天气信息
     getWeather();
