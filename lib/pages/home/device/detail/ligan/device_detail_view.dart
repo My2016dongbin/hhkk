@@ -2046,49 +2046,49 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                 Row(
                   children: [
                     Text("负载电压",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${logic.energyModel["loadVoltage"]??""}V",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
+                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["loadVoltage"]??"-"}",2)}V",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
                 CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
                 Row(
                   children: [
                     Text("负载电流",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${logic.energyModel["loadCurrent"]??""}A",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
+                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["loadCurrent"]??"-"}",2)}A",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
                 CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
                 Row(
                   children: [
                     Text("太阳能电压",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${logic.energyModel["solarVoltage"]??""}V",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
+                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["solarVoltage"]??"-"}",2)}V",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
                 CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
                 Row(
                   children: [
                     Text("太阳能电流",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${logic.energyModel["solarCurrent"]??""}A",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
+                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["solarCurrent"]??"-"}",2)}A",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
                 CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
                 Row(
                   children: [
                     Text("蓄电池剩余电量",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${logic.energyModel["batteryRemain"]??""}%",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
+                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["batteryRemain"]??"-"}",2)}%",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
                 CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
                 Row(
                   children: [
                     Text("蓄电池电压",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${logic.energyModel["batteryVoltage"]??""}V",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
+                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["batteryVoltage"]??"-"}",2)}V",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
                 CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
                 Row(
                   children: [
                     Text("蓄电池电流",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${logic.energyModel["batteryCurrent"]??""}A",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
+                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["batteryCurrent"]??"-"}",2)}A",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
                   ],
                 ),
               ],
