@@ -644,28 +644,55 @@ class LiGanDetailController extends GetxController {
   bool isRecording = false;
   String? _pcmPath;
   Future<void> recording() async {
-    final status = await Permission.microphone.request();
+    PermissionStatus status = await Permission.microphone.status;
 
+    // 未授权时再请求一次
     if (!status.isGranted) {
-      EventBusUtil.getInstance().fire(HhToast(title: "麦克风权限未授权"));
-      videoTag.value = false;
+      status = await Permission.microphone.request();
+    }
+
+    if (status.isGranted) {
+      _pcmPath = await _getPCMPath();
+
+      final file = File(_pcmPath!);
+      if (!await file.parent.exists()) {
+        await file.parent.create(recursive: true);
+      }
+
+      await _recorder.startRecorder(
+        toFile: _pcmPath,
+        codec: Codec.pcm16,
+        sampleRate: 16000,
+        numChannels: 1,
+        bitRate: 16000 * 16,
+      );
       return;
     }
 
-    _pcmPath = await _getPCMPath();
+    videoTag.value = false;
 
-    final file = File(_pcmPath!);
-    if (!await file.parent.exists()) {
-      await file.parent.create(recursive: true);
+    if (status.isPermanentlyDenied || status.isDenied || status.isRestricted) {
+      EventBusUtil.getInstance().fire(HhToast(title: "请在系统设置中开启麦克风权限"));
+      HhLog.e("microphone permission status: $status");
+      Get.back();
+      CommonUtils().showCommonDialog(
+        Get.context,
+        "麦克风权限已被关闭，请前往系统设置开启后再使用录音功能",
+            () {
+          Get.back();
+        },
+            () async {
+          Get.back();
+          await openAppSettings();
+        },
+        leftStr: "取消",
+        rightStr: "去设置",
+      );
+      return;
     }
 
-    await _recorder.startRecorder(
-      toFile: _pcmPath,
-      codec: Codec.pcm16,
-      sampleRate: 16000,
-      numChannels: 1,
-      bitRate: 16000 * 16,
-    );
+    EventBusUtil.getInstance().fire(HhToast(title: "麦克风权限未授权"));
+    HhLog.e("microphone permission status: $status");
   }
   Future<void> recordingComplete() async {
     await _recorder.stopRecorder();
