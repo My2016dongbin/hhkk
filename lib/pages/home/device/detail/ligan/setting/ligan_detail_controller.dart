@@ -606,7 +606,7 @@ class LiGanDetailController extends GetxController {
     }
 
     CommonUtils().showCommonInputDialog(
-      context,
+      Get.context,
       "录音",
       controller,
           () {
