@@ -315,7 +315,7 @@ class UserInfoPage extends StatelessWidget {
                                     child: Container(
                                       margin: EdgeInsets.only(left: 15.w*3),
                                       child: Text(
-                                        "公司信息",
+                                        "租户名称",
                                         style: TextStyle(
                                             color: HhColors.textBlackColor,
                                             fontSize: 15.sp*3,
