@@ -326,27 +326,63 @@ class HXYZDeviceDetailController extends GetxController {
           (session) async {
         final rc = await session.getReturnCode();
         final logs = await session.getAllLogsAsString();
+
+        HhLog.d("FFmpeg rc: $rc");
         HhLog.d("FFmpeg logs:\n$logs");
 
-        // 判断成功或用户取消
-        if (rc?.isValueSuccess() == true || rc?.getValue() == 255) {
-          HhLog.d('录制完成或已取消，文件可用: $filePath');
+        final file = File(filePath);
+        final exists = await file.exists();
+        final length = exists ? await file.length() : 0;
 
-          // 确认 FFmpeg 完全结束再保存
-          if(videoSecond.value < 5){
-            EventBusUtil.getInstance().fire(HhToast(title: '录像时长太短请重新录制',type: 0));
+        HhLog.d("record exists=$exists length=$length");
+
+        // 只有真正成功才保存
+        if (rc?.isValueSuccess() == true) {
+          if (videoSecond.value < 5) {
+            EventBusUtil.getInstance()
+                .fire(HhToast(title: '录像时长太短请重新录制', type: 0));
             return;
           }
+
+          if (!exists || length <= 0) {
+            EventBusUtil.getInstance()
+                .fire(HhToast(title: '录像文件生成失败', type: 0));
+            return;
+          }
+
           final result = await ImageGallerySaver.saveFile(filePath);
-          if (result['isSuccess'] == true) {
-            EventBusUtil.getInstance().fire(HhToast(title: '录像已保存至相册',type: 0));
+          HhLog.d('saveFile result=$result');
+
+          if (result != null && result['isSuccess'] == true) {
+            EventBusUtil.getInstance()
+                .fire(HhToast(title: '录像已保存至相册', type: 0));
           } else {
-            EventBusUtil.getInstance().fire(HhToast(title: '录制失败',type: 0));
+            EventBusUtil.getInstance()
+                .fire(HhToast(title: '保存录像失败', type: 0));
           }
         } else {
-          HhLog.e('录制失败 rc=$rc');
-          EventBusUtil.getInstance().fire(HhToast(title: '视频播放异常请重试',type: 0));
-          videoTag.value = false;
+          // 用户停止 / 取消
+          if (rc?.getValue() == 255) {
+            // 如果取消时文件已经存在且不为空，也允许保存
+            if (videoSecond.value >= 5 && exists && length > 0) {
+              final result = await ImageGallerySaver.saveFile(filePath);
+              HhLog.d('cancel saveFile result=$result');
+
+              if (result != null && result['isSuccess'] == true) {
+                EventBusUtil.getInstance()
+                    .fire(HhToast(title: '录像已保存至相册', type: 0));
+              } else {
+                EventBusUtil.getInstance()
+                    .fire(HhToast(title: '保存录像失败', type: 0));
+              }
+            } else {
+              EventBusUtil.getInstance()
+                  .fire(HhToast(title: '录像时长太短请重新录制', type: 0));
+            }
+          } else {
+            EventBusUtil.getInstance()
+                .fire(HhToast(title: '录制失败，请重试', type: 0));
+          }
         }
       },
     );
