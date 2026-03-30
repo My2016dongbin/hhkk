@@ -260,67 +260,41 @@ class HXYZDeviceDetailController extends GetxController {
     });
   }
 
-  void startRecord() {
-    recordController.start();
-    videoSecond.value = 0;
-    videoMinute.value = 0;
-    runRecordTimer();
-  }
-
-  Future<void> stopRecord() async {
-    recordController.stop();
-    List<int>? exportGif = await recordController.exporter.exportGif();
-
-    HhLog.d("stopRecord ");
-    /*// 将图片保存到相册
-    final tempDir = await getDownloadsDirectory();
-    final filePath =
-        '${tempDir!.path}/video_${DateTime.now().millisecondsSinceEpoch}.gif';
-    final file = File(filePath);
-    File a = await file.writeAsBytes(exportGif!);
-    HhLog.d("stopRecord $a");
-    EventBusUtil.getInstance().fire(HhToast(title: '录像已保存至“$filePath”'));*/
-
-    // 保存图片到相册
-    Uint8List audioBytes = Uint8List.fromList(exportGif!);
-    // final result = await ImageGallerySaver.saveImage(audioBytes, quality: 100);
-    final tempDir = await getDownloadsDirectory();
-    final filePath = '${tempDir!.path}/video_${DateTime.now().millisecondsSinceEpoch}.gif';
-    final file = File(filePath);
-    File a = await file.writeAsBytes(exportGif);
-    final result = await ImageGallerySaver.saveFile(filePath);
-    if (result != null && result['isSuccess']) {
-      EventBusUtil.getInstance().fire(HhToast(title: '录像已保存至相册',type: 0));
-    } else {
-      EventBusUtil.getInstance().fire(HhToast(title: '保存录像失败'));
-    }
-  }
-
 
   Future<void> startRecordFFMPEG(String url) async {
-    // 你的 UI/计时逻辑
+    // UI/计时
     recordController.start();
     videoSecond.value = 0;
     videoMinute.value = 0;
     runRecordTimer();
 
-    // 生成保存路径
-    final tempDir = await getDownloadsDirectory();
-    final filePath =
-        '${tempDir!.path}/video_${DateTime.now().millisecondsSinceEpoch}.mp4';
+    // 建议先用应用可写目录，并确保目录存在
+    final dir = await getExternalStorageDirectory();
+    if (dir == null) {
+      EventBusUtil.getInstance().fire(HhToast(title: '无法获取存储目录', type: 0));
+      videoTag.value = false;
+      return;
+    }
 
-    // FFmpeg 命令，一行字符串
+    final recordDir = Directory('${dir.path}/record');
+    if (!await recordDir.exists()) {
+      await recordDir.create(recursive: true);
+    }
+
+    final filePath =
+        '${recordDir.path}/video_${DateTime.now().millisecondsSinceEpoch}.mp4';
+
+    // 如果你的流本身没有音频，去掉音频参数更稳
     final cmd = '-y '
         '-rw_timeout 5000000 '
-        '-f flv -i "$url" '
+        '-i "$url" '
         '-c:v libx264 -preset ultrafast -tune zerolatency '
-        '-c:a aac -b:a 128k '
-        '-movflags frag_keyframe+empty_moov '
+        '-an '
         '"$filePath"';
 
     HhLog.d("FFmpeg cmd: $cmd");
+    HhLog.d("record filePath: $filePath");
 
-    // 执行命令
     FFmpegKit.executeAsync(
       cmd,
           (session) async {
@@ -386,12 +360,14 @@ class HXYZDeviceDetailController extends GetxController {
         }
       },
     );
-
   }
 
-  void stopRecordFFMPEG(){
+
+  void stopRecordFFMPEG() {
+    recordController.stop();
     FFmpegKit.cancel();
   }
+
 
   void fetchPageDevice(int pageKey) {
     List<Device> newItems = [
@@ -451,7 +427,7 @@ class HXYZDeviceDetailController extends GetxController {
     HhLog.d("getPlayUrl1 result -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       try {
-        String url = /*RequestUtils.rtsp + */ "${result["data"]["appRelativePath"]}";
+        url = /*RequestUtils.rtsp + */ "${result["data"]["appRelativePath"]}";
         playLoadingTag.value = false;
         playTag.value = false;
         player.release();

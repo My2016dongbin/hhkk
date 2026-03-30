@@ -1342,8 +1342,12 @@ class MainPage extends StatelessWidget {
   Widget deviceListItemBuilder(BuildContext context, item, int index) {
     return InkWell(
       onTap: () async {
-        ///默认火险因子监测站-已对接（主页火险因子设备列表）
-        Get.to(()=>HXYZDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: HXYZDeviceDetailBinding());
+        CommonUtils().parseRouteDetail({
+          "deviceNo": '${item['deviceNo']}',
+          "productKey": '${item['productKey']}',
+          "id": '${item['id']}',
+          "shareMark": item['shareMark']??2,
+        });
       },
       child: Container(
         margin: EdgeInsets.only(top: 17.w*3),
