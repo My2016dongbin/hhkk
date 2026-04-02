@@ -1616,7 +1616,7 @@ class MainPage extends StatelessWidget {
       showModalBottomSheet(context: Get.context!, builder: (context){
         return Container(
           width: 1.sw,
-          height: 0.62.sh,
+          height: 0.65.sh,
           decoration: BoxDecoration(
               color: HhColors.whiteColor,
               borderRadius: BorderRadius.vertical(top: Radius.circular(8.w*3))
