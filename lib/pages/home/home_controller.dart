@@ -378,8 +378,6 @@ class HomeController extends GetxController {
 
     ///定位服务
     checkLocation();
-    ///版本检测
-    getVersion();
   }
 
   void checkLocation(){
@@ -756,6 +754,9 @@ class HomeController extends GetxController {
     version.value = packageInfo.version;
     buildNumber.value = packageInfo.buildNumber;
     HhLog.d('localVersion ${buildNumber.value},${version.value}');
+
+    ///版本检测
+    getVersion();
   }
 
   uploadAPK() async {
