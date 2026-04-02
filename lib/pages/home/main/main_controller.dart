@@ -373,8 +373,13 @@ class MainController extends GetxController {
               "https://restapi.amap.com/v3/geocode/regeo?key=a94a9e0e144b7a5cf77c229713275500&location=${CommonData.longitude},${CommonData.latitude}&extensions=all&radius=1000",
               method: DioMethod.get);
 
-          HhLog.d("searchLocation -- $result");
-          appLoc.value = result["regeocode"]["formatted_address"]??"";
+          String name = "";
+          try{
+            name = result["regeocode"]["pois"][0]["name"];
+          }catch(e){
+            name = result["regeocode"]["formatted_address"]??"";
+          }
+          appLoc.value = name;
         }else{
           searchLocation();
         }
@@ -383,6 +388,5 @@ class MainController extends GetxController {
       }
     });
   }
-
 
 }
