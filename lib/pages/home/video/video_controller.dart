@@ -179,6 +179,7 @@ class VideoController extends GetxController {
     map['pageNo'] = '$pageKey';
     map['pageSize'] = '$pageSize';
     map['appSign'] = 1;
+    map['videoSigns'] = 1;
     if(searchController!.text.isNotEmpty){
     map['name'] = searchController!.text;
     }
