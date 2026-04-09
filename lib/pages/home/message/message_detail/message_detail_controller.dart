@@ -11,6 +11,7 @@ import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/RequestUtils.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
+import 'package:iot/widgets/pop_menu.dart';
 
 class MessageDetailController extends GetxController {
   final index = 0.obs;
@@ -28,6 +29,12 @@ class MessageDetailController extends GetxController {
     }
     getWarnType();
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    super.onClose();
+    HhActionMenu.dismiss();
   }
 
   /// 创建完成回调

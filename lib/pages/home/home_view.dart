@@ -9,6 +9,7 @@ import 'package:iot/pages/home/main/main_view.dart';
 import 'package:iot/pages/home/map/map_view.dart';
 import 'package:iot/pages/home/mqtt/mqtt_controller.dart';
 import 'package:iot/utils/EventBusUtils.dart';
+import 'package:iot/widgets/pop_menu.dart';
 
 import '../../cell/bottom_bar.dart';
 import '../../res/images.dart';
@@ -132,6 +133,7 @@ class HomePage extends StatelessWidget {
   int timeForExit = 0;
   //复写返回监听
   Future<bool> onBackPressed() {
+    HhActionMenu.dismiss();
     bool exit = false;
     int time_ = DateTime.now().millisecondsSinceEpoch;
     if(logic.index.value == 0){

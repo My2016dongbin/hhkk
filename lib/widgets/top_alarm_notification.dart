@@ -256,7 +256,8 @@ class _TopAlarmNotificationOverlayState
                                 ),
                                 SizedBox(height: 10.w * 3),
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                                  textBaseline: TextBaseline.alphabetic,
                                   children: <Widget>[
                                     Text(
                                       '时间:',

@@ -69,6 +69,7 @@ class MessageDetailPage extends StatelessWidget {
           duration: const Duration(milliseconds: 100),
           scaleFactor: 0.5,
           onPressed: () async {
+            HhActionMenu.dismiss();
             Get.back();
           },
           child: Container(
@@ -231,6 +232,7 @@ class MessageDetailPage extends StatelessWidget {
                               if(logic.fireInfo["alarmImageUrl"]==null){
                                 return;
                               }
+                              HhActionMenu.dismiss();
                               CommonUtils().showPictureDialog(Get.context, url:"${CommonData.endpoint}${logic.fireInfo['alarmImageUrl']}");
                             },
                             child: Image.network(
@@ -287,6 +289,7 @@ class MessageDetailPage extends StatelessWidget {
                               markers: logic.aMapMarkers.toSet(),
                               onTap: (LatLng latLng){
                                 FocusScope.of(Get.context!).requestFocus(FocusNode());
+                                HhActionMenu.dismiss();
                                 Get.to(
                                         () => MapLocationSearchPage(),
                                     binding: MapLocationSearchBinding(),
@@ -296,6 +299,7 @@ class MessageDetailPage extends StatelessWidget {
                               },
                               onPoiTouched: (poi){
                                 FocusScope.of(Get.context!).requestFocus(FocusNode());
+                                HhActionMenu.dismiss();
                                 Get.to(
                                         () => MapLocationSearchPage(),
                                     binding: MapLocationSearchBinding(),
