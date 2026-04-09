@@ -175,7 +175,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                         '视频加载错误，请重试',
                         style: TextStyle(
                             color: HhColors.gray6TextColor,
-                            fontSize: width*0.07,
+                            fontSize: min(width*0.07, 16),
                             overflow: TextOverflow.ellipsis,
                             fontWeight: FontWeight.w500),
                       ),
@@ -203,7 +203,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
                             '重试',
                             style: TextStyle(
                                 color: HhColors.whiteColorD5,
-                                fontSize: width*0.07,
+                                fontSize: min(width*0.07, 16),
                                 overflow: TextOverflow.ellipsis,
                                 fontWeight: FontWeight.w500),
                           ),
