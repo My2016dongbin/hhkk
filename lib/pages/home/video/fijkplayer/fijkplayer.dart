@@ -19,7 +19,7 @@ class VideoPlayerWidget extends StatefulWidget {
     Key? key,
     required this.url,
     this.autoPlay = true,
-    this.fit = FijkFit.contain,
+    this.fit = FijkFit.fill,
     this.fsFit = FijkFit.fill,
     required this.onOuterTap,
   }) : super(key: key);
