@@ -304,7 +304,7 @@ class MainController extends GetxController {
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("mainDeviceList -- REQUEST ${RequestUtils.mainDeviceList}");
     HhLog.d("mainDeviceList -- params $params");
-    HhLog.d("mainDeviceList -- result result");
+    HhLog.d("mainDeviceList -- result $result");
     if (result["data"] != null && result["data"]["list"] != null) {
       totalPage = CommonUtils().parseTotalPage("${result["data"]["total"]}", 100);
       HhLog.d("mainDeviceList -- $totalPage , $devicePageNo");

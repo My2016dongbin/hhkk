@@ -827,11 +827,11 @@ class MessagePage extends StatelessWidget {
                                                 ),
                                               ),
                                               Container(
-                                                margin: EdgeInsets.fromLTRB(30.w, 5.w, 0, 0),
+                                                margin: EdgeInsets.fromLTRB(10.w*3, 5.w, 25.w*3, 0),
                                                 child: Text(
                                                   parseLeftType("${item['alarmType']}"),
                                                   style: TextStyle(
-                                                      color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
+                                                      color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold,overflow: TextOverflow.ellipsis),maxLines: 1,
                                                 ),
                                               ),
                                               Container(
