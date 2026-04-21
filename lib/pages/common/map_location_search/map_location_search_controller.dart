@@ -49,9 +49,10 @@ class MapLocationSearchController extends GetxController {
   void onGDMapCreated(AMapController controller) {
     gdMapController = controller;
 
-    if(CommonData.latitude!=null && CommonData.latitude!=0){
+    /*if(CommonData.latitude!=null && CommonData.latitude!=0){
       gdMapController.moveCamera(CameraUpdate.newLatLngZoom(LatLng(CommonData.latitude!,CommonData.longitude!), 14));
-    }
+    }*/
+    updateMarker();
   }
 
   void updateMarker({bool location = false}){
