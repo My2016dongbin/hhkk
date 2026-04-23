@@ -26,7 +26,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import '../../utils/EventBusUtils.dart';
 
-class HomeController extends GetxController {
+class HomeController extends GetxController with WidgetsBindingObserver {
   final index = 0.obs;
   late BuildContext context;
   final unreadMsgCount = 0.obs;
@@ -47,24 +47,25 @@ class HomeController extends GetxController {
   final Rx<String> version = ''.obs;
   final Rx<String> buildNumber = ''.obs;
 
-  final Rx<int> totalSize = (65*1000*1000).obs;
+  final Rx<int> totalSize = (65 * 1000 * 1000).obs;
   final Rx<int> currentSize = 0.obs;
   late Dio dio = Dio();
   late String downloadUrl =
       'http://192.168.1.88:9000/resource/fireRebuild-2.1.1.apk';
   late String savePath = '';
+  bool _waitingInstallPermission = false;
 
   switchTab(index) {
     this.index.value = index;
     final overlayStyle = Platform.isAndroid
         ? const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-    )
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+          )
         : const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.light,
-    );
+            statusBarColor: Colors.transparent,
+            statusBarBrightness: Brightness.light,
+          );
     SystemChrome.setSystemUIOverlayStyle(overlayStyle);
   }
 
@@ -85,7 +86,8 @@ class HomeController extends GetxController {
 
     // 是否首次提示标记
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool hasPrompted = prefs.getBool("hasPromptedNotificationPermission") ?? false;
+    bool hasPrompted =
+        prefs.getBool("hasPromptedNotificationPermission") ?? false;
 
     if (!hasPrompted) {
       prefs.setBool("hasPromptedNotificationPermission", true);
@@ -96,10 +98,10 @@ class HomeController extends GetxController {
     }
   }
 
-
   @override
   void onClose() {
     try {
+      WidgetsBinding.instance.removeObserver(this);
       versionSubscription!.cancel();
       tabIndexSubscription!.cancel();
       showToastSubscription.cancel();
@@ -114,6 +116,7 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
+    WidgetsBinding.instance.addObserver(this);
     localVersion();
     Future.delayed(const Duration(seconds: 1), () {
       showToastSubscription =
@@ -182,12 +185,12 @@ class HomeController extends GetxController {
       int now = DateTime.now().millisecondsSinceEpoch;
       if (now - CommonData.time > 1000) {
         CommonData.time = now;
-        getVersion(info:event.info);
+        getVersion(info: event.info);
       }
     });
     tabIndexSubscription =
         EventBusUtil.getInstance().on<TabIndex>().listen((event) {
-          switchTab(event.index);
+      switchTab(event.index);
     });
     progressSubscription =
         EventBusUtil.getInstance().on<DownProgress>().listen((event) {
@@ -195,20 +198,20 @@ class HomeController extends GetxController {
     });
     showLoadingSubscription =
         EventBusUtil.getInstance().on<HhLoading>().listen((event) {
-          try{
-            if (event.show) {
-              if(event.title!=null && event.title!=""){
-                CommonData.loadingInfo = event.title??"";
-              }else{
-                CommonData.loadingInfo = CommonData.loadingInfoFinal;
-              }
-              context.loaderOverlay.show();
-            } else {
-              context.loaderOverlay.hide();
-            }
-          }catch(e){
-            HhLog.e("error $e");
+      try {
+        if (event.show) {
+          if (event.title != null && event.title != "") {
+            CommonData.loadingInfo = event.title ?? "";
+          } else {
+            CommonData.loadingInfo = CommonData.loadingInfoFinal;
           }
+          context.loaderOverlay.show();
+        } else {
+          context.loaderOverlay.hide();
+        }
+      } catch (e) {
+        HhLog.e("error $e");
+      }
     });
     showShareReceiveSubscription =
         EventBusUtil.getInstance().on<Share>().listen((event) {
@@ -380,15 +383,22 @@ class HomeController extends GetxController {
     checkLocation();
   }
 
-  void checkLocation(){
+  void checkLocation() {
     ///处理原生定位初始化延时问题
     AmapLocationService().dispose();
     AmapLocationService().init();
     AmapLocationService().startLocation();
-    if(!AmapLocationService().hasResult){
-      Future.delayed(const Duration(milliseconds: 10000),(){
+    if (!AmapLocationService().hasResult) {
+      Future.delayed(const Duration(milliseconds: 10000), () {
         checkLocation();
       });
+    }
+
+    @override
+    void didChangeAppLifecycleState(AppLifecycleState state) {
+      if (state == AppLifecycleState.resumed && _waitingInstallPermission) {
+        _retryInstallPermissionAfterResume();
+      }
     }
   }
 
@@ -417,16 +427,16 @@ class HomeController extends GetxController {
   }
 
   Future<void> getVersion({bool? info}) async {
-    if(info==true){
+    if (info == true) {
       EventBusUtil.getInstance().fire(HhLoading(show: true, title: '正在检查更新…'));
     }
     Map<String, dynamic> map = {};
-    map['operatingSystem'] = Platform.isAndroid?"HarmonyOS":"IOS";
+    map['operatingSystem'] = Platform.isAndroid ? "HarmonyOS" : "IOS";
     map['version'] = buildNumber.value;
     map['type'] = "testCompany";
     var result = await HhHttp()
         .request(RequestUtils.versionNew, method: DioMethod.get, params: map);
-    if(info==true){
+    if (info == true) {
       EventBusUtil.getInstance().fire(HhLoading(show: false));
     }
     HhLog.d("getVersion -- request ${RequestUtils.versionNew}");
@@ -436,8 +446,8 @@ class HomeController extends GetxController {
       dynamic update = result["data"];
       showVersionDialog(update);
     } else {
-      if(info==true){
-        EventBusUtil.getInstance().fire(HhToast(title: "当前已是最新版本",type: 0));
+      if (info == true) {
+        EventBusUtil.getInstance().fire(HhToast(title: "当前已是最新版本", type: 0));
       }
     }
   }
@@ -446,8 +456,9 @@ class HomeController extends GetxController {
     versionStatus.value = 0;
     bool force = false;
     try {
-      int minSupportedVersion =  int.parse(update["minSupportedVersion"]);
-      if(minSupportedVersion > (int.parse(buildNumber.value)) || minSupportedVersion == -1){
+      int minSupportedVersion = int.parse(update["minSupportedVersion"]);
+      if (minSupportedVersion > (int.parse(buildNumber.value)) ||
+          minSupportedVersion == -1) {
         force = true;
       }
       showCupertinoDialog(
@@ -650,32 +661,10 @@ class HomeController extends GetxController {
                               onPressed: () async {
                                 if (versionStatus.value == 0) {
                                   ///立即更新
-                                  //请求安装未知应用权限 (Android 8.0及以上)
                                   if (Platform.isAndroid) {
-                                    if (await Permission
-                                        .requestInstallPackages.isGranted) {
-                                      versionStatus.value = 1;
-                                      downloadStep.value = 0;
-                                      downloadUrl =
-                                          "${CommonData.endpoint}${update["apkUrl"]}";
-                                      HhLog.d("downloadUrl $downloadUrl");
-                                      downloadDir();
-                                    } else {
-                                      EventBusUtil.getInstance().fire(HhToast(
-                                          title: '请先开启安装权限，开启后请重新打开应用'));
-                                      Future.delayed(
-                                          const Duration(milliseconds: 1600),
-                                          () async {
-
-                                        try {
-                                          await Permission
-                                              .requestInstallPackages
-                                              .request();
-                                        } catch (e) {
-                                          //
-                                        }
-                                      });
-                                    }
+                                    await _ensureAndroidInstallPermissionAndDownload(
+                                      "${CommonData.endpoint}${update["apkUrl"]}",
+                                    );
                                   }
                                 } else {
                                   ///确定
@@ -762,5 +751,59 @@ class HomeController extends GetxController {
   uploadAPK() async {
     await OpenFile.open(savePath,
         type: "application/vnd.android.package-archive");
+  }
+
+  Future<void> _ensureAndroidInstallPermissionAndDownload(String apkUrl) async {
+    downloadUrl = apkUrl;
+    final Permission permission = Permission.requestInstallPackages;
+    if (await permission.isGranted) {
+      _startApkDownload(apkUrl);
+      return;
+    }
+
+    PermissionStatus status = PermissionStatus.denied;
+    try {
+      status = await permission.request();
+    } catch (e) {
+      HhLog.e("requestInstallPackages request error $e");
+    }
+
+    if (status.isGranted || await permission.isGranted) {
+      _startApkDownload(apkUrl);
+      return;
+    }
+
+    _waitingInstallPermission = true;
+    EventBusUtil.getInstance().fire(
+      HhToast(title: '请先开启安装权限，授权后返回应用将自动继续更新'),
+    );
+
+    Future.delayed(const Duration(milliseconds: 1200), () async {
+      try {
+        await openAppSettings();
+      } catch (e) {
+        HhLog.e("openAppSettings error $e");
+      }
+    });
+  }
+
+  void _startApkDownload(String apkUrl) {
+    _waitingInstallPermission = false;
+    versionStatus.value = 1;
+    downloadStep.value = 0;
+    downloadUrl = apkUrl;
+    HhLog.d("downloadUrl $downloadUrl");
+    downloadDir();
+  }
+
+  Future<void> _retryInstallPermissionAfterResume() async {
+    final bool granted = await Permission.requestInstallPackages.isGranted;
+    if (!granted) {
+      return;
+    }
+    _waitingInstallPermission = false;
+    if (downloadUrl.isNotEmpty && versionStatus.value == 0) {
+      _startApkDownload(downloadUrl);
+    }
   }
 }
