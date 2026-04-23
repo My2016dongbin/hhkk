@@ -1,9 +1,9 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:iot/bus/bus_bean.dart';
 import 'package:iot/pages/common/common_data.dart';
 import 'package:iot/pages/common/socket/WebSocketManager.dart';
@@ -13,13 +13,9 @@ import 'package:iot/utils/HhHttp.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/RequestUtils.dart';
 import 'package:get/get.dart' hide Response, FormData, MultipartFile;
-import 'package:iot/utils/SPKeys.dart';
 import 'package:iot/widgets/jump_view.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_sound/flutter_sound.dart';
-import 'package:http/http.dart' as http;
 
 class LiGanDetailController extends GetxController {
   late BuildContext context;
@@ -40,18 +36,18 @@ class LiGanDetailController extends GetxController {
   final Rx<String> deviceVer = ''.obs;
   final Rx<int> deviceFireLevel = 999.obs;
   final Rx<int> tabIndex = 0.obs;
-  final Rx<int> fireLevel = 0.obs;//防火等级
-  final Rx<int> circle = 0.obs;//枪球联动 0关 1开
-  final Rx<int> version = 0.obs;//固件版本号
-  final Rx<String> versionStr = ''.obs;//固件版本号
-  final Rx<int> playing = 0.obs;//播放1 停止0
-  final Rx<int> voiceHuman = 3.obs;//音量
-  final Rx<int> voiceCar = 3.obs;//音量
-  final Rx<int> voiceCap = 3.obs;//音量
-  final Rx<int> speed = 6.obs;//滑动速度
-  final Rx<bool> close = false.obs;//息屏开关
-  final Rx<int> closeTab = 0.obs;//息屏开关 1常开0常闭2触发
-  final Rx<int> direction = 0.obs;//滑动方向 0向上  1向下
+  final Rx<int> fireLevel = 0.obs; //防火等级
+  final Rx<int> circle = 0.obs; //枪球联动 0关 1开
+  final Rx<int> version = 0.obs; //固件版本号
+  final Rx<String> versionStr = ''.obs; //固件版本号
+  final Rx<int> playing = 0.obs; //播放1 停止0
+  final Rx<int> voiceHuman = 3.obs; //音量
+  final Rx<int> voiceCar = 3.obs; //音量
+  final Rx<int> voiceCap = 3.obs; //音量
+  final Rx<int> speed = 6.obs; //滑动速度
+  final Rx<bool> close = false.obs; //息屏开关
+  final Rx<int> closeTab = 0.obs; //息屏开关 1常开0常闭2触发
+  final Rx<int> direction = 0.obs; //滑动方向 0向上  1向下
   final Rx<String> name = ''.obs;
   final Rx<String> ledContent = ''.obs;
   final Rx<String> ledTime = ''.obs;
@@ -84,94 +80,115 @@ class LiGanDetailController extends GetxController {
   final Rx<bool> closeStatus = false.obs;
   final Rx<String> closeStart = ''.obs;
   final Rx<String> closeEnd = ''.obs;
-  final Rx<int> energySetType = 0.obs;//太阳能 能源类型（锂电、液体、胶体、AMG）
+  final Rx<int> energySetType = 0.obs; //太阳能 能源类型（锂电、液体、胶体、AMG）
 
   //锂电
-  final Rx<double> liVP = 0.0.obs;//太阳能 过充保护
-  final Rx<double> liVR = 0.0.obs;//太阳能 过充恢复
-  final Rx<int> liS = 0.obs;//太阳能 零度充电 （正常、禁冲、慢充）index
-  final List<String> liSList = ["正常","禁冲","慢充"];//太阳能 零度充电 （正常、禁冲、慢充）
+  final Rx<double> liVP = 0.0.obs; //太阳能 过充保护
+  final Rx<double> liVR = 0.0.obs; //太阳能 过充恢复
+  final Rx<int> liS = 0.obs; //太阳能 零度充电 （正常、禁冲、慢充）index
+  final List<String> liSList = ["正常", "禁冲", "慢充"]; //太阳能 零度充电 （正常、禁冲、慢充）
   //液体、胶体、AMG
-  final Rx<double> equalV = 14.8.obs;//太阳能 均衡充电压
-  final Rx<double> strongV = 14.5.obs;//太阳能 强充电压
-  final Rx<double> floatV = 13.7.obs;//太阳能 浮充电压
+  final Rx<double> equalV = 14.8.obs; //太阳能 均衡充电压
+  final Rx<double> strongV = 14.5.obs; //太阳能 强充电压
+  final Rx<double> floatV = 13.7.obs; //太阳能 浮充电压
   //公共
-  final Rx<int> ratedL = 0.obs;//太阳能 电压等级
-  final Rx<double> lowVR = 12.0.obs;//太阳能 低压恢复
-  final Rx<double> lowVP = 11.2.obs;//太阳能 低压保护
+  final Rx<int> ratedL = 0.obs; //太阳能 电压等级
+  final Rx<double> lowVR = 12.0.obs; //太阳能 低压恢复
+  final Rx<double> lowVP = 11.2.obs; //太阳能 低压保护
 
   final FlutterSoundPlayer _player = FlutterSoundPlayer();
   final Rx<String> localVoice = ''.obs;
 
   @override
   Future<void> onInit() async {
-    Future.delayed(const Duration(seconds: 1),(){
+    Future.delayed(const Duration(seconds: 1), () async {
       //getDeviceInfo();
       getDeviceConfig();
       getVoiceUse();
       getVersion();
-      _recorder.openRecorder();
+      await _ensureRecorderOpened();
     });
     super.onInit();
   }
 
+  @override
+  void onClose() {
+    try {
+      _recorder.closeRecorder();
+    } catch (e) {
+      //
+    }
+    super.onClose();
+  }
 
   Future<void> getDeviceInfo() async {
     Map<String, dynamic> map = {};
     map['id'] = id;
-    var result = await HhHttp().request(RequestUtils.deviceInfo,method: DioMethod.get,params: map);
+    var result = await HhHttp()
+        .request(RequestUtils.deviceInfo, method: DioMethod.get, params: map);
     HhLog.d("getDeviceInfo -- $id");
     HhLog.d("getDeviceInfo -- $result");
-    if(result["code"]==0 && result["data"]!=null){
+    if (result["code"] == 0 && result["data"] != null) {
       name.value = "${result["data"]["spaceName"]}-${result["data"]["name"]}";
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> getVoiceUse() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    var result = await HhHttp().request(RequestUtils.deviceVoiceTop,method: DioMethod.get);
+    var result = await HhHttp()
+        .request(RequestUtils.deviceVoiceTop, method: DioMethod.get);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("getVoiceUse -- $result");
-    if(result["code"]==0 && result["data"]!=null){
+    if (result["code"] == 0 && result["data"] != null) {
       voiceTopList = result["data"]["list"];
       voiceTopStatus.value = false;
       voiceTopStatus.value = true;
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> getVersion() async {
-    var result = await HhHttp().request(RequestUtils.deviceVersion,method: DioMethod.get);
+    var result = await HhHttp()
+        .request(RequestUtils.deviceVersion, method: DioMethod.get);
     HhLog.d("getVersion -- $result");
-    if(result["code"]==0 && result["data"]!=null){
+    if (result["code"] == 0 && result["data"] != null) {
       versionList = result["data"]["list"];
-      if(versionList.isNotEmpty){
+      if (versionList.isNotEmpty) {
         versionStr.value = versionList[0]['version'];
       }
       versionStatus.value = false;
       versionStatus.value = true;
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> postScreenTop() async {
     dynamic data = {
       "deviceNo": deviceNo,
       "cmdType": "ledSetParam",
       "speed": speed.value,
-      "direction": direction.value==1?"down":"up",
+      "direction": direction.value == 1 ? "down" : "up",
       "content": showContentController.text
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("postScreenTop -- $data");
     HhLog.d("postScreenTop -- $result");
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "设置成功",type: 1));
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "设置成功", type: 1));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> postScreenBottom() async {
     dynamic data = {
       "deviceNo": deviceNo,
@@ -179,7 +196,8 @@ class LiGanDetailController extends GetxController {
       "switchType": closeTab.value,
       "time": ledTime.value,
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("postScreenBottom -- $data");
     HhLog.d("postScreenBottom -- $result");
     /*if(result["code"]==0){
@@ -192,33 +210,34 @@ class LiGanDetailController extends GetxController {
   Future<void> getDeviceConfig() async {
     Map<String, dynamic> map = {};
     map['deviceNo'] = deviceNo;
-    var result = await HhHttp().request(RequestUtils.deviceConfig,method: DioMethod.get,params: map);
+    var result = await HhHttp()
+        .request(RequestUtils.deviceConfig, method: DioMethod.get, params: map);
     HhLog.d("getDeviceConfig -- $deviceNo");
     HhLog.d("getDeviceConfig -- $result");
-    if(result["code"]==0 && result["data"]!=null){
+    if (result["code"] == 0 && result["data"] != null) {
       config = result["data"];
-      try{
-        personStart.value = "${config["audioHumanTime"]}".substring(0,8);
-        personEnd.value = "${config["audioHumanTime"]}".substring(9,17);
-      }catch(e){
+      try {
+        personStart.value = "${config["audioHumanTime"]}".substring(0, 8);
+        personEnd.value = "${config["audioHumanTime"]}".substring(9, 17);
+      } catch (e) {
         //
       }
-      try{
-        carStart.value = "${config["audioCarTime"]}".substring(0,8);
-        carEnd.value = "${config["audioCarTime"]}".substring(9,17);
-      }catch(e){
+      try {
+        carStart.value = "${config["audioCarTime"]}".substring(0, 8);
+        carEnd.value = "${config["audioCarTime"]}".substring(9, 17);
+      } catch (e) {
         //
       }
-      try{
-        openStart.value = "${config["audioOpenTime"]}".substring(0,8);
-        openEnd.value = "${config["audioOpenTime"]}".substring(9,17);
-      }catch(e){
+      try {
+        openStart.value = "${config["audioOpenTime"]}".substring(0, 8);
+        openEnd.value = "${config["audioOpenTime"]}".substring(9, 17);
+      } catch (e) {
         //
       }
-      try{
-        closeStart.value = "${config["ledTime"]}".substring(0,8);
-        closeEnd.value = "${config["ledTime"]}".substring(9,17);
-      }catch(e){
+      try {
+        closeStart.value = "${config["ledTime"]}".substring(0, 8);
+        closeEnd.value = "${config["ledTime"]}".substring(9, 17);
+      } catch (e) {
         //
       }
       voiceBottomList = result["data"]["audioArray"];
@@ -233,9 +252,12 @@ class LiGanDetailController extends GetxController {
       energyAction.value = config["energyAction"] == "ON";
       weatherAction.value = config["weatherAction"] == "ON";
       soilAction.value = config["soilAction"] == "ON";
-      energyDelay.value = CommonUtils().parseMinuteUpload('${config["energyDelay"]}');
-      weatherDelay.value = CommonUtils().parseMinuteUpload('${config["weatherDelay"]}');
-      soilDelay.value = CommonUtils().parseMinuteUpload('${config["soilDelay"]}');
+      energyDelay.value =
+          CommonUtils().parseMinuteUpload('${config["energyDelay"]}');
+      weatherDelay.value =
+          CommonUtils().parseMinuteUpload('${config["weatherDelay"]}');
+      soilDelay.value =
+          CommonUtils().parseMinuteUpload('${config["soilDelay"]}');
       time1Controller!.text = energyDelay.value;
       time2Controller!.text = weatherDelay.value;
       time3Controller!.text = soilDelay.value;
@@ -243,35 +265,37 @@ class LiGanDetailController extends GetxController {
       versionStr.value = '${config["deviceVer"]}';
       deviceFireLevel.value = config["deviceFireLevel"];
       fireLevel.value = deviceFireLevel.value;
-      direction.value = config["ledDirection"]=="down"?1:0;
+      direction.value = config["ledDirection"] == "down" ? 1 : 0;
       speed.value = config["ledSpeed"];
       ledContent.value = config["ledContent"];
       showContentController.text = ledContent.value;
-      close.value = config["ledEnable"]==1;
+      close.value = config["ledEnable"] == 1;
       ledTime.value = config["ledTime"];
       voiceHuman.value = config["audioHumanVolume"];
       voiceCar.value = config["audioCarVolume"];
       voiceCap.value = config["audioOpenVolume"];
+
       ///太阳能
-      energySetType.value = config["energySetType"];//太阳能 能源类型（锂电、液体、胶体、AMG）
+      energySetType.value = config["energySetType"]; //太阳能 能源类型（锂电、液体、胶体、AMG）
       //锂电
-      liVP.value = config["liVP"];//太阳能 过充保护
-      liVR.value = config["liVR"];//太阳能 过充恢复
-      liS.value = config["liS"];//太阳能 零度充电 （正常、禁冲、慢充）
+      liVP.value = config["liVP"]; //太阳能 过充保护
+      liVR.value = config["liVR"]; //太阳能 过充恢复
+      liS.value = config["liS"]; //太阳能 零度充电 （正常、禁冲、慢充）
       //液体、胶体、AMG
-      equalV.value = config["equalV"];//太阳能 均衡充电压
-      strongV.value = config["strongV"];//太阳能 强充电压
-      floatV.value = config["floatV"];//太阳能 浮充电压
+      equalV.value = config["equalV"]; //太阳能 均衡充电压
+      strongV.value = config["strongV"]; //太阳能 强充电压
+      floatV.value = config["floatV"]; //太阳能 浮充电压
       //公共
-      ratedL.value = config["ratedL"];//太阳能 电压等级
-      lowVR.value = config["lowVR"];//太阳能 低压恢复
-      lowVP.value = config["lowVP"];//太阳能 低压保护
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+      ratedL.value = config["ratedL"]; //太阳能 电压等级
+      lowVR.value = config["lowVR"]; //太阳能 低压恢复
+      lowVP.value = config["lowVP"]; //太阳能 低压保护
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
 
-  Future<void> uploadVoice(String name,String url) async {
+  Future<void> uploadVoice(String name, String url) async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
       "deviceNo": deviceNo,
@@ -280,16 +304,19 @@ class LiGanDetailController extends GetxController {
       "url": url,
       "name": name,
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("uploadVoice -- $data");
     HhLog.d("uploadVoice -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "上传成功",type: 1));
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "上传成功", type: 1));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> playVoice(String name) async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
@@ -298,45 +325,52 @@ class LiGanDetailController extends GetxController {
       "cmdType": "audioSetData",
       "name": name
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("playVoice -- $data");
     HhLog.d("playVoice -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "播放成功",type: 1));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "播放成功", type: 1));
       playing.value = 1;
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> stopVoiceLocal() async {
     _player.stopPlayer();
   }
+
   Future<void> playVoiceLocal(String url) async {
     await _player.openPlayer();
 
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode != 200) {
+    final response = await Dio().get<List<int>>(
+      url,
+      options: Options(responseType: ResponseType.bytes),
+    );
+    if (response.statusCode != 200 || response.data == null) {
       return;
     }
 
     // 假设你知道采样率、声道数等信息
     const sampleRate = 16000;
     const numChannels = 1;
-    const bitsPerSample = 16;
 
-    final data = response.bodyBytes;
+    final data = Uint8List.fromList(response.data!);
 
     await _player.startPlayer(
       fromDataBuffer: data,
       codec: Codec.pcm16,
       sampleRate: sampleRate,
       numChannels: numChannels,
-      whenFinished: (){
+      whenFinished: () {
         localVoice.value = "";
       },
     );
   }
+
   Future<void> stopVoice() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
@@ -344,51 +378,60 @@ class LiGanDetailController extends GetxController {
       "switchType": "stop",
       "cmdType": "audioSetData"
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("stopVoice -- $data");
     HhLog.d("stopVoice -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "已停止播放",type: 1));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "已停止播放", type: 1));
       playing.value = 0;
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> deleteVoice(String name) async {
-    EventBusUtil.getInstance().fire(HhLoading(show: true,title: "正在删除，请稍后…"));
+    EventBusUtil.getInstance().fire(HhLoading(show: true, title: "正在删除，请稍后…"));
     dynamic data = {
       "deviceNo": deviceNo,
       "switchType": "delet",
       "cmdType": "audioSetData",
       "name": name
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("deleteVoice -- $data");
     HhLog.d("deleteVoice -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "删除成功",type: 1));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "删除成功", type: 1));
       getVoiceUse();
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> deleteWebVoice(dynamic model) async {
-    EventBusUtil.getInstance().fire(HhLoading(show: true,title: "正在删除，请稍后…"));
+    EventBusUtil.getInstance().fire(HhLoading(show: true, title: "正在删除，请稍后…"));
     Map<String, dynamic> map = {};
     map['id'] = model["id"];
-    var result = await HhHttp().request(RequestUtils.voiceDelete,method: DioMethod.delete,params: map);
+    var result = await HhHttp().request(RequestUtils.voiceDelete,
+        method: DioMethod.delete, params: map);
     HhLog.d("deleteWebVoice -- $map");
     HhLog.d("deleteWebVoice -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "删除成功",type: 1));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "删除成功", type: 1));
       getVoiceUse();
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> voiceSubmitHuman() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
@@ -400,16 +443,19 @@ class LiGanDetailController extends GetxController {
       "volume": voiceHuman.value,
       "time": config["audioHumanTime"]
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("voiceSubmitHuman -- $data");
     HhLog.d("voiceSubmitHuman -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "设置成功",type: 1));
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "设置成功", type: 1));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> voiceSubmitCar() async {
     // EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
@@ -421,7 +467,8 @@ class LiGanDetailController extends GetxController {
       "volume": voiceCar.value,
       "time": config["audioCarTime"]
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("voiceSubmitCar -- $data");
     HhLog.d("voiceSubmitCar -- $result");
     // EventBusUtil.getInstance().fire(HhLoading(show: false));
@@ -431,6 +478,7 @@ class LiGanDetailController extends GetxController {
       EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }*/
   }
+
   Future<void> voiceSubmitCap() async {
     // EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
@@ -442,7 +490,8 @@ class LiGanDetailController extends GetxController {
       "volume": voiceCap.value,
       "time": config["audioOpenTime"]
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("voiceSubmitCap -- $data");
     HhLog.d("voiceSubmitCap -- $result");
     // EventBusUtil.getInstance().fire(HhLoading(show: false));
@@ -452,6 +501,7 @@ class LiGanDetailController extends GetxController {
       EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }*/
   }
+
   Future<void> settingLevel() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
@@ -459,32 +509,35 @@ class LiGanDetailController extends GetxController {
       "cmdType": "deviceSetLevel",
       "value": fireLevel.value
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("settingLevel -- $data");
     HhLog.d("settingLevel -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "设置成功",type: 1));
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "设置成功", type: 1));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> resetDevice() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
-      "deviceNo": deviceNo,
-      "cmdType": "deviceSetReboot"
-    };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    dynamic data = {"deviceNo": deviceNo, "cmdType": "deviceSetReboot"};
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("resetDevice -- $data");
     HhLog.d("resetDevice -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "重启下发成功",type: 1));
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "重启下发成功", type: 1));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> versionUpdate() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
@@ -493,17 +546,20 @@ class LiGanDetailController extends GetxController {
       "url": "${versionList[version.value]["url"]}",
       "version": "${versionList[version.value]["version"]}"
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("versionUpdate -- $data");
     HhLog.d("versionUpdate -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "下发成功",type: 1));
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "下发成功", type: 1));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
-  Future<void> warnSet(String value,String type) async {
+
+  Future<void> warnSet(String value, String type) async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
       "deviceNo": deviceNo,
@@ -511,17 +567,21 @@ class LiGanDetailController extends GetxController {
       "value": value,
       "switchType": type
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("versionUpdate -- $data");
     HhLog.d("versionUpdate -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "设置成功",type: 1));
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "设置成功", type: 1));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
-  Future<void> warnUploadSet(String value,String type,int delay,String time) async {
+
+  Future<void> warnUploadSet(
+      String value, String type, int delay, String time) async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
       "deviceNo": deviceNo,
@@ -531,16 +591,19 @@ class LiGanDetailController extends GetxController {
       "delay": delay,
       "time": time,
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("versionUpdate -- $data");
     HhLog.d("versionUpdate -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "设置成功",type: 1));
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "设置成功", type: 1));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> sunSetting() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
@@ -556,27 +619,43 @@ class LiGanDetailController extends GetxController {
       "strongV": strongV.value,
       "floatV": floatV.value,
     };
-    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,method: DioMethod.post,data: data);
+    var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
+        method: DioMethod.post, data: data);
     HhLog.d("sunSetting -- $data");
     HhLog.d("sunSetting -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));
-    if(result["code"]==0){
-      EventBusUtil.getInstance().fire(HhToast(title: "设置成功",type: 1));
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    if (result["code"] == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: "设置成功", type: 1));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
 
-  void startRecord() {
-    visualizerKey.currentState?.start();
+  Future<void> startRecord() async {
+    if (videoTag.value || _recordStarting) {
+      return;
+    }
+    _recordStarting = true;
     recordDateTime = DateTime(2025);
+    recordTimes.value = "00:00:00";
+
+    final bool started = await recording();
+    _recordStarting = false;
+    if (!started) {
+      visualizerKey.currentState?.stop();
+      videoTag.value = false;
+      return;
+    }
+
+    visualizerKey.currentState?.start();
     videoTag.value = true;
+    EventBusUtil.getInstance().fire(HhToast(title: "开始录音", type: 0));
     runRecordTimer();
-    recording();
   }
 
   Future<void> stopRecord() async {
-    if (!videoTag.value) return;
+    if (!videoTag.value && !isRecording) return;
 
     visualizerKey.currentState?.stop();
     videoTag.value = false;
@@ -609,10 +688,10 @@ class LiGanDetailController extends GetxController {
       Get.context,
       "录音",
       controller,
-          () {
+      () {
         Get.back();
       },
-          () async {
+      () async {
         final String name = controller.text.trim().isEmpty
             ? "录音_${DateTime.now().millisecondsSinceEpoch}.pcm"
             : "${controller.text.trim()}.pcm";
@@ -627,14 +706,15 @@ class LiGanDetailController extends GetxController {
   late DateTime recordDateTime = DateTime(2025);
   final Rx<bool> videoTag = false.obs;
   void runRecordTimer() {
-    Future.delayed(const Duration(seconds: 1),(){
+    Future.delayed(const Duration(seconds: 1), () {
       recordDateTime = recordDateTime.add(const Duration(seconds: 1));
-      recordTimes.value = "${CommonUtils().parseZero(recordDateTime.hour)}:${CommonUtils().parseZero(recordDateTime.minute)}:${CommonUtils().parseZero(recordDateTime.second)}";
-      if(recordDateTime.minute >= 3){
+      recordTimes.value =
+          "${CommonUtils().parseZero(recordDateTime.hour)}:${CommonUtils().parseZero(recordDateTime.minute)}:${CommonUtils().parseZero(recordDateTime.second)}";
+      if (recordDateTime.minute >= 3) {
         Get.back();
         return;
       }
-      if(videoTag.value){
+      if (videoTag.value) {
         runRecordTimer();
       }
     });
@@ -642,8 +722,10 @@ class LiGanDetailController extends GetxController {
 
   final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
   bool isRecording = false;
+  bool _recordStarting = false;
+  bool _recorderOpened = false;
   String? _pcmPath;
-  Future<void> recording() async {
+  Future<bool> recording() async {
     PermissionStatus status = await Permission.microphone.status;
 
     // 未授权时再请求一次
@@ -652,21 +734,33 @@ class LiGanDetailController extends GetxController {
     }
 
     if (status.isGranted) {
-      _pcmPath = await _getPCMPath();
+      try {
+        await _ensureRecorderOpened();
+        _pcmPath = await _getPCMPath();
 
-      final file = File(_pcmPath!);
-      if (!await file.parent.exists()) {
-        await file.parent.create(recursive: true);
+        final file = File(_pcmPath!);
+        if (!await file.parent.exists()) {
+          await file.parent.create(recursive: true);
+        }
+
+        await _recorder.startRecorder(
+          toFile: _pcmPath,
+          codec: Codec.pcm16,
+          sampleRate: 16000,
+          numChannels: 1,
+          bitRate: 16000 * 16,
+        );
+        isRecording = true;
+        return true;
+      } catch (e) {
+        isRecording = false;
+        _pcmPath = null;
+        HhLog.e("startRecorder error: $e");
+        EventBusUtil.getInstance().fire(
+          HhToast(title: "录音启动失败，请检查麦克风权限或是否被其他应用占用"),
+        );
+        return false;
       }
-
-      await _recorder.startRecorder(
-        toFile: _pcmPath,
-        codec: Codec.pcm16,
-        sampleRate: 16000,
-        numChannels: 1,
-        bitRate: 16000 * 16,
-      );
-      return;
     }
 
     videoTag.value = false;
@@ -678,24 +772,35 @@ class LiGanDetailController extends GetxController {
       CommonUtils().showCommonDialog(
         Get.context,
         "麦克风权限已被关闭，请前往系统设置开启后再使用录音功能",
-            () {
+        () {
           Get.back();
         },
-            () async {
+        () async {
           Get.back();
           await openAppSettings();
         },
         leftStr: "取消",
         rightStr: "去设置",
       );
-      return;
+      return false;
     }
 
     EventBusUtil.getInstance().fire(HhToast(title: "麦克风权限未授权"));
     HhLog.e("microphone permission status: $status");
+    return false;
   }
+
   Future<void> recordingComplete() async {
-    await _recorder.stopRecorder();
+    if (!isRecording) {
+      return;
+    }
+    try {
+      await _recorder.stopRecorder();
+    } catch (e) {
+      HhLog.e("stopRecorder error: $e");
+    } finally {
+      isRecording = false;
+    }
   }
 
   Future<String> _getPCMPath() async {
@@ -703,8 +808,21 @@ class LiGanDetailController extends GetxController {
     return '${dir.path}/recording_${DateTime.now().millisecondsSinceEpoch}.pcm';
   }
 
+  Future<void> _ensureRecorderOpened() async {
+    if (_recorderOpened) {
+      return;
+    }
+    try {
+      await _recorder.openRecorder();
+      _recorderOpened = true;
+    } catch (e) {
+      _recorderOpened = false;
+      HhLog.e("openRecorder error: $e");
+      rethrow;
+    }
+  }
 
-  void uploadFile(String filePath,String fileName) async {
+  void uploadFile(String filePath, String fileName) async {
     final oldFile = File(filePath);
 
     // 确保文件存在
@@ -715,12 +833,10 @@ class LiGanDetailController extends GetxController {
       final newFilePath = '$dir/$fileName';
       final newFile = await oldFile.rename(newFilePath);
 
-
-      EventBusUtil.getInstance().fire(HhLoading(show: true,title: "文件上传中..."));
+      EventBusUtil.getInstance().fire(HhLoading(show: true, title: "文件上传中..."));
       var dio = Dio();
       FormData formData = FormData.fromMap({
-        "file": await MultipartFile.fromFile(newFile.path,
-            filename: fileName),
+        "file": await MultipartFile.fromFile(newFile.path, filename: fileName),
         "path": newFile.path,
       });
 
@@ -731,17 +847,17 @@ class LiGanDetailController extends GetxController {
           options: Options(
             headers: {
               "Authorization": "Bearer ${CommonData.token}",
-              "Tenant-Id":"${CommonData.tenant}",
+              "Tenant-Id": "${CommonData.tenant}",
             },
           ),
         );
         EventBusUtil.getInstance().fire(HhLoading(show: false));
-        if(response.data.toString().contains("401")){
+        if (response.data.toString().contains("401")) {
           CommonUtils().tokenDown();
         }
         HhLog.d("上传成功: ${response.data}");
         String url = response.data["data"];
-        postAudioUrl(url,fileName);
+        postAudioUrl(url, fileName);
       } catch (e) {
         HhLog.d("上传失败: $e");
       }
@@ -750,19 +866,20 @@ class LiGanDetailController extends GetxController {
     }
   }
 
-  Future<void> postAudioUrl(String url,String fileName) async {
+  Future<void> postAudioUrl(String url, String fileName) async {
     dynamic data = {};
     data['name'] = fileName;
     data['pcmUrl'] = url;
     data['description'] = "App上传";
-    var result = await HhHttp().request(RequestUtils.audioCreate,method: DioMethod.post,data: data);
+    var result = await HhHttp()
+        .request(RequestUtils.audioCreate, method: DioMethod.post, data: data);
     HhLog.d("postAudioUrl -- $data");
     HhLog.d("postAudioUrl -- $result");
-    if(result["code"]==0 && result["data"]!=null){
+    if (result["code"] == 0 && result["data"] != null) {
       getVoiceUse();
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
-
 }
