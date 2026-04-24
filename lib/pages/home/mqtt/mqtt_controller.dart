@@ -51,9 +51,10 @@ class MqttController extends GetxController {
     clientId = getRandomId();
 
     ///创建并配置 MQTT 客户端
-    client =
-        MqttServerClient(CommonData.mqttIP, 'flutter_mqtt-client-$clientId');
+    client = MqttServerClient(CommonData.mqttIP, 'flutter_mqtt-client-$clientId');
     client.port = CommonData.mqttPORT;
+    client.useWebSocket = true;
+    client.websocketProtocols = MqttClientConstants.protocolsSingleDefault;
     client.logging(on: true); // 开启日志输出
     client.keepAlivePeriod = 20; // 设置保活时间
     client.onDisconnected = onDisconnected; // 断开连接回调

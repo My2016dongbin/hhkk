@@ -59,6 +59,7 @@ class MainController extends GetxController {
         .on<Message>()
         .listen((event) {
       getWarnCount();
+      getLiveWarningList();
     });
     deviceListSubscription = EventBusUtil.getInstance()
         .on<DeviceList>()
