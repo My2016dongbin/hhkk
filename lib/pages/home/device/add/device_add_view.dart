@@ -229,7 +229,7 @@ class DeviceAddPage extends StatelessWidget {
                                         child: TextField(
                                           textAlign: TextAlign.left,
                                           maxLines: 1,
-                                          maxLength: 10,
+                                          maxLength: 20,
                                           cursorColor: HhColors.titleColor_99,
                                           controller: logic.nameController,
                                           keyboardType: TextInputType.text,

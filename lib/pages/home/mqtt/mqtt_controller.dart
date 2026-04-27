@@ -183,6 +183,8 @@ class MqttController extends GetxController {
         onTap: () {
           EventBusUtil.getInstance().fire(TabIndex(index: 2));
           if (alarmId.isNotEmpty) {
+            ///刷新报警详情
+            EventBusUtil.getInstance().fire(MessageInfo(id: alarmId));
             Get.to(
               () => MessageDetailPage(),
               binding: MessageDetailBinding(),

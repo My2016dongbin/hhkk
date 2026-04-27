@@ -80,6 +80,10 @@ class UserInfo{
 class Message{
   Message();
 }
+class MessageInfo{
+  String id;
+  MessageInfo({required this.id});
+}
 class Move{
   int action;
   String code;

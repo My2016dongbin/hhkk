@@ -21,6 +21,7 @@ class MessageDetailController extends GetxController {
   late dynamic fireInfo = {};
   late AMapController gdMapController;
   final RxSet<Marker> aMapMarkers = <Marker>{}.obs;
+  StreamSubscription ?messageInfoSubscription;
 
   @override
   Future<void> onInit() async {
@@ -28,13 +29,25 @@ class MessageDetailController extends GetxController {
       id = Get.arguments["id"]??"";
     }
     getWarnType();
+
+    messageInfoSubscription = EventBusUtil.getInstance()
+        .on<MessageInfo>()
+        .listen((event) {
+      id = event.id;
+      getLiveWarningInfo(id);
+    });
     super.onInit();
   }
 
   @override
   void onClose() {
+    try{
+      HhActionMenu.dismiss();
+      messageInfoSubscription?.cancel();
+    }catch(e){
+      //
+    }
     super.onClose();
-    HhActionMenu.dismiss();
   }
 
   /// 创建完成回调
