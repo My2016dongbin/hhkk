@@ -111,11 +111,11 @@ class HhColors {
   static const tabBlue = Color(0xFF0147EB);
   static const tabGreen = Color(0xFF36CA00);
   static const tabYellow = Color(0xFFF5BA18);
-  static const levelColor1 = Color(0xFF00DC31);
-  static const levelColor2 = Color(0xFF3132FE);
-  static const levelColor3 = Color(0xFFD6D631);
-  static const levelColor4 = Color(0xFFFFA101);
-  static const levelColor5 = Color(0xFFFF0200);
+  static const levelColor1 = Color(0xFF4BC266);
+  static const levelColor2 = Color(0xFF3F74F0);
+  static const levelColor3 = Color(0xFFE6BD00);
+  static const levelColor4 = Color(0xFFEA9302);
+  static const levelColor5 = Color(0xFFF44654);
   static const levelColorBack = Color(0xFFF4F7FF);
   static const levelBtnBack = Color(0xFFF1F5FF);
   static const levelBtnBackGreen = Color(0xFFDFFCFF);

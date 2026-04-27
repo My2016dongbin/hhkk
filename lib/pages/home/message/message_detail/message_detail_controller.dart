@@ -89,6 +89,7 @@ class MessageDetailController extends GetxController {
     };
     var result = await HhHttp()
         .request(RequestUtils.liveWarningInfo, method: DioMethod.get,params: param);
+    HhLog.d("liveWarningInfo --  ${RequestUtils.liveWarningInfo}?id=$id");
     HhLog.d("liveWarningInfo --  $result");
     if (result["code"] == 0 && result["data"]!=null) {
       fireInfo = result["data"];

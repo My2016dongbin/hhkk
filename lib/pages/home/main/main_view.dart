@@ -1750,6 +1750,7 @@ class MainPage extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(width: 3.w*3,),
             Container(
               padding:
                   EdgeInsets.fromLTRB(10.w * 3, 4.w * 3, 10.w * 3, 5.w * 3),

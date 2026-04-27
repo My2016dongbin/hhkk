@@ -683,17 +683,20 @@ class MyPage extends StatelessWidget {
                                 alignment: Alignment.centerRight,
                                 child: Container(
                                   margin: EdgeInsets.only(right: 12.w*3),
-                                  child: Switch(
-                                    value: logic.warningVoice.value,
-                                    thumbColor: MaterialStateProperty.all(HhColors.whiteColor),
-                                    trackColor: logic.warningVoice.value?MaterialStateProperty.all(HhColors.mainBlueColor):MaterialStateProperty.all(HhColors.grayEEBackColor),
-                                    trackOutlineColor: logic.warningVoice.value?MaterialStateProperty.all(HhColors.mainBlueColor):MaterialStateProperty.all(HhColors.grayEEBackColor),
-                                    onChanged: (bool value) async {
-                                    logic.warningVoice.value = value;
-                                    SharedPreferences preferences = await SharedPreferences.getInstance();
-                                    preferences.setBool(SPKeys().voice,value);
-                                    EventBusUtil.getInstance().fire(HhToast(title: "设置成功",type: 0));
-                                  },),
+                                  child: Transform.scale(
+                                    scale: 0.75,
+                                    child: Switch(
+                                      value: logic.warningVoice.value,
+                                      thumbColor: MaterialStateProperty.all(HhColors.whiteColor),
+                                      trackColor: logic.warningVoice.value?MaterialStateProperty.all(HhColors.mainBlueColor):MaterialStateProperty.all(HhColors.grayEEBackColor),
+                                      trackOutlineColor: logic.warningVoice.value?MaterialStateProperty.all(HhColors.mainBlueColor):MaterialStateProperty.all(HhColors.grayEEBackColor),
+                                      onChanged: (bool value) async {
+                                      logic.warningVoice.value = value;
+                                      SharedPreferences preferences = await SharedPreferences.getInstance();
+                                      preferences.setBool(SPKeys().voice,value);
+                                      EventBusUtil.getInstance().fire(HhToast(title: "设置成功",type: 0));
+                                    },),
+                                  ),
                                 ),
                               ),
                               Align(

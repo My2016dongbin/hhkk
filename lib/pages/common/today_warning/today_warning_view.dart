@@ -278,7 +278,7 @@ class TodayWarningPage extends StatelessWidget {
                                     ),
                                   ),
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(30.w, 26.w*3, 0, 0),
+                                    margin: EdgeInsets.fromLTRB(30.w, 26.w*3, 60.w*3, 0),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment: CrossAxisAlignment.start,
