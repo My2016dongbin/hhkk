@@ -58,6 +58,11 @@ class TopAlarmNotificationService extends GetxService {
     _showNext();
   }
 
+  void clearAllNotifications() {
+    _queue.clear();
+    _dedupeMap.clear();
+  }
+
   void _showNext() {
     if (_isShowing || _queue.isEmpty) {
       return;
@@ -77,6 +82,7 @@ class TopAlarmNotificationService extends GetxService {
     entry = OverlayEntry(
       builder: (_) => _TopAlarmNotificationOverlay(
         data: data,
+        onClearAll: clearAllNotifications,
         onClosed: () {
           if (_currentEntry == entry) {
             _currentEntry?.remove();
@@ -111,10 +117,12 @@ class TopAlarmNotificationService extends GetxService {
 class _TopAlarmNotificationOverlay extends StatefulWidget {
   const _TopAlarmNotificationOverlay({
     required this.data,
+    required this.onClearAll,
     required this.onClosed,
   });
 
   final TopAlarmNotificationData data;
+  final VoidCallback onClearAll;
   final VoidCallback onClosed;
 
   @override
@@ -179,6 +187,11 @@ class _TopAlarmNotificationOverlayState
 
   Future<void> _handleTap() async {
     widget.data.onTap?.call();
+    await _dismiss();
+  }
+
+  Future<void> _handleClearAll() async {
+    widget.onClearAll();
     await _dismiss();
   }
 
@@ -252,11 +265,31 @@ class _TopAlarmNotificationOverlayState
                                         ),
                                       ),
                                     ),
+                                    InkWell(
+                                      borderRadius: BorderRadius.circular(14.w * 3),
+                                      onTap: _handleClearAll,
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 4.w * 3,
+                                          vertical: 3.w * 3,
+                                        ),
+                                        child: Text(
+                                          '一键关闭',
+                                          style: TextStyle(
+                                            color: HhColors.mainBlueColor,
+                                            fontSize: 13.sp * 3,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 5.w * 3),
                                   ],
                                 ),
                                 SizedBox(height: 10.w * 3),
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.baseline,
                                   textBaseline: TextBaseline.alphabetic,
                                   children: <Widget>[
                                     Text(
@@ -302,7 +335,7 @@ class _TopAlarmNotificationOverlayState
                         onTap: _dismiss,
                         child: Padding(
                           padding: EdgeInsets.fromLTRB(
-                              4.w * 3, 10.w * 3, 12.w * 3, 0),
+                              4.w * 3, 18.w * 3, 20.w * 3, 0),
                           child: Icon(
                             Icons.close,
                             size: 18.w * 3,

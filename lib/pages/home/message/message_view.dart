@@ -718,7 +718,7 @@ class MessagePage extends StatelessWidget {
                               logic.chooseListLeftNumber.value = logic.chooseListLeft.length;
                               HhLog.d("list -- ${logic.chooseListLeft}");
                             }else{
-                              logic.readOneLeft("${item["id"]}");
+                              //logic.readOneLeft("${item["id"]}");
                               Get.to(()=>MessageDetailPage(),binding: MessageDetailBinding(),arguments: {
                                 "id": "${item["id"]}",
                               });

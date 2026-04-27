@@ -34,7 +34,7 @@ class MessageDetailController extends GetxController {
         .on<MessageInfo>()
         .listen((event) {
       id = event.id;
-      getLiveWarningInfo(id);
+      readOne(id);
     });
     super.onInit();
   }
@@ -57,8 +57,7 @@ class MessageDetailController extends GetxController {
     if(CommonData.latitude!=null && CommonData.latitude!=0){
       gdMapController.moveCamera(CameraUpdate.newLatLngZoom(LatLng(CommonData.latitude!,CommonData.longitude!), 12));
     }
-
-    getLiveWarningInfo(id);
+    readOne(id);
   }
 
 
@@ -82,6 +81,20 @@ class MessageDetailController extends GetxController {
     }
   }
 
+
+  Future<void> readOne(String id) async {
+    Map<String, dynamic> map = {};
+    map['ids'] = [id];
+    var result = await HhHttp()
+        .request(RequestUtils.leftRead, method: DioMethod.post, params: map);
+    HhLog.d("readOne --   $result");
+    if (result["code"] == 0 && result["data"] == true) {
+      getLiveWarningInfo(id);
+      EventBusUtil.getInstance().fire(Message());
+    } else {
+
+    }
+  }
 
   Future<void> getLiveWarningInfo(String id) async {
     dynamic param = {
