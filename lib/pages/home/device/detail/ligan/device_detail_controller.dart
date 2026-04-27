@@ -131,7 +131,6 @@ class LiGanDeviceDetailController extends GetxController {
       getDeviceHistory();
       getWarnType();
       getDataInfo();
-      getDataPage();
       getLocationByDeviceNo();
       getNowWeatherByDeviceNo();
       get7daysWeatherByDeviceNo();
@@ -575,13 +574,14 @@ class LiGanDeviceDetailController extends GetxController {
       fireLevel.value = result["data"]["fireLevel"]??"";
       energyQuantity.value = result["data"]["energyQuantity"]??"";
       energyConsumption.value = result["data"]["energyConsumption"]??"";
+      getDataPage(status:result["data"]["status"]);
     } else {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
 
-  Future<void> getDataPage() async {
+  Future<void> getDataPage({dynamic status}) async {
     ///太阳能信息数据
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     Map<String, dynamic> map = {};
@@ -603,7 +603,11 @@ class LiGanDeviceDetailController extends GetxController {
       }catch(e){
         //
         if(dataPageNum==1){
-          EventBusUtil.getInstance().fire(HhToast(title: "数据未上传请稍后再试"));
+          if("$status"=="1" || "$status"=="true"){
+            EventBusUtil.getInstance().fire(HhToast(title: "数据未上传请稍后再试"));
+          }else{
+            EventBusUtil.getInstance().fire(HhToast(title: "设备已离线"));
+          }
         }else{
           dataPageNum--;
           EventBusUtil.getInstance().fire(HhToast(title: "已是最后一条数据"));
