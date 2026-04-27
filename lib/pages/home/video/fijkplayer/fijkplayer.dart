@@ -49,18 +49,16 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     player.setOption(FijkOption.playerCategory, "mediacodec", 0);
     player.setOption(FijkOption.playerCategory, "start-on-prepared", 1);
     player.setOption(FijkOption.playerCategory, "packet-buffering", 0);
+    player.setOption(FijkOption.playerCategory, "mediacodec-auto-rotate", 0);
     player.setOption(
-        FijkOption.playerCategory, "mediacodec-auto-rotate", 0);
-    player.setOption(FijkOption.playerCategory,
-        "mediacodec-handle-resolution-change", 0);
+        FijkOption.playerCategory, "mediacodec-handle-resolution-change", 0);
     player.setOption(FijkOption.playerCategory, "min-frames", 2);
     player.setOption(FijkOption.playerCategory, "max_cached_duration", 3);
     player.setOption(FijkOption.playerCategory, "infbuf", 1);
     player.setOption(FijkOption.playerCategory, "reconnect", 5);
     player.setOption(FijkOption.playerCategory, "framedrop", 5);
     player.setOption(FijkOption.formatCategory, "rtsp_transport", 'tcp');
-    player.setOption(
-        FijkOption.formatCategory, "http-detect-range-support", 0);
+    player.setOption(FijkOption.formatCategory, "http-detect-range-support", 0);
     player.setOption(FijkOption.formatCategory, "analyzeduration", 1);
     player.setOption(FijkOption.formatCategory, "rtsp_flags", "prefer_tcp");
     player.setOption(FijkOption.formatCategory, "buffer_size", 1024);
@@ -71,8 +69,7 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     player.setOption(FijkOption.formatCategory, "max-buffer-size", 0);
     player.setOption(FijkOption.formatCategory, "fflags", "nobuffer");
     player.setOption(FijkOption.formatCategory, "probesize", 200);
-    player.setOption(
-        FijkOption.formatCategory, "http-detect-range-support", 0);
+    player.setOption(FijkOption.formatCategory, "http-detect-range-support", 0);
     player.setOption(FijkOption.codecCategory, "skip_loop_filter", 48);
     player.setOption(FijkOption.codecCategory, "skip_frame", 0);
     // 添加播放器状态变化监听
@@ -85,7 +82,8 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         });
         HhLog.d('Playback started successfully ${player.state}');
       }
-      if (player.state == FijkState.error || player.state == FijkState.completed) {
+      if (player.state == FijkState.error ||
+          player.state == FijkState.completed) {
         setState(() {
           errorStatus = true;
         });
@@ -93,21 +91,21 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
         restartPlay(widget.url);
       }
     });
-    await player.setDataSource(widget.url, autoPlay: widget.autoPlay??true);
+    await player.setDataSource(widget.url, autoPlay: widget.autoPlay ?? true);
   }
 
   late int time = 0;
   late int count = 0;
   Future<void> restartPlay(String url) async {
-    if(DateTime.now().millisecondsSinceEpoch - time < 5000){
-      Future.delayed(const Duration(milliseconds: 5000),(){
+    if (DateTime.now().millisecondsSinceEpoch - time < 5000) {
+      Future.delayed(const Duration(milliseconds: 5000), () {
         restartPlay(url);
       });
       return;
     }
     time = DateTime.now().millisecondsSinceEpoch;
     count++;
-    if(count > 3){
+    if (count > 3) {
       HhLog.e("重播失败 重连次数已达上限");
       setState(() {
         errorStatus = true;
@@ -125,98 +123,108 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     }
   }
 
-  late TransformationController transformationController = TransformationController();
+  late TransformationController transformationController =
+      TransformationController();
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (context, constraints) {
-          double width = constraints.maxWidth;
-          double height = constraints.maxHeight;
-          return InteractiveViewer(
-            panEnabled: true, // 是否允许拖动
-            minScale: 1.0,
-            maxScale: 10.0,
-            onInteractionEnd:(a){
-              transformationController.value = Matrix4.identity();
-            },
-            transformationController: transformationController,
-            child: Stack(
-              children: [
-                FijkView(
+    return LayoutBuilder(builder: (context, constraints) {
+      double width = constraints.maxWidth;
+      double height = constraints.maxHeight;
+      return InteractiveViewer(
+        panEnabled: true, // 是否允许拖动
+        minScale: 1.0,
+        maxScale: 10.0,
+        onInteractionEnd: (a) {
+          transformationController.value = Matrix4.identity();
+        },
+        transformationController: transformationController,
+        child: Stack(
+          children: [
+            FijkView(
+              player: player,
+              color: HhColors.blackRealColor,
+              fit: widget.fit ?? FijkFit.contain,
+              fsFit: widget.fsFit ?? FijkFit.contain,
+              panelBuilder: (player, data, context, viewSize, texturePos) {
+                return _AdaptiveFijkPanel(
                   player: player,
-                  color: HhColors.blackRealColor,
-                  fit: widget.fit??FijkFit.contain,
-                  fsFit: widget.fsFit??FijkFit.contain,
-                  panelBuilder: (player, data, context, viewSize, texturePos) {
-                    return _AdaptiveFijkPanel(
-                      player: player,
-                      buildContext: context,
-                      viewSize: viewSize,
-                      texturePos: texturePos,
-                      onOuterTap: widget.onOuterTap,
-                    );
-                  },
-                ),
-                errorStatus?Container(color: HhColors.blackRealColor,):const SizedBox(),
-                errorStatus?Align(
-                  alignment:Alignment.center,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(height: height*0.06,),
-                      Image.asset(
-                        "assets/images/common/ic_video_error.png",
-                        width: width*0.15,
-                        height: width*0.15,
-                        fit: BoxFit.fill,
-                      ),
-                      SizedBox(height: height*0.02,),
-                      Text(
-                        '视频加载错误，请重试',
-                        style: TextStyle(
-                            color: HhColors.gray6TextColor,
-                            fontSize: min(width*0.07, 16),
-                            overflow: TextOverflow.ellipsis,
-                            fontWeight: FontWeight.w500),
-                      ),
-                      BouncingWidget(
-                        duration: const Duration(milliseconds: 300),
-                        scaleFactor: 1.2,
-                        onPressed: () {
-                          setState(() {
-                            count = 0;
-                            restartPlay(widget.url);
-                            Future.delayed(const Duration(milliseconds: 1000),(){
-                              errorStatus = false;
-                            });
-                          });
-                        },
-                        child: Container(
-                          margin: EdgeInsets.only(top: height*0.05),
-                          padding: EdgeInsets.fromLTRB(height*0.06, height*0.01, height*0.06, height*0.015),
-                          decoration: BoxDecoration(
-                              color: HhColors.gray9TextColor.withAlpha(130),
-                              borderRadius: BorderRadius.circular(height*0.02)
-                          ),
-                          child:
-                          Text(
-                            '重试',
-                            style: TextStyle(
-                                color: HhColors.whiteColorD5,
-                                fontSize: min(width*0.07, 16),
-                                overflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ):const SizedBox()
-              ],
+                  buildContext: context,
+                  viewSize: viewSize,
+                  texturePos: texturePos,
+                  onOuterTap: widget.onOuterTap,
+                );
+              },
             ),
-          );
-        }
-    );
+            errorStatus
+                ? Container(
+                    color: HhColors.blackRealColor,
+                  )
+                : const SizedBox(),
+            errorStatus
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: height * 0.06,
+                        ),
+                        Image.asset(
+                          "assets/images/common/ic_video_error.png",
+                          width: width * 0.15,
+                          height: width * 0.15,
+                          fit: BoxFit.fill,
+                        ),
+                        SizedBox(
+                          height: height * 0.02,
+                        ),
+                        Text(
+                          '视频加载错误，请重试',
+                          style: TextStyle(
+                              color: HhColors.gray6TextColor,
+                              fontSize: min(width * 0.07, 16),
+                              overflow: TextOverflow.ellipsis,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        BouncingWidget(
+                          duration: const Duration(milliseconds: 300),
+                          scaleFactor: 1.2,
+                          onPressed: () {
+                            setState(() {
+                              count = 0;
+                              restartPlay(widget.url);
+                              Future.delayed(const Duration(milliseconds: 1000),
+                                  () {
+                                errorStatus = false;
+                              });
+                            });
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(top: height * 0.05),
+                            padding: EdgeInsets.fromLTRB(height * 0.06,
+                                height * 0.01, height * 0.06, height * 0.015),
+                            decoration: BoxDecoration(
+                                color: HhColors.gray9TextColor.withAlpha(130),
+                                borderRadius:
+                                    BorderRadius.circular(height * 0.02)),
+                            child: Text(
+                              '重试',
+                              style: TextStyle(
+                                  color: HhColors.whiteColorD5,
+                                  fontSize: min(width * 0.07, 16),
+                                  overflow: TextOverflow.ellipsis,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                : const SizedBox()
+          ],
+        ),
+      );
+    });
   }
 
   @override
@@ -271,6 +279,16 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
   bool leftStatus = false;
   bool rightStatus = false;
 
+  String? _sanitizeException(String? exception) {
+    if (exception == null || exception.trim().isEmpty) {
+      return null;
+    }
+    if (exception.contains('Invalid data found when processing input')) {
+      return null;
+    }
+    return exception;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -280,7 +298,7 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
     _bufferPos = player.bufferPos;
     _prepared = player.state.index >= FijkState.prepared.index;
     _playing = player.state == FijkState.started;
-    _exception = player.value.exception.message;
+    _exception = _sanitizeException(player.value.exception.message);
 
     player.addListener(_playerValueChanged);
 
@@ -307,7 +325,7 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
 
     bool playing = (value.state == FijkState.started);
     bool prepared = value.prepared;
-    String? exception = value.exception.message;
+    String? exception = _sanitizeException(value.exception.message);
     if (playing != _playing ||
         prepared != _prepared ||
         exception != _exception) {
@@ -347,7 +365,9 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
   }
 
   void _cancelAndRestartTimer() {
-    widget.onOuterTap.call();///外部点击
+    widget.onOuterTap.call();
+
+    ///外部点击
     if (_hideStuff == true) {
       _startHideTimer();
     }
@@ -380,8 +400,9 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
       iconData = Icons.volume_up;
     }
     return IconButton(
-      icon: Icon(iconData, size: 16.w*5 * scaleFactor),
-      padding: EdgeInsets.only(left: 5.w * scaleFactor, right: 5.w * scaleFactor),
+      icon: Icon(iconData, size: 16.w * 5 * scaleFactor),
+      padding:
+          EdgeInsets.only(left: 5.w * scaleFactor, right: 5.w * scaleFactor),
       onPressed: () {
         setState(() {
           _volume = _volume > 0 ? 0.0 : 1.0;
@@ -394,7 +415,7 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
   AnimatedOpacity _buildBottomBar(BuildContext context, double scaleFactor) {
     double duration = _duration.inMilliseconds.toDouble();
     double currentValue =
-    _seekPos > 0 ? _seekPos : _currentPos.inMilliseconds.toDouble();
+        _seekPos > 0 ? _seekPos : _currentPos.inMilliseconds.toDouble();
     currentValue = min(currentValue, duration);
     currentValue = max(currentValue, 0);
 
@@ -402,7 +423,7 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
       opacity: _hideStuff ? 0.0 : 0.7,
       duration: const Duration(milliseconds: 400),
       child: Container(
-        height: 20.w*5 * scaleFactor,
+        height: 20.w * 5 * scaleFactor,
         color: Theme.of(context).dialogBackgroundColor.withOpacity(0.8),
         child: Row(
           children: <Widget>[
@@ -413,53 +434,51 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
               child: Text(
                 _duration2String(_currentPos),
                 style: TextStyle(
-                    fontSize: 9.sp*5 * scaleFactor,
-                    color: Colors.white),
+                    fontSize: 9.sp * 5 * scaleFactor, color: Colors.white),
               ),
             ),
             _duration.inMilliseconds == 0
                 ? const Expanded(child: Center())
                 : Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                    right: 2.0 * scaleFactor, left: 2.0 * scaleFactor),
-                child: FijkSlider(
-                  value: currentValue,
-                  cacheValue: _bufferPos.inMilliseconds.toDouble(),
-                  min: 0.0,
-                  max: duration,
-                  onChanged: (v) {
-                    _startHideTimer();
-                    setState(() {
-                      _seekPos = v;
-                    });
-                  },
-                  onChangeEnd: (v) {
-                    setState(() {
-                      player.seekTo(v.toInt());
-                      _currentPos =
-                          Duration(milliseconds: _seekPos.toInt());
-                      _seekPos = -1;
-                    });
-                  },
-                ),
-              ),
-            ),
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          right: 2.0 * scaleFactor, left: 2.0 * scaleFactor),
+                      child: FijkSlider(
+                        value: currentValue,
+                        cacheValue: _bufferPos.inMilliseconds.toDouble(),
+                        min: 0.0,
+                        max: duration,
+                        onChanged: (v) {
+                          _startHideTimer();
+                          setState(() {
+                            _seekPos = v;
+                          });
+                        },
+                        onChangeEnd: (v) {
+                          setState(() {
+                            player.seekTo(v.toInt());
+                            _currentPos =
+                                Duration(milliseconds: _seekPos.toInt());
+                            _seekPos = -1;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
             _duration.inMilliseconds == 0
                 ? Text("LIVE",
                     style: TextStyle(
-                        fontSize: 9.sp*5 * scaleFactor,
-                        color: Colors.white))
+                        fontSize: 9.sp * 5 * scaleFactor, color: Colors.white))
                 : Padding(
-              padding: EdgeInsets.only(
-                  right: 2.0 * scaleFactor, left: 2.0 * scaleFactor),
-              child: Text(
-                _duration2String(_duration),
-                style: TextStyle(
-                    fontSize: 10.w*5 * scaleFactor,
-                    color: Colors.white),
-              ),
-            ),
+                    padding: EdgeInsets.only(
+                        right: 2.0 * scaleFactor, left: 2.0 * scaleFactor),
+                    child: Text(
+                      _duration2String(_duration),
+                      style: TextStyle(
+                          fontSize: 10.w * 5 * scaleFactor,
+                          color: Colors.white),
+                    ),
+                  ),
             InkWell(
               onTap: () {
                 widget.player.value.fullScreen
@@ -467,12 +486,16 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
                     : player.enterFullScreen();
               },
               child: Container(
-                padding: EdgeInsets.fromLTRB(10.w*5*scaleFactor, 3.w*5*scaleFactor, 10.w*5*scaleFactor, 5.w*5*scaleFactor),
+                padding: EdgeInsets.fromLTRB(
+                    10.w * 5 * scaleFactor,
+                    3.w * 5 * scaleFactor,
+                    10.w * 5 * scaleFactor,
+                    5.w * 5 * scaleFactor),
                 child: Icon(
                     widget.player.value.fullScreen
                         ? Icons.fullscreen_exit
                         : Icons.fullscreen,
-                    size: 16.w*5 * scaleFactor),
+                    size: 16.w * 5 * scaleFactor),
               ),
             ),
           ],
@@ -484,7 +507,9 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
   @override
   Widget build(BuildContext context) {
     // 根据组件大小计算缩放因子
-    double componentWidth = player.value.fullScreen?widget.viewSize.height:widget.viewSize.width;
+    double componentWidth = player.value.fullScreen
+        ? widget.viewSize.height
+        : widget.viewSize.width;
     double scaleFactor = componentWidth / 1.sw;
 
     /*Rect rect = player.value.fullScreen
@@ -494,7 +519,8 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
         max(0.0, widget.texturePos.top),
         min(widget.viewSize.width, widget.texturePos.right),
         min(widget.viewSize.height, widget.texturePos.bottom));*/
-    Rect rect = Rect.fromLTWH(0, 0, widget.viewSize.width, widget.viewSize.height);
+    Rect rect =
+        Rect.fromLTWH(0, 0, widget.viewSize.width, widget.viewSize.height);
 
     return Positioned.fromRect(
       rect: rect,
@@ -580,7 +606,7 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
           absorbing: _hideStuff,
           child: Column(
             children: <Widget>[
-              Container(height: 20.w*5 * scaleFactor),
+              Container(height: 20.w * 5 * scaleFactor),
               Expanded(
                 child: GestureDetector(
                   onTap: () {
@@ -595,95 +621,94 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
                         Center(
                             child: _exception != null
                                 ? Text(
-                              _exception!,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16.w*5 * scaleFactor,
-                              ),
-                            )
+                                    _exception!,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.w * 5 * scaleFactor,
+                                    ),
+                                  )
                                 : (_prepared ||
-                                player.state == FijkState.initialized)
-                                ? AnimatedOpacity(
-                                opacity: _hideStuff ? 0.0 : 0.7,
-                                duration: Duration(milliseconds: 400),
-                                child: IconButton(
-                                    iconSize: 30.w*5 * scaleFactor,
-                                    icon: Icon(
-                                        _playing
-                                            ? Icons.pause
-                                            : Icons.play_arrow,
-                                        color: Colors.white),
-                                    padding: EdgeInsets.only(
-                                        left: 10.0 * scaleFactor,
-                                        right: 10.0 * scaleFactor),
-                                    onPressed: _playOrPause))
-                                : SizedBox(
-                              width: 20.w*5 * scaleFactor,
-                              height: 20.w*5 * scaleFactor,
-                              child: const CircularProgressIndicator(
-                                  valueColor:
-                                  AlwaysStoppedAnimation(
-                                      Colors.white)),
-                            )),
+                                        player.state == FijkState.initialized)
+                                    ? AnimatedOpacity(
+                                        opacity: _hideStuff ? 0.0 : 0.7,
+                                        duration: Duration(milliseconds: 400),
+                                        child: IconButton(
+                                            iconSize: 30.w * 5 * scaleFactor,
+                                            icon: Icon(
+                                                _playing
+                                                    ? Icons.pause
+                                                    : Icons.play_arrow,
+                                                color: Colors.white),
+                                            padding: EdgeInsets.only(
+                                                left: 10.0 * scaleFactor,
+                                                right: 10.0 * scaleFactor),
+                                            onPressed: _playOrPause))
+                                    : SizedBox(
+                                        width: 20.w * 5 * scaleFactor,
+                                        height: 20.w * 5 * scaleFactor,
+                                        child: const CircularProgressIndicator(
+                                            valueColor: AlwaysStoppedAnimation(
+                                                Colors.white)),
+                                      )),
                         upStatus
                             ? Align(
-                          alignment: Alignment.topCenter,
-                          child: Container(
-                            margin:
-                            EdgeInsets.only(top: 2.w*5 * scaleFactor),
-                            child: Image.asset(
-                              "assets/images/common/move_up.png",
-                              width: 20.w*5 * scaleFactor,
-                              height: 20.w*5 * scaleFactor,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        )
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      top: 2.w * 5 * scaleFactor),
+                                  child: Image.asset(
+                                    "assets/images/common/move_up.png",
+                                    width: 20.w * 5 * scaleFactor,
+                                    height: 20.w * 5 * scaleFactor,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )
                             : const SizedBox(),
                         downStatus
                             ? Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                bottom: 2.w*5 * scaleFactor),
-                            child: Image.asset(
-                              "assets/images/common/move_down.png",
-                              width: 20.w*5 * scaleFactor,
-                              height: 20.w*5 * scaleFactor,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        )
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      bottom: 2.w * 5 * scaleFactor),
+                                  child: Image.asset(
+                                    "assets/images/common/move_down.png",
+                                    width: 20.w * 5 * scaleFactor,
+                                    height: 20.w * 5 * scaleFactor,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )
                             : const SizedBox(),
                         leftStatus
                             ? Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                left: 10.w*5 * scaleFactor),
-                            child: Image.asset(
-                              "assets/images/common/move_left.png",
-                              width: 20.w*5 * scaleFactor,
-                              height: 20.w*5 * scaleFactor,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        )
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      left: 10.w * 5 * scaleFactor),
+                                  child: Image.asset(
+                                    "assets/images/common/move_left.png",
+                                    width: 20.w * 5 * scaleFactor,
+                                    height: 20.w * 5 * scaleFactor,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )
                             : const SizedBox(),
                         rightStatus
                             ? Align(
-                          alignment: Alignment.centerRight,
-                          child: Container(
-                            margin: EdgeInsets.only(
-                                right: 10.w*5 * scaleFactor),
-                            child: Image.asset(
-                              "assets/images/common/move_right.png",
-                              width: 20.w*5 * scaleFactor,
-                              height: 20.w*5 * scaleFactor,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        )
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      right: 10.w * 5 * scaleFactor),
+                                  child: Image.asset(
+                                    "assets/images/common/move_right.png",
+                                    width: 20.w * 5 * scaleFactor,
+                                    height: 20.w * 5 * scaleFactor,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )
                             : const SizedBox(),
                       ],
                     ),
