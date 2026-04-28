@@ -28,13 +28,13 @@ class SpaceManagePage extends StatelessWidget {
     // 在这里设置状态栏字体为深色
     final overlayStyle = Platform.isAndroid
         ? const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.dark,
-    )
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark,
+          )
         : const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarBrightness: Brightness.light,
-    );
+            statusBarColor: Colors.transparent,
+            statusBarBrightness: Brightness.light,
+          );
     SystemChrome.setSystemUIOverlayStyle(overlayStyle);
     return Scaffold(
       backgroundColor: HhColors.backColor,
@@ -48,18 +48,18 @@ class SpaceManagePage extends StatelessWidget {
             children: [
               Container(
                 color: HhColors.whiteColor,
-                height: 90.w*3,
+                height: 90.w * 3,
               ),
               Align(
                 alignment: Alignment.topCenter,
                 child: Container(
-                  margin: EdgeInsets.only(top: 54.w*3),
+                  margin: EdgeInsets.only(top: 54.w * 3),
                   color: HhColors.trans,
                   child: Text(
                     '管理分组',
                     style: TextStyle(
                         color: HhColors.blackTextColor,
-                        fontSize: 18.sp*3,
+                        fontSize: 18.sp * 3,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -69,13 +69,13 @@ class SpaceManagePage extends StatelessWidget {
                   Get.back();
                 },
                 child: Container(
-                  margin: EdgeInsets.fromLTRB(23.w*3, 59.h*3, 0, 0),
+                  margin: EdgeInsets.fromLTRB(23.w * 3, 59.h * 3, 0, 0),
                   padding: EdgeInsets.fromLTRB(0, 10.w, 20.w, 10.w),
                   color: HhColors.trans,
                   child: Image.asset(
                     "assets/images/common/back.png",
-                    height: 17.w*3,
-                    width: 10.w*3,
+                    height: 17.w * 3,
+                    width: 10.w * 3,
                     fit: BoxFit.fill,
                   ),
                 ),
@@ -88,7 +88,7 @@ class SpaceManagePage extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   width: 1.sw,
-                  height: 97.w*3,
+                  height: 97.w * 3,
                   color: HhColors.whiteColor,
                 ),
               ),
@@ -96,8 +96,8 @@ class SpaceManagePage extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   width: 1.sw,
-                  height: 0.5.w*3,
-                  margin: EdgeInsets.only(bottom: 97.w*3),
+                  height: 0.5.w * 3,
+                  margin: EdgeInsets.only(bottom: 97.w * 3),
                   color: HhColors.grayDDTextColor,
                 ),
               ),
@@ -112,12 +112,14 @@ class SpaceManagePage extends StatelessWidget {
                     Get.to(() => SpacePage(), binding: SpaceBinding());
                   },
                   child: Container(
-                    height: 44.w*3,
+                    height: 44.w * 3,
                     width: 1.sw,
-                    margin: EdgeInsets.fromLTRB(14.w*3, 0, 14.w*3, 35.w*3),
+                    margin:
+                        EdgeInsets.fromLTRB(14.w * 3, 0, 14.w * 3, 35.w * 3),
                     decoration: BoxDecoration(
                         color: HhColors.mainBlueColor,
-                        borderRadius: BorderRadius.all(Radius.circular(22.w*3))),
+                        borderRadius:
+                            BorderRadius.all(Radius.circular(22.w * 3))),
                     child: Center(
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -126,7 +128,7 @@ class SpaceManagePage extends StatelessWidget {
                             "添加新分组",
                             style: TextStyle(
                               color: HhColors.whiteColor,
-                              fontSize: 16.sp*3,
+                              fontSize: 16.sp * 3,
                             ),
                           ),
                         ],
@@ -144,7 +146,7 @@ class SpaceManagePage extends StatelessWidget {
 
   deviceList() {
     return Container(
-      margin: EdgeInsets.fromLTRB(0, 88.w*3, 0, 97.w*3),
+      margin: EdgeInsets.fromLTRB(0, 88.w * 3, 0, 97.w * 3),
       child: EasyRefresh(
         onRefresh: () {
           logic.pageNum = 1;
@@ -159,12 +161,12 @@ class SpaceManagePage extends StatelessWidget {
           padding: EdgeInsets.zero,
           pagingController: logic.pagingController,
           builderDelegate: PagedChildBuilderDelegate<dynamic>(
-            firstPageProgressIndicatorBuilder: (c){
+            firstPageProgressIndicatorBuilder: (c) {
               return Container();
             }, // 关闭首次加载动画
-            newPageProgressIndicatorBuilder:  (c){
+            newPageProgressIndicatorBuilder: (c) {
               return Container();
-            },   // 关闭新页加载动画
+            }, // 关闭新页加载动画
             noItemsFoundIndicatorBuilder: (context) => CommonUtils().noneWidget(
               image: 'assets/images/common/no_message.png',
               info: '暂无消息',
@@ -189,36 +191,36 @@ class SpaceManagePage extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
-            margin: EdgeInsets.fromLTRB(14.w*3, 9.w*3, 14.w*3, 0),
-            padding: EdgeInsets.fromLTRB(14.w*3, 15.w*3, 14.w*3, 15.w*3),
+            margin: EdgeInsets.fromLTRB(14.w * 3, 9.w * 3, 14.w * 3, 0),
+            padding:
+                EdgeInsets.fromLTRB(14.w * 3, 15.w * 3, 14.w * 3, 15.w * 3),
             clipBehavior: Clip.hardEdge,
             //裁剪
             decoration: BoxDecoration(
                 color: HhColors.whiteColor,
-                borderRadius: BorderRadius.all(Radius.circular(8.w*3))),
+                borderRadius: BorderRadius.all(Radius.circular(8.w * 3))),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 ///分组名
                 InkWell(
-                  onTap: (){
-                    item['open'] = item['open']==true?false:true;
+                  onTap: () {
+                    item['open'] = item['open'] == true ? false : true;
                     logic.testStatus.value = false;
                     logic.testStatus.value = true;
-                    if(item['open'] == true){
-    }
+                    if (item['open'] == true) {}
                   },
                   child: Row(
                     children: [
                       Container(
-                        constraints: BoxConstraints(maxWidth: 200.w*3),
+                        constraints: BoxConstraints(maxWidth: 200.w * 3),
                         child: Text(
                           "${item['spaceName']}",
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: HhColors.blackColor,
-                              fontSize: 15.sp*3,
+                              fontSize: 15.sp * 3,
                               fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -228,11 +230,14 @@ class SpaceManagePage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: EdgeInsets.fromLTRB(5.w*3, 0, 5.w*3, 0),
+                              padding:
+                                  EdgeInsets.fromLTRB(5.w * 3, 0, 5.w * 3, 0),
                               child: Image.asset(
-                                item['open']==true?"assets/images/common/icon_top_status.png":"assets/images/common/icon_down_status.png",
-                                width: 14.w*3,
-                                height: 14.w*3,
+                                item['open'] == true
+                                    ? "assets/images/common/icon_top_status.png"
+                                    : "assets/images/common/icon_down_status.png",
+                                width: 14.w * 3,
+                                height: 14.w * 3,
                                 fit: BoxFit.fill,
                               ),
                             ),
@@ -252,7 +257,7 @@ class SpaceManagePage extends StatelessWidget {
                                   "修改",
                                   style: TextStyle(
                                     color: HhColors.mainBlueColor,
-                                    fontSize: 15.sp*3,
+                                    fontSize: 15.sp * 3,
                                   ),
                                 ),
                               ),
@@ -263,10 +268,12 @@ class SpaceManagePage extends StatelessWidget {
 
                 ///设备列表
 
-                item['open']==true?Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: buildItemDeviceList(item),
-                ):const SizedBox()
+                item['open'] == true
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: buildItemDeviceList(item),
+                      )
+                    : const SizedBox()
               ],
             ),
           ),
@@ -275,160 +282,181 @@ class SpaceManagePage extends StatelessWidget {
           item['spaceName'] == '默认分组'
               ? const SizedBox()
               : Container(
-            height: 1.w,
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(1.w)),
-            margin: EdgeInsets.fromLTRB(18.w*3, 0, 18.w*3, 0),
-            child: DottedDashedLine(
-              height: 0,
-              width: 1.sw,
-              axis: Axis.horizontal,
-              dashColor: HhColors.grayDDTextColor,
-            ),
-          ),
+                  height: 1.w,
+                  clipBehavior: Clip.hardEdge,
+                  decoration:
+                      BoxDecoration(borderRadius: BorderRadius.circular(1.w)),
+                  margin: EdgeInsets.fromLTRB(18.w * 3, 0, 18.w * 3, 0),
+                  child: DottedDashedLine(
+                    height: 0,
+                    width: 1.sw,
+                    axis: Axis.horizontal,
+                    dashColor: HhColors.grayDDTextColor,
+                  ),
+                ),
           item['spaceName'] == '默认分组'
               ? const SizedBox()
               : InkWell(
-            onTap: () {
-              CommonUtils().showDeleteDialog(
-                  context, "确定要删除“${item['spaceName']}”?\n请选择如何删除分组", () {
-                Get.back();
-                // logic.deleteChangeSpace(item['spaceId'],item['spaceId'],1);
-                showChooseSpaceDialog(item);
-              }, () {
-                Get.back();
-                logic.deleteChangeSpace(item['spaceId'],null,2);
-              }, () {
-                Get.back();
-              }, leftStr: '设备转移后删除', rightStr: '全部删除');
-            },
-            child: Container(
-              width: 1.sw,
-              height: 50.w*3,
-              margin: EdgeInsets.fromLTRB(14.w*3, 0, 14.w*3, 0),
-              decoration: BoxDecoration(
-                  color: HhColors.whiteColor,
-                  borderRadius: BorderRadius.all(Radius.circular(20.w))),
-              child: Center(
-                  child: Text(
-                '删除分组',
-                style: TextStyle(color: HhColors.mainRedColor, fontSize: 15.sp*3),
-              )),
-            ),
-          ),
+                  onTap: () {
+                    CommonUtils().showDeleteDialog(
+                        context, "确定要删除“${item['spaceName']}”?\n请选择如何删除分组", () {
+                      Get.back();
+                      // logic.deleteChangeSpace(item['spaceId'],item['spaceId'],1);
+                      showChooseSpaceDialog(item);
+                    }, () {
+                      Get.back();
+                      logic.deleteChangeSpace(item['spaceId'], null, 2);
+                    }, () {
+                      Get.back();
+                    }, leftStr: '设备转移后删除', rightStr: '全部删除');
+                  },
+                  child: Container(
+                    width: 1.sw,
+                    height: 50.w * 3,
+                    margin: EdgeInsets.fromLTRB(14.w * 3, 0, 14.w * 3, 0),
+                    decoration: BoxDecoration(
+                        color: HhColors.whiteColor,
+                        borderRadius: BorderRadius.all(Radius.circular(20.w))),
+                    child: Center(
+                        child: Text(
+                      '删除分组',
+                      style: TextStyle(
+                          color: HhColors.mainRedColor, fontSize: 15.sp * 3),
+                    )),
+                  ),
+                ),
         ],
       ),
     );
   }
 
   void showChooseSpaceDialog(dynamic item) {
-    showModalBottomSheet(context: logic.context, builder: (a){
-      bool choose = false;
-      return Container(
-        width: 1.sw,
-        decoration: BoxDecoration(
-            color: HhColors.trans,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(8.w*3))
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              child: Container(
-                width: 1.sw,
-                height: 90.w,
-                margin: EdgeInsets.fromLTRB(14.w*3, 15.w*3, 14.w*3, 25.w),
-                decoration: BoxDecoration(
-                    color: HhColors.whiteColor,
-                    borderRadius: BorderRadius.all(Radius.circular(8.w*3))),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(height: 15.w*3,),
-                    Text('分组删除后，将设备转移至',style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),),
-                    SizedBox(height: 20.w*3,),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Column(
-                          children: buildDialogSpace(item),
+    showModalBottomSheet(
+        context: logic.context,
+        builder: (a) {
+          return Container(
+            width: 1.sw,
+            decoration: BoxDecoration(
+                color: HhColors.trans,
+                borderRadius:
+                    BorderRadius.vertical(top: Radius.circular(8.w * 3))),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Container(
+                    width: 1.sw,
+                    height: 90.w,
+                    margin:
+                        EdgeInsets.fromLTRB(14.w * 3, 15.w * 3, 14.w * 3, 25.w),
+                    decoration: BoxDecoration(
+                        color: HhColors.whiteColor,
+                        borderRadius:
+                            BorderRadius.all(Radius.circular(8.w * 3))),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        SizedBox(
+                          height: 15.w * 3,
                         ),
-                      ),
+                        Text(
+                          '分组删除后，将设备转移至',
+                          style: TextStyle(
+                              color: HhColors.gray9TextColor,
+                              fontSize: 14.sp * 3),
+                        ),
+                        SizedBox(
+                          height: 20.w * 3,
+                        ),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              children: buildDialogSpace(item),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ),
-            BouncingWidget(
-              duration: const Duration(milliseconds: 100),
-              scaleFactor: 1.2,
-              child: Container(
-                width: 1.sw,
-                height: 50.w*3,
-                margin: EdgeInsets.fromLTRB(14.w*3, 20.w*3, 14.w*3, 40.w*3),
-                decoration: BoxDecoration(
-                    color: HhColors.whiteColor,
-                    borderRadius: BorderRadius.all(Radius.circular(8.w*3))),
-                child: Center(
-                  child: Text(
-                    "取消",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: HhColors.blackColor, fontSize: 15.sp*3),
                   ),
                 ),
-              ),
-              onPressed: () {
-                Get.back();
-              },
-            )
-          ],
-        ),
-      );
-    },isDismissible: true,enableDrag: false,backgroundColor: HhColors.trans);
+                BouncingWidget(
+                  duration: const Duration(milliseconds: 100),
+                  scaleFactor: 1.2,
+                  child: Container(
+                    width: 1.sw,
+                    height: 50.w * 3,
+                    margin: EdgeInsets.fromLTRB(
+                        14.w * 3, 20.w * 3, 14.w * 3, 40.w * 3),
+                    decoration: BoxDecoration(
+                        color: HhColors.whiteColor,
+                        borderRadius:
+                            BorderRadius.all(Radius.circular(8.w * 3))),
+                    child: Center(
+                      child: Text(
+                        "取消",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            color: HhColors.blackColor, fontSize: 15.sp * 3),
+                      ),
+                    ),
+                  ),
+                  onPressed: () {
+                    Get.back();
+                  },
+                )
+              ],
+            ),
+          );
+        },
+        isDismissible: true,
+        enableDrag: false,
+        backgroundColor: HhColors.trans);
   }
 
   buildDialogSpace(dynamic item) {
     List<Widget> list = [];
-    for(int i = 0;i < logic.spaceListMax.length;i++){
+    final currentSpaceId = item['spaceId'] ?? item['id'];
+    for (int i = 0; i < logic.spaceListMax.length; i++) {
       dynamic model = logic.spaceListMax[i];
-      if(model['id'] != item['id']){
-        list.add(
-            Container(
-              margin: EdgeInsets.fromLTRB(13.w*3, 13.w*3, 13.w*3, 13.w*3),
-              child: Row(
-                children: [
-                  Container(
-                    constraints: BoxConstraints(maxWidth: 200.w*3),
-                    child: Text(
-                      "${model['name']}",
-                      style: TextStyle(
-                          color: HhColors.blackColor,
-                          fontSize: 15.sp*3,
-                          overflow: TextOverflow.ellipsis,
-                          fontWeight: FontWeight.w500),
-                    ),
-                  ),
-                  const Expanded(child: SizedBox()),
-                  InkWell(
-                    onTap: () {
-                      Get.back();
-                      logic.deleteChangeSpace(item['id'],model['id'],1);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.all(5.w),
-                      child: Text(
-                        "转移",
-                        style: TextStyle(
-                          color: HhColors.mainBlueColor,
-                          fontSize: 15.sp*3,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+      final targetSpaceId = model['spaceId'] ?? model['id'];
+      final targetSpaceName = model['spaceName'] ?? model['name'];
+      if (targetSpaceId != currentSpaceId) {
+        list.add(Container(
+          margin: EdgeInsets.fromLTRB(13.w * 3, 13.w * 3, 13.w * 3, 13.w * 3),
+          child: Row(
+            children: [
+              Container(
+                constraints: BoxConstraints(maxWidth: 200.w * 3),
+                child: Text(
+                  "$targetSpaceName",
+                  style: TextStyle(
+                      color: HhColors.blackColor,
+                      fontSize: 15.sp * 3,
+                      overflow: TextOverflow.ellipsis,
+                      fontWeight: FontWeight.w500),
+                ),
               ),
-            )
-        );
+              const Expanded(child: SizedBox()),
+              InkWell(
+                onTap: () {
+                  Get.back();
+                  logic.deleteChangeSpace(currentSpaceId, targetSpaceId, 1);
+                },
+                child: Container(
+                  padding: EdgeInsets.all(5.w),
+                  child: Text(
+                    "转移",
+                    style: TextStyle(
+                      color: HhColors.mainBlueColor,
+                      fontSize: 15.sp * 3,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
       }
     }
     return list;
@@ -436,21 +464,23 @@ class SpaceManagePage extends StatelessWidget {
 
   buildItemDeviceList(dynamic item) {
     List<Widget> list = [];
-    List<dynamic> deviceList = item['deviceList']??[];
-    for(int i = 0;i < deviceList.length;i++){
+    List<dynamic> deviceList = item['deviceList'] ?? [];
+    for (int i = 0; i < deviceList.length; i++) {
       dynamic model = deviceList[i];
-      list.add(SizedBox(height: 15.w*3,));
+      list.add(SizedBox(
+        height: 15.w * 3,
+      ));
       list.add(
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               color: HhColors.grayLineColor,
-              height: 1.w*3,
+              height: 1.w * 3,
               width: 1.sw,
             ),
             Container(
-              margin: EdgeInsets.fromLTRB(0, 14.w*3, 0, 0.w*3),
+              margin: EdgeInsets.fromLTRB(0, 14.w * 3, 0, 0.w * 3),
               child: Row(
                 children: [
                   Expanded(
@@ -458,27 +488,37 @@ class SpaceManagePage extends StatelessWidget {
                       "${model['deviceName']}",
                       style: TextStyle(
                           color: HhColors.blackColor,
-                          fontSize: 15.sp*3,
+                          fontSize: 15.sp * 3,
                           fontWeight: FontWeight.w500),
                     ),
                   ),
                   InkWell(
-                    onTap: (){
-                      model['isBlock'] = model['isBlock']==1?0:1;
+                    onTap: () {
+                      model['isBlock'] = model['isBlock'] == 1 ? 0 : 1;
                       logic.testStatus.value = false;
                       logic.testStatus.value = true;
                       logic.changeDeviceVisible(model);
                     },
                     child: Container(
-                        padding: EdgeInsets.all(5.w*3),
-                        margin: EdgeInsets.fromLTRB(10.w*3, 0, 12.w*3, 0),
-                        child: Image.asset(model['isBlock']==1?'assets/images/common/icon_eye_hide.png':'assets/images/common/icon_eye_show.png',
-                          height:18.w*3,width: 18.w*3,fit: BoxFit.fill,)
-                    ),
+                        padding: EdgeInsets.all(5.w * 3),
+                        margin: EdgeInsets.fromLTRB(10.w * 3, 0, 12.w * 3, 0),
+                        child: Image.asset(
+                          model['isBlock'] == 1
+                              ? 'assets/images/common/icon_eye_hide.png'
+                              : 'assets/images/common/icon_eye_show.png',
+                          height: 18.w * 3,
+                          width: 18.w * 3,
+                          fit: BoxFit.fill,
+                        )),
                   ),
                   InkWell(
-                    onTap: (){
-                      Get.to(()=>DeviceAddPage(snCode: '${model['deviceNo']}',),binding: DeviceAddBinding(),arguments: model);
+                    onTap: () {
+                      Get.to(
+                          () => DeviceAddPage(
+                                snCode: '${model['deviceNo']}',
+                              ),
+                          binding: DeviceAddBinding(),
+                          arguments: model);
                     },
                     child: Container(
                       padding: EdgeInsets.all(10.w),
@@ -486,7 +526,7 @@ class SpaceManagePage extends StatelessWidget {
                         "修改",
                         style: TextStyle(
                           color: HhColors.mainBlueColor,
-                          fontSize: 15.sp*3,
+                          fontSize: 15.sp * 3,
                         ),
                       ),
                     ),

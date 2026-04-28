@@ -43,17 +43,17 @@ class CommonUtils {
   static void init() async {
     tempDir = await getApplicationCacheDirectory();
   }
-  static Widget parseCacheImageView(String deviceNo,dynamic item) {
-    try{
+
+  static Widget parseCacheImageView(String deviceNo, dynamic item) {
+    try {
       // 将图片保存到缓存目录
-      final filePath =
-          '${tempDir.path}/catch_$deviceNo.png';
+      final filePath = '${tempDir.path}/catch_$deviceNo.png';
       final file = File(filePath);
 
       FileImage fileImage = FileImage(file);
       // 同步清除指定文件的缓存
       fileImage.evict();
-      if(fileImage.file.lengthSync() < 2600){
+      if (fileImage.file.lengthSync() < 2600) {
         //处理白屏问题
         return Image.asset(
           CommonUtils().parseDeviceBackImage(item),
@@ -61,15 +61,19 @@ class CommonUtils {
           fit: BoxFit.fill,
         );
       }
-      return Image(image: fileImage,errorBuilder: (c,d,e){
-        HhLog.d("parseCacheImageView error $deviceNo");
-        return Image.asset(
-          CommonUtils().parseDeviceBackImage(item),
-          // "assets/images/common/test_video.jpg",
-          fit: BoxFit.fill,
-        );
-      }, fit: BoxFit.fill,);
-    }catch(e){
+      return Image(
+        image: fileImage,
+        errorBuilder: (c, d, e) {
+          HhLog.d("parseCacheImageView error $deviceNo");
+          return Image.asset(
+            CommonUtils().parseDeviceBackImage(item),
+            // "assets/images/common/test_video.jpg",
+            fit: BoxFit.fill,
+          );
+        },
+        fit: BoxFit.fill,
+      );
+    } catch (e) {
       //
       return Image.asset(
         CommonUtils().parseDeviceBackImage(item),
@@ -259,12 +263,12 @@ class CommonUtils {
 
   String parseLongTime(String s) {
     String time = "";
-    try{
+    try {
       DateTime date = DateTime.fromMillisecondsSinceEpoch(int.parse(s));
       time = date.toIso8601String();
       time = time.substring(0, 19);
       time = time.replaceAll("T", " ");
-    }catch(e){
+    } catch (e) {
       //
     }
     return time;
@@ -461,7 +465,7 @@ class CommonUtils {
             child: Stack(
               children: [
                 GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     Get.back();
                   },
                   child: Container(
@@ -490,7 +494,7 @@ class CommonUtils {
                   height: 100.h * 3,
                   width: 1.sw,
                   color: HhColors.whiteColor,
-                  padding: EdgeInsets.only(top: 36.h*3),
+                  padding: EdgeInsets.only(top: 36.h * 3),
                   child: Stack(
                     children: [
                       Align(
@@ -513,7 +517,8 @@ class CommonUtils {
                             Get.back();
                           },
                           child: Container(
-                            padding: EdgeInsets.fromLTRB(23.w * 3, 10.w, 20.w * 3, 10.w),
+                            padding: EdgeInsets.fromLTRB(
+                                23.w * 3, 10.w, 20.w * 3, 10.w),
                             color: HhColors.trans,
                             child: Image.asset(
                               "assets/images/common/back.png",
@@ -556,8 +561,8 @@ class CommonUtils {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Container(
-                          margin: EdgeInsets.only(top: 10.w*3),
-                          height:40.w*3,
+                          margin: EdgeInsets.only(top: 10.w * 3),
+                          height: 40.w * 3,
                           color: HhColors.trans,
                           child: Stack(
                             children: [
@@ -582,8 +587,10 @@ class CommonUtils {
                                   },
                                   child: Container(
                                     color: HhColors.trans,
-                                    margin: EdgeInsets.fromLTRB(0, 10.w*3, 10.w*3, 0),
-                                    padding: EdgeInsets.fromLTRB(12.w*3, 0, 12.w*3, 12.w*3),
+                                    margin: EdgeInsets.fromLTRB(
+                                        0, 10.w * 3, 10.w * 3, 0),
+                                    padding: EdgeInsets.fromLTRB(
+                                        12.w * 3, 0, 12.w * 3, 12.w * 3),
                                     child: Image.asset(
                                       "assets/images/common/ic_x.png",
                                       height: 18.w * 3,
@@ -599,10 +606,13 @@ class CommonUtils {
                         Container(
                           decoration: BoxDecoration(
                             color: HhColors.line9Color,
-                            borderRadius: BorderRadius.all(Radius.circular(8.w * 3)),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(8.w * 3)),
                           ),
-                          margin: EdgeInsets.fromLTRB(20.w*3, 20.w*3, 20.w*3, 40.w * 3),
-                          padding: EdgeInsets.fromLTRB(10.w*3, 0, 10.w*3, 0),
+                          margin: EdgeInsets.fromLTRB(
+                              20.w * 3, 20.w * 3, 20.w * 3, 40.w * 3),
+                          padding:
+                              EdgeInsets.fromLTRB(10.w * 3, 0, 10.w * 3, 0),
                           child: Material(
                             color: HhColors.trans,
                             child: TextField(
@@ -1289,11 +1299,11 @@ class CommonUtils {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? id = prefs.getString(SPKeys().id);
     String? token = prefs.getString(SPKeys().token);
-    try{
+    try {
       XgFlutterPlugin().deleteAccount(id!, AccountType.UNKNOWN);
       XgFlutterPlugin().deleteAccount(token!, AccountType.UNKNOWN);
-      XgFlutterPlugin().deleteTags([id,"test"]);
-    }catch(e){
+      XgFlutterPlugin().deleteTags([id, "test"]);
+    } catch (e) {
       //
     }
     prefs.remove(SPKeys().token);
@@ -1316,7 +1326,7 @@ class CommonUtils {
     String? token = prefs.getString(SPKeys().token);
     XgFlutterPlugin().deleteAccount(id!, AccountType.UNKNOWN);
     XgFlutterPlugin().deleteAccount(token!, AccountType.UNKNOWN);
-    XgFlutterPlugin().deleteTags([id,"test"]);
+    XgFlutterPlugin().deleteTags([id, "test"]);
     prefs.remove(SPKeys().token);
     CommonData.tenant = CommonData.tenantDef;
     CommonData.tenantName = CommonData.tenantNameDef;
@@ -1332,7 +1342,7 @@ class CommonUtils {
   }
 
   toLogin() async {
-    CommonData.clear() ;
+    CommonData.clear();
     if (CommonData.personal) {
       Get.offAll(() => PersonalLoginPage(),
           binding: PersonalLoginBinding(),
@@ -1367,16 +1377,18 @@ class CommonUtils {
     }
     return rt;
   }
+
   String parseMinuteUpload(String str) {
     int a = 0;
     try {
       a = int.parse(str);
-      a = parseDoubleToInt("${a/60}");
+      a = parseDoubleToInt("${a / 60}");
     } catch (e) {
       a = 0;
     }
     return "$a";
   }
+
   int parseDoubleToInt(String str) {
     int rt = 0;
     int index = 0;
@@ -1388,6 +1400,7 @@ class CommonUtils {
     }
     return rt;
   }
+
   double parseDoubleNumberToDouble(String str, int number) {
     String rt = "0";
     int index = 0;
@@ -1403,132 +1416,174 @@ class CommonUtils {
   Future<void> parseRouteDetail(item) async {
     HhLog.d("parseRouteDetail $item");
 
-    if(item['productKey'] == '5MiTcinKdSasKdKQ'){
+    if (item['productKey'] == '5MiTcinKdSasKdKQ') {
       ///道闸
-      Get.to(()=>DaoZhaDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: DaoZhaDetailBinding());
-    // }else if(item['productKey'] == 'R45bbC4eBxm3555D'){
-    }else if(item['productKey'] == 'Dhs5Kt8bbZaKrCCz'){
+      Get.to(
+          () => DaoZhaDetailPage('${item['deviceNo']}', '${item['id']}',
+              item['shareMark'] ?? 2, "${item['status']}" != "1"),
+          binding: DaoZhaDetailBinding());
+      // }else if(item['productKey'] == 'R45bbC4eBxm3555D'){
+    } else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz') {
       ///运维箱
-      Get.to(()=>YunWeiDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2),binding: YunWeiDetailBinding());
-    }else if (item['productKey'] == CommonData.productKeyFireSmartPole){
+      Get.to(
+          () => YunWeiDetailPage(
+              '${item['deviceNo']}', '${item['id']}', item['shareMark'] ?? 2),
+          binding: YunWeiDetailBinding());
+    } else if (item['productKey'] == CommonData.productKeyFireSmartPole) {
       ///浩海智慧立杆-已对接
-      Get.to(()=>LiGanDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: LiGanDeviceDetailBinding());
-    }else if (item['productKey'] == CommonData.productKeyFireRiskFactor){
+      Get.to(
+          () => LiGanDeviceDetailPage(
+                '${item['deviceNo']}',
+                '${item['id']}',
+                item['shareMark'] ?? 2,
+              ),
+          binding: LiGanDeviceDetailBinding());
+    } else if (item['productKey'] == CommonData.productKeyFireRiskFactor) {
       ///火险因子监测站-已对接
-      Get.to(()=>HXYZDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: HXYZDeviceDetailBinding());
-    }else if (item['productKey'] == 'R45bbC4eBxm3555D'){
+      Get.to(
+          () => HXYZDeviceDetailPage(
+                '${item['deviceNo']}',
+                '${item['id']}',
+                item['shareMark'] ?? 2,
+              ),
+          binding: HXYZDeviceDetailBinding());
+    } else if (item['productKey'] == 'R45bbC4eBxm3555D') {
       ///一体机
-      Get.to(()=>DeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,"${item['status']}"!="1"),binding: DeviceDetailBinding());
-    }else{
+      Get.to(
+          () => DeviceDetailPage('${item['deviceNo']}', '${item['id']}',
+              item['shareMark'] ?? 2, "${item['status']}" != "1"),
+          binding: DeviceDetailBinding());
+    } else {
       /*///默认火险因子监测站-已对接
       Get.to(()=>HXYZDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: HXYZDeviceDetailBinding());*/
       ///默认浩海智慧立杆-已对接
-      Get.to(()=>LiGanDeviceDetailPage('${item['deviceNo']}','${item['id']}',item['shareMark']??2,),binding: LiGanDeviceDetailBinding());
+      Get.to(
+          () => LiGanDeviceDetailPage(
+                '${item['deviceNo']}',
+                '${item['id']}',
+                item['shareMark'] ?? 2,
+              ),
+          binding: LiGanDeviceDetailBinding());
     }
   }
 
-  parseDeviceImageWarn(item){
-    if(item['productKey'] == '5MiTcinKdSasKdKQ'){
+  parseDeviceImageWarn(item) {
+    if (item['productKey'] == '5MiTcinKdSasKdKQ') {
       ///道闸-高清车牌识别一体机
       return "assets/images/common/icon_b.png";
-    }else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz'){
+    } else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz') {
       ///智能运维箱
       return "assets/images/common/icon_live_k.png";
-    }else if (item['productKey'] == CommonData.productKeyFireSmartPole){
+    } else if (item['productKey'] == CommonData.productKeyFireSmartPole) {
       ///浩海智慧立杆
       return "assets/images/common/icon_live_k.png";
-    }else if (item['productKey'] == CommonData.productKeyFireRiskFactor){
+    } else if (item['productKey'] == CommonData.productKeyFireRiskFactor) {
       ///火险因子监测站
       return "assets/images/common/icon_live_fire.png";
-    }else if (item['productKey'] == 'R45bbC4eBxm3555D'){
+    } else if (item['productKey'] == 'R45bbC4eBxm3555D') {
       ///一体机
       return "assets/images/common/icon_c.png";
-    }else{
+    } else {
       return "assets/images/common/icon_c.png";
     }
   }
 
-  parseDeviceImage(item){
-    if(item['productKey'] == '5MiTcinKdSasKdKQ'){
+  parseDeviceImage(item) {
+    if (item['productKey'] == '5MiTcinKdSasKdKQ') {
       ///道闸-高清车牌识别一体机
       return "assets/images/common/icon_b.png";
-    // }else if (item['productKey'] == 'R45bbC4eBxm3555D'){//TODO 测试调试
-    }else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz'){
+      // }else if (item['productKey'] == 'R45bbC4eBxm3555D'){//TODO 测试调试
+    } else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz') {
       ///智能运维箱
       return "assets/images/common/icon_e.png";
-    }else if (item['productKey'] == CommonData.productKeyFireSmartPole){
+    } else if (item['productKey'] == CommonData.productKeyFireSmartPole) {
       ///浩海智慧立杆
       return "assets/images/common/icon_d.png";
-    }else if (item['productKey'] == CommonData.productKeyFireRiskFactor){
+    } else if (item['productKey'] == CommonData.productKeyFireRiskFactor) {
       ///火险因子监测站
       return "assets/images/common/icon_e.png";
-    }else if (item['productKey'] == 'R45bbC4eBxm3555D'){
+    } else if (item['productKey'] == 'R45bbC4eBxm3555D') {
       ///一体机
       return "assets/images/common/icon_c.png";
-    }else{
+    } else {
       return "assets/images/common/icon_c.png";
     }
   }
-  parseDeviceBackImage(item){
-    if(item['productKey'] == '5MiTcinKdSasKdKQ'){
+
+  parseDeviceBackImage(item) {
+    if (item['productKey'] == '5MiTcinKdSasKdKQ') {
       ///道闸-高清车牌识别一体机
       return "assets/images/common/test_video.jpg";
-    // }else if (item['productKey'] == 'R45bbC4eBxm3555D'){//TODO 测试调试
-    }else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz'){
+      // }else if (item['productKey'] == 'R45bbC4eBxm3555D'){//TODO 测试调试
+    } else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz') {
       ///智能运维箱
       return "assets/images/common/test_video_ywx.png";
-    }else if (item['productKey'] == CommonData.productKeyFireSmartPole){
+    } else if (item['productKey'] == CommonData.productKeyFireSmartPole) {
       ///浩海智慧立杆
       return "assets/images/common/test_video.jpg";
-    }else if (item['productKey'] == CommonData.productKeyFireRiskFactor){
+    } else if (item['productKey'] == CommonData.productKeyFireRiskFactor) {
       ///火险因子监测站
       return "assets/images/common/test_video.jpg";
-    }else if (item['productKey'] == 'R45bbC4eBxm3555D'){
+    } else if (item['productKey'] == 'R45bbC4eBxm3555D') {
       ///一体机
       return "assets/images/common/test_video.jpg";
-    }else{
+    } else {
       return "assets/images/common/test_video.jpg";
     }
   }
 
-  static line({double? marginTop,double? marginBottom,EdgeInsets? margin,Color? color,double? height}) {
+  static line(
+      {double? marginTop,
+      double? marginBottom,
+      EdgeInsets? margin,
+      Color? color,
+      double? height}) {
     return Container(
-      margin: margin??EdgeInsets.fromLTRB(0, marginTop??0, 0, marginBottom??0),
-      color: color??HhColors.grayE8BackColor,
+      margin: margin ??
+          EdgeInsets.fromLTRB(0, marginTop ?? 0, 0, marginBottom ?? 0),
+      color: color ?? HhColors.grayE8BackColor,
       width: 1.sw,
-      height: height??1.w,
+      height: height ?? 1.w,
     );
   }
 
-  static backView({EdgeInsets? margin,EdgeInsets? padding,bool? white,String? title}) {
+  static backView(
+      {EdgeInsets? margin, EdgeInsets? padding, bool? white, String? title}) {
     return Container(
-      margin: margin??EdgeInsets.only(top:30.w*3),
-      padding: padding??EdgeInsets.all(20.w*3),
+      margin: margin ?? EdgeInsets.only(top: 30.w * 3),
+      padding: padding ?? EdgeInsets.all(20.w * 3),
       color: HhColors.trans,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset(
-            white==true?"assets/images/common/back_white.png":"assets/images/common/icon_back_left.png",
-            width: 9.w*3,
-            height: 16.w*3,
+            white == true
+                ? "assets/images/common/back_white.png"
+                : "assets/images/common/icon_back_left.png",
+            width: 9.w * 3,
+            height: 16.w * 3,
             fit: BoxFit.fill,
           ),
-          SizedBox(width: 7.w*3,),
-          Text(title??'返回',style: TextStyle(
-              color: white==true?HhColors.whiteColor:HhColors.textBlackColor,
-              fontSize: 16.sp*3,
-              fontWeight: FontWeight.w400
-          ),)
+          SizedBox(
+            width: 7.w * 3,
+          ),
+          Text(
+            title ?? '返回',
+            style: TextStyle(
+                color: white == true
+                    ? HhColors.whiteColor
+                    : HhColors.textBlackColor,
+                fontSize: 16.sp * 3,
+                fontWeight: FontWeight.w400),
+          )
         ],
       ),
     );
   }
 
-
   String parseStringTimeYearDay(String s) {
     s = s.replaceAll(" ", "");
-    s = "${s.substring(0,10)} ${s.substring(10,s.length)}";
+    s = "${s.substring(0, 10)} ${s.substring(10, s.length)}";
     DateTime date = DateTime.parse(s);
     String time = date.toIso8601String();
     time = time.substring(0, 10);
@@ -1536,17 +1591,15 @@ class CommonUtils {
     return time;
   }
 
-
   String parseStringTimeAll(String s) {
     s = s.replaceAll(" ", "");
-    s = "${s.substring(0,10)} ${s.substring(10,s.length)}";
+    s = "${s.substring(0, 10)} ${s.substring(10, s.length)}";
     DateTime date = DateTime.parse(s);
     String time = date.toIso8601String();
     time = time.substring(0, 19);
     time = time.replaceAll("T", " ");
     return time;
   }
-
 
   String parseNullExpect(dynamic s, String def) {
     String r = "$s";
@@ -1557,31 +1610,34 @@ class CommonUtils {
   }
 
   late VideoPlayerController _controller;
-  final Rx<bool> _showControls = true.obs;//控制是否显示播放按钮&进度条
-  final Rx<bool> playStatus = true.obs;//播放暂停
-  final Rx<bool> state = true.obs;//状态
+  final Rx<bool> _showControls = true.obs; //控制是否显示播放按钮&进度条
+  final Rx<bool> playStatus = true.obs; //播放暂停
+  final Rx<bool> state = true.obs; //状态
   Future<bool> onWillPop() async {
     _controller.dispose();
     state.value = false;
     return true; // 返回 false 阻止对话框关闭
   }
+
   void checkVideoEnded() {
     if (_controller != null &&
         _controller!.value.position >= _controller!.value.duration) {
-      _showControls.value = true;//播放结束显示控制按钮
+      _showControls.value = true; //播放结束显示控制按钮
       playStatus.value = false;
     }
   }
+
   ///视频查看Dialog
   showVideoFileDialog(
-      context, {
-        required String url,
-        String? asset,
-      }) async {
-    _controller = VideoPlayerController.network(url,videoPlayerOptions: VideoPlayerOptions(
-      mixWithOthers: true,
-      allowBackgroundPlayback: false, // <— 强制texture输出关键配置
-    ))
+    context, {
+    required String url,
+    String? asset,
+  }) async {
+    _controller = VideoPlayerController.network(url,
+        videoPlayerOptions: VideoPlayerOptions(
+          mixWithOthers: true,
+          allowBackgroundPlayback: false, // <— 强制texture输出关键配置
+        ))
       ..initialize().then((_) {
         SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
           statusBarColor: Colors.white,
@@ -1605,131 +1661,165 @@ class CommonUtils {
             },
             child: Scaffold(
               backgroundColor: Colors.white,
-              body: Obx(() => state.value?SafeArea(
-                top: false,
-                child: Container(
-                  height: 1.sh,
-                  width: 1.sw,
-                  color: HhColors.blackRealColor,
-                  child: Stack(
-                    children: [
-                      SizedBox(
+              body: Obx(() => state.value
+                  ? SafeArea(
+                      top: false,
+                      child: Container(
+                        height: 1.sh,
                         width: 1.sw,
-                        child: Center(
-                          child: _controller == null
-                              ? const Text("视频不存在",style: TextStyle(color: HhColors.whiteColor),)
-                              : _controller.value.isInitialized
-                              ? GestureDetector(
-                            onTap: () {
-                              _showControls.value = !_showControls.value; // 点击切换控制条显示
-                            },
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                RepaintBoundary(
-                                  child: Opacity(
-                                    opacity: 1,
-                                    child: AspectRatio(
-                                      aspectRatio: _controller.value.aspectRatio,
-                                      child: VideoPlayer(_controller),
-                                    ),
-                                  ),
-                                ),
-
-                                // 播放/暂停按钮
-                                if (_showControls.value)
-                                  Positioned(
-                                    child: IconButton(
-                                      iconSize: 60,
-                                      icon: Icon(
-                                        playStatus.value
-                                            ? Icons.pause_circle_filled
-                                            : Icons.play_circle_filled,
-                                        color: Colors.white.withAlpha(100),
-                                      ),
-                                      onPressed: () {
-                                        _controller.value.isPlaying
-                                            ? _controller.pause()
-                                            : _controller.play();
-                                        Future.delayed(const Duration(milliseconds: 200),(){
-                                          if(_controller.value.isPlaying){
-                                            playStatus.value = true;
-                                          }else{
-                                            playStatus.value = false;
-                                          }
-                                        });
-                                      },
-                                    ),
-                                  ),
-
-                                // 视频进度条
-                                if (_showControls.value)
-                                  Positioned(
-                                    bottom: 10,
-                                    left: 0,
-                                    right: 0,
-                                    child: VideoProgressIndicator(
-                                      _controller,
-                                      allowScrubbing: true, // 允许拖动进度条
-                                      colors: const VideoProgressColors(
-                                        playedColor: Colors.blue,
-                                        bufferedColor: Colors.grey,
-                                        backgroundColor: Colors.black,
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          )
-                              : CircularProgressIndicator(),
-                        ),
-                      ),
-                      Container(
-                        height: 50.w * 3,
-                        width: 1.sw,
-                        color: HhColors.whiteColor,
+                        color: HhColors.blackRealColor,
                         child: Stack(
                           children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                '视频查看',
-                                style: TextStyle(
-                                    decoration: TextDecoration.none,
-                                    color: HhColors.blackTextColor,
-                                    fontSize: 18.sp * 3,
-                                    fontWeight: FontWeight.bold),
+                            SizedBox(
+                              width: 1.sw,
+                              child: Center(
+                                child: _controller == null
+                                    ? const Text(
+                                        "视频不存在",
+                                        style: TextStyle(
+                                            color: HhColors.whiteColor),
+                                      )
+                                    : _controller.value.isInitialized
+                                        ? GestureDetector(
+                                            onTap: () {
+                                              _showControls.value =
+                                                  !_showControls
+                                                      .value; // 点击切换控制条显示
+                                            },
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                RepaintBoundary(
+                                                  child: Opacity(
+                                                    opacity: 1,
+                                                    child: AspectRatio(
+                                                      aspectRatio: _controller
+                                                          .value.aspectRatio,
+                                                      child: VideoPlayer(
+                                                          _controller),
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                // 播放/暂停按钮
+                                                if (_showControls.value)
+                                                  Positioned(
+                                                    child: IconButton(
+                                                      iconSize: 60,
+                                                      icon: Icon(
+                                                        playStatus.value
+                                                            ? Icons
+                                                                .pause_circle_filled
+                                                            : Icons
+                                                                .play_circle_filled,
+                                                        color: Colors.white
+                                                            .withAlpha(100),
+                                                      ),
+                                                      onPressed: () {
+                                                        _controller
+                                                                .value.isPlaying
+                                                            ? _controller
+                                                                .pause()
+                                                            : _controller
+                                                                .play();
+                                                        Future.delayed(
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    200), () {
+                                                          if (_controller.value
+                                                              .isPlaying) {
+                                                            playStatus.value =
+                                                                true;
+                                                          } else {
+                                                            playStatus.value =
+                                                                false;
+                                                          }
+                                                        });
+                                                      },
+                                                    ),
+                                                  ),
+
+                                                // 视频进度条
+                                                if (_showControls.value)
+                                                  Positioned(
+                                                    bottom: 10,
+                                                    left: 0,
+                                                    right: 0,
+                                                    child:
+                                                        VideoProgressIndicator(
+                                                      _controller,
+                                                      allowScrubbing:
+                                                          true, // 允许拖动进度条
+                                                      colors:
+                                                          const VideoProgressColors(
+                                                        playedColor:
+                                                            Colors.blue,
+                                                        bufferedColor:
+                                                            Colors.grey,
+                                                        backgroundColor:
+                                                            Colors.black,
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
+                                            ),
+                                          )
+                                        : CircularProgressIndicator(),
                               ),
                             ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: BouncingWidget(
-                                duration: const Duration(milliseconds: 100),
-                                scaleFactor: 0.5,
-                                onPressed: () {
-                                  _controller.pause();
-                                  _controller.dispose();
-                                  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-                                    statusBarColor: Colors.transparent,
-                                    statusBarBrightness: Brightness.dark,
-                                    statusBarIconBrightness: Brightness.dark,
-                                  ));
-                                  Get.back();
-                                },
-                                child: Material(
-                                  child: CommonUtils.backView(
-                                    margin: EdgeInsets.fromLTRB(20.w * 3, 0, 0, 0),
-                                    padding: EdgeInsets.fromLTRB(0, 10.w, 20.w, 10.w),),
-                                ),
+                            Container(
+                              height: 50.w * 3,
+                              width: 1.sw,
+                              color: HhColors.whiteColor,
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '视频查看',
+                                      style: TextStyle(
+                                          decoration: TextDecoration.none,
+                                          color: HhColors.blackTextColor,
+                                          fontSize: 18.sp * 3,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: BouncingWidget(
+                                      duration:
+                                          const Duration(milliseconds: 100),
+                                      scaleFactor: 0.5,
+                                      onPressed: () {
+                                        _controller.pause();
+                                        _controller.dispose();
+                                        SystemChrome.setSystemUIOverlayStyle(
+                                            const SystemUiOverlayStyle(
+                                          statusBarColor: Colors.transparent,
+                                          statusBarBrightness: Brightness.dark,
+                                          statusBarIconBrightness:
+                                              Brightness.dark,
+                                        ));
+                                        Get.back();
+                                      },
+                                      child: Material(
+                                        child: CommonUtils.backView(
+                                          margin: EdgeInsets.fromLTRB(
+                                              20.w * 3, 0, 0, 0),
+                                          padding: EdgeInsets.fromLTRB(
+                                              0, 10.w, 20.w, 10.w),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ):const SizedBox()),
+                    )
+                  : const SizedBox()),
             ),
           ),
           barrierColor: Colors.black87,
@@ -1738,13 +1828,12 @@ class CommonUtils {
       });
   }
 
-
   int parseTotalPage(String s, int pageSize) {
     int page = 1;
-    try{
+    try {
       int allCount = int.parse(s);
       page = (allCount + pageSize - 1) ~/ pageSize;
-    }catch(e){
+    } catch (e) {
       //
     }
     return page;
@@ -1766,21 +1855,20 @@ class CommonUtils {
     }
   }
 
-
-
   bool parseContainDevice(dynamic model, String search) {
     List<dynamic> children = model["children"] ?? [];
     List<dynamic> devices = model["devices"] ?? [];
-    if(devices.isNotEmpty){
+    if (devices.isNotEmpty) {
       for (var device in devices) {
-        if(device["name"]!=null && device["name"].toLowerCase().contains(search.toLowerCase())){
+        if (device["name"] != null &&
+            device["name"].toLowerCase().contains(search.toLowerCase())) {
           return true;
         }
       }
     }
-    if(children.isNotEmpty){
+    if (children.isNotEmpty) {
       for (var child in children) {
-        if(parseContainDevice(child, search)){
+        if (parseContainDevice(child, search)) {
           return true;
         }
       }
@@ -1790,11 +1878,12 @@ class CommonUtils {
   }
 
   bool parseContainChannels(dynamic model, List<dynamic> channels) {
-    if(channels.isEmpty){
+    if (channels.isEmpty) {
       return false;
     }
     for (var channel in channels) {
-      if(channel["id"]!=null && model.toString().contains("${channel["id"]}")){
+      if (channel["id"] != null &&
+          model.toString().contains("${channel["id"]}")) {
         return true;
       }
     }
@@ -1802,11 +1891,11 @@ class CommonUtils {
   }
 
   bool parseExpandNode(dynamic model, List<dynamic> list) {
-    if(list.isEmpty){
+    if (list.isEmpty) {
       return false;
     }
     for (var node in list) {
-      if(node["id"]!=null && model.toString().contains(node["id"])){
+      if (node["id"] != null && model.toString().contains(node["id"])) {
         return true;
       }
     }
@@ -1814,11 +1903,11 @@ class CommonUtils {
   }
 
   bool parseChooseNode(dynamic model, List<dynamic> list) {
-    if(list.isEmpty){
+    if (list.isEmpty) {
       return false;
     }
     for (var node in list) {
-      if(node["id"]!=null && "${model["id"]}"== "${node["id"]}"){
+      if (node["id"] != null && "${model["id"]}" == "${node["id"]}") {
         return true;
       }
     }
@@ -1827,30 +1916,30 @@ class CommonUtils {
 
   String parseWeek(String str) {
     String week = str.replaceAll(" ", "");
-    try{
+    try {
       DateTime dateTime = DateTime.parse(week);
-      if(dateTime.weekday==1){
+      if (dateTime.weekday == 1) {
         week = "周一";
       }
-      if(dateTime.weekday==2){
+      if (dateTime.weekday == 2) {
         week = "周二";
       }
-      if(dateTime.weekday==3){
+      if (dateTime.weekday == 3) {
         week = "周三";
       }
-      if(dateTime.weekday==4){
+      if (dateTime.weekday == 4) {
         week = "周四";
       }
-      if(dateTime.weekday==5){
+      if (dateTime.weekday == 5) {
         week = "周五";
       }
-      if(dateTime.weekday==6){
+      if (dateTime.weekday == 6) {
         week = "周六";
       }
-      if(dateTime.weekday==7){
+      if (dateTime.weekday == 7) {
         week = "周天";
       }
-    }catch(e){
+    } catch (e) {
       HhLog.e("parseWeek$e");
     }
 
@@ -1859,15 +1948,14 @@ class CommonUtils {
 
   String parseTime(String str) {
     String time = str.replaceAll(" ", "");
-    try{
+    try {
       DateTime dateTime = DateTime.parse(time);
       time = "${parseZero(dateTime.month)}月${dateTime.day}日";
-    }catch(e){
+    } catch (e) {
       HhLog.e("parseTime$e");
     }
     return time;
   }
-
 }
 
 ///通用Button
@@ -1918,10 +2006,10 @@ class CommonButton extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     return Listener(
       onPointerDown: (down) {
-        onPointerDown!();
+        onPointerDown?.call();
       },
       onPointerUp: (up) {
-        onPointerUp!();
+        onPointerUp?.call();
       },
       child: Container(
         height: height ?? 85.w,
