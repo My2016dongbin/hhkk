@@ -283,10 +283,15 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
     if (exception == null || exception.trim().isEmpty) {
       return null;
     }
-    if (exception.contains('Invalid data found when processing input')) {
+    final normalizedException = exception.trim();
+    if (normalizedException
+        .contains('Invalid data found when processing input')) {
       return null;
     }
-    return exception;
+    if (normalizedException.contains('Local File not found')) {
+      return null;
+    }
+    return normalizedException;
   }
 
   @override

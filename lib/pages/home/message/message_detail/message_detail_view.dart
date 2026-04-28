@@ -73,7 +73,7 @@ class MessageDetailPage extends StatelessWidget {
             Get.back();
           },
           child: Container(
-            margin: EdgeInsets.only(top: 30.w*3),
+            margin: EdgeInsets.only(top: 35.w*3),
             padding: EdgeInsets.all(20.w*3),
             color: HhColors.trans,
             child: Row(
@@ -93,7 +93,7 @@ class MessageDetailPage extends StatelessWidget {
         Align(
           alignment: Alignment.topCenter,
           child: Container(
-            margin: EdgeInsets.only(top: 42.w*3),
+            margin: EdgeInsets.only(top: 47.w*3),
             child: Text('报警详情',style: TextStyle(
                 color: HhColors.blackTextColor,
                 fontSize: 18.sp*3,
@@ -127,7 +127,7 @@ class MessageDetailPage extends StatelessWidget {
               height: 28.w*3,
               width: 50.w*3,
               alignment: Alignment.center,
-              margin: EdgeInsets.fromLTRB(0, 43.w*3, 15.w*3, 0),
+              margin: EdgeInsets.fromLTRB(0, 48.w*3, 15.w*3, 0),
               decoration: BoxDecoration(
                 color: HhColors.mainBlueColor,
                 borderRadius: BorderRadius.all(Radius.circular(4.w*3)),
@@ -143,7 +143,7 @@ class MessageDetailPage extends StatelessWidget {
 
         ///菜单
         Container(
-          margin: EdgeInsets.fromLTRB(14.w*3, 85.w*3, 14.w*3, 20.w*3),
+          margin: EdgeInsets.fromLTRB(14.w*3, 90.w*3, 14.w*3, 20.w*3),
           child: EasyRefresh(
             onRefresh: (){
               logic.getWarnType();

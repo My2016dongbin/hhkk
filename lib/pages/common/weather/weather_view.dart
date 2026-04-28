@@ -71,7 +71,7 @@ class WeatherPage extends StatelessWidget {
             Get.back();
           },
           child: Container(
-            margin: EdgeInsets.only(top: 30.w*3),
+            margin: EdgeInsets.only(top: 35.w*3),
             padding: EdgeInsets.all(20.w*3),
             color: HhColors.trans,
             child: Row(
@@ -91,7 +91,7 @@ class WeatherPage extends StatelessWidget {
         Align(
           alignment: Alignment.topCenter,
           child: Container(
-            margin: EdgeInsets.only(top: 42.w*3),
+            margin: EdgeInsets.only(top: 47.w*3),
             child: Text('天气',style: TextStyle(
                 color: HhColors.blackTextColor,
                 fontSize: 18.sp*3,
@@ -102,7 +102,7 @@ class WeatherPage extends StatelessWidget {
 
         ///菜单
         Container(
-          margin: EdgeInsets.only(top: 80.w*3),
+          margin: EdgeInsets.only(top: 85.w*3),
           child: EasyRefresh(
             onRefresh: (){
               logic.getLocation();

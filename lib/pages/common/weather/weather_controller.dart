@@ -23,13 +23,8 @@ class WeatherController extends GetxController {
   @override
   void onInit() {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    Future.delayed(const Duration(milliseconds: 2000), () {
-      EventBusUtil.getInstance().fire(HhLoading(show: false));
-    });
     Future.delayed(const Duration(milliseconds: 500), () {
-      getLocation();
-      getNowWeatherByLocation();
-      get7daysWeatherByLocation();
+      next();
     });
     super.onInit();
   }
@@ -110,6 +105,20 @@ class WeatherController extends GetxController {
     } else {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    }
+  }
+
+  void next() {
+    if(CommonData.latitude!=null && CommonData.longitude!=null && CommonData.latitude!=0 && CommonData.longitude!=0){
+      Future.delayed(const Duration(milliseconds: 500), () {
+        getLocation();
+        getNowWeatherByLocation();
+        get7daysWeatherByLocation();
+      });
+    }else{
+      Future.delayed(const Duration(milliseconds: 3000), () {
+        next();
+      });
     }
   }
 }

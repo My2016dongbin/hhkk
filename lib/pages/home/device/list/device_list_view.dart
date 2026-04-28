@@ -72,7 +72,7 @@ class DeviceListPage extends StatelessWidget {
             Get.back();
           },
           child: Container(
-            margin: EdgeInsets.only(top: 30.w*3),
+            margin: EdgeInsets.only(top: 35.w*3),
             padding: EdgeInsets.all(20.w*3),
             color: HhColors.trans,
             child: Row(
@@ -101,7 +101,7 @@ class DeviceListPage extends StatelessWidget {
           child: Container(
             height: 42.w*3,
             width: 0.45.sw,
-            margin: EdgeInsets.fromLTRB(0, 42.w*3, 65.w*3, 0),
+            margin: EdgeInsets.fromLTRB(0, 47.w*3, 65.w*3, 0),
             padding: EdgeInsets.fromLTRB(12.w*3, 0, 12.w*3, 0),
             decoration: BoxDecoration(
               color: HhColors.whiteColor,
@@ -155,7 +155,7 @@ class DeviceListPage extends StatelessWidget {
               Get.to(() => ScanPage(), binding: ScanBinding());
             },
             child: Container(
-              margin: EdgeInsets.fromLTRB(0, 43.w * 3, 15.w * 3, 0),
+              margin: EdgeInsets.fromLTRB(0, 47.w * 3, 15.w * 3, 0),
               color: HhColors.trans,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -176,7 +176,7 @@ class DeviceListPage extends StatelessWidget {
 
         ///菜单
         Container(
-          margin: EdgeInsets.fromLTRB(14.w*3, 95.w*3, 14.w*3, 20.w*3),
+          margin: EdgeInsets.fromLTRB(14.w*3, 100.w*3, 14.w*3, 20.w*3),
           decoration: BoxDecoration(
             color: HhColors.whiteColor,
             borderRadius: BorderRadius.circular(8.w*3)

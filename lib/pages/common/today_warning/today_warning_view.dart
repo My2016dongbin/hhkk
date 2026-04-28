@@ -67,7 +67,7 @@ class TodayWarningPage extends StatelessWidget {
             Get.back();
           },
           child: Container(
-            margin: EdgeInsets.only(top: 30.w*3),
+            margin: EdgeInsets.only(top: 35.w*3),
             padding: EdgeInsets.all(20.w*3),
             color: HhColors.trans,
             child: Row(
@@ -96,7 +96,7 @@ class TodayWarningPage extends StatelessWidget {
           child: Container(
             height: 42.w*3,
             width: 0.45.sw,
-            margin: EdgeInsets.fromLTRB(0, 42.w*3, 15.w*3, 0),
+            margin: EdgeInsets.fromLTRB(0, 47.w*3, 15.w*3, 0),
             padding: EdgeInsets.fromLTRB(12.w*3, 0, 12.w*3, 0),
             decoration: BoxDecoration(
               color: HhColors.whiteColor,
