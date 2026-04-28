@@ -106,12 +106,12 @@ class CompanyLoginPage extends StatelessWidget {
                           hintStyle: TextStyle(
                               color: HhColors.grayCCTextColor,
                               fontSize: 16.sp*3,
-                              fontWeight: FontWeight.w200),
+                              fontWeight: FontWeight.w300),
                         ),
                         style: TextStyle(
                             color: HhColors.textBlackColor,
                             fontSize: 16.sp*3,
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.w400),
                         onChanged: (s) {
                           logic.accountStatus.value = s.isNotEmpty;
                         },
@@ -169,12 +169,12 @@ class CompanyLoginPage extends StatelessWidget {
                                 hintStyle: TextStyle(
                                     color: HhColors.grayCCTextColor,
                                     fontSize: 16.sp*3,
-                                    fontWeight: FontWeight.w200),
+                                    fontWeight: FontWeight.w300),
                               ),
                               style: TextStyle(
                                   color: HhColors.textBlackColor,
                                   fontSize: 16.sp*3,
-                                  fontWeight: FontWeight.w300),
+                                  fontWeight: FontWeight.w400),
                               onChanged: (s) {
                                 logic.passwordStatus.value = s.isNotEmpty;
                               },

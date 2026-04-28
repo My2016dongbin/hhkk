@@ -26,6 +26,7 @@ import 'package:iot/utils/HhColors.dart';
 import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/SPKeys.dart';
 import 'package:iot/widgets/pop_menu.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'video_controller.dart';
@@ -1336,17 +1337,18 @@ class _TreeDeviceWidgetState extends State<TreeDeviceWidget> {
                 SizedBox(width: 5.w*3),
 
                 //节点
-                Text(
-                  widget.device["name"] ?? "未命名设备",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: HhColors.blackTextColor,
-                    fontSize: 14.sp*3,
-                    fontWeight: FontWeight.w400,
+                Expanded(
+                  child: Text(
+                    widget.device["name"] ?? "未命名设备",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: HhColors.blackTextColor,
+                      fontSize: 14.sp*3,
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
                 ),
-                const Spacer()
               ],
             ),
           ),
