@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -204,7 +205,7 @@ class _TopAlarmNotificationOverlayState
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(12.w * 3, 8.w * 3, 12.w * 3, 0),
+          padding: EdgeInsets.fromLTRB(12.w * 3, Platform.isAndroid?8.w * 3:0, 12.w * 3, 0),
           child: SlideTransition(
             position: _offsetAnimation,
             child: FadeTransition(

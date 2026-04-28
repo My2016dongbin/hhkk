@@ -99,7 +99,8 @@ class LiGanDeviceDetailController extends GetxController {
   late StreamSubscription? deviceSubscription;
   late StreamSubscription? recordSubscription;
   late StreamSubscription? chatCloseSubscription;
-  late TransformationController transformationController = TransformationController();
+  late TransformationController transformationController =
+      TransformationController();
   late ScreenshotController screenshotController = ScreenshotController();
   late ScreenRecorderController recordController = ScreenRecorderController(
     pixelRatio: 1,
@@ -108,17 +109,17 @@ class LiGanDeviceDetailController extends GetxController {
   late dynamic item = {};
   late List<dynamic> typeList = [
     {
-      "label":"类型",
-      "value":null,
+      "label": "类型",
+      "value": null,
     },
   ];
   final Rx<int> weatherIndex = 0.obs;
   final RxList<dynamic> weatherList = [].obs;
   final Rx<dynamic> weatherModel = Rx<dynamic>({});
   late WebViewController webController = WebViewController()
-    ..setBackgroundColor(HhColors.trans)..runJavaScript(
-        "document.documentElement.style.overflow = 'hidden';"
-            "document.body.style.overflow = 'hidden';");
+    ..setBackgroundColor(HhColors.trans)
+    ..runJavaScript("document.documentElement.style.overflow = 'hidden';"
+        "document.body.style.overflow = 'hidden';");
   late String url = "";
 
   @override
@@ -135,23 +136,21 @@ class LiGanDeviceDetailController extends GetxController {
       getNowWeatherByDeviceNo();
       get7daysWeatherByDeviceNo();
     });
-    moveSubscription =
-        EventBusUtil.getInstance().on<Move>().listen((event) {
-          int time = DateTime.now().millisecondsSinceEpoch;
-          if (time - controlTime > 1000 || event.action==1) {
-            controlTime = time;
-            if(event.code.isNotEmpty){
-              command = event.code;
-            }
-            controlPost(event.action);
-          }
+    moveSubscription = EventBusUtil.getInstance().on<Move>().listen((event) {
+      int time = DateTime.now().millisecondsSinceEpoch;
+      if (time - controlTime > 1000 || event.action == 1) {
+        controlTime = time;
+        if (event.code.isNotEmpty) {
+          command = event.code;
+        }
+        controlPost(event.action);
+      }
     });
-    scaleSubscription =
-        EventBusUtil.getInstance().on<Scale>().listen((event) {
-          HhLog.d("Scale ${event.scale},${event.dx},${event.dy}");
-          scale.value = event.scale;
-          dx.value = event.dx;
-          dy.value = event.dy;
+    scaleSubscription = EventBusUtil.getInstance().on<Scale>().listen((event) {
+      HhLog.d("Scale ${event.scale},${event.dx},${event.dy}");
+      scale.value = event.scale;
+      dx.value = event.dx;
+      dy.value = event.dy;
     });
     deviceSubscription =
         EventBusUtil.getInstance().on<DeviceInfo>().listen((event) {
@@ -161,11 +160,11 @@ class LiGanDeviceDetailController extends GetxController {
     });
     recordSubscription =
         EventBusUtil.getInstance().on<Record>().listen((event) {
-          recordTag2.value = true;
+      recordTag2.value = true;
     });
     chatCloseSubscription =
         EventBusUtil.getInstance().on<ChatClose>().listen((event) {
-          chatClose();
+      chatClose();
     });
 
     ///TODO 测试缓存视频流截图
@@ -185,14 +184,14 @@ class LiGanDeviceDetailController extends GetxController {
     recordSubscription?.cancel();
     chatCloseSubscription?.cancel();
     player.release();
-    try{
+    try {
       manager.dispose();
-    }catch(e){
+    } catch (e) {
       //
     }
-    try{
+    try {
       stopRecordFFMPEG();
-    }catch(e){
+    } catch (e) {
       //
     }
     super.onClose();
@@ -214,12 +213,10 @@ class LiGanDeviceDetailController extends GetxController {
       // 保存图片到相册
       final result = await ImageGallerySaver.saveImage(value!, quality: 100);
       if (result != null && result['isSuccess']) {
-        EventBusUtil.getInstance().fire(HhToast(title: '拍照已保存至相册',type: 0));
+        EventBusUtil.getInstance().fire(HhToast(title: '拍照已保存至相册', type: 0));
       } else {
         EventBusUtil.getInstance().fire(HhToast(title: '保存图片失败'));
       }
-
-
     }).catchError((onError) {
       HhLog.d("onError$onError");
       EventBusUtil.getInstance().fire(HhToast(title: '拍照失败请重试'));
@@ -230,16 +227,15 @@ class LiGanDeviceDetailController extends GetxController {
     screenshotController.capture().then((value) async {
       // 将图片保存到缓存目录
       final tempDir = await getApplicationCacheDirectory();
-      final filePath =
-          '${tempDir.path}/catch_$deviceNo.png';
+      final filePath = '${tempDir.path}/catch_$deviceNo.png';
       final file = File(filePath);
-      try{
+      try {
         File a = await file.writeAsBytes(value!);
         HhLog.e("saveCatchImage  ----- $value");
         HhLog.e("saveCatchImage ${file.lengthSync()}");
         HhLog.e("saveCatchImage $a");
         EventBusUtil.getInstance().fire(CatchRefresh());
-      }catch(e){
+      } catch (e) {
         HhLog.e("saveCatchImage $e");
       }
     }).catchError((onError) {
@@ -248,13 +244,13 @@ class LiGanDeviceDetailController extends GetxController {
   }
 
   void runRecordTimer() {
-    Future.delayed(const Duration(seconds: 1),(){
+    Future.delayed(const Duration(seconds: 1), () {
       videoSecond.value++;
-      if(videoSecond.value == 60){
+      if (videoSecond.value == 60) {
         videoSecond.value = 0;
         videoMinute.value++;
       }
-      if(videoTag.value){
+      if (videoTag.value) {
         runRecordTimer();
       }
     });
@@ -285,26 +281,27 @@ class LiGanDeviceDetailController extends GetxController {
     Uint8List audioBytes = Uint8List.fromList(exportGif!);
     // final result = await ImageGallerySaver.saveImage(audioBytes, quality: 100);
     final tempDir = await getDownloadsDirectory();
-    final filePath = '${tempDir!.path}/video_${DateTime.now().millisecondsSinceEpoch}.gif';
+    final filePath =
+        '${tempDir!.path}/video_${DateTime.now().millisecondsSinceEpoch}.gif';
     final file = File(filePath);
     File a = await file.writeAsBytes(exportGif);
     final result = await ImageGallerySaver.saveFile(filePath);
     if (result != null && result['isSuccess']) {
-      EventBusUtil.getInstance().fire(HhToast(title: '录像已保存至相册',type: 0));
+      EventBusUtil.getInstance().fire(HhToast(title: '录像已保存至相册', type: 0));
     } else {
       EventBusUtil.getInstance().fire(HhToast(title: '保存录像失败'));
     }
   }
 
   Future<void> startRecordFFMPEG(String url) async {
-    // UI/计时
-    recordController.start();
+    if (Platform.isAndroid) {
+      recordController.start();
+    }
     videoSecond.value = 0;
     videoMinute.value = 0;
     runRecordTimer();
 
-    // 建议先用应用可写目录，并确保目录存在
-    final dir = await getExternalStorageDirectory();
+    final Directory? dir = await _getRecordBaseDirectory();
     if (dir == null) {
       EventBusUtil.getInstance().fire(HhToast(title: '无法获取存储目录', type: 0));
       videoTag.value = false;
@@ -319,20 +316,14 @@ class LiGanDeviceDetailController extends GetxController {
     final filePath =
         '${recordDir.path}/video_${DateTime.now().millisecondsSinceEpoch}.mp4';
 
-    // 如果你的流本身没有音频，去掉音频参数更稳
-    final cmd = '-y '
-        '-rw_timeout 5000000 '
-        '-i "$url" '
-        '-c:v libx264 -preset ultrafast -tune zerolatency '
-        '-an '
-        '"$filePath"';
+    final cmd = _buildRecordCommand(url, filePath);
 
     HhLog.d("FFmpeg cmd: $cmd");
     HhLog.d("record filePath: $filePath");
 
     FFmpegKit.executeAsync(
       cmd,
-          (session) async {
+      (session) async {
         final rc = await session.getReturnCode();
         final logs = await session.getAllLogsAsString();
 
@@ -359,31 +350,13 @@ class LiGanDeviceDetailController extends GetxController {
             return;
           }
 
-          final result = await ImageGallerySaver.saveFile(filePath);
-          HhLog.d('saveFile result=$result');
-
-          if (result != null && result['isSuccess'] == true) {
-            EventBusUtil.getInstance()
-                .fire(HhToast(title: '录像已保存至相册', type: 0));
-          } else {
-            EventBusUtil.getInstance()
-                .fire(HhToast(title: '保存录像失败', type: 0));
-          }
+          await _saveRecordedVideoToGallery(filePath);
         } else {
           // 用户停止 / 取消
           if (rc?.getValue() == 255) {
             // 如果取消时文件已经存在且不为空，也允许保存
             if (videoSecond.value >= 5 && exists && length > 0) {
-              final result = await ImageGallerySaver.saveFile(filePath);
-              HhLog.d('cancel saveFile result=$result');
-
-              if (result != null && result['isSuccess'] == true) {
-                EventBusUtil.getInstance()
-                    .fire(HhToast(title: '录像已保存至相册', type: 0));
-              } else {
-                EventBusUtil.getInstance()
-                    .fire(HhToast(title: '保存录像失败', type: 0));
-              }
+              await _saveRecordedVideoToGallery(filePath);
             } else {
               EventBusUtil.getInstance()
                   .fire(HhToast(title: '录像时长太短请重新录制', type: 0));
@@ -398,8 +371,87 @@ class LiGanDeviceDetailController extends GetxController {
   }
 
   void stopRecordFFMPEG() {
-    recordController.stop();
+    if (Platform.isAndroid) {
+      recordController.stop();
+    }
     FFmpegKit.cancel();
+  }
+
+  Future<Directory?> _getRecordBaseDirectory() async {
+    if (Platform.isIOS) {
+      return getApplicationDocumentsDirectory();
+    }
+    return getExternalStorageDirectory();
+  }
+
+  String _buildRecordCommand(String inputUrl, String filePath) {
+    final bufferArgs =
+        Platform.isIOS ? '-timeout 5000000 ' : '-rw_timeout 5000000 ';
+    final transportArgs =
+        inputUrl.startsWith('rtsp://') ? '-rtsp_transport tcp ' : '';
+    if (Platform.isIOS) {
+      return '-y '
+          '$transportArgs'
+          '$bufferArgs'
+          '-i "$inputUrl" '
+          '-map 0:v:0 '
+          '-c copy '
+          '-an '
+          '"$filePath"';
+    }
+    return '-y '
+        '$transportArgs'
+        '$bufferArgs'
+        '-i "$inputUrl" '
+        '-c:v libx264 -preset ultrafast -tune zerolatency '
+        '-an '
+        '"$filePath"';
+  }
+
+  Future<void> _saveRecordedVideoToGallery(String filePath) async {
+    final hasPermission = await _ensureGallerySavePermission();
+    if (!hasPermission) {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: '请先开启相册权限后再保存录像', type: 0));
+      return;
+    }
+
+    final result = await ImageGallerySaver.saveFile(filePath);
+    HhLog.d('saveFile result=$result path=$filePath');
+
+    if (result != null && result['isSuccess'] == true) {
+      EventBusUtil.getInstance().fire(HhToast(title: '录像已保存至相册', type: 0));
+    } else {
+      EventBusUtil.getInstance().fire(HhToast(title: '保存录像失败', type: 0));
+    }
+  }
+
+  Future<bool> _ensureGallerySavePermission() async {
+    if (Platform.isIOS) {
+      PermissionStatus status = await Permission.photosAddOnly.status;
+      if (!status.isGranted && !status.isLimited) {
+        status = await Permission.photosAddOnly.request();
+      }
+      return status.isGranted || status.isLimited;
+    }
+
+    if (Platform.isAndroid) {
+      PermissionStatus status = await Permission.photos.status;
+      if (!status.isGranted) {
+        status = await Permission.photos.request();
+      }
+      if (status.isGranted) {
+        return true;
+      }
+
+      status = await Permission.storage.status;
+      if (!status.isGranted) {
+        status = await Permission.storage.request();
+      }
+      return status.isGranted;
+    }
+
+    return true;
   }
 
   void fetchPageDevice(int pageKey) {
@@ -506,13 +558,13 @@ class LiGanDeviceDetailController extends GetxController {
             // 播放成功开始
             HhLog.d('Playback started successfully ${player.state}');
             //截图并保存
-            Future.delayed(const Duration(milliseconds: 3000),(){
-              if(Get.isRegistered<LiGanDeviceDetailController>()){
+            Future.delayed(const Duration(milliseconds: 3000), () {
+              if (Get.isRegistered<LiGanDeviceDetailController>()) {
                 saveCatchImage();
               }
             });
-            Future.delayed(const Duration(milliseconds: 10000),(){
-              if(Get.isRegistered<LiGanDeviceDetailController>()){
+            Future.delayed(const Duration(milliseconds: 10000), () {
+              if (Get.isRegistered<LiGanDeviceDetailController>()) {
                 saveCatchImage();
               }
             });
@@ -525,7 +577,6 @@ class LiGanDeviceDetailController extends GetxController {
         Future.delayed(const Duration(seconds: 1), () {
           playTag.value = true;
         });
-
 
         EventBusUtil.getInstance().fire(HhLoading(show: false));
       } catch (e) {
@@ -554,7 +605,8 @@ class LiGanDeviceDetailController extends GetxController {
       name.value = CommonUtils().parseNull(result["data"]["name"] ?? '', "");
       productName.value = result["data"]["productName"] ?? '';
       functionItem.value = item['functionItem'];
-      offlineTag.value = ("${item["status"]}"=="false" || "${item["status"]}"=="0");
+      offlineTag.value =
+          ("${item["status"]}" == "false" || "${item["status"]}" == "0");
     } else {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
@@ -571,10 +623,10 @@ class LiGanDeviceDetailController extends GetxController {
     HhLog.d("getDataInfo -- $map");
     HhLog.d("getDataInfo -- $result");
     if (result["code"] == 0 && result["data"] != null) {
-      fireLevel.value = result["data"]["fireLevel"]??"";
-      energyQuantity.value = result["data"]["energyQuantity"]??"";
-      energyConsumption.value = result["data"]["energyConsumption"]??"";
-      getDataPage(status:result["data"]["status"]);
+      fireLevel.value = result["data"]["fireLevel"] ?? "";
+      energyQuantity.value = result["data"]["energyQuantity"] ?? "";
+      energyConsumption.value = result["data"]["energyConsumption"] ?? "";
+      getDataPage(status: result["data"]["status"]);
     } else {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
@@ -594,21 +646,21 @@ class LiGanDeviceDetailController extends GetxController {
     HhLog.d("energyPage -- $map");
     HhLog.d("energyPage -- $result");
     if (result["code"] == 0 && result["data"] != null) {
-      try{
-        if(result["data"]["list"]!=null){
+      try {
+        if (result["data"]["list"] != null) {
           energyModel = result["data"]["list"][0];
           dataStatus.value = false;
           dataStatus.value = true;
         }
-      }catch(e){
+      } catch (e) {
         //
-        if(dataPageNum==1){
-          if("$status"=="1" || "$status"=="true"){
+        if (dataPageNum == 1) {
+          if ("$status" == "1" || "$status" == "true") {
             EventBusUtil.getInstance().fire(HhToast(title: "数据未上传请稍后再试"));
-          }else{
+          } else {
             EventBusUtil.getInstance().fire(HhToast(title: "设备已离线"));
           }
-        }else{
+        } else {
           dataPageNum--;
           EventBusUtil.getInstance().fire(HhToast(title: "已是最后一条数据"));
         }
@@ -662,9 +714,9 @@ class LiGanDeviceDetailController extends GetxController {
   }
 
   String parseType(type) {
-    for(int i = 0;i < typeList.length;i++){
+    for (int i = 0; i < typeList.length; i++) {
       dynamic model = typeList[i];
-      if(model["value"] == type){
+      if (model["value"] == type) {
         return model["label"];
       }
     }
@@ -788,7 +840,6 @@ class LiGanDeviceDetailController extends GetxController {
     }
   }
 
-
   Future<void> initData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     endpoint = prefs.getString(SPKeys().endpoint);
@@ -801,11 +852,11 @@ class LiGanDeviceDetailController extends GetxController {
     map['label'] = "";
     map['dictType'] = "alarm_type";
     var result = await HhHttp()
-        .request(RequestUtils.alarmType, method: DioMethod.get,params: map);
+        .request(RequestUtils.alarmType, method: DioMethod.get, params: map);
     HhLog.d("getWarnType --  $result");
     if (result["code"] == 0) {
       dynamic data = result["data"];
-      if(data!=null){
+      if (data != null) {
         typeList.addAll(data["list"]);
       }
     } else {
@@ -815,13 +866,14 @@ class LiGanDeviceDetailController extends GetxController {
   }
 
   Future<void> getLocationByDeviceNo() async {
-    weatherModel.value["time"] = CommonUtils().parseLongTime("${DateTime.now().millisecondsSinceEpoch}");
+    weatherModel.value["time"] =
+        CommonUtils().parseLongTime("${DateTime.now().millisecondsSinceEpoch}");
     Map<String, dynamic> map = {};
     map['deviceNo'] = deviceNo;
-    var result = await HhHttp()
-        .request(RequestUtils.getLocationByDeviceNo, method: DioMethod.get,params: map);
+    var result = await HhHttp().request(RequestUtils.getLocationByDeviceNo,
+        method: DioMethod.get, params: map);
     HhLog.d("getLocationByDeviceNo --  $result");
-    if (result["code"] == 0 && result["data"]!=null) {
+    if (result["code"] == 0 && result["data"] != null) {
       weatherModel.value["adm2"] = result["data"]["adm2"];
       weatherModel.value["adm1"] = result["data"]["adm1"];
       weatherModel.value["country"] = result["data"]["country"];
@@ -830,13 +882,16 @@ class LiGanDeviceDetailController extends GetxController {
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> getNowWeatherByDeviceNo() async {
     Map<String, dynamic> map = {};
     map['deviceNo'] = deviceNo;
-    var result = await HhHttp()
-        .request(RequestUtils.getNowWeatherByDeviceNo, method: DioMethod.get,params: map);
+    var result = await HhHttp().request(RequestUtils.getNowWeatherByDeviceNo,
+        method: DioMethod.get, params: map);
     HhLog.d("getNowWeatherByDeviceNo --  $result");
-    if (result["code"] == 0 && result["data"]!=null && result["data"]["now"]!=null) {
+    if (result["code"] == 0 &&
+        result["data"] != null &&
+        result["data"]["now"] != null) {
       dynamic now = result["data"]["now"];
       weatherModel.value["temp"] = now["temp"];
       weatherModel.value["text"] = now["text"];
@@ -848,12 +903,14 @@ class LiGanDeviceDetailController extends GetxController {
       weatherModel.value["precip"] = now["precip"];
 
       String weatherUrl = CommonUtils().getHeFengIcon(
-          (now['text'].contains("晴") ? "FFB615" : "368EFF"), now['icon'], "260");
+          (now['text'].contains("晴") ? "FFB615" : "368EFF"),
+          now['icon'],
+          "260");
       webController.setJavaScriptMode(JavaScriptMode.unrestricted);
       webController.loadRequest(Uri.parse(weatherUrl));
       webController.enableZoom(true);
-      webController.runJavaScript(
-          "document.documentElement.style.overflow = 'hidden';"
+      webController
+          .runJavaScript("document.documentElement.style.overflow = 'hidden';"
               "document.body.style.overflow = 'hidden';");
       webController.setBackgroundColor(HhColors.trans);
     } else {
@@ -861,31 +918,37 @@ class LiGanDeviceDetailController extends GetxController {
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> get7daysWeatherByDeviceNo() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     Map<String, dynamic> map = {};
     map['deviceNo'] = deviceNo;
-    var result = await HhHttp()
-        .request(RequestUtils.get7daysWeatherByDeviceNo, method: DioMethod.get,params: map);
+    var result = await HhHttp().request(RequestUtils.get7daysWeatherByDeviceNo,
+        method: DioMethod.get, params: map);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("get7daysWeatherByDeviceNo --  $result");
-    if (result["code"] == 0 && result["data"]!=null && result["data"]["daily"]!=null) {
+    if (result["code"] == 0 &&
+        result["data"] != null &&
+        result["data"]["daily"] != null) {
       weatherList.value = result["data"]["daily"];
     } else {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
+
   Future<void> getHistoricalWeatherByDeviceNo() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     Map<String, dynamic> map = {};
     map['deviceNo'] = deviceNo;
     map['day'] = 7;
-    var result = await HhHttp()
-        .request(RequestUtils.getHistoricalWeatherByDeviceNo, method: DioMethod.get,params: map);
+    var result = await HhHttp().request(
+        RequestUtils.getHistoricalWeatherByDeviceNo,
+        method: DioMethod.get,
+        params: map);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("getHistoricalWeatherByDeviceNo --  $result");
-    if (result["code"] == 0 && result["data"]!=null) {
+    if (result["code"] == 0 && result["data"] != null) {
       weatherList.value = result["data"];
     } else {
       EventBusUtil.getInstance()
@@ -899,31 +962,31 @@ class LiGanDeviceDetailController extends GetxController {
 
   parseWind(wind) {
     ///风向(0-360)，正北方向为 0°顺时针增加度数，正东方为 90°
-    if(wind==null){
+    if (wind == null) {
       return "";
     }
-    if(wind == 0){
+    if (wind == 0) {
       return "北";
     }
-    if(wind == 90){
+    if (wind == 90) {
       return "东";
     }
-    if(wind == 180){
+    if (wind == 180) {
       return "男";
     }
-    if(wind == 270){
+    if (wind == 270) {
       return "西";
     }
-    if(wind > 0 && wind < 90){
+    if (wind > 0 && wind < 90) {
       return "东北";
     }
-    if(wind > 90 && wind < 180){
+    if (wind > 90 && wind < 180) {
       return "东南";
     }
-    if(wind > 180 && wind < 270){
+    if (wind > 180 && wind < 270) {
       return "西南";
     }
-    if(wind > 270 && wind < 360){
+    if (wind > 270 && wind < 360) {
       return "西北";
     }
   }
