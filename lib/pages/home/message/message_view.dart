@@ -666,23 +666,28 @@ class MessagePage extends StatelessWidget {
                     height: 0.36.sw,
                     width: 0.44.sw,),
                   itemBuilder: (context, item, index) {
-                    if(item["showDate"]==null){
-                      if(logic.dateListLeft.contains(CommonUtils().parseLongTimeYearDay('${item['alarmTimestamp']}'))){
-                        item["showDate"] = 0;
-                      }else{
-                        item["showDate"] = 1;
-                        logic.dateListLeft.add(CommonUtils().parseLongTimeYearDay('${item['alarmTimestamp']}'));
-                      }
-                    }
+                    final itemList = logic.deviceController.itemList;
+                    final currentDate = CommonUtils()
+                        .parseLongTimeYearDay('${item['alarmTimestamp']}');
+                    final previousItem = index > 0
+                        ? itemList != null
+                            ? itemList[index - 1]
+                            : null
+                        : null;
+                    final previousDate = previousItem == null
+                        ? null
+                        : CommonUtils().parseLongTimeYearDay(
+                            '${previousItem['alarmTimestamp']}');
+                    final showDate = index == 0 || currentDate != previousDate;
                     return Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        item["showDate"]==1?Container(
+                        showDate ? Container(
                           margin: EdgeInsets.fromLTRB(14.w*3, 15.w, 14.w*3, 0),
                           child: Row(
                             children: [
                               Text(
-                                today == CommonUtils().parseLongTimeYearDay('${item['alarmTimestamp']}')?'今天':CommonUtils().parseLongTimeDay('${item['alarmTimestamp']}'),
+                                today == currentDate?'今天':CommonUtils().parseLongTimeDay('${item['alarmTimestamp']}'),
                                 style: TextStyle(
                                     color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
                               ),
