@@ -176,7 +176,7 @@ class MyPage extends StatelessWidget {
                     ],
                   ),
 
-                  ///设备&&分组
+                  ///设备&&空间
                   Container(
                     margin: EdgeInsets.fromLTRB(14.w*3, 24.w*3, 14.w*3, 0),
                     child: Row(
@@ -289,7 +289,7 @@ class MyPage extends StatelessWidget {
                                       child: Container(
                                         margin: EdgeInsets.fromLTRB(82.w*3, 50.w*3, 0.w, 0.w),
                                         child: Text(
-                                          "分组管理",
+                                          "空间管理",
                                           style: TextStyle(
                                               color: HhColors.gray9TextColor,
                                               fontSize: 13.sp*3),

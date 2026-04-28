@@ -84,7 +84,7 @@ class ScanPage extends StatelessWidget {
                       ),
                       /*CustomPaint(
                         painter: ParticlePainter(),
-                        child: Container(), // 需要一个 child 以占据整个分组
+                        child: Container(), // 需要一个 child 以占据整个空间
                       ),*/
                       SizedBox(
                         width: 294.w*3,

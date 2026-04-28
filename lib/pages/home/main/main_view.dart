@@ -259,7 +259,7 @@ class MainPage extends StatelessWidget {
                               ),
                               SizedBox(width: 5.w * 3),
                               Text(
-                                '添加分组',
+                                '添加空间',
                                 style: TextStyle(
                                     color: HhColors.blackColor,
                                     fontSize: 14.sp * 3,

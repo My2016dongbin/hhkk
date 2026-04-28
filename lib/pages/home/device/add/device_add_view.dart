@@ -271,7 +271,7 @@ class DeviceAddPage extends StatelessWidget {
                                 Container(
                                   margin: EdgeInsets.fromLTRB(20.w*3, 10.w*3, 0, 0),
                                   child: Text(
-                                    "请选择设备分组",
+                                    "请选择设备空间",
                                     style: TextStyle(
                                       color: HhColors.blackTextColor,
                                       fontSize: 15.sp*3,),
@@ -309,7 +309,7 @@ class DeviceAddPage extends StatelessWidget {
                             return;
                           }
                           if(logic.spaceId == '' || logic.spaceId == 'null'){
-                            EventBusUtil.getInstance().fire(HhToast(title: '请选择设备分组'));
+                            EventBusUtil.getInstance().fire(HhToast(title: '请选择设备空间'));
                             return;
                           }
 
@@ -367,7 +367,7 @@ class DeviceAddPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          /// 分组列表
+          /// 空间列表
           PagedGridView<int, dynamic>(
             padding: const EdgeInsets.all(0),
             pagingController: logic.deviceController,
@@ -421,7 +421,7 @@ class DeviceAddPage extends StatelessWidget {
             ),
           ),
 
-          /// 新增分组
+          /// 新增空间
           BouncingWidget(
             duration: const Duration(milliseconds: 100),
             scaleFactor: 1.2,
@@ -449,7 +449,7 @@ class DeviceAddPage extends StatelessWidget {
                   ),
                   SizedBox(width: 6.w),
                   Text(
-                    "新增分组",
+                    "新增空间",
                     style: TextStyle(
                       color: HhColors.gray4TextColor,
                       fontSize: 15.sp * 3,

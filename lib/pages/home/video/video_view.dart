@@ -503,7 +503,7 @@ class VideoPage extends StatelessWidget {
     return logic.containStatus.value?Expanded(
       child: Column(
         children: [
-          ///分组列表滚动
+          ///空间列表滚动
           SizedBox(
             height: 45.w*3,
             child: Stack(
@@ -544,7 +544,7 @@ class VideoPage extends StatelessWidget {
                             fit: BoxFit.fill,
                           ),
                           SizedBox(height: 2.w*3,),
-                          Text('分组设置', style: TextStyle(color: HhColors.textBlackColor,fontSize: 10.sp*3,fontWeight: FontWeight.w200),),
+                          Text('空间设置', style: TextStyle(color: HhColors.textBlackColor,fontSize: 10.sp*3,fontWeight: FontWeight.w200),),
                         ],
                       ),
                     ),

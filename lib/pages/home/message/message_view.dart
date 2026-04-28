@@ -444,7 +444,7 @@ class MessagePage extends StatelessWidget {
                         ],
                       )
                   ),
-                  ///分组
+                  ///空间
                   InkWell(
                     onTap: (){
                       logic.isChooseType.value = false;
@@ -537,7 +537,7 @@ class MessagePage extends StatelessWidget {
               ),
             ),
           ),
-          //分组
+          //空间
           logic.isChooseSpace.value?Container(
             width: 1.sw,
             decoration: BoxDecoration(

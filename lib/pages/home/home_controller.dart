@@ -414,7 +414,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     HhLog.d("handleShare -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       EventBusUtil.getInstance().fire(HhToast(
-          title: status == 2 ? '操作成功' : '“$name”\n已共享至“默认分组”',
+          title: status == 2 ? '操作成功' : '“$name”\n已共享至“默认空间”',
           type: 0,
           color: 0));
       Get.back();

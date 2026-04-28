@@ -101,7 +101,7 @@ class VideoController extends GetxController {
         });
     //天气信息
     getWeather();
-    //获取分组列表
+    //获取空间列表
     getSpaceList(1,true);
     //获取设备树
     getTreeDetail();
