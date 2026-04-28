@@ -54,6 +54,8 @@
 	<string>为了方便您使用头像上传功能需要访问您的相册，是否允许此App获取访问相册权限？</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>为了方便您的输入需要访问语音识别，是否允许此App获取语音识别权限？</string>
+	<key>NSContactsUsageDescription</key>
+    <string>为了方便您更新您的个人信息，是否允许打开通讯录权限？</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>

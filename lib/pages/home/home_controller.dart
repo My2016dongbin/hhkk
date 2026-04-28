@@ -431,9 +431,9 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       EventBusUtil.getInstance().fire(HhLoading(show: true, title: '正在检查更新…'));
     }
     Map<String, dynamic> map = {};
-    map['operatingSystem'] = Platform.isAndroid ? "HarmonyOS" : "IOS";
+    map['operatingSystem'] = "HarmonyOS";
     map['version'] = buildNumber.value;
-    map['type'] = "testCompany";
+    map['type'] = Platform.isAndroid ? "testCompany" : "personal";
     var result = await HhHttp()
         .request(RequestUtils.versionNew, method: DioMethod.get, params: map);
     if (info == true) {
