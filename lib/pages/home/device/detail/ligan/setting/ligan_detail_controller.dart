@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:audio_session/audio_session.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_sound/flutter_sound.dart';
@@ -106,6 +107,7 @@ class LiGanDetailController extends GetxController {
       getDeviceConfig();
       getVoiceUse();
       getVersion();
+      await _configureRecorderAudioSession();
       await _ensureRecorderOpened();
     });
     super.onInit();
@@ -118,6 +120,8 @@ class LiGanDetailController extends GetxController {
     } catch (e) {
       //
     }
+    _iosRecordingSubscription?.cancel();
+    _iosRecordingDataController?.close();
     super.onClose();
   }
 
@@ -666,14 +670,15 @@ class LiGanDetailController extends GetxController {
     // 给部分机型一点落盘时间，红米尤其需要
     await Future.delayed(const Duration(milliseconds: 800));
 
-    final String path = (_pcmPath ?? "").trim();
+    final String path = ((await _prepareUploadPcmPath()) ?? "").trim();
     if (path.isEmpty) {
       EventBusUtil.getInstance().fire(HhToast(title: "录音文件路径为空"));
       return;
     }
 
     final file = File(path);
-    if (!await file.exists()) {
+    final bool fileReady = await _waitForFileReady(file);
+    if (!fileReady) {
       EventBusUtil.getInstance().fire(HhToast(title: "录音文件不存在"));
       return;
     }
@@ -684,6 +689,7 @@ class LiGanDetailController extends GetxController {
       return;
     }
 
+    controller.text = "";
     CommonUtils().showCommonInputDialog(
       Get.context,
       "录音",
@@ -724,7 +730,13 @@ class LiGanDetailController extends GetxController {
   bool isRecording = false;
   bool _recordStarting = false;
   bool _recorderOpened = false;
+  DateTime? _recordStartedAt;
+  String? _recordFilePath;
   String? _pcmPath;
+  Codec _recordCodec = Codec.pcm16;
+  StreamController<Food>? _iosRecordingDataController;
+  StreamSubscription<Food>? _iosRecordingSubscription;
+  BytesBuilder? _iosRecordingBytesBuilder;
   Future<bool> recording() async {
     PermissionStatus status = await Permission.microphone.status;
 
@@ -735,26 +747,56 @@ class LiGanDetailController extends GetxController {
 
     if (status.isGranted) {
       try {
+        await _configureRecorderAudioSession();
         await _ensureRecorderOpened();
-        _pcmPath = await _getPCMPath();
+        _recordCodec = _getRecordCodec();
+        _recordStartedAt = DateTime.now();
+        _pcmPath = null;
+        _recordFilePath = null;
 
-        final file = File(_pcmPath!);
-        if (!await file.parent.exists()) {
-          await file.parent.create(recursive: true);
+        if (Platform.isIOS) {
+          _iosRecordingDataController?.close();
+          await _iosRecordingSubscription?.cancel();
+          _iosRecordingBytesBuilder = BytesBuilder(copy: false);
+          _iosRecordingDataController = StreamController<Food>();
+          _iosRecordingSubscription =
+              _iosRecordingDataController!.stream.listen(
+            (food) {
+              if (food is FoodData && food.data != null) {
+                _iosRecordingBytesBuilder?.add(food.data!);
+              }
+            },
+          );
+          await _recorder.startRecorder(
+            toStream: _iosRecordingDataController!.sink,
+            codec: Codec.pcm16,
+            sampleRate: 16000,
+            numChannels: 1,
+            bitRate: 16000 * 16,
+          );
+        } else {
+          _recordFilePath = await _getRecordFilePath();
+          final file = File(_recordFilePath!);
+          if (!await file.parent.exists()) {
+            await file.parent.create(recursive: true);
+          }
+
+          await _recorder.startRecorder(
+            toFile: _recordFilePath,
+            codec: _recordCodec,
+            sampleRate: 16000,
+            numChannels: 1,
+            bitRate: 16000 * 16,
+          );
         }
-
-        await _recorder.startRecorder(
-          toFile: _pcmPath,
-          codec: Codec.pcm16,
-          sampleRate: 16000,
-          numChannels: 1,
-          bitRate: 16000 * 16,
-        );
         isRecording = true;
         return true;
       } catch (e) {
         isRecording = false;
+        _recordStartedAt = null;
+        _recordFilePath = null;
         _pcmPath = null;
+        _iosRecordingBytesBuilder = null;
         HhLog.e("startRecorder error: $e");
         EventBusUtil.getInstance().fire(
           HhToast(title: "录音启动失败，请检查麦克风权限或是否被其他应用占用"),
@@ -795,17 +837,133 @@ class LiGanDetailController extends GetxController {
       return;
     }
     try {
-      await _recorder.stopRecorder();
+      final String? stopPath = await _recorder.stopRecorder();
+      if (stopPath != null &&
+          stopPath.trim().isNotEmpty &&
+          stopPath != 'Recorder is not open') {
+        _recordFilePath = stopPath.trim();
+      }
     } catch (e) {
       HhLog.e("stopRecorder error: $e");
     } finally {
       isRecording = false;
+      await _iosRecordingSubscription?.cancel();
+      _iosRecordingSubscription = null;
+      await _iosRecordingDataController?.close();
+      _iosRecordingDataController = null;
     }
   }
 
-  Future<String> _getPCMPath() async {
+  Future<String?> _prepareUploadPcmPath() async {
+    if (Platform.isIOS) {
+      final bytes = _iosRecordingBytesBuilder?.toBytes();
+      if (bytes == null || bytes.isEmpty) {
+        return null;
+      }
+      final dir = await getApplicationCacheDirectory();
+      final pcmPath =
+          '${dir.path}/recording_${DateTime.now().millisecondsSinceEpoch}.pcm';
+      await File(pcmPath).writeAsBytes(bytes, flush: true);
+      _pcmPath = pcmPath;
+      _iosRecordingBytesBuilder = null;
+      return _pcmPath;
+    }
+
+    _recordFilePath = await _resolveRecordFilePath();
+    if (Platform.isAndroid) {
+      _pcmPath = _recordFilePath;
+      return _pcmPath;
+    }
+
+    _pcmPath = _recordFilePath;
+    return _pcmPath;
+  }
+
+  Future<String?> _resolveRecordFilePath() async {
+    final String currentPath = (_recordFilePath ?? "").trim();
+    if (currentPath.isNotEmpty) {
+      return currentPath;
+    }
+    return _findLatestRecordFilePath();
+  }
+
+  Future<bool> _waitForFileReady(
+    File file, {
+    Duration timeout = const Duration(seconds: 4),
+    Duration interval = const Duration(milliseconds: 250),
+  }) async {
+    final DateTime deadline = DateTime.now().add(timeout);
+    while (DateTime.now().isBefore(deadline)) {
+      if (await file.exists()) {
+        return true;
+      }
+      await Future.delayed(interval);
+    }
+    return await file.exists();
+  }
+
+  Future<String?> _findLatestRecordFilePath() async {
+    try {
+      final List<Directory> directories = [
+        await getTemporaryDirectory(),
+        await getApplicationCacheDirectory(),
+        await getApplicationSupportDirectory(),
+        await getApplicationDocumentsDirectory(),
+      ];
+      final List<File> files = [];
+      for (final dir in directories) {
+        if (!await dir.exists()) {
+          continue;
+        }
+        final List<FileSystemEntity> entities = dir.listSync(recursive: true);
+        files.addAll(
+          entities.whereType<File>().where(_isPossibleRecordFile),
+        );
+      }
+      if (files.isEmpty) {
+        return null;
+      }
+      final DateTime? startedAt = _recordStartedAt;
+      final List<File> recentFiles = startedAt == null
+          ? files
+          : files.where((file) {
+              final modified = file.statSync().modified;
+              return !modified.isBefore(
+                startedAt.subtract(const Duration(seconds: 5)),
+              );
+            }).toList();
+      final List<File> candidateFiles =
+          recentFiles.isNotEmpty ? recentFiles : files;
+      candidateFiles.sort(
+          (a, b) => b.statSync().modified.compareTo(a.statSync().modified));
+      return candidateFiles.first.path;
+    } catch (e) {
+      HhLog.e("findLatestRecordFilePath error: $e");
+      return null;
+    }
+  }
+
+  bool _isPossibleRecordFile(File file) {
+    final path = file.path.toLowerCase();
+    final bool matchesExtension =
+        path.endsWith('.wav') || path.endsWith('.pcm');
+    if (!matchesExtension) {
+      return false;
+    }
+    return path.contains('record') ||
+        path.contains('sound') ||
+        path.contains('audio') ||
+        path.contains('taudio');
+  }
+
+  Codec _getRecordCodec() {
+    return Codec.pcm16;
+  }
+
+  Future<String> _getRecordFilePath() async {
+    final int timestamp = DateTime.now().millisecondsSinceEpoch;
     final dir = await getApplicationCacheDirectory();
-    return '${dir.path}/recording_${DateTime.now().millisecondsSinceEpoch}.pcm';
+    return '${dir.path}/recording_$timestamp.pcm';
   }
 
   Future<void> _ensureRecorderOpened() async {
@@ -820,6 +978,30 @@ class LiGanDetailController extends GetxController {
       HhLog.e("openRecorder error: $e");
       rethrow;
     }
+  }
+
+  Future<void> _configureRecorderAudioSession() async {
+    final session = await AudioSession.instance;
+    await session.configure(
+      AudioSessionConfiguration(
+        avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
+        avAudioSessionCategoryOptions:
+            AVAudioSessionCategoryOptions.allowBluetooth |
+                AVAudioSessionCategoryOptions.defaultToSpeaker,
+        avAudioSessionMode: AVAudioSessionMode.spokenAudio,
+        avAudioSessionRouteSharingPolicy:
+            AVAudioSessionRouteSharingPolicy.defaultPolicy,
+        avAudioSessionSetActiveOptions: AVAudioSessionSetActiveOptions.none,
+        androidAudioAttributes: const AndroidAudioAttributes(
+          contentType: AndroidAudioContentType.speech,
+          flags: AndroidAudioFlags.none,
+          usage: AndroidAudioUsage.voiceCommunication,
+        ),
+        androidAudioFocusGainType: AndroidAudioFocusGainType.gain,
+        androidWillPauseWhenDucked: true,
+      ),
+    );
+    await session.setActive(true);
   }
 
   void uploadFile(String filePath, String fileName) async {
