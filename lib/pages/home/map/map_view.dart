@@ -496,22 +496,70 @@ class MapPage extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.max,
           children: [
-            SizedBox(height: 12.w*3,),
+            SizedBox(
+              height: 12.w * 3,
+            ),
             Row(
               children: [
-                const Spacer(),
+                SizedBox(
+                  width: 20.w * 3,
+                ),
+                SizedBox(
+                    width: 45.w * 3,
+                    child: Text(
+                      '序号',
+                      style: TextStyle(
+                          color: HhColors.blackColor,
+                          fontSize: 14.sp * 3,
+                          fontWeight: FontWeight.w600),
+                    )),
+                SizedBox(
+                    width: 120.w * 3,
+                    child: Text(
+                      '设备名称',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: HhColors.blackColor,
+                          fontSize: 14.sp * 3,
+                          fontWeight: FontWeight.w600),
+                    )),
+                Expanded(
+                    child: Text(
+                      '经纬度',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          color: HhColors.blackColor,
+                          fontSize: 14.sp * 3,
+                          fontWeight: FontWeight.w600),
+                    )),
                 HhTap(
-                  onTapUp: (){
+                  onTapUp: () {
                     Get.back();
                   },
                   child: Container(
                       color: HhColors.trans,
-                      padding: EdgeInsets.all(10.w*3),
-                      child: Image.asset('assets/images/common/icon_up_x.png',width:12.w*3,height: 12.w*3,fit: BoxFit.fill,)
-                  ),
+                      padding: EdgeInsets.all(10.w * 3),
+                      margin: EdgeInsets.only(bottom: 5.w*3),
+                      child: Image.asset(
+                        'assets/images/common/icon_up_x.png',
+                        width: 12.w * 3,
+                        height: 12.w * 3,
+                        fit: BoxFit.fill,
+                      )),
                 ),
-                SizedBox(width: 15.w*3,),
+                SizedBox(
+                  width: 15.w * 3,
+                ),
               ],
+            ),
+            SizedBox(
+              height: 5.w * 3,
+            ),
+            CommonUtils.line(
+              margin: EdgeInsets.fromLTRB(15.w * 3, 0, 15.w * 3, 0),
+            ),
+            SizedBox(
+              height: 10.w * 3,
             ),
             Expanded(
               child: EasyRefresh(
@@ -561,10 +609,10 @@ class MapPage extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 15.w*3),
         child: Row(
           children: [
-            SizedBox(width: 20.w*3,),
+            SizedBox(width: 25.w*3,),
             SizedBox(width: 40.w*3,child: Text('${index+1}',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
             SizedBox(width: 125.w*3,child: Text(CommonUtils().parseNull('${item["name"]}', ""),textAlign:TextAlign.start,maxLines:1,overflow: TextOverflow.ellipsis,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
-            Expanded(child: Text("${CommonUtils().parseDoubleNumber(item["longitude"], 6)},${CommonUtils().parseDoubleNumber(item["latitude"], 6)}",textAlign:TextAlign.start,maxLines:1,overflow: TextOverflow.ellipsis,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
+            Expanded(child: Text("${CommonUtils().parseDoubleNumber("${item["longitude"]??""}", 6)},${CommonUtils().parseDoubleNumber("${item["latitude"]??""}", 6)}",textAlign:TextAlign.start,maxLines:1,overflow: TextOverflow.ellipsis,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
             SizedBox(width: 15.w*3,),
           ],
         ),

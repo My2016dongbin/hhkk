@@ -124,7 +124,7 @@ class MessageDetailController extends GetxController {
           anchor: const Offset(0.5, 1.0),
           position: latLng,
           infoWindowEnable: false,
-          icon: BitmapDescriptor.fromIconPath(("${fireInfo["status"]}"=="1" || "${fireInfo["status"]}"=="true")?'assets/images/common/ic_device_online2.png':'assets/images/common/ic_device_offline2.png'),
+          icon: BitmapDescriptor.fromIconPath(("${fireInfo["status"]}"=="1" || "${fireInfo["status"]}"=="true")?CommonUtils().parseOnlineIcon(fireInfo):CommonUtils().parseOfflineIcon(fireInfo)),
           onTap: (v){
             gdMapController.moveCamera(CameraUpdate.newLatLngZoom(latLng, 12));
             Get.to(

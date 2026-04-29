@@ -1479,7 +1479,7 @@ class MainPage extends StatelessWidget {
                   Row(
                     children: [
                       SizedBox(
-                        width: 15.w * 3,
+                        width: 20.w * 3,
                       ),
                       SizedBox(
                           width: 50.w * 3,
@@ -1516,6 +1516,7 @@ class MainPage extends StatelessWidget {
                         child: Container(
                             color: HhColors.trans,
                             padding: EdgeInsets.all(10.w * 3),
+                            margin: EdgeInsets.only(bottom: 5.w * 3),
                             child: Image.asset(
                               'assets/images/common/icon_up_x.png',
                               width: 12.w * 3,
@@ -1529,10 +1530,10 @@ class MainPage extends StatelessWidget {
                     ],
                   ),
                   SizedBox(
-                    height: 10.w * 3,
+                    height: 5.w * 3,
                   ),
                   CommonUtils.line(
-                    margin: EdgeInsets.fromLTRB(20.w * 3, 0, 20.w * 3, 0),
+                    margin: EdgeInsets.fromLTRB(15.w * 3, 0, 15.w * 3, 0),
                   ),
                   Expanded(
                     child: EasyRefresh(
@@ -1595,7 +1596,7 @@ class MainPage extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 15.w * 3,
+              width: 20.w * 3,
             ),
             SizedBox(
                 width: 50.w * 3,
@@ -1821,6 +1822,7 @@ class MainPage extends StatelessWidget {
                     fontWeight: FontWeight.w400),
               ),
             ),
+            SizedBox(width: 10.w*3,),
             HhTap(
               borderRadius: BorderRadius.circular(4.w * 3),
               onTapUp: () async {

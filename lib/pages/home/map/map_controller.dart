@@ -30,6 +30,8 @@ class MapController extends GetxController {
   late AMapController gdMapController;
   final RxSet<Marker> aMapMarkers = <Marker>{}.obs;
   late int pageNum = 1;
+  late int pageSize = 20;
+  late int totalPage = 0;
   final PagingController<int, dynamic> deviceController = PagingController(firstPageKey: 1);
   final ScrollController deviceScrollController = ScrollController();
   late EasyRefreshController deviceEasyController = EasyRefreshController();
@@ -100,7 +102,7 @@ class MapController extends GetxController {
             anchor: const Offset(0.5, 1.0),
             infoWindowEnable: false,
             position: latLng,
-            icon: BitmapDescriptor.fromIconPath("${model["status"]}"=="1"?'assets/images/common/ic_device_online2.png':'assets/images/common/ic_device_offline2.png'),
+            icon: BitmapDescriptor.fromIconPath("${model["status"]}"=="1"?CommonUtils().parseOnlineIcon(model):CommonUtils().parseOfflineIcon(model)),
             onTap: (v){
               gdMapController.moveCamera(CameraUpdate.newLatLngZoom(latLng, 16));
               deviceDetailDialog(model);
@@ -131,7 +133,7 @@ class MapController extends GetxController {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     Map<String, dynamic> map = {
       "pageNum":pageNum,
-      "pageSize":100,
+      "pageSize":pageSize,
       "status":null,
       "activeStatus":1,
     };
@@ -147,12 +149,23 @@ class MapController extends GetxController {
     HhLog.d("fetchPage -- total ${result['data']["total"]}");
     HhLog.d("fetchPage -- $result");
     deviceCount.value = "${result['data']["total"]??-1}";
+
+
+    totalPage = CommonUtils().parseTotalPage("${result["data"]["total"]}", pageSize);
+    HhLog.d("fetchPage -- totalPage $totalPage");
+
+
     if(result["data"]!=null && result["data"]["list"]!=null){
       List<dynamic> newItems = result["data"]["list"];
-      if (pageNum == 1) {
+      if(pageNum == 1){
         deviceController.itemList = [];
       }
-      deviceController.appendLastPage(newItems);
+      if(pageNum > totalPage){
+        deviceController.appendLastPage([]);
+        deviceEasyController.finishLoad(IndicatorResult.noMore,true);
+      }else{
+        deviceController.appendLastPage(newItems);
+      }
       updateMarker();
     }else{
       EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));

@@ -1532,6 +1532,50 @@ class CommonUtils {
     }
   }
 
+  parseOnlineIcon(item) {
+    if (item['productKey'] == '5MiTcinKdSasKdKQ') {
+      ///道闸-高清车牌识别一体机
+      return "assets/images/common/ic_device_online2.png";
+      // }else if (item['productKey'] == 'R45bbC4eBxm3555D'){//TODO 测试调试
+    } else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz') {
+      ///智能运维箱
+      return "assets/images/common/ic_device_online2.png";
+    } else if (item['productKey'] == CommonData.productKeyFireSmartPole) {
+      ///浩海智慧立杆
+      return "assets/images/common/marker_online_zhlg.png";
+    } else if (item['productKey'] == CommonData.productKeyFireRiskFactor) {
+      ///火险因子监测站
+      return "assets/images/common/marker_online_hxyz.png";
+    } else if (item['productKey'] == 'R45bbC4eBxm3555D') {
+      ///一体机
+      return "assets/images/common/ic_device_online2.png";
+    } else {
+      return "assets/images/common/ic_device_online2.png";
+    }
+  }
+
+  parseOfflineIcon(item) {
+    if (item['productKey'] == '5MiTcinKdSasKdKQ') {
+      ///道闸-高清车牌识别一体机
+      return "assets/images/common/ic_device_offline2.png";
+      // }else if (item['productKey'] == 'R45bbC4eBxm3555D'){//TODO 测试调试
+    } else if (item['productKey'] == 'Dhs5Kt8bbZaKrCCz') {
+      ///智能运维箱
+      return "assets/images/common/ic_device_offline2.png";
+    } else if (item['productKey'] == CommonData.productKeyFireSmartPole) {
+      ///浩海智慧立杆
+      return "assets/images/common/marker_offline_zhlg.png";
+    } else if (item['productKey'] == CommonData.productKeyFireRiskFactor) {
+      ///火险因子监测站
+      return "assets/images/common/marker_offline_hxyz.png";
+    } else if (item['productKey'] == 'R45bbC4eBxm3555D') {
+      ///一体机
+      return "assets/images/common/ic_device_offline2.png";
+    } else {
+      return "assets/images/common/ic_device_offline2.png";
+    }
+  }
+
   static line(
       {double? marginTop,
       double? marginBottom,

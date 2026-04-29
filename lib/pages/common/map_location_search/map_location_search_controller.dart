@@ -81,7 +81,7 @@ class MapLocationSearchController extends GetxController {
             anchor: const Offset(0.5, 1.0),
             infoWindowEnable: false,
             position: latLng,
-            icon: BitmapDescriptor.fromIconPath("${model["status"]}"=="1"?'assets/images/common/ic_device_online2.png':'assets/images/common/ic_device_offline2.png'),
+            icon: BitmapDescriptor.fromIconPath("${model["status"]}"=="1"?CommonUtils().parseOnlineIcon(model):CommonUtils().parseOfflineIcon(model)),
             onTap: (v){
               gdMapController.moveCamera(CameraUpdate.newLatLngZoom(latLng, 16));
               deviceDetailDialog(model);
