@@ -114,8 +114,23 @@ class _DefaultFijkPanelState extends State<_DefaultFijkPanel> {
   double _dx = 0.0; // 当前的水平偏移量
   double _dy = 0.0; // 当前的垂直偏移量
 
-  bool _isScaling = false;  // 用于区分是否正在缩放
+  bool _isScaling = false; // 用于区分是否正在缩放
   int scaleTime = 0;
+
+  String? _sanitizeException(String? exception) {
+    if (exception == null || exception.trim().isEmpty) {
+      return null;
+    }
+    final normalizedException = exception.trim();
+    if (normalizedException
+        .contains('Invalid data found when processing input')) {
+      return null;
+    }
+    if (normalizedException.contains('Local File not found')) {
+      return null;
+    }
+    return normalizedException;
+  }
 
   @override
   void initState() {
@@ -126,7 +141,7 @@ class _DefaultFijkPanelState extends State<_DefaultFijkPanel> {
     _bufferPos = player.bufferPos;
     _prepared = player.state.index >= FijkState.prepared.index;
     _playing = player.state == FijkState.started;
-    _exception = player.value.exception.message;
+    _exception = _sanitizeException(player.value.exception.message);
     // _buffering = player.isBuffering;
 
     player.addListener(_playerValueChanged);
@@ -154,7 +169,7 @@ class _DefaultFijkPanelState extends State<_DefaultFijkPanel> {
 
     bool playing = (value.state == FijkState.started);
     bool prepared = value.prepared;
-    String? exception = value.exception.message;
+    String? exception = _sanitizeException(value.exception.message);
     if (playing != _playing ||
         prepared != _prepared ||
         exception != _exception) {
@@ -224,7 +239,7 @@ class _DefaultFijkPanelState extends State<_DefaultFijkPanel> {
   AnimatedOpacity _buildBottomBar(BuildContext context) {
     double duration = _duration.inMilliseconds.toDouble();
     double currentValue =
-    _seekPos > 0 ? _seekPos : _currentPos.inMilliseconds.toDouble();
+        _seekPos > 0 ? _seekPos : _currentPos.inMilliseconds.toDouble();
     currentValue = min(currentValue, duration);
     currentValue = max(currentValue, 0);
     return AnimatedOpacity(
@@ -247,44 +262,44 @@ class _DefaultFijkPanelState extends State<_DefaultFijkPanel> {
             _duration.inMilliseconds == 0
                 ? Expanded(child: Center())
                 : Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(right: 0, left: 0),
-                child: FijkSlider(
-                  value: currentValue,
-                  cacheValue: _bufferPos.inMilliseconds.toDouble(),
-                  min: 0.0,
-                  max: duration,
-                  onChanged: (v) {
-                    _startHideTimer();
-                    setState(() {
-                      _seekPos = v;
-                    });
-                  },
-                  onChangeEnd: (v) {
-                    setState(() {
-                      player.seekTo(v.toInt());
-                      print("seek to $v");
-                      _currentPos =
-                          Duration(milliseconds: _seekPos.toInt());
-                      _seekPos = -1;
-                    });
-                  },
-                ),
-              ),
-            ),
+                    child: Padding(
+                      padding: EdgeInsets.only(right: 0, left: 0),
+                      child: FijkSlider(
+                        value: currentValue,
+                        cacheValue: _bufferPos.inMilliseconds.toDouble(),
+                        min: 0.0,
+                        max: duration,
+                        onChanged: (v) {
+                          _startHideTimer();
+                          setState(() {
+                            _seekPos = v;
+                          });
+                        },
+                        onChangeEnd: (v) {
+                          setState(() {
+                            player.seekTo(v.toInt());
+                            print("seek to $v");
+                            _currentPos =
+                                Duration(milliseconds: _seekPos.toInt());
+                            _seekPos = -1;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
 
             // duration / position
             _duration.inMilliseconds == 0
                 ? Container(child: const Text("LIVE"))
                 : Padding(
-              padding: EdgeInsets.only(right: 5.0, left: 5),
-              child: Text(
-                '${_duration2String(_duration)}',
-                style: TextStyle(
-                  fontSize: 14.0,
-                ),
-              ),
-            ),
+                    padding: EdgeInsets.only(right: 5.0, left: 5),
+                    child: Text(
+                      '${_duration2String(_duration)}',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                      ),
+                    ),
+                  ),
 
             IconButton(
               icon: Icon(widget.player.value.fullScreen
@@ -310,93 +325,96 @@ class _DefaultFijkPanelState extends State<_DefaultFijkPanel> {
     Rect rect = player.value.fullScreen
         ? Rect.fromLTWH(0, 0, widget.viewSize.width, widget.viewSize.height)
         : Rect.fromLTRB(
-        max(0.0, widget.texturePos.left),
-        max(0.0, widget.texturePos.top),
-        min(widget.viewSize.width, widget.texturePos.right),
-        min(widget.viewSize.height, widget.texturePos.bottom));
+            max(0.0, widget.texturePos.left),
+            max(0.0, widget.texturePos.top),
+            min(widget.viewSize.width, widget.texturePos.right),
+            min(widget.viewSize.height, widget.texturePos.bottom));
     return Positioned.fromRect(
       rect: rect,
       child: GestureDetector(
         onVerticalDragUpdate: !widget.player.value.fullScreen
             ? null // 如果正在缩放，则不处理水平拖动
             : (details) {
-          // 上下滑动控制 <0:上  >0:下
-          if(details.delta.dy > 0){
-            HhLog.d("滑动控制 下");
-            EventBusUtil.getInstance().fire(Move(action: 0, code: "DOWN"));
-            setState(() {
-              downStatus = true;
-              upStatus = false;
-              leftStatus = false;
-              rightStatus = false;
-            });
-          }
-          if(details.delta.dy < 0){
-            HhLog.d("滑动控制 上");
-            EventBusUtil.getInstance().fire(Move(action: 0, code: "UP"));
-            setState(() {
-              upStatus = true;
-              downStatus = false;
-              leftStatus = false;
-              rightStatus = false;
-            });
-          }
-        },
+                // 上下滑动控制 <0:上  >0:下
+                if (details.delta.dy > 0) {
+                  HhLog.d("滑动控制 下");
+                  EventBusUtil.getInstance()
+                      .fire(Move(action: 0, code: "DOWN"));
+                  setState(() {
+                    downStatus = true;
+                    upStatus = false;
+                    leftStatus = false;
+                    rightStatus = false;
+                  });
+                }
+                if (details.delta.dy < 0) {
+                  HhLog.d("滑动控制 上");
+                  EventBusUtil.getInstance().fire(Move(action: 0, code: "UP"));
+                  setState(() {
+                    upStatus = true;
+                    downStatus = false;
+                    leftStatus = false;
+                    rightStatus = false;
+                  });
+                }
+              },
         onVerticalDragEnd: !widget.player.value.fullScreen
             ? null // 如果正在缩放，则不处理水平拖动
-            : (details){
-          //终止滑动控制
-          HhLog.d("滑动控制 终止");
-          Future.delayed(const Duration(milliseconds: 500),(){
-            EventBusUtil.getInstance().fire(Move(action: 1, code: ""));
-            setState(() {
-              upStatus = false;
-              downStatus = false;
-              leftStatus = false;
-              rightStatus = false;
-            });
-          });
-        },
+            : (details) {
+                //终止滑动控制
+                HhLog.d("滑动控制 终止");
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  EventBusUtil.getInstance().fire(Move(action: 1, code: ""));
+                  setState(() {
+                    upStatus = false;
+                    downStatus = false;
+                    leftStatus = false;
+                    rightStatus = false;
+                  });
+                });
+              },
         onHorizontalDragUpdate: !widget.player.value.fullScreen
             ? null // 如果正在缩放，则不处理水平拖动
             : (details) {
-          // 左右滑动控制 <0:左  >0:右
-          if(details.delta.dx > 0){
-            HhLog.d("滑动控制 右");
-            EventBusUtil.getInstance().fire(Move(action: 0, code: "RIGHT"));
-            setState(() {
-              rightStatus = true;
-              upStatus = false;
-              downStatus = false;
-              leftStatus = false;
-            });
-          }
-          if(details.delta.dx < 0){
-            HhLog.d("滑动控制 左");
-            EventBusUtil.getInstance().fire(Move(action: 0, code: "LEFT"));
-            setState(() {
-              leftStatus = true;
-              upStatus = false;
-              downStatus = false;
-              rightStatus = false;
-            });
-          }
-        },
+                // 左右滑动控制 <0:左  >0:右
+                if (details.delta.dx > 0) {
+                  HhLog.d("滑动控制 右");
+                  EventBusUtil.getInstance()
+                      .fire(Move(action: 0, code: "RIGHT"));
+                  setState(() {
+                    rightStatus = true;
+                    upStatus = false;
+                    downStatus = false;
+                    leftStatus = false;
+                  });
+                }
+                if (details.delta.dx < 0) {
+                  HhLog.d("滑动控制 左");
+                  EventBusUtil.getInstance()
+                      .fire(Move(action: 0, code: "LEFT"));
+                  setState(() {
+                    leftStatus = true;
+                    upStatus = false;
+                    downStatus = false;
+                    rightStatus = false;
+                  });
+                }
+              },
         onHorizontalDragEnd: !widget.player.value.fullScreen
             ? null // 如果正在缩放，则不处理水平拖动
-            : (details){
-          //终止滑动控制
-          HhLog.d("滑动控制 终止");
-          Future.delayed(const Duration(milliseconds: 500),(){
-            EventBusUtil.getInstance().fire(Move(action: 1, code: ""));
-            setState(() {
-              upStatus = false;
-              downStatus = false;
-              leftStatus = false;
-              rightStatus = false;
-            });
-          });
-        },
+            : (details) {
+                //终止滑动控制
+                HhLog.d("滑动控制 终止");
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  EventBusUtil.getInstance().fire(Move(action: 1, code: ""));
+                  setState(() {
+                    upStatus = false;
+                    downStatus = false;
+                    leftStatus = false;
+                    rightStatus = false;
+                  });
+                });
+              },
         /*onScaleStart: (ScaleStartDetails details) {
           _isScaling = true; // 开始缩放
         },
@@ -442,83 +460,90 @@ class _DefaultFijkPanelState extends State<_DefaultFijkPanel> {
                         Center(
                             child: _exception != null
                                 ? Text(
-                              _exception!,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                              ),
-                            )
+                                    _exception!,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 25,
+                                    ),
+                                  )
                                 : (_prepared ||
-                                player.state == FijkState.initialized)
-                                ? AnimatedOpacity(
-                                opacity: _hideStuff ? 0.0 : 0.7,
-                                duration: Duration(milliseconds: 400),
-                                child: IconButton(
-                                    iconSize: barHeight * 1.5,
-                                    icon: Icon(
-                                        _playing
-                                            ? Icons.pause
-                                            : Icons.play_arrow,
-                                        color: Colors.white),
-                                    padding: EdgeInsets.only(
-                                        left: 10.0, right: 10.0),
-                                    onPressed: _playOrPause))
-                                : SizedBox(
-                              width: barHeight * 1,
-                              height: barHeight * 1,
-                              child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation(
-                                      Colors.white)),
-                            )),
-
-                        upStatus?Align(
-                          alignment: Alignment.topCenter,
-                          child: Container(
-                            margin: EdgeInsets.only(top: 2.w*3),
-                            child: Image.asset(
-                              "assets/images/common/move_up.png",
-                              width: 30.w*3,
-                              height: 30.w * 3,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ):const SizedBox(),
-                        downStatus?Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 2.w*3),
-                            child: Image.asset(
-                              "assets/images/common/move_down.png",
-                              width: 30.w*3,
-                              height: 30.w * 3,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ):const SizedBox(),
-                        leftStatus?Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            margin: EdgeInsets.only(left: 20.w*3),
-                            child: Image.asset(
-                              "assets/images/common/move_left.png",
-                              width: 30.w*3,
-                              height: 30.w * 3,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ):const SizedBox(),
-                        rightStatus?Align(
-                          alignment: Alignment.centerRight,
-                          child: Container(
-                            margin: EdgeInsets.only(right: 20.w*3),
-                            child: Image.asset(
-                              "assets/images/common/move_right.png",
-                              width: 30.w*3,
-                              height: 30.w * 3,
-                              fit: BoxFit.fill,
-                            ),
-                          ),
-                        ):const SizedBox(),
+                                        player.state == FijkState.initialized)
+                                    ? AnimatedOpacity(
+                                        opacity: _hideStuff ? 0.0 : 0.7,
+                                        duration: Duration(milliseconds: 400),
+                                        child: IconButton(
+                                            iconSize: barHeight * 1.5,
+                                            icon: Icon(
+                                                _playing
+                                                    ? Icons.pause
+                                                    : Icons.play_arrow,
+                                                color: Colors.white),
+                                            padding: EdgeInsets.only(
+                                                left: 10.0, right: 10.0),
+                                            onPressed: _playOrPause))
+                                    : SizedBox(
+                                        width: barHeight * 1,
+                                        height: barHeight * 1,
+                                        child: CircularProgressIndicator(
+                                            valueColor: AlwaysStoppedAnimation(
+                                                Colors.white)),
+                                      )),
+                        upStatus
+                            ? Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 2.w * 3),
+                                  child: Image.asset(
+                                    "assets/images/common/move_up.png",
+                                    width: 30.w * 3,
+                                    height: 30.w * 3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
+                        downStatus
+                            ? Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Container(
+                                  margin: EdgeInsets.only(bottom: 2.w * 3),
+                                  child: Image.asset(
+                                    "assets/images/common/move_down.png",
+                                    width: 30.w * 3,
+                                    height: 30.w * 3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
+                        leftStatus
+                            ? Align(
+                                alignment: Alignment.centerLeft,
+                                child: Container(
+                                  margin: EdgeInsets.only(left: 20.w * 3),
+                                  child: Image.asset(
+                                    "assets/images/common/move_left.png",
+                                    width: 30.w * 3,
+                                    height: 30.w * 3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
+                        rightStatus
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: Container(
+                                  margin: EdgeInsets.only(right: 20.w * 3),
+                                  child: Image.asset(
+                                    "assets/images/common/move_right.png",
+                                    width: 30.w * 3,
+                                    height: 30.w * 3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
                       ],
                     ),
                   ),
