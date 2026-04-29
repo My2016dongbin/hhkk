@@ -20,11 +20,11 @@ class MainController extends GetxController {
   final Rx<int> ?deviceOfflineNum = 0.obs;
   final Rx<int> ?deviceOnlineRatio = 0.obs;
   //fireLevelIndex 5五级火险   4四级火险   3三级火线   2二级火险   1一级火险
-  final Rx<int> fireLevelIndex = 5.obs;
+  final Rx<int> fireLevelIndex = 1.obs;
   StreamSubscription ?messageSubscription;
   StreamSubscription ?deviceListSubscription;
   final Rx<int> ?headerIndex = 0.obs;
-  final RxList<String> ?headerList = ["assets/images/common/main_image.png"].obs;
+  final RxList<String> ?headerList = ["assets/images/common/main_image.png","assets/images/common/main_image.png"].obs;
   late List<dynamic> menuList = [];
   final RxList<dynamic> liveWarningList = [].obs;
   final RxList<dynamic> fireLevelList = [].obs;
