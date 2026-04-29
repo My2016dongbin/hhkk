@@ -140,6 +140,7 @@ class _TopAlarmNotificationOverlayState
 
   Timer? _autoCloseTimer;
   bool _closing = false;
+  double _dragOffsetY = 0;
 
   @override
   void initState() {
@@ -196,6 +197,38 @@ class _TopAlarmNotificationOverlayState
     await _dismiss();
   }
 
+  void _handleVerticalDragStart(DragStartDetails details) {
+    _autoCloseTimer?.cancel();
+  }
+
+  void _handleVerticalDragUpdate(DragUpdateDetails details) {
+    if (_closing) {
+      return;
+    }
+    final double nextOffset = (_dragOffsetY + details.delta.dy).clamp(-140, 0);
+    if (nextOffset == _dragOffsetY) {
+      return;
+    }
+    setState(() {
+      _dragOffsetY = nextOffset;
+    });
+  }
+
+  Future<void> _handleVerticalDragEnd(DragEndDetails details) async {
+    if (_closing) {
+      return;
+    }
+    final double velocity = details.primaryVelocity ?? 0;
+    if (_dragOffsetY <= -48 || velocity <= -500) {
+      await _dismiss();
+      return;
+    }
+    setState(() {
+      _dragOffsetY = 0;
+    });
+    _autoCloseTimer ??= Timer(widget.data.displayDuration, _dismiss);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Positioned(
@@ -205,146 +238,157 @@ class _TopAlarmNotificationOverlayState
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(12.w * 3, Platform.isAndroid?8.w * 3:0, 12.w * 3, 0),
-          child: SlideTransition(
-            position: _offsetAnimation,
-            child: FadeTransition(
-              opacity: _opacityAnimation,
-              child: Material(
-                color: Colors.transparent,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: HhColors.whiteColor,
-                    borderRadius: BorderRadius.circular(12.w * 3),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                        color: Colors.black.withAlpha(18),
-                        blurRadius: 18.w * 3,
-                        offset: Offset(0, 6.w * 3),
+          padding: EdgeInsets.fromLTRB(
+              12.w * 3, Platform.isAndroid ? 8.w * 3 : 0, 12.w * 3, 0),
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onVerticalDragStart: _handleVerticalDragStart,
+            onVerticalDragUpdate: _handleVerticalDragUpdate,
+            onVerticalDragEnd: _handleVerticalDragEnd,
+            child: Transform.translate(
+              offset: Offset(0, _dragOffsetY),
+              child: SlideTransition(
+                position: _offsetAnimation,
+                child: FadeTransition(
+                  opacity: _opacityAnimation,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: HhColors.whiteColor,
+                        borderRadius: BorderRadius.circular(12.w * 3),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: Colors.black.withAlpha(18),
+                            blurRadius: 18.w * 3,
+                            offset: Offset(0, 6.w * 3),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Expanded(
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(12.w * 3),
-                          onTap: _handleTap,
-                          child: Padding(
-                            padding: EdgeInsets.fromLTRB(
-                                14.w * 3, 14.w * 3, 10.w * 3, 14.w * 3),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Row(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Expanded(
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(12.w * 3),
+                              onTap: _handleTap,
+                              child: Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                    14.w * 3, 14.w * 3, 10.w * 3, 14.w * 3),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
-                                    Container(
-                                      width: 20.w * 3,
-                                      height: 20.w * 3,
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFFFFF1F1),
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Icon(
-                                        Icons.warning_rounded,
-                                        size: 15.w * 3,
-                                        color: HhColors.mainRedNoticeColor,
-                                      ),
-                                    ),
-                                    SizedBox(width: 6.w * 3),
-                                    Expanded(
-                                      child: Text(
-                                        widget.data.title,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: HhColors.blackColor,
-                                          fontSize: 16.sp * 3,
-                                          fontWeight: FontWeight.w600,
+                                    Row(
+                                      children: <Widget>[
+                                        Container(
+                                          width: 20.w * 3,
+                                          height: 20.w * 3,
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xFFFFF1F1),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Icon(
+                                            Icons.warning_rounded,
+                                            size: 15.w * 3,
+                                            color: HhColors.mainRedNoticeColor,
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    InkWell(
-                                      borderRadius: BorderRadius.circular(14.w * 3),
-                                      onTap: _handleClearAll,
-                                      child: Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 4.w * 3,
-                                          vertical: 3.w * 3,
+                                        SizedBox(width: 6.w * 3),
+                                        Expanded(
+                                          child: Text(
+                                            widget.data.title,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: HhColors.blackColor,
+                                              fontSize: 16.sp * 3,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
                                         ),
-                                        child: Text(
-                                          '一键关闭',
+                                        InkWell(
+                                          borderRadius:
+                                              BorderRadius.circular(14.w * 3),
+                                          onTap: _handleClearAll,
+                                          child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 4.w * 3,
+                                              vertical: 3.w * 3,
+                                            ),
+                                            child: Text(
+                                              '一键关闭',
+                                              style: TextStyle(
+                                                color: HhColors.mainBlueColor,
+                                                fontSize: 13.sp * 3,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 5.w * 3),
+                                      ],
+                                    ),
+                                    SizedBox(height: 10.w * 3),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.baseline,
+                                      textBaseline: TextBaseline.alphabetic,
+                                      children: <Widget>[
+                                        Text(
+                                          '时间:',
                                           style: TextStyle(
-                                            color: HhColors.mainBlueColor,
+                                            color: HhColors.gray6TextColor,
                                             fontSize: 13.sp * 3,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 5.w * 3),
-                                  ],
-                                ),
-                                SizedBox(height: 10.w * 3),
-                                Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
-                                  textBaseline: TextBaseline.alphabetic,
-                                  children: <Widget>[
-                                    Text(
-                                      '时间:',
-                                      style: TextStyle(
-                                        color: HhColors.gray6TextColor,
-                                        fontSize: 13.sp * 3,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    SizedBox(width: 4.w * 3),
-                                    Expanded(
-                                      child: Text(
-                                        widget.data.timeText,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: TextStyle(
-                                          color: HhColors.gray6TextColor,
-                                          fontSize: 13.sp * 3,
+                                        SizedBox(width: 4.w * 3),
+                                        Expanded(
+                                          child: Text(
+                                            widget.data.timeText,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              color: HhColors.gray6TextColor,
+                                              fontSize: 13.sp * 3,
+                                            ),
+                                          ),
                                         ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 8.w * 3),
+                                    Text(
+                                      widget.data.message,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: HhColors.gray3TextColor,
+                                        fontSize: 14.sp * 3,
+                                        height: 1.35,
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 8.w * 3),
-                                Text(
-                                  widget.data.message,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    color: HhColors.gray3TextColor,
-                                    fontSize: 14.sp * 3,
-                                    height: 1.35,
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                      InkWell(
-                        borderRadius: BorderRadius.circular(18.w * 3),
-                        onTap: _dismiss,
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(
-                              4.w * 3, 18.w * 3, 20.w * 3, 0),
-                          child: Icon(
-                            Icons.close,
-                            size: 18.w * 3,
-                            color: HhColors.gray8TextColor,
+                          InkWell(
+                            borderRadius: BorderRadius.circular(18.w * 3),
+                            onTap: _dismiss,
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(
+                                  4.w * 3, 18.w * 3, 20.w * 3, 0),
+                              child: Icon(
+                                Icons.close,
+                                size: 18.w * 3,
+                                color: HhColors.gray8TextColor,
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
