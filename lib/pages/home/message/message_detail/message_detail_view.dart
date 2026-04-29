@@ -209,7 +209,7 @@ class MessageDetailPage extends StatelessWidget {
                         children: [
                           Text('报警经纬度',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),),
                           SizedBox(width: 10.w*3,),
-                          Expanded(child: Text("${CommonUtils().parseNull('${logic.fireInfo["longitude"]}', "")},${CommonUtils().parseNull('${logic.fireInfo["latitude"]}', "")}",textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
+                          Expanded(child: Text("${CommonUtils().parseDoubleNumber('${logic.fireInfo["longitude"]??""}', 6)},${CommonUtils().parseDoubleNumber('${logic.fireInfo["latitude"]??""}', 6)}",textAlign:TextAlign.end,style: TextStyle(color: HhColors.gray9TextColor,fontSize: 14.sp*3),)),
                         ],
                       ),
                     ),
@@ -320,7 +320,7 @@ class MessageDetailPage extends StatelessWidget {
                       margin: EdgeInsets.fromLTRB(15.w*3, 0, 15.w*3, 12.w*3),
                       child: Row(
                         children: [
-                          Text('审核',style: TextStyle(color: HhColors.textBlackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
+                          Text('处理',style: TextStyle(color: HhColors.textBlackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w500)),
                           const Spacer(),
                           "${logic.fireInfo["auditStatus"]}" == "1"?Container(
                             padding: EdgeInsets.fromLTRB(10.w*3, 5.w*3, 5.w*3, 5.w*3),

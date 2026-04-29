@@ -42,8 +42,8 @@ class DeviceAddController extends GetxController {
         .on<LocResult>()
         .listen((event) async {
       location.value = event.detail;
-      latitude.value = event.lat;
-      longitude.value = event.lng;
+      latitude.value = double.parse(CommonUtils().parseDoubleNumber("${event.lat}", 6));
+      longitude.value = double.parse(CommonUtils().parseDoubleNumber("${event.lng}", 6));
 
     });
     spaceListSubscription = EventBusUtil.getInstance()
@@ -80,8 +80,8 @@ class DeviceAddController extends GetxController {
         model['longitude'] = "${map[1]}";
         model['latitude'] = "${map[0]}";
 
-        longitude.value = double.parse(model['longitude']);
-        latitude.value = double.parse(model['latitude']);
+        longitude.value = double.parse(CommonUtils().parseDoubleNumber("${model['longitude']}", 6));
+        latitude.value = double.parse(CommonUtils().parseDoubleNumber("${model['latitude']}", 6));
         if(location.value.isEmpty){
           parseLocation(longitude.value!,latitude.value!);
         }
@@ -98,31 +98,6 @@ class DeviceAddController extends GetxController {
     spaceListSubscription?.cancel();
     toastSubscription?.cancel();
     super.onClose();
-  }
-
-
-  Future<void> locSearched() async {
-    /*// 构造检索参数
-    BMFReverseGeoCodeSearchOption reverseGeoCodeSearchOption =
-    BMFReverseGeoCodeSearchOption(
-        location: BMFCoordinate(latitude.value!, longitude.value!));
-    // 检索实例
-    BMFReverseGeoCodeSearch reverseGeoCodeSearch = BMFReverseGeoCodeSearch();
-    // 逆地理编码回调
-    reverseGeoCodeSearch.onGetReverseGeoCodeSearchResult(callback:
-        (BMFReverseGeoCodeSearchResult result,
-        BMFSearchErrorCode errorCode) {
-      HhLog.d("逆地理编码-  errorCode = $errorCode, result = ${result.toMap()}");
-      List<BMFPoiInfo> ?poiList = result.poiList;
-      if(poiList!=null && poiList.isNotEmpty){
-        locText.value = CommonUtils().parseNull("${poiList[0].name}", "定位中..");
-      }else{
-        locText.value = CommonUtils().parseNull("${result.address}", "定位中..");
-      }
-      HhLog.d("-----------${locText.value }");
-    });
-    /// 发起检索
-    bool flag = await reverseGeoCodeSearch.reverseGeoCodeSearch(reverseGeoCodeSearchOption);*/
   }
 
 

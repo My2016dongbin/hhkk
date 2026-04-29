@@ -210,7 +210,7 @@ class MapController extends GetxController {
                 children: [
                   Text("经纬度",style: TextStyle(fontSize: 15.sp*3,fontWeight: FontWeight.w500,color: HhColors.textBlackColor)),
                   SizedBox(width: 10.w*3,),
-                  Expanded(child: Text("(${device["longitude"]??""},${device["latitude"]??""})",style: TextStyle(fontSize: 15.sp*3,fontWeight: FontWeight.w400,color: HhColors.gray9TextColor),textAlign: TextAlign.right,overflow: TextOverflow.ellipsis,)),
+                  Expanded(child: Text("(${CommonUtils().parseDoubleNumber("${device["longitude"]??""}", 6)},${CommonUtils().parseDoubleNumber("${device["latitude"]??""}", 6)})",style: TextStyle(fontSize: 15.sp*3,fontWeight: FontWeight.w400,color: HhColors.gray9TextColor),textAlign: TextAlign.right,overflow: TextOverflow.ellipsis,)),
                   SizedBox(width: 2.w*3,)
                 ],
               ),

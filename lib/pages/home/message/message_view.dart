@@ -130,7 +130,7 @@ class MessagePage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            BouncingWidget(
+                            /*BouncingWidget(
                               duration: const Duration(milliseconds: 100),
                               scaleFactor: 1.0,
                               onPressed: (){
@@ -167,16 +167,18 @@ class MessagePage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 10.w,),
+                            SizedBox(width: 10.w,),*/
                             BouncingWidget(
                               duration: const Duration(milliseconds: 100),
                               scaleFactor: 1.0,
                               onPressed: (){
                                 logic.tabIndex.value = 2;
                                 resetEdit();
-                                logic.dateListLeft = [];
+                                /*logic.dateListLeft = [];
                                 logic.pageNumLeft = 1;
-                                logic.fetchPageLeft(1);
+                                logic.fetchPageLeft(1);*/
+                                logic.pageNumCall = 1;
+                                logic.fetchPageCall(1);
                               },
                               child: Container(
                                 width: 55.w*3,
@@ -212,7 +214,7 @@ class MessagePage extends StatelessWidget {
                     logic.tabIndex.value==2?const SizedBox():Align(
                       alignment: Alignment.topCenter,
                       child: Container(
-                        margin: EdgeInsets.only(top: 54.w*3),
+                        margin: EdgeInsets.only(top: 50.w*3),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [

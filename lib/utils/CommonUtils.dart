@@ -1369,8 +1369,8 @@ class CommonUtils {
   String parseDoubleNumber(String str, int number) {
     String rt = "0";
     int index = 0;
-    index = str.indexOf('.');
     try {
+      index = str.indexOf('.');
       rt = str.substring(0, index + 1 + number);
     } catch (e) {
       rt = str;

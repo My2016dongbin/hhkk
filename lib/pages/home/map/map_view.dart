@@ -564,7 +564,7 @@ class MapPage extends StatelessWidget {
             SizedBox(width: 20.w*3,),
             SizedBox(width: 40.w*3,child: Text('${index+1}',style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
             SizedBox(width: 125.w*3,child: Text(CommonUtils().parseNull('${item["name"]}', ""),textAlign:TextAlign.start,maxLines:1,overflow: TextOverflow.ellipsis,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
-            Expanded(child: Text("${CommonUtils().parseNull(item["longitude"], "")},${CommonUtils().parseNull(item["latitude"], "")}",textAlign:TextAlign.start,maxLines:1,overflow: TextOverflow.ellipsis,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
+            Expanded(child: Text("${CommonUtils().parseDoubleNumber(item["longitude"], 6)},${CommonUtils().parseDoubleNumber(item["latitude"], 6)}",textAlign:TextAlign.start,maxLines:1,overflow: TextOverflow.ellipsis,style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3,fontWeight: FontWeight.w400),)),
             SizedBox(width: 15.w*3,),
           ],
         ),

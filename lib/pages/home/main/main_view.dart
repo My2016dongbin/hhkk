@@ -2054,7 +2054,7 @@ class MainPage extends StatelessWidget {
                             ),
                             Expanded(
                                 child: Text(
-                              "${CommonUtils().parseNull('${fireInfo["longitude"]}', "")},${CommonUtils().parseNull('${fireInfo["latitude"]}', "")}",
+                              "${CommonUtils().parseDoubleNumber('${fireInfo["longitude"]}', 6)},${CommonUtils().parseDoubleNumber('${fireInfo["latitude"]}', 6)}",
                               textAlign: TextAlign.end,
                               style: TextStyle(
                                   color: HhColors.gray9TextColor,
