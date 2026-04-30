@@ -1831,7 +1831,7 @@ class MessagePage extends StatelessWidget {
                               Row(
                                 children: [
                                   Image.asset(
-                                    "assets/images/common/call_image.png",
+                                    "assets/images/common/call_icon.png",
                                     width: 22.w*3,
                                     height: 22.w*3,
                                     fit: BoxFit.fill,
