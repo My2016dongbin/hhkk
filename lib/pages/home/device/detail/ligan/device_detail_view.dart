@@ -1957,73 +1957,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
               ],
             ),
           ),
-          /*///操作按钮--最新-上一条-下一条
-          Container(
-            margin: EdgeInsets.fromLTRB(14.w*3, 0, 14.w*3, 5.w*3),
-            child: Row(
-              children: [
-                BouncingWidget(
-                  duration: const Duration(milliseconds: 100),
-                  scaleFactor: 1.2,
-                  onPressed: () {
-                    logic.dataPageNum = 1;
-                    logic.getDataPage();
-                  },
-                  child: Container(
-                      height: 40.w*3,
-                      width: 88.w*3,
-                      decoration: BoxDecoration(
-                        color: HhColors.whiteColor,
-                        borderRadius: BorderRadius.circular(8.w*3)
-                      ),
-                      child: Center(child: Text("最新",style: TextStyle(color: HhColors.blueTextColor,fontSize: 14.sp*3),))
-                  ),
-                ),
-                const Expanded(child: SizedBox()),
-                BouncingWidget(
-                  duration: const Duration(milliseconds: 100),
-                  scaleFactor: 1.2,
-                  onPressed: () {
-                    logic.dataPageNum--;
-                    if(logic.dataPageNum<1){
-                      logic.dataPageNum = 1;
-                      EventBusUtil.getInstance().fire(HhToast(title: "当前已是第一条\n已为您加载最新一条数据",type: 0));
-                    }
-                    logic.getDataPage();
-                  },
-                  child: Container(
-                      height: 40.w*3,
-                      width: 88.w*3,
-                      decoration: BoxDecoration(
-                        color: HhColors.whiteColor,
-                        borderRadius: BorderRadius.circular(8.w*3)
-                      ),
-                      child: Center(child: Text("上一条",style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),))
-                  ),
-                ),
-                const Expanded(child: SizedBox()),
-                BouncingWidget(
-                  duration: const Duration(milliseconds: 100),
-                  scaleFactor: 1.2,
-                  onPressed: () {
-                    logic.dataPageNum++;
-                    logic.getDataPage();
-                  },
-                  child: Container(
-                      height: 40.w*3,
-                      width: 88.w*3,
-                      decoration: BoxDecoration(
-                        color: HhColors.whiteColor,
-                        borderRadius: BorderRadius.circular(8.w*3)
-                      ),
-                      child: Center(child: Text("下一条",style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),))
-                  ),
-                ),
-
-              ],
-            ),
-          ),*/
-          ///太阳能控制器--
+          ///太阳能控制器--start
           Container(
             width: 1.sw,
             margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 10.w*3),
@@ -2179,6 +2113,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
               ],
             ),
           ),
+          ///太阳能控制器--end
         ],
       ),
     ):const SizedBox();
