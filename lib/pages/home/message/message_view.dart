@@ -455,7 +455,7 @@ class MessagePage extends StatelessWidget {
                     },
                     child: Container(
                       height: 30.w*3,
-                        margin: EdgeInsets.only(left: 24.w*3),
+                        margin: EdgeInsets.only(left: 12.w*3),
                         padding:EdgeInsets.fromLTRB(12.w*3, 0, 12.w*3, 0),
                         decoration: BoxDecoration(
                             color: HhColors.whiteColor,
@@ -484,7 +484,7 @@ class MessagePage extends StatelessWidget {
                     },
                     child: Container(
                         height: 30.w*3,
-                        margin: EdgeInsets.only(left: 24.w*3),
+                        margin: EdgeInsets.only(left: 12.w*3),
                         padding:EdgeInsets.fromLTRB(12.w*3, 0, 12.w*3, 0),
                         decoration: BoxDecoration(
                             color: HhColors.whiteColor,
@@ -515,7 +515,7 @@ class MessagePage extends StatelessWidget {
                     },
                     child: Container(
                         height: 30.w*3,
-                        margin: EdgeInsets.only(left: 24.w*3),
+                        margin: EdgeInsets.only(left: 12.w*3),
                         padding:EdgeInsets.fromLTRB(7.w*3, 0, 8.w*3, 0),
                         decoration: BoxDecoration(
                             color: HhColors.whiteColor,
