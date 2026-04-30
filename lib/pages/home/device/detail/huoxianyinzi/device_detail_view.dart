@@ -2627,7 +2627,7 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                           ),
                           Expanded(
                               child: Text(
-                            "${logic.energyModel["windDirection"] ?? "-"}",
+                            "${logic.energyModel["windDirectionDegrees"] ?? "-"}",
                             style: TextStyle(
                                 color: HhColors.blackColor,
                                 fontSize: 15.sp * 3),
