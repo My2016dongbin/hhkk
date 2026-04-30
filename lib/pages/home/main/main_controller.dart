@@ -24,7 +24,7 @@ class MainController extends GetxController {
   StreamSubscription ?messageSubscription;
   StreamSubscription ?deviceListSubscription;
   final Rx<int> ?headerIndex = 0.obs;
-  final RxList<String> ?headerList = ["assets/images/common/main_image.png","assets/images/common/main_image.png"].obs;
+  final RxList<String> ?headerList = ["assets/images/common/main_image.png","assets/images/common/main_image_hxyz.jpg"].obs;
   late List<dynamic> menuList = [];
   final RxList<dynamic> liveWarningList = [].obs;
   final RxList<dynamic> fireLevelList = [].obs;
