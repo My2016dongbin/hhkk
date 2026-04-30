@@ -1327,7 +1327,7 @@ class MessagePage extends StatelessWidget {
                           Expanded(
                             child: Container(
                               margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 0),
-                              padding: EdgeInsets.all(20.w),
+                              padding: EdgeInsets.fromLTRB(20.w, 12.w*3, 20.w, 12.w*3),
                               clipBehavior: Clip.hardEdge,
                               decoration: BoxDecoration(
                                   color: HhColors.whiteColor,
@@ -1345,7 +1345,16 @@ class MessagePage extends StatelessWidget {
                                     ),
                                   ),*/
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(30.w, 0, 0, 0),
+                                    margin: EdgeInsets.only(left: 5.w*3),
+                                    child: Image.asset(
+                                      "assets/images/common/call_image.png",
+                                      width: 70.w*3,
+                                      height: 70.w*3,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.fromLTRB(92.w*3, 0, 0, 0),
                                     child: Text(
                                       "${parseCall("${item['callStatus']}")}【${item['deviceNo']}】",
                                       style: TextStyle(
@@ -1353,7 +1362,7 @@ class MessagePage extends StatelessWidget {
                                     ),
                                   ),
                                   Container(
-                                    margin: EdgeInsets.fromLTRB(30.w, 26.w*3, 0, 0),
+                                    margin: EdgeInsets.fromLTRB(92.w*3, 26.w*3, 0, 0),
                                     child: Column(
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1814,46 +1823,45 @@ class MessagePage extends StatelessWidget {
                         Navigator.pop(context);
                       },
                       child: Container(
-                          margin: EdgeInsets.fromLTRB(15.w, 15.h*3, 15.w*3, 0),
+                          margin: EdgeInsets.fromLTRB(23.w*3, 15.w*3, 15.w*3, 0),
                           padding: EdgeInsets.all(5.w),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Center(
-                                child: Text(
-                                  parseCall(item['callStatus']),
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: HhColors.blackColor, fontSize: 18.sp*3,fontWeight:FontWeight.w600,decoration: TextDecoration.none),
-                                ),
+                              Row(
+                                children: [
+                                  Image.asset(
+                                    "assets/images/common/call_image.png",
+                                    width: 22.w*3,
+                                    height: 22.w*3,
+                                    fit: BoxFit.fill,
+                                  ),
+                                  SizedBox(width: 10.w*3,),
+                                  Text(
+                                    "${parseCall(item['callStatus'])}详情",
+                                    style: TextStyle(color: HhColors.blackColor, fontSize: 15.sp*3,fontWeight:FontWeight.w600,decoration: TextDecoration.none),
+                                  ),
+                                ],
                               ),
-                              SizedBox(height: 10.w,),
-                              Center(
-                                child: Text(
-                                  "设备名称:${item['name']}",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: HhColors.blackColor, fontSize: 15.sp*3,fontWeight:FontWeight.w500,decoration: TextDecoration.none),
-                                ),
+                              SizedBox(height: 7.w*3,),
+                              Text(
+                                "设备名称:${item['name']}",
+                                style: TextStyle(color: HhColors.gray6TextColor, fontSize: 14.sp*3,fontWeight:FontWeight.w500,decoration: TextDecoration.none),
                               ),
-                              Center(
-                                child: Text(
-                                  "设备编码:${item['deviceNo']}",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: HhColors.blackColor, fontSize: 15.sp*3,fontWeight:FontWeight.w500,decoration: TextDecoration.none),
-                                ),
+                              SizedBox(height: 7.w*3,),
+                              Text(
+                                "设备编码:${item['deviceNo']}",
+                                style: TextStyle(color: HhColors.gray6TextColor, fontSize: 14.sp*3,fontWeight:FontWeight.w500,decoration: TextDecoration.none),
                               ),
-                              Center(
-                                child: Text(
-                                  "通话时长:${item['callMarket']}秒",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: HhColors.blackColor, fontSize: 15.sp*3,fontWeight:FontWeight.w500,decoration: TextDecoration.none),
-                                ),
+                              SizedBox(height: 7.w*3,),
+                              Text(
+                                "通话时长:${item['callMarket']}秒",
+                                style: TextStyle(color: HhColors.gray6TextColor, fontSize: 14.sp*3,fontWeight:FontWeight.w500,decoration: TextDecoration.none),
                               ),
-                              Center(
-                                child: Text(
-                                  "呼叫时间:${CommonUtils().parseLongTime('${item['callTime']}')}",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(color: HhColors.blackColor, fontSize: 15.sp*3,fontWeight:FontWeight.w500,decoration: TextDecoration.none),
-                                ),
+                              SizedBox(height: 7.w*3,),
+                              Text(
+                                "呼叫时间:${CommonUtils().parseLongTime('${item['callTime']}')}",
+                                style: TextStyle(color: HhColors.gray6TextColor, fontSize: 14.sp*3,fontWeight:FontWeight.w500,decoration: TextDecoration.none),
                               ),
                             ],
                           )),
