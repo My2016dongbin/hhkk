@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:audio_session/audio_session.dart';
@@ -1019,7 +1020,7 @@ class LiGanDetailController extends GetxController {
       var dio = Dio();
       FormData formData = FormData.fromMap({
         "file": await MultipartFile.fromFile(newFile.path, filename: fileName),
-        "path": newFile.path,
+        "path": "/${DateTime.now().millisecondsSinceEpoch.toString()}/$fileName",
       });
 
       try {
