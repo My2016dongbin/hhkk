@@ -26,8 +26,8 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 
-def flutterVersionCode = "26"
-def flutterVersionName = "1.0.16.260428"
+def flutterVersionCode = "27"
+def flutterVersionName = "1.0.17.260430"
 
 android {
     compileSdkVersion 34
