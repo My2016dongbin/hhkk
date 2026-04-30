@@ -63,8 +63,8 @@ class MapPage extends StatelessWidget {
         Align(
           alignment: Alignment.topLeft,
           child: Container(
-            height: 42.w * 3,
-            margin: EdgeInsets.only(top: 42.w * 3),
+            height: Platform.isAndroid?42.w * 3:52.w*3,
+            margin: EdgeInsets.only(top: Platform.isAndroid?42.w * 3:52.w*3),
             color: HhColors.trans,
             child: Stack(
               children: [
@@ -360,6 +360,7 @@ class MapPage extends StatelessWidget {
                             });
                           },
                           child: Container(
+                            color: HhColors.trans,
                             padding:
                                 EdgeInsets.fromLTRB(15.w * 3, 0, 15.w * 3, 0),
                             child: Column(
@@ -502,7 +503,7 @@ class MapPage extends StatelessWidget {
         Container(
           height: 1.0.sh - 95.w * 3,
           width: 1.sw,
-          margin: EdgeInsets.only(top: 90.w * 3),
+          margin: EdgeInsets.only(top: Platform.isAndroid?90.w * 3:100.w * 3),
           child: AMapWidget(
             apiKey: CommonData.aMapApiKey,
             privacyStatement: const AMapPrivacyStatement(
@@ -527,7 +528,7 @@ class MapPage extends StatelessWidget {
 
         ///按钮：列表&&位置
         Container(
-          margin: EdgeInsets.only(left: 15.w * 3, top: 104.w * 3),
+          margin: EdgeInsets.only(left: 15.w * 3, top: Platform.isAndroid?104.w * 3:114.w * 3),
           child: Row(
             children: [
               HhTap(
@@ -611,7 +612,7 @@ class MapPage extends StatelessWidget {
           child: Container(
             width: 1.sw,
             constraints: BoxConstraints(maxHeight: 0.4.sh),
-            margin: EdgeInsets.fromLTRB(14.w * 3, 100.w * 3, 14.w * 3, 0),
+            margin: EdgeInsets.fromLTRB(14.w * 3, Platform.isAndroid?100.w * 3:110.w * 3, 14.w * 3, 0),
             decoration: BoxDecoration(
               color: HhColors.whiteColor,
               borderRadius: BorderRadius.circular(12.w * 3),
