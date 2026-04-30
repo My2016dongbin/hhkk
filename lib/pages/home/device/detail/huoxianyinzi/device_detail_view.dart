@@ -20,6 +20,8 @@ import 'package:iot/pages/home/device/add/device_add_binding.dart';
 import 'package:iot/pages/home/device/add/device_add_view.dart';
 import 'package:iot/pages/home/device/detail/fijkpanel.dart';
 import 'package:iot/pages/home/device/detail/huoxianyinzi/device_detail_controller.dart';
+import 'package:iot/pages/home/device/detail/huoxianyinzi/energy_more/hxyz_energy_more_binding.dart';
+import 'package:iot/pages/home/device/detail/huoxianyinzi/energy_more/hxyz_energy_more_view.dart';
 import 'package:iot/pages/home/device/detail/ligan/setting/ligan_detail_binding.dart';
 import 'package:iot/pages/home/device/detail/ligan/setting/ligan_detail_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
@@ -112,10 +114,12 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                         panEnabled: true, // 是否允许拖动
                         minScale: 1.0,
                         maxScale: 10.0,
-                        onInteractionEnd:(a){
-                          logic.transformationController.value = Matrix4.identity();
+                        onInteractionEnd: (a) {
+                          logic.transformationController.value =
+                              Matrix4.identity();
                         },
-                        transformationController: logic.transformationController,
+                        transformationController:
+                            logic.transformationController,
                         child: SizedBox(
                           width: double.infinity,
                           height: 254.h * 3,
@@ -123,9 +127,8 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             children: [
                               Transform(
                                 transform: Matrix4.identity()
-                                  ..scale(logic.scale.value)//缩放比例
-                                ..translate(logic.dx.value,logic.dy.value)
-                                ,
+                                  ..scale(logic.scale.value) //缩放比例
+                                  ..translate(logic.dx.value, logic.dy.value),
                                 alignment: Alignment.center,
                                 child: Container(
                                   margin: EdgeInsets.only(top: 0.h * 3),
@@ -162,8 +165,8 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                                                     4.h * 3,
                                                     1.h * 3),
                                                 decoration: BoxDecoration(
-                                                    color: HhColors
-                                                        .mainGreenColor,
+                                                    color:
+                                                        HhColors.mainGreenColor,
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             2.h * 3)),
@@ -196,79 +199,88 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                   : const SizedBox(),
               logic.playLoadingTag.value
                   ? Container(
-                width: 1.sw,
-                height: 254.h * 3,
-                color: HhColors.blackRealColor,
-              ): const SizedBox(),
+                      width: 1.sw,
+                      height: 254.h * 3,
+                      color: HhColors.blackRealColor,
+                    )
+                  : const SizedBox(),
               logic.playErrorTag.value
                   ? Container(
-                width: 1.sw,
-                height: 254.h * 3,
-                color: HhColors.blackRealColor,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment:Alignment.center,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                      width: 1.sw,
+                      height: 254.h * 3,
+                      color: HhColors.blackRealColor,
+                      child: Stack(
                         children: [
-                          SizedBox(height: 50.w*3,),
-                          Image.asset(
-                            "assets/images/common/ic_video_error.png",
-                            width: 36.w*3,
-                            height: 36.w*3,
-                            fit: BoxFit.fill,
-                          ),
-                          SizedBox(height: 5.w*3,),
-                          Text(
-                            '火险因子监测站暂无视频展示',
-                            style: TextStyle(
-                                color: HhColors.gray6TextColor,
-                                fontSize: 14.sp * 3,
-                                overflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.w500),
-                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  height: 50.w * 3,
+                                ),
+                                Image.asset(
+                                  "assets/images/common/ic_video_error.png",
+                                  width: 36.w * 3,
+                                  height: 36.w * 3,
+                                  fit: BoxFit.fill,
+                                ),
+                                SizedBox(
+                                  height: 5.w * 3,
+                                ),
+                                Text(
+                                  '火险因子监测站暂无视频展示',
+                                  style: TextStyle(
+                                      color: HhColors.gray6TextColor,
+                                      fontSize: 14.sp * 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     )
-                  ],
-                ),
-              )
                   : const SizedBox(),
               logic.offlineTag.value
                   ? Container(
-                width: 1.sw,
-                height: 254.h * 3,
-                color: HhColors.blackRealColor,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment:Alignment.center,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
+                      width: 1.sw,
+                      height: 254.h * 3,
+                      color: HhColors.blackRealColor,
+                      child: Stack(
                         children: [
-                          SizedBox(height: 50.w*3,),
-                          Image.asset(
-                            "assets/images/common/ic_offline.png",
-                            width: 30.w*3,
-                            height: 30.w*3,
-                            fit: BoxFit.fill,
-                          ),
-                          SizedBox(height: 5.w*3,),
-                          Text(
-                            '设备已离线',
-                            style: TextStyle(
-                                color: HhColors.gray6TextColor,
-                                fontSize: 14.sp * 3,
-                                overflow: TextOverflow.ellipsis,
-                                fontWeight: FontWeight.w500),
-                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  height: 50.w * 3,
+                                ),
+                                Image.asset(
+                                  "assets/images/common/ic_offline.png",
+                                  width: 30.w * 3,
+                                  height: 30.w * 3,
+                                  fit: BoxFit.fill,
+                                ),
+                                SizedBox(
+                                  height: 5.w * 3,
+                                ),
+                                Text(
+                                  '设备已离线',
+                                  style: TextStyle(
+                                      color: HhColors.gray6TextColor,
+                                      fontSize: 14.sp * 3,
+                                      overflow: TextOverflow.ellipsis,
+                                      fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     )
-                  ],
-                ),
-              )
                   : const SizedBox(),
 
               ///title
@@ -344,28 +356,27 @@ class HXYZDeviceDetailPage extends StatelessWidget {
               Align(
                 alignment: Alignment.topRight,
                 child: InkWell(
-                  onTap: () {
-
-                  },
+                  onTap: () {},
                   child: Container(
                     margin: EdgeInsets.fromLTRB(0, 57.h * 3, 50.h * 3, 0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         BatteryWidget(
-                          width: 14.w*3,
-                          height: 20.w*3,
-                          batteryLevel: parseBatteryValue(logic.energyQuantity.value),
+                          width: 14.w * 3,
+                          height: 20.w * 3,
+                          batteryLevel:
+                              parseBatteryValue(logic.energyQuantity.value),
                           // charging: true, //启用充电动画
                         ),
                         SizedBox(
-                          height:2.w*3,
+                          height: 2.w * 3,
                         ),
                         Text(
                           "电量",
                           style: TextStyle(
                               color: HhColors.whiteColor,
-                              fontSize: 10.sp*3,
+                              fontSize: 10.sp * 3,
                               fontWeight: FontWeight.w500),
                         )
                       ],
@@ -373,6 +384,7 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                   ),
                 ),
               ),
+
               ///setting
               Align(
                 alignment: Alignment.topRight,
@@ -400,7 +412,7 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                           "更多",
                           style: TextStyle(
                               color: HhColors.whiteColor,
-                              fontSize: 10.sp*3,
+                              fontSize: 10.sp * 3,
                               fontWeight: FontWeight.w500),
                         )
                       ],
@@ -470,13 +482,13 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             ),
                             logic.tabIndex.value == 0
                                 ? Container(
-                              height: 4.h,
-                              width: 140.h,
-                              decoration: BoxDecoration(
-                                  color: HhColors.mainBlueColor,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(2.h))),
-                            )
+                                    height: 4.h,
+                                    width: 140.h,
+                                    decoration: BoxDecoration(
+                                        color: HhColors.mainBlueColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(2.h))),
+                                  )
                                 : const SizedBox()
                           ],
                         ),
@@ -533,13 +545,13 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             ),
                             logic.tabIndex.value == 1
                                 ? Container(
-                              height: 4.h,
-                              width: 140.h,
-                              decoration: BoxDecoration(
-                                  color: HhColors.mainBlueColor,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(2.h))),
-                            )
+                                    height: 4.h,
+                                    width: 140.h,
+                                    decoration: BoxDecoration(
+                                        color: HhColors.mainBlueColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(2.h))),
+                                  )
                                 : const SizedBox()
                           ],
                         ),
@@ -596,13 +608,13 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             ),
                             logic.tabIndex.value == 2
                                 ? Container(
-                              height: 4.h,
-                              width: 140.h,
-                              decoration: BoxDecoration(
-                                  color: HhColors.mainBlueColor,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(2.h))),
-                            )
+                                    height: 4.h,
+                                    width: 140.h,
+                                    decoration: BoxDecoration(
+                                        color: HhColors.mainBlueColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(2.h))),
+                                  )
                                 : const SizedBox()
                           ],
                         ),
@@ -661,13 +673,13 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             ),
                             logic.tabIndex.value == 3
                                 ? Container(
-                              height: 4.h,
-                              width: 140.h,
-                              decoration: BoxDecoration(
-                                  color: HhColors.mainBlueColor,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(2.h))),
-                            )
+                                    height: 4.h,
+                                    width: 140.h,
+                                    decoration: BoxDecoration(
+                                        color: HhColors.mainBlueColor,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(2.h))),
+                                  )
                                 : const SizedBox()
                           ],
                         ),
@@ -689,17 +701,18 @@ class HXYZDeviceDetailPage extends StatelessWidget {
       ),
     );
   }
+
   parsePager() {
-    if(logic.tabIndex.value == 0){
+    if (logic.tabIndex.value == 0) {
       return livePage();
     }
-    if(logic.tabIndex.value == 1){
+    if (logic.tabIndex.value == 1) {
       return dataPage();
     }
-    if(logic.tabIndex.value == 2){
+    if (logic.tabIndex.value == 2) {
       return historyPage();
     }
-    if(logic.tabIndex.value == 3){
+    if (logic.tabIndex.value == 3) {
       return weatherPage();
     }
     return Container();
@@ -707,12 +720,12 @@ class HXYZDeviceDetailPage extends StatelessWidget {
 
   weatherPage() {
     return EasyRefresh(
-      onRefresh: (){
+      onRefresh: () {
         logic.getLocationByDeviceNo();
         logic.getNowWeatherByDeviceNo();
-        if(logic.weatherIndex.value==0){
+        if (logic.weatherIndex.value == 0) {
           logic.get7daysWeatherByDeviceNo();
-        }else{
+        } else {
           logic.getHistoricalWeatherByDeviceNo();
         }
       },
@@ -721,10 +734,11 @@ class HXYZDeviceDetailPage extends StatelessWidget {
           children: [
             ///现在天气
             Container(
-              height: 194.w*3,
-              margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 10.w*3),
+              height: 194.w * 3,
+              margin:
+                  EdgeInsets.fromLTRB(14.w * 3, 10.w * 3, 14.w * 3, 10.w * 3),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8.w*3),
+                borderRadius: BorderRadius.circular(8.w * 3),
                 gradient: const LinearGradient(
                   colors: [
                     HhColors.weatherLeft,
@@ -740,103 +754,133 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                 children: [
                   ///省市国家&&时间
                   Container(
-                    margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 0),
+                    margin:
+                        EdgeInsets.fromLTRB(14.w * 3, 10.w * 3, 14.w * 3, 0),
                     child: Row(
                       children: [
                         Text(
-                          CommonUtils().parseNull("${logic.weatherModel.value["adm2"]}", ""),
+                          CommonUtils().parseNull(
+                              "${logic.weatherModel.value["adm2"]}", ""),
                           style: TextStyle(
                               color: HhColors.blackTextColor,
-                              fontSize: 14.sp * 3,fontWeight: FontWeight.w600),
+                              fontSize: 14.sp * 3,
+                              fontWeight: FontWeight.w600),
                         ),
-                        SizedBox(width: 10.w*3,),
+                        SizedBox(
+                          width: 10.w * 3,
+                        ),
                         Text(
-                          CommonUtils().parseNull("${logic.weatherModel.value["adm1"]}", ""),
+                          CommonUtils().parseNull(
+                              "${logic.weatherModel.value["adm1"]}", ""),
                           style: TextStyle(
                               color: HhColors.gray9TextColor,
-                              fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                              fontSize: 11.sp * 3,
+                              fontWeight: FontWeight.w500),
                         ),
                         Text(
                           "/",
                           style: TextStyle(
                               color: HhColors.gray9TextColor,
-                              fontSize: 11.sp * 3,fontWeight: FontWeight.w400),
+                              fontSize: 11.sp * 3,
+                              fontWeight: FontWeight.w400),
                         ),
                         Text(
-                          CommonUtils().parseNull("${logic.weatherModel.value["country"]}", ""),
+                          CommonUtils().parseNull(
+                              "${logic.weatherModel.value["country"]}", ""),
                           style: TextStyle(
                               color: HhColors.gray9TextColor,
-                              fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                              fontSize: 11.sp * 3,
+                              fontWeight: FontWeight.w500),
                         ),
                         const Spacer(),
                         Text(
-                          CommonUtils().parseNull("${logic.weatherModel.value["time"]}", ""),
+                          CommonUtils().parseNull(
+                              "${logic.weatherModel.value["time"]}", ""),
                           style: TextStyle(
                               color: HhColors.gray9TextColor,
-                              fontSize: 11.sp * 3,fontWeight: FontWeight.w400),
+                              fontSize: 11.sp * 3,
+                              fontWeight: FontWeight.w400),
                         ),
                       ],
                     ),
                   ),
+
                   ///天气
-                  logic.weatherModel.value["temp"]!=null?Container(
-                    margin: EdgeInsets.only(top: 10.w*3),
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        SizedBox(
-                            width: 62.w*3,
-                            height: 62.w*3,
-                            child: WebViewWidget(controller: logic.webController,)),
-                        SizedBox(width: 10.w*3,),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              CommonUtils().parseNull("${logic.weatherModel.value["temp"]}°", ""),
-                              style: TextStyle(
-                                  color: HhColors.blackTextColor,
-                                  fontSize: 32.sp * 3,fontWeight: FontWeight.w600),
-                            ),
-                            Text(
-                              CommonUtils().parseNull("${logic.weatherModel.value["text"]}", ""),
-                              style: TextStyle(
-                                  color: HhColors.blackTextColor,
-                                  fontSize: 14.sp * 3,fontWeight: FontWeight.w600),
-                            ),
-                          ],
+                  logic.weatherModel.value["temp"] != null
+                      ? Container(
+                          margin: EdgeInsets.only(top: 10.w * 3),
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                  width: 62.w * 3,
+                                  height: 62.w * 3,
+                                  child: WebViewWidget(
+                                    controller: logic.webController,
+                                  )),
+                              SizedBox(
+                                width: 10.w * 3,
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    CommonUtils().parseNull(
+                                        "${logic.weatherModel.value["temp"]}°",
+                                        ""),
+                                    style: TextStyle(
+                                        color: HhColors.blackTextColor,
+                                        fontSize: 32.sp * 3,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(
+                                    CommonUtils().parseNull(
+                                        "${logic.weatherModel.value["text"]}",
+                                        ""),
+                                    style: TextStyle(
+                                        color: HhColors.blackTextColor,
+                                        fontSize: 14.sp * 3,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         )
-                      ],
-                    ),
-                  ):const SizedBox(),
+                      : const SizedBox(),
                   Container(
-                    height: 56.w*3,
+                    height: 56.w * 3,
                     width: 1.sw,
-                    margin: EdgeInsets.only(top: 15.w*3,left: 14.w*3,right: 14.w*3),
+                    margin: EdgeInsets.only(
+                        top: 15.w * 3, left: 14.w * 3, right: 14.w * 3),
                     decoration: BoxDecoration(
                         color: HhColors.whiteColor,
-                        borderRadius: BorderRadius.circular(10.w*3)
-                    ),
+                        borderRadius: BorderRadius.circular(10.w * 3)),
                     child: Row(
                       children: [
-                        SizedBox(width: 15.w*3,),
+                        SizedBox(
+                          width: 15.w * 3,
+                        ),
                         Expanded(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                margin: EdgeInsets.only(left: 5.w*3),
+                                margin: EdgeInsets.only(left: 5.w * 3),
                                 child: Text(
                                   "湿度",
                                   style: TextStyle(
                                       color: HhColors.blackTextColor,
-                                      fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                                      fontSize: 11.sp * 3,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ),
-                              SizedBox(height: 5.w*3,),
+                              SizedBox(
+                                height: 5.w * 3,
+                              ),
                               Row(
                                 children: [
                                   Image.asset(
@@ -845,7 +889,9 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                                     height: 20.w * 3,
                                     fit: BoxFit.fill,
                                   ),
-                                  SizedBox(width: 2.w*3,),
+                                  SizedBox(
+                                    width: 2.w * 3,
+                                  ),
                                   Expanded(
                                     child: Text(
                                       "${CommonUtils().parseNull("${logic.weatherModel.value["humidity"]}", "")}%",
@@ -853,7 +899,8 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color: HhColors.blackTextColor,
-                                          fontSize: 13.sp * 3,fontWeight: FontWeight.w500),
+                                          fontSize: 13.sp * 3,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   )
                                 ],
@@ -867,15 +914,20 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                margin: EdgeInsets.only(left: 5.w*3),
+                                margin: EdgeInsets.only(left: 5.w * 3),
                                 child: Text(
-                                  CommonUtils().parseNull("${logic.weatherModel.value["windDir"]}", ""),
+                                  CommonUtils().parseNull(
+                                      "${logic.weatherModel.value["windDir"]}",
+                                      ""),
                                   style: TextStyle(
                                       color: HhColors.blackTextColor,
-                                      fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                                      fontSize: 11.sp * 3,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ),
-                              SizedBox(height: 5.w*3,),
+                              SizedBox(
+                                height: 5.w * 3,
+                              ),
                               Row(
                                 children: [
                                   Image.asset(
@@ -884,7 +936,9 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                                     height: 20.w * 3,
                                     fit: BoxFit.fill,
                                   ),
-                                  SizedBox(width: 2.w*3,),
+                                  SizedBox(
+                                    width: 2.w * 3,
+                                  ),
                                   Expanded(
                                     child: Text(
                                       "${CommonUtils().parseNull("${logic.weatherModel.value["windScale"]}", "")}级",
@@ -892,7 +946,8 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color: HhColors.blackTextColor,
-                                          fontSize: 13.sp * 3,fontWeight: FontWeight.w500),
+                                          fontSize: 13.sp * 3,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   )
                                 ],
@@ -906,15 +961,18 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                margin: EdgeInsets.only(left: 5.w*3),
+                                margin: EdgeInsets.only(left: 5.w * 3),
                                 child: Text(
                                   "气压",
                                   style: TextStyle(
                                       color: HhColors.blackTextColor,
-                                      fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                                      fontSize: 11.sp * 3,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ),
-                              SizedBox(height: 5.w*3,),
+                              SizedBox(
+                                height: 5.w * 3,
+                              ),
                               Row(
                                 children: [
                                   Image.asset(
@@ -923,7 +981,9 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                                     height: 20.w * 3,
                                     fit: BoxFit.fill,
                                   ),
-                                  SizedBox(width: 2.w*3,),
+                                  SizedBox(
+                                    width: 2.w * 3,
+                                  ),
                                   Expanded(
                                     child: Text(
                                       "${CommonUtils().parseNull("${logic.weatherModel.value["pressure"]}", "")}hpa",
@@ -931,7 +991,8 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color: HhColors.blackTextColor,
-                                          fontSize: 13.sp * 3,fontWeight: FontWeight.w500),
+                                          fontSize: 13.sp * 3,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   )
                                 ],
@@ -945,15 +1006,18 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                margin: EdgeInsets.only(left: 5.w*3),
+                                margin: EdgeInsets.only(left: 5.w * 3),
                                 child: Text(
                                   "降水量",
                                   style: TextStyle(
                                       color: HhColors.blackTextColor,
-                                      fontSize: 11.sp * 3,fontWeight: FontWeight.w500),
+                                      fontSize: 11.sp * 3,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ),
-                              SizedBox(height: 5.w*3,),
+                              SizedBox(
+                                height: 5.w * 3,
+                              ),
                               Row(
                                 children: [
                                   Image.asset(
@@ -962,15 +1026,20 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                                     height: 20.w * 3,
                                     fit: BoxFit.fill,
                                   ),
-                                  SizedBox(width: 2.w*3,),
+                                  SizedBox(
+                                    width: 2.w * 3,
+                                  ),
                                   Expanded(
                                     child: Text(
-                                      CommonUtils().parseNull("${logic.weatherModel.value["precip"]}", ""),
+                                      CommonUtils().parseNull(
+                                          "${logic.weatherModel.value["precip"]}",
+                                          ""),
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color: HhColors.blackTextColor,
-                                          fontSize: 13.sp * 3,fontWeight: FontWeight.w500),
+                                          fontSize: 13.sp * 3,
+                                          fontWeight: FontWeight.w500),
                                     ),
                                   )
                                 ],
@@ -984,25 +1053,28 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                 ],
               ),
             ),
+
             ///tab
             Row(
               children: [
-                SizedBox(width: 14.w*3,),
+                SizedBox(
+                  width: 14.w * 3,
+                ),
                 HhTap(
                   overlayColor: HhColors.trans,
-                  onTapUp: (){
+                  onTapUp: () {
                     logic.weatherIndex.value = 0;
                     logic.get7daysWeatherByDeviceNo();
                   },
                   child: Container(
-                    height: 40.w*3,
-                    width: 88.w*3,
+                    height: 40.w * 3,
+                    width: 88.w * 3,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                         color: HhColors.whiteColor,
-                        borderRadius: BorderRadius.circular(8.w*3),
-                        border: Border.all(color: HhColors.grayDDTextColor, width: 2.w)
-                    ),
+                        borderRadius: BorderRadius.circular(8.w * 3),
+                        border: Border.all(
+                            color: HhColors.grayDDTextColor, width: 2.w)),
                     child: Text(
                       '最新天气',
                       style: TextStyle(
@@ -1013,22 +1085,24 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(width: 20.w*3,),
+                SizedBox(
+                  width: 20.w * 3,
+                ),
                 HhTap(
                   overlayColor: HhColors.trans,
-                  onTapUp: (){
+                  onTapUp: () {
                     logic.weatherIndex.value = 1;
                     logic.getHistoricalWeatherByDeviceNo();
                   },
                   child: Container(
-                    height: 40.w*3,
-                    width: 88.w*3,
+                    height: 40.w * 3,
+                    width: 88.w * 3,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                         color: HhColors.whiteColor,
-                        borderRadius: BorderRadius.circular(8.w*3),
-                        border: Border.all(color: HhColors.grayDDTextColor, width: 2.w)
-                    ),
+                        borderRadius: BorderRadius.circular(8.w * 3),
+                        border: Border.all(
+                            color: HhColors.grayDDTextColor, width: 2.w)),
                     child: Text(
                       '过去7天',
                       style: TextStyle(
@@ -1045,11 +1119,12 @@ class HXYZDeviceDetailPage extends StatelessWidget {
             ///七天天气
             Container(
               width: 1.sw,
-              margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 10.w*3),
-              padding: EdgeInsets.only(bottom: 15.w*3),
+              margin:
+                  EdgeInsets.fromLTRB(14.w * 3, 10.w * 3, 14.w * 3, 10.w * 3),
+              padding: EdgeInsets.only(bottom: 15.w * 3),
               decoration: BoxDecoration(
                 color: HhColors.whiteColor,
-                borderRadius: BorderRadius.circular(8.w*3),
+                borderRadius: BorderRadius.circular(8.w * 3),
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -1067,102 +1142,114 @@ class HXYZDeviceDetailPage extends StatelessWidget {
     for (int i = 0; i < logic.weatherList.length; i++) {
       dynamic model = logic.weatherList.value[i];
       late WebViewController webController = WebViewController()
-        ..setBackgroundColor(HhColors.trans)..runJavaScript(
-            "document.documentElement.style.overflow = 'hidden';"
-                "document.body.style.overflow = 'hidden';");
+        ..setBackgroundColor(HhColors.trans)
+        ..runJavaScript("document.documentElement.style.overflow = 'hidden';"
+            "document.body.style.overflow = 'hidden';");
       webController.setJavaScriptMode(JavaScriptMode.unrestricted);
       webController.enableZoom(true);
-      webController.runJavaScript(
-          "document.documentElement.style.overflow = 'hidden';"
+      webController
+          .runJavaScript("document.documentElement.style.overflow = 'hidden';"
               "document.body.style.overflow = 'hidden';");
       webController.setBackgroundColor(HhColors.trans);
       String weatherUrl = CommonUtils().getHeFengIcon(
-          ((logic.weatherIndex.value==0?"${model['textDay']}".contains("晴"):"${model['text']}".contains("晴") )? "FFB615" : "368EFF"), logic.weatherIndex.value==0?"${model['iconDay']}":"${model['icon']}", "100");
+          ((logic.weatherIndex.value == 0
+                  ? "${model['textDay']}".contains("晴")
+                  : "${model['text']}".contains("晴"))
+              ? "FFB615"
+              : "368EFF"),
+          logic.weatherIndex.value == 0
+              ? "${model['iconDay']}"
+              : "${model['icon']}",
+          "100");
       webController.loadRequest(Uri.parse(weatherUrl));
-      String week = CommonUtils().parseWeek(logic.weatherIndex.value==0?CommonUtils().parseNull('${model["fxDate"]}', "")
-          :CommonUtils().parseNull('${model["date"]}', ""));
-      String time = CommonUtils().parseTime(logic.weatherIndex.value==0?CommonUtils().parseNull('${model["fxDate"]}', "")
-          :CommonUtils().parseNull('${model["date"]}', ""));
-      list.add(
-          Container(
-            margin: EdgeInsets.fromLTRB(20.w*3, 15.w*3, 20.w*3, 0),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 100.w*3,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        week,
-                        style: TextStyle(
-                            color: HhColors.blackTextColor,
-                            fontSize: 14.sp * 3),
-                      ),
-                      Text(
-                        time,
-                        style: TextStyle(
-                            color: HhColors.gray9TextColor,
-                            fontSize: 12.sp * 3),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                    width: 26.w*3,
-                    height: 26.w*3,
-                    child: WebViewWidget(controller: webController,)),
-                const Spacer(),
-                Container(
-                  color: HhColors.trans,
-                  alignment: Alignment.center,
-                  width: 35.w*3,
-                  height: 35.w*3,
-                  child: Text(
-                    '${CommonUtils().parseNull("${model["tempMax"]}", "")}°',
+      String week = CommonUtils().parseWeek(logic.weatherIndex.value == 0
+          ? CommonUtils().parseNull('${model["fxDate"]}', "")
+          : CommonUtils().parseNull('${model["date"]}', ""));
+      String time = CommonUtils().parseTime(logic.weatherIndex.value == 0
+          ? CommonUtils().parseNull('${model["fxDate"]}', "")
+          : CommonUtils().parseNull('${model["date"]}', ""));
+      list.add(Container(
+        margin: EdgeInsets.fromLTRB(20.w * 3, 15.w * 3, 20.w * 3, 0),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 100.w * 3,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    week,
                     style: TextStyle(
-                        color: HhColors.blackTextColor,
-                        fontSize: 14.sp * 3),
+                        color: HhColors.blackTextColor, fontSize: 14.sp * 3),
                   ),
-                ),
-                SizedBox(width: 3.w*3,),
-                Container(
-                  height: 4.w*3,
-                  width: 63.w*3,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(2.w*3),
-                    gradient: const LinearGradient(
-                      colors: [
-                        HhColors.weather1,
-                        HhColors.weather2,
-                        HhColors.weather3,
-                        HhColors.weather4,
-                        HhColors.weather5,
-                      ],
-                      begin: Alignment.centerLeft,
-                      end: Alignment.centerRight,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 5.w*3,),
-                Container(
-                  color: HhColors.trans,
-                  alignment: Alignment.center,
-                  width: 35.w*3,
-                  height: 35.w*3,
-                  child: Text(
-                    '${CommonUtils().parseNull("${model["tempMin"]}", "")}°',
+                  Text(
+                    time,
                     style: TextStyle(
-                        color: HhColors.blackTextColor,
-                        fontSize: 14.sp * 3),
+                        color: HhColors.gray9TextColor, fontSize: 12.sp * 3),
                   ),
-                ),
-                SizedBox(width: 10.w*3,),
-              ],
+                ],
+              ),
             ),
-          )
-      );
+            SizedBox(
+                width: 26.w * 3,
+                height: 26.w * 3,
+                child: WebViewWidget(
+                  controller: webController,
+                )),
+            const Spacer(),
+            Container(
+              color: HhColors.trans,
+              alignment: Alignment.center,
+              width: 35.w * 3,
+              height: 35.w * 3,
+              child: Text(
+                '${CommonUtils().parseNull("${model["tempMax"]}", "")}°',
+                style: TextStyle(
+                    color: HhColors.blackTextColor, fontSize: 14.sp * 3),
+              ),
+            ),
+            SizedBox(
+              width: 3.w * 3,
+            ),
+            Container(
+              height: 4.w * 3,
+              width: 63.w * 3,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(2.w * 3),
+                gradient: const LinearGradient(
+                  colors: [
+                    HhColors.weather1,
+                    HhColors.weather2,
+                    HhColors.weather3,
+                    HhColors.weather4,
+                    HhColors.weather5,
+                  ],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 5.w * 3,
+            ),
+            Container(
+              color: HhColors.trans,
+              alignment: Alignment.center,
+              width: 35.w * 3,
+              height: 35.w * 3,
+              child: Text(
+                '${CommonUtils().parseNull("${model["tempMin"]}", "")}°',
+                style: TextStyle(
+                    color: HhColors.blackTextColor, fontSize: 14.sp * 3),
+              ),
+            ),
+            SizedBox(
+              width: 10.w * 3,
+            ),
+          ],
+        ),
+      ));
       webController.loadRequest(Uri.parse(weatherUrl));
     }
     return list;
@@ -1189,18 +1276,19 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                 child: Container(
                   width: 240.h * 3,
                   height: 240.h * 3,
-                  margin: EdgeInsets.only(top: 10.h*3),
+                  margin: EdgeInsets.only(top: 10.h * 3),
                   child: Stack(
                     children: [
                       Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(120.h*3),
+                          borderRadius: BorderRadius.circular(120.h * 3),
                           boxShadow: [
                             BoxShadow(
-                              color: HhColors.shadowColor.withOpacity(0.9), // 阴影颜色及透明度
-                              spreadRadius: 0.8,  // 阴影扩展的范围
-                              blurRadius: 8,   // 阴影的模糊程度
-                              offset: const Offset(0, 4),  // 阴影的偏移量
+                              color: HhColors.shadowColor
+                                  .withOpacity(0.9), // 阴影颜色及透明度
+                              spreadRadius: 0.8, // 阴影扩展的范围
+                              blurRadius: 8, // 阴影的模糊程度
+                              offset: const Offset(0, 4), // 阴影的偏移量
                             ),
                           ],
                         ),
@@ -1214,16 +1302,16 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                       Align(
                         alignment: Alignment.topCenter,
                         child: GestureDetector(
-                          onTapDown: (v){
+                          onTapDown: (v) {
                             logic.upTap.value = true;
                             logic.command = "UP";
                             logic.controlPost(0);
                           },
-                          onTapUp: (v){
+                          onTapUp: (v) {
                             logic.upTap.value = false;
                             logic.controlPost(1);
                           },
-                          onTapCancel: (){
+                          onTapCancel: () {
                             logic.upTap.value = false;
                             logic.controlPost(1);
                           },
@@ -1233,7 +1321,9 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             child: Stack(
                               children: [
                                 Image.asset(
-                                  logic.upTap.value?"assets/images/common/icon_tap_up.png":"assets/images/common/icon_null.png",
+                                  logic.upTap.value
+                                      ? "assets/images/common/icon_tap_up.png"
+                                      : "assets/images/common/icon_null.png",
                                   width: 85.h * 3,
                                   height: 63.h * 3,
                                   fit: BoxFit.fill,
@@ -1255,16 +1345,16 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: GestureDetector(
-                          onTapDown: (v){
+                          onTapDown: (v) {
                             logic.downTap.value = true;
                             logic.command = "DOWN";
                             logic.controlPost(0);
                           },
-                          onTapUp: (v){
+                          onTapUp: (v) {
                             logic.downTap.value = false;
                             logic.controlPost(1);
                           },
-                          onTapCancel: (){
+                          onTapCancel: () {
                             logic.downTap.value = false;
                             logic.controlPost(1);
                           },
@@ -1274,7 +1364,9 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             child: Stack(
                               children: [
                                 Image.asset(
-                                  logic.downTap.value?"assets/images/common/icon_tap_down.png":"assets/images/common/icon_null.png",
+                                  logic.downTap.value
+                                      ? "assets/images/common/icon_tap_down.png"
+                                      : "assets/images/common/icon_null.png",
                                   width: 85.h * 3,
                                   height: 63.h * 3,
                                   fit: BoxFit.fill,
@@ -1296,16 +1388,16 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                       Align(
                         alignment: Alignment.centerLeft,
                         child: GestureDetector(
-                          onTapDown: (v){
+                          onTapDown: (v) {
                             logic.leftTap.value = true;
                             logic.command = "LEFT";
                             logic.controlPost(0);
                           },
-                          onTapUp: (v){
+                          onTapUp: (v) {
                             logic.leftTap.value = false;
                             logic.controlPost(1);
                           },
-                          onTapCancel: (){
+                          onTapCancel: () {
                             logic.leftTap.value = false;
                             logic.controlPost(1);
                           },
@@ -1315,7 +1407,9 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             child: Stack(
                               children: [
                                 Image.asset(
-                                  logic.leftTap.value?"assets/images/common/icon_tap_left.png":"assets/images/common/icon_null.png",
+                                  logic.leftTap.value
+                                      ? "assets/images/common/icon_tap_left.png"
+                                      : "assets/images/common/icon_null.png",
                                   width: 63.h * 3,
                                   height: 85.h * 3,
                                   fit: BoxFit.fill,
@@ -1338,16 +1432,16 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
                           behavior: HitTestBehavior.opaque,
-                          onTapDown: (v){
+                          onTapDown: (v) {
                             logic.rightTap.value = true;
                             logic.command = "RIGHT";
                             logic.controlPost(0);
                           },
-                          onTapUp: (v){
+                          onTapUp: (v) {
                             logic.rightTap.value = false;
                             logic.controlPost(1);
                           },
-                          onTapCancel: (){
+                          onTapCancel: () {
                             logic.rightTap.value = false;
                             logic.controlPost(1);
                           },
@@ -1357,7 +1451,9 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                             child: Stack(
                               children: [
                                 Image.asset(
-                                  logic.rightTap.value?"assets/images/common/icon_tap_right.png":"assets/images/common/icon_null.png",
+                                  logic.rightTap.value
+                                      ? "assets/images/common/icon_tap_right.png"
+                                      : "assets/images/common/icon_null.png",
                                   width: 63.h * 3,
                                   height: 85.h * 3,
                                   fit: BoxFit.fill,
@@ -1379,49 +1475,45 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                       Align(
                         alignment: Alignment.topRight,
                         child: Container(
-                          width: 6.h*3,
-                          height: 6.h*3,
-                          margin: EdgeInsets.fromLTRB(0, 52.h*3, 52.h*3, 0),
+                          width: 6.h * 3,
+                          height: 6.h * 3,
+                          margin: EdgeInsets.fromLTRB(0, 52.h * 3, 52.h * 3, 0),
                           decoration: BoxDecoration(
-                            color: HhColors.grayC3TextColor,
-                            borderRadius: BorderRadius.circular(3.h*3)
-                          ),
+                              color: HhColors.grayC3TextColor,
+                              borderRadius: BorderRadius.circular(3.h * 3)),
                         ),
                       ),
                       Align(
                         alignment: Alignment.bottomRight,
                         child: Container(
-                          width: 6.h*3,
-                          height: 6.h*3,
-                          margin: EdgeInsets.fromLTRB(0, 0, 52.h*3, 52.h*3),
+                          width: 6.h * 3,
+                          height: 6.h * 3,
+                          margin: EdgeInsets.fromLTRB(0, 0, 52.h * 3, 52.h * 3),
                           decoration: BoxDecoration(
-                            color: HhColors.grayC3TextColor,
-                            borderRadius: BorderRadius.circular(3.h*3)
-                          ),
+                              color: HhColors.grayC3TextColor,
+                              borderRadius: BorderRadius.circular(3.h * 3)),
                         ),
                       ),
                       Align(
                         alignment: Alignment.bottomLeft,
                         child: Container(
-                          width: 6.h*3,
-                          height: 6.h*3,
-                          margin: EdgeInsets.fromLTRB(52.h*3, 0, 0, 52.h*3),
+                          width: 6.h * 3,
+                          height: 6.h * 3,
+                          margin: EdgeInsets.fromLTRB(52.h * 3, 0, 0, 52.h * 3),
                           decoration: BoxDecoration(
-                            color: HhColors.grayC3TextColor,
-                            borderRadius: BorderRadius.circular(3.h*3)
-                          ),
+                              color: HhColors.grayC3TextColor,
+                              borderRadius: BorderRadius.circular(3.h * 3)),
                         ),
                       ),
                       Align(
                         alignment: Alignment.topLeft,
                         child: Container(
-                          width: 6.h*3,
-                          height: 6.h*3,
-                          margin: EdgeInsets.fromLTRB(52.h*3, 52.h*3, 0, 0),
+                          width: 6.h * 3,
+                          height: 6.h * 3,
+                          margin: EdgeInsets.fromLTRB(52.h * 3, 52.h * 3, 0, 0),
                           decoration: BoxDecoration(
-                            color: HhColors.grayC3TextColor,
-                            borderRadius: BorderRadius.circular(3.h*3)
-                          ),
+                              color: HhColors.grayC3TextColor,
+                              borderRadius: BorderRadius.circular(3.h * 3)),
                         ),
                       ),
                       Align(
@@ -1433,6 +1525,7 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                               fontSize: 14.sp * 3),
                         ),
                       ),
+
                       ///控制背景阴影
                       /*Align(
                         alignment: Alignment.center,
@@ -1600,7 +1693,6 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                               ),
                             ),
                           )),*/
-
                     ],
                   ),
                 ),
@@ -1889,327 +1981,729 @@ class HXYZDeviceDetailPage extends StatelessWidget {
 
   dataPage() {
     final size = MediaQuery.of(logic.context).size;
-    return logic.dataStatus.value?SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ///园区火险因子展示--火险等级-电量-当日用电量
-          Container(
-            width: 1.sw,
-            margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 10.w*3),
-            padding: EdgeInsets.all(15.w*3),
-            decoration: BoxDecoration(
-              color: HhColors.whiteColor,
-              borderRadius: BorderRadius.circular(8.w*3)
-            ),
+    return logic.dataStatus.value
+        ? SingleChildScrollView(
+            scrollDirection: Axis.vertical,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(logic.name.value,style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w600),),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("火险等级",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text(logic.parseLevel(logic.fireLevel.value),style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
+                ///园区火险因子展示--火险等级-电量-当日用电量
+                Container(
+                  width: 1.sw,
+                  margin: EdgeInsets.fromLTRB(
+                      14.w * 3, 10.w * 3, 14.w * 3, 10.w * 3),
+                  padding: EdgeInsets.all(15.w * 3),
+                  decoration: BoxDecoration(
+                      color: HhColors.whiteColor,
+                      borderRadius: BorderRadius.circular(8.w * 3)),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        logic.name.value,
+                        style: TextStyle(
+                            color: HhColors.blackColor,
+                            fontSize: 15.sp * 3,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "火险等级",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            logic.parseLevel(logic.fireLevel.value),
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "电量",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${logic.energyQuantity.value}%",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "当日用电量",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${logic.energyConsumption.value}KWH",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("电量",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${logic.energyQuantity.value}%",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("当日用电量",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${logic.energyConsumption.value}KWH",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
+                Container(
+                  width: 1.sw,
+                  margin: EdgeInsets.fromLTRB(
+                      14.w * 3, 10.w * 3, 14.w * 3, 10.w * 3),
+                  padding: EdgeInsets.all(15.w * 3),
+                  decoration: BoxDecoration(
+                      color: HhColors.whiteColor,
+                      borderRadius: BorderRadius.circular(8.w * 3)),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ///操作按钮--最新-上一条-下一条
+                      Row(
+                        children: [
+                          BouncingWidget(
+                            duration: const Duration(milliseconds: 100),
+                            scaleFactor: 1.2,
+                            onPressed: () {
+                              logic.dataPageNum = 1;
+                              logic.getDataPage();
+                            },
+                            child: Container(
+                                height: 40.w * 3,
+                                width: 70.w * 3,
+                                decoration: BoxDecoration(
+                                    color: HhColors.whiteColor,
+                                    border: Border.all(
+                                        color: HhColors.grayEEBackColor),
+                                    borderRadius:
+                                        BorderRadius.circular(8.w * 3)),
+                                child: Center(
+                                    child: Text(
+                                  "最新",
+                                  style: TextStyle(
+                                      color: HhColors.blueTextColor,
+                                      fontSize: 14.sp * 3),
+                                ))),
+                          ),
+                          const Expanded(child: SizedBox()),
+                          BouncingWidget(
+                            duration: const Duration(milliseconds: 100),
+                            scaleFactor: 1.2,
+                            onPressed: () {
+                              logic.dataPageNum--;
+                              if (logic.dataPageNum < 1) {
+                                logic.dataPageNum = 1;
+                                EventBusUtil.getInstance().fire(HhToast(
+                                    title: "当前已是第一条\n已为您加载最新一条数据", type: 0));
+                              }
+                              logic.getDataPage();
+                            },
+                            child: Container(
+                                height: 40.w * 3,
+                                width: 70.w * 3,
+                                decoration: BoxDecoration(
+                                    color: HhColors.whiteColor,
+                                    border: Border.all(
+                                        color: HhColors.grayEEBackColor),
+                                    borderRadius:
+                                        BorderRadius.circular(8.w * 3)),
+                                child: Center(
+                                    child: Text(
+                                  "上一条",
+                                  style: TextStyle(
+                                      color: HhColors.blackColor,
+                                      fontSize: 14.sp * 3),
+                                ))),
+                          ),
+                          const Expanded(child: SizedBox()),
+                          BouncingWidget(
+                            duration: const Duration(milliseconds: 100),
+                            scaleFactor: 1.2,
+                            onPressed: () {
+                              logic.dataPageNum++;
+                              logic.getDataPage();
+                            },
+                            child: Container(
+                                height: 40.w * 3,
+                                width: 70.w * 3,
+                                decoration: BoxDecoration(
+                                    color: HhColors.whiteColor,
+                                    border: Border.all(
+                                        color: HhColors.grayEEBackColor),
+                                    borderRadius:
+                                        BorderRadius.circular(8.w * 3)),
+                                child: Center(
+                                    child: Text(
+                                  "下一条",
+                                  style: TextStyle(
+                                      color: HhColors.blackColor,
+                                      fontSize: 14.sp * 3),
+                                ))),
+                          ),
+                          const Expanded(child: SizedBox()),
+                          BouncingWidget(
+                            duration: const Duration(milliseconds: 100),
+                            scaleFactor: 1.2,
+                            onPressed: () {
+                              Get.to(() => HXYZEnergyMorePage(),
+                                  binding: HXYZEnergyMoreBinding(),
+                                  arguments: {"deviceNo": logic.deviceNo});
+                            },
+                            child: Container(
+                                height: 40.w * 3,
+                                width: 70.w * 3,
+                                decoration: BoxDecoration(
+                                    color: HhColors.whiteColor,
+                                    border: Border.all(
+                                        color: HhColors.grayEEBackColor),
+                                    borderRadius:
+                                        BorderRadius.circular(8.w * 3)),
+                                child: Center(
+                                    child: Text(
+                                  "更多",
+                                  style: TextStyle(
+                                      color: HhColors.blackColor,
+                                      fontSize: 14.sp * 3),
+                                ))),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15.w * 3,
+                      ),
+
+                      ///信息start--
+                      ///太阳能控制器--
+                      Row(
+                        children: [
+                          Text(
+                            "太阳能控制器",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          Expanded(
+                              child: Text(
+                            CommonUtils().parseLongTime(
+                                "${logic.energyModel["collectTime"]}"),
+                            style: TextStyle(
+                              color: HhColors.gray9TextColor,
+                              fontSize: 15.sp * 3,
+                            ),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "负载电压",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["loadVoltage"] ?? "-"}", 2)}V",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "负载电流",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["loadCurrent"] ?? "-"}", 2)}A",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "太阳能电压",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["solarVoltage"] ?? "-"}", 2)}V",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "太阳能电流",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["solarCurrent"] ?? "-"}", 2)}A",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "蓄电池剩余电量",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["batteryRemain"] ?? "-"}", 2)}%",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "蓄电池电压",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["batteryVoltage"] ?? "-"}", 2)}V",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "蓄电池电流",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["batteryCurrent"] ?? "-"}", 2)}A",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+
+                      ///土壤传感数据--
+                      SizedBox(
+                        height: 5.w * 3,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "土壤传感数据",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          Expanded(
+                              child: Text(
+                            CommonUtils().parseLongTime(
+                                "${logic.energyModel["collectTime"]}"),
+                            style: TextStyle(
+                              color: HhColors.gray9TextColor,
+                              fontSize: 15.sp * 3,
+                            ),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "土壤湿度",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["soilVolumetricMoisture"] ?? "-"}", 2)}%",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "凋落物湿度",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["litterMassMoisture"] ?? "-"}", 2)}%",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "地表温度",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["surfaceTemperature"] ?? "-"}", 2)}°C",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "地表湿度",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["surfaceHumidity"] ?? "-"}", 2)}%",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "倾角X",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["inclinationX"] ?? "0"}", 2)}°",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "倾角Y",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["inclinationY"] ?? "0"}", 2)}°",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "倾角Z",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["inclinationZ"] ?? "0"}", 2)}°",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+
+                      ///气象站信息-
+                      SizedBox(
+                        height: 5.w * 3,
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "气象站信息",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          Expanded(
+                              child: Text(
+                            CommonUtils().parseLongTime(
+                                "${logic.energyModel["collectTime"]}"),
+                            style: TextStyle(
+                              color: HhColors.gray9TextColor,
+                              fontSize: 15.sp * 3,
+                            ),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "空气温度",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["airTemperature"] ?? "-"}", 2)}°C",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "空气湿度",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["airHumidity"] ?? "-"}", 2)}%",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "大气压力",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["airPressure"] ?? "-"}", 2)}KPa",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "风向(0-360°)",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${logic.energyModel["windDirection"] ?? "-"}",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "风速",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["windSpeed"] ?? "-"}", 2)}m/s",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "光照强度",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["illuminance"] ?? "-"}", 2)}Lux",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+                      CommonUtils.line(
+                          marginTop: 13.w * 3, marginBottom: 13.w * 3),
+                      Row(
+                        children: [
+                          Text(
+                            "雨量",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                          ),
+                          Expanded(
+                              child: Text(
+                            "${CommonUtils().parseDoubleNumber("${logic.energyModel["rainfall"] ?? "0"}", 2)}mm",
+                            style: TextStyle(
+                                color: HhColors.blackColor,
+                                fontSize: 15.sp * 3),
+                            textAlign: TextAlign.end,
+                          )),
+                        ],
+                      ),
+
+                      ///信息end--
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-          Container(
-            width: 1.sw,
-            margin: EdgeInsets.fromLTRB(14.w*3, 10.w*3, 14.w*3, 10.w*3),
-            padding: EdgeInsets.all(15.w*3),
-            decoration: BoxDecoration(
-                color: HhColors.whiteColor,
-                borderRadius: BorderRadius.circular(8.w*3)
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ///操作按钮--最新-上一条-下一条
-                Row(
-                  children: [
-                    BouncingWidget(
-                      duration: const Duration(milliseconds: 100),
-                      scaleFactor: 1.2,
-                      onPressed: () {
-                        logic.dataPageNum = 1;
-                        logic.getDataPage();
-                      },
-                      child: Container(
-                          height: 40.w*3,
-                          width: 70.w*3,
-                          decoration: BoxDecoration(
-                              color: HhColors.whiteColor,
-                              border: Border.all(color: HhColors.grayEEBackColor),
-                              borderRadius: BorderRadius.circular(8.w*3)
-                          ),
-                          child: Center(child: Text("最新",style: TextStyle(color: HhColors.blueTextColor,fontSize: 14.sp*3),))
-                      ),
-                    ),
-                    const Expanded(child: SizedBox()),
-                    BouncingWidget(
-                      duration: const Duration(milliseconds: 100),
-                      scaleFactor: 1.2,
-                      onPressed: () {
-                        logic.dataPageNum--;
-                        if(logic.dataPageNum<1){
-                          logic.dataPageNum = 1;
-                          EventBusUtil.getInstance().fire(HhToast(title: "当前已是第一条\n已为您加载最新一条数据",type: 0));
-                        }
-                        logic.getDataPage();
-                      },
-                      child: Container(
-                          height: 40.w*3,
-                          width: 70.w*3,
-                          decoration: BoxDecoration(
-                              color: HhColors.whiteColor,
-                              border: Border.all(color: HhColors.grayEEBackColor),
-                              borderRadius: BorderRadius.circular(8.w*3)
-                          ),
-                          child: Center(child: Text("上一条",style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),))
-                      ),
-                    ),
-                    const Expanded(child: SizedBox()),
-                    BouncingWidget(
-                      duration: const Duration(milliseconds: 100),
-                      scaleFactor: 1.2,
-                      onPressed: () {
-                        logic.dataPageNum++;
-                        logic.getDataPage();
-                      },
-                      child: Container(
-                          height: 40.w*3,
-                          width: 70.w*3,
-                          decoration: BoxDecoration(
-                              color: HhColors.whiteColor,
-                              border: Border.all(color: HhColors.grayEEBackColor),
-                              borderRadius: BorderRadius.circular(8.w*3)
-                          ),
-                          child: Center(child: Text("下一条",style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),))
-                      ),
-                    ),
-                    const Expanded(child: SizedBox()),
-                    BouncingWidget(
-                      duration: const Duration(milliseconds: 100),
-                      scaleFactor: 1.2,
-                      onPressed: () {
-
-                      },
-                      child: Container(
-                          height: 40.w*3,
-                          width: 70.w*3,
-                          decoration: BoxDecoration(
-                              color: HhColors.whiteColor,
-                              border: Border.all(color: HhColors.grayEEBackColor),
-                              borderRadius: BorderRadius.circular(8.w*3)
-                          ),
-                          child: Center(child: Text("更多",style: TextStyle(color: HhColors.blackColor,fontSize: 14.sp*3),))
-                      ),
-                    ),
-
-                  ],
-                ),
-                SizedBox(height: 15.w*3,),
-                ///太阳能控制器--
-                Row(
-                  children: [
-                    Text("太阳能控制器",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w600),),
-                    Expanded(child: Text(CommonUtils().parseLongTime("${logic.energyModel["collectTime"]}"),style: TextStyle(color: HhColors.gray9TextColor,fontSize: 15.sp*3,),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("负载电压",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["loadVoltage"]??"-"}",2)}V",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("负载电流",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["loadCurrent"]??"-"}",2)}A",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("太阳能电压",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["solarVoltage"]??"-"}",2)}V",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("太阳能电流",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["solarCurrent"]??"-"}",2)}A",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("蓄电池剩余电量",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["batteryRemain"]??"-"}",2)}%",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("蓄电池电压",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["batteryVoltage"]??"-"}",2)}V",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("蓄电池电流",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["batteryCurrent"]??"-"}",2)}A",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-
-                ///土壤传感数据--
-                SizedBox(height: 5.w*3,),
-                Row(
-                  children: [
-                    Text("土壤传感数据",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w600),),
-                    Expanded(child: Text(CommonUtils().parseLongTime("${logic.energyModel["collectTime"]}"),style: TextStyle(color: HhColors.gray9TextColor,fontSize: 15.sp*3,),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("土壤湿度",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["soilVolumetricMoisture"]??"-"}",2)}%",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("凋落物湿度",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["litterMassMoisture"]??"-"}",2)}%",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("地表温度",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["surfaceTemperature"]??"-"}",2)}°C",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("地表湿度",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["surfaceHumidity"]??"-"}",2)}%",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("倾角X",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["inclinationX"]??"0"}",2)}°",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("倾角Y",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["inclinationY"]??"0"}",2)}°",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("倾角Z",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["inclinationZ"]??"0"}",2)}°",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-
-                ///气象站信息-
-                SizedBox(height: 5.w*3,),
-                Row(
-                  children: [
-                    Text("气象站信息",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w600),),
-                    Expanded(child: Text(CommonUtils().parseLongTime("${logic.energyModel["collectTime"]}"),style: TextStyle(color: HhColors.gray9TextColor,fontSize: 15.sp*3,),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("空气温度",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["airTemperature"]??"-"}",2)}°C",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("空气湿度",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["airHumidity"]??"-"}",2)}%",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("大气压力",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["airPressure"]??"-"}",2)}KPa",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("风向(0-360°)",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${logic.energyModel["windDirection"]??"-"}",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("风速",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["windSpeed"]??"-"}",2)}m/s",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("光照强度",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["illuminance"]??"-"}",2)}Lux",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-                CommonUtils.line(marginTop: 13.w*3,marginBottom: 13.w*3),
-                Row(
-                  children: [
-                    Text("雨量",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),),
-                    Expanded(child: Text("${CommonUtils().parseDoubleNumber("${logic.energyModel["rainfall"]??"0"}",2)}mm",style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3),textAlign: TextAlign.end,)),
-                  ],
-                ),
-
-              ],
-            ),
-          ),
-        ],
-      ),
-    ):const SizedBox();
+          )
+        : const SizedBox();
   }
 
   historyPage() {
@@ -2245,48 +2739,55 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                       decoration: BoxDecoration(
                           borderRadius:
                               BorderRadius.all(Radius.circular(20.h))),
-                      child: "${item['alarmType']}".contains("offline")?SizedBox(
-                        width: 109.h * 3,
-                        height: 59.h * 3,
-                        child: Center(
-                          child: Image.asset(
-                            "assets/images/common/icon_offline_warn.png",
-                            width: 109.h * 3,
-                            height: 59.h * 3,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ):item['alarmImageUrl']==null?SizedBox(
-                        width: 109.h * 3,
-                        height: 59.h * 3,
-                        child: Center(
-                          child: Image.asset(
-                            "assets/images/common/ic_message_no.png",
-                            width: 109.h * 3,
-                            height: 59.h * 3,
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ):InkWell(
-                        onTap: (){
-                          CommonUtils().showPictureDialog(context, url:"${CommonData.endpoint}${item['alarmImageUrl']}");
-                        },
-                        child: Image.network(
-                          '${logic.endpoint}${item['alarmImageUrl']}',
-                          width: 109.h * 3,
-                          height: 59.h * 3,
-                          fit: BoxFit.fill,
-                          errorBuilder: (BuildContext context, Object exception,
-                              StackTrace? stackTrace) {
-                            return Image.asset(
-                              "assets/images/common/ic_message_no.png",
+                      child: "${item['alarmType']}".contains("offline")
+                          ? SizedBox(
                               width: 109.h * 3,
                               height: 59.h * 3,
-                              fit: BoxFit.fill,
-                            );
-                          },
-                        ),
-                      ),
+                              child: Center(
+                                child: Image.asset(
+                                  "assets/images/common/icon_offline_warn.png",
+                                  width: 109.h * 3,
+                                  height: 59.h * 3,
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            )
+                          : item['alarmImageUrl'] == null
+                              ? SizedBox(
+                                  width: 109.h * 3,
+                                  height: 59.h * 3,
+                                  child: Center(
+                                    child: Image.asset(
+                                      "assets/images/common/ic_message_no.png",
+                                      width: 109.h * 3,
+                                      height: 59.h * 3,
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
+                                )
+                              : InkWell(
+                                  onTap: () {
+                                    CommonUtils().showPictureDialog(context,
+                                        url:
+                                            "${CommonData.endpoint}${item['alarmImageUrl']}");
+                                  },
+                                  child: Image.network(
+                                    '${logic.endpoint}${item['alarmImageUrl']}',
+                                    width: 109.h * 3,
+                                    height: 59.h * 3,
+                                    fit: BoxFit.fill,
+                                    errorBuilder: (BuildContext context,
+                                        Object exception,
+                                        StackTrace? stackTrace) {
+                                      return Image.asset(
+                                        "assets/images/common/ic_message_no.png",
+                                        width: 109.h * 3,
+                                        height: 59.h * 3,
+                                        fit: BoxFit.fill,
+                                      );
+                                    },
+                                  ),
+                                ),
                     ),
                   ),
                   Container(
@@ -2468,11 +2969,11 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                         scaleFactor: 1.2,
                         onPressed: () {
                           Get.back();
-                          Get.to(
-                                  () => MapLocationSearchPage(),
+                          Get.to(() => MapLocationSearchPage(),
                               binding: MapLocationSearchBinding(),
                               arguments: {
-                                "name": CommonUtils().parseNull("${item['name']}", "")
+                                "name": CommonUtils()
+                                    .parseNull("${item['name']}", "")
                               });
                         },
                         child: Column(
@@ -2594,8 +3095,10 @@ class HXYZDeviceDetailPage extends StatelessWidget {
       list.add(InkWell(
         onTap: () {
           logic.liveIndex.value = i;
-          logic.deviceId = "${logic.liveList[logic.liveIndex.value]["deviceId"]}";
-          logic.channelNumber = "${logic.liveList[logic.liveIndex.value]["channelId"]}";
+          logic.deviceId =
+              "${logic.liveList[logic.liveIndex.value]["deviceId"]}";
+          logic.channelNumber =
+              "${logic.liveList[logic.liveIndex.value]["channelId"]}";
           logic.getPlayUrl(logic.deviceId, logic.channelNumber);
         },
         child: Container(
@@ -2625,9 +3128,9 @@ class HXYZDeviceDetailPage extends StatelessWidget {
 
   parseBatteryValue(String value) {
     int battery = 100;
-    try{
+    try {
       battery = int.parse(value.replaceAll("%", ""));
-    }catch(e){
+    } catch (e) {
       //
     }
     return battery;
