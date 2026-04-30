@@ -697,7 +697,14 @@ class MapPage extends StatelessWidget {
                           child: HhTap(
                             overlayColor: HhColors.trans,
                             onTapUp: () {
-                              logic.onTapSearchNavi(item);
+                              EventBusUtil.getInstance().fire(HhLoading(show: true,title: "加载中.."));
+                              //隐藏输入法
+                              FocusScope.of(logic.context).requestFocus(FocusNode());
+                              logic.hideSearchResult();
+                              Future.delayed(const Duration(milliseconds: 1000),(){
+                                EventBusUtil.getInstance().fire(HhLoading(show: false));
+                                logic.onTapSearchNavi(item);
+                              });
                             },
                             child: Container(
                               color: HhColors.trans,
