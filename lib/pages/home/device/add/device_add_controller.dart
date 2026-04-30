@@ -155,6 +155,11 @@ class DeviceAddController extends GetxController {
     var result = await HhHttp().request(RequestUtils.deviceCreate,method: DioMethod.post,data: data);
     HhLog.d("createDevice data -- $data");
     HhLog.d("createDevice result -- $result");
+    if("$result".contains("系统异常")){
+      EventBusUtil.getInstance().fire(HhToast(title: "请输入正确的设备SN码"));
+      addingStatus.value = 2;
+      return;
+    }
     if(result["code"]==0 && result["data"]!=null){
       Future.delayed(const Duration(seconds: 2),(){
         addingStatus.value = 1;
