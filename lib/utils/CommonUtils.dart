@@ -25,6 +25,7 @@ import 'package:iot/pages/home/device/detail/ligan/device_detail_binding.dart';
 import 'package:iot/pages/home/device/detail/ligan/device_detail_view.dart';
 import 'package:iot/pages/home/device/detail/yunweixiang/yunwei_detail_binding.dart';
 import 'package:iot/pages/home/device/detail/yunweixiang/yunwei_detail_view.dart';
+import 'package:iot/pages/home/mqtt/mqtt_controller.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
 import 'package:iot/utils/HhHttp.dart';
@@ -1306,6 +1307,15 @@ class CommonUtils {
     } catch (e) {
       //
     }
+    try {
+      if (Get.isRegistered<MqttController>()) {
+        final mqtt = Get.find<MqttController>();
+        mqtt.client.disconnect();
+        Get.delete<MqttController>(force: true);
+      }
+    } catch (e) {
+      //
+    }
     prefs.remove(SPKeys().token);
     CommonData.tenant = CommonData.tenantDef;
     CommonData.tenantName = CommonData.tenantNameDef;
@@ -1327,6 +1337,15 @@ class CommonUtils {
     XgFlutterPlugin().deleteAccount(id!, AccountType.UNKNOWN);
     XgFlutterPlugin().deleteAccount(token!, AccountType.UNKNOWN);
     XgFlutterPlugin().deleteTags([id, "test"]);
+    try {
+      if (Get.isRegistered<MqttController>()) {
+        final mqtt = Get.find<MqttController>();
+        mqtt.client.disconnect();
+        Get.delete<MqttController>(force: true);
+      }
+    } catch (e) {
+      //
+    }
     prefs.remove(SPKeys().token);
     CommonData.tenant = CommonData.tenantDef;
     CommonData.tenantName = CommonData.tenantNameDef;
