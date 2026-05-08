@@ -529,7 +529,6 @@ class LiGanDeviceDetailController extends GetxController {
               method: DioMethod.post, data: dataHik);
           HhLog.d("getPlayUrl hikResult -- $hikResult");
 
-          ///这里的hikResult就是真实的接口返回信息结构与之前的模拟数据相同
           if (hikResult["code"] == 0 && hikResult["data"] != null) {
             final Map<String, dynamic> hikSdkParams =
                 QcHikPlayerParams.extractSdkParamsFromBusinessResponse(
