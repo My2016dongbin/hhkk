@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -64,8 +65,10 @@ class QcHikPlayerParams {
     return {
       'tokenAppKey': '${ezvizData['tokenAppKey'] ?? ''}',
       'httpUrlToken': '${ezvizData['httpUrlToken'] ?? ''}',
-      'deviceSerial': '${data['deviceSerial'] ?? resourceDetail['deviceSerial'] ?? ''}',
-      'channelNo': (data['channelNo'] ?? resourceDetail['channelNum'] ?? 1) as int,
+      'deviceSerial':
+          '${data['deviceSerial'] ?? resourceDetail['deviceSerial'] ?? ''}',
+      'channelNo':
+          (data['channelNo'] ?? resourceDetail['channelNum'] ?? 1) as int,
       'deviceToken': '${deviceToken['deviceToken'] ?? ''}',
       'deviceGlobalToken': '${deviceToken['deviceGlobalToken'] ?? ''}',
       'deviceVideoToken': '${deviceToken['deviceVideoToken'] ?? ''}',
@@ -414,50 +417,6 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
   }
 
   Widget _buildCenterLayer(double scaleFactor) {
-    if (_exception != null && _exception!.isNotEmpty) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Image.asset(
-            'assets/images/common/ic_video_error.png',
-            width: 54 * scaleFactor,
-            height: 54 * scaleFactor,
-            fit: BoxFit.fill,
-          ),
-          SizedBox(height: 12 * scaleFactor),
-          Text(
-            _exception!,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 14 * scaleFactor,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: 20 * scaleFactor),
-          GestureDetector(
-            onTap: _restartPlay,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 22 * scaleFactor,
-                vertical: 8 * scaleFactor,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.18),
-                borderRadius: BorderRadius.circular(18 * scaleFactor),
-              ),
-              child: Text(
-                '重试',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 13 * scaleFactor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ],
-      );
-    }
     if (!_prepared) {
       return SizedBox(
         width: 26 * scaleFactor,
@@ -478,6 +437,68 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
           color: Colors.white,
         ),
         onPressed: _playOrPause,
+      ),
+    );
+  }
+
+  Widget _buildErrorLayer(Size viewSize) {
+    final double width = viewSize.width;
+    final double height = viewSize.height;
+    final double iconSize = min(
+      width * 0.15,
+      height * 0.24,
+    );
+    final double textSize = min(width * 0.07, 16.0);
+    return Align(
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(height: height * 0.06),
+          Image.asset(
+            'assets/images/common/ic_video_error.png',
+            width: iconSize,
+            height: iconSize,
+            fit: BoxFit.fill,
+          ),
+          SizedBox(height: height * 0.02),
+          Text(
+            '视频加载错误，请重试',
+            style: TextStyle(
+              color: const Color(0xFF666666),
+              fontSize: textSize,
+              fontWeight: FontWeight.w500,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          GestureDetector(
+            onTap: _restartPlay,
+            child: Container(
+              margin: EdgeInsets.only(
+                top: height * 0.05,
+              ),
+              padding: EdgeInsets.fromLTRB(
+                height * 0.06,
+                height * 0.01,
+                height * 0.06,
+                height * 0.015,
+              ),
+              decoration: BoxDecoration(
+                color: const Color(0xFF999999).withAlpha(130),
+                borderRadius: BorderRadius.circular(height * 0.02),
+              ),
+              child: Text(
+                '重试',
+                style: TextStyle(
+                  color: const Color(0xFFD5D5D5),
+                  fontSize: textSize,
+                  fontWeight: FontWeight.w500,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -548,75 +569,79 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
     }
     final double componentWidth = MediaQuery.of(context).size.width;
     final double scaleFactor = widget.isFullScreenMode ? 1.15 : 1.0;
-    return GestureDetector(
-      onTap:
-          widget.enablePanel && !_isErrorState ? _cancelAndRestartTimer : null,
-      onVerticalDragUpdate:
-          widget.enablePanel && widget.isFullScreenMode && !_isErrorState
-              ? (details) {
-                  if (details.delta.dy > 0) {
-                    _onMoveUpdate(QcHikPlayerMoveDirection.down);
-                  } else if (details.delta.dy < 0) {
-                    _onMoveUpdate(QcHikPlayerMoveDirection.up);
-                  }
-                }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final Size viewSize = Size(constraints.maxWidth, constraints.maxHeight);
+        return GestureDetector(
+          onTap: widget.enablePanel && !_isErrorState
+              ? _cancelAndRestartTimer
               : null,
-      onVerticalDragEnd:
-          widget.enablePanel && widget.isFullScreenMode && !_isErrorState
-              ? (_) => _onMoveEnd()
-              : null,
-      onHorizontalDragUpdate:
-          widget.enablePanel && widget.isFullScreenMode && !_isErrorState
-              ? (details) {
-                  if (details.delta.dx > 0) {
-                    _onMoveUpdate(QcHikPlayerMoveDirection.right);
-                  } else if (details.delta.dx < 0) {
-                    _onMoveUpdate(QcHikPlayerMoveDirection.left);
-                  }
-                }
-              : null,
-      onHorizontalDragEnd:
-          widget.enablePanel && widget.isFullScreenMode && !_isErrorState
-              ? (_) => _onMoveEnd()
-              : null,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          AndroidView(
-            viewType: _viewType,
-            creationParams: widget.params.toMap(),
-            creationParamsCodec: const StandardMessageCodec(),
-            onPlatformViewCreated: _onPlatformViewCreated,
-          ),
-          if (widget.enablePanel)
-            AbsorbPointer(
-              absorbing: _hideStuff && !_isErrorState,
-              child: Column(
-                children: [
-                  SizedBox(height: 20 * scaleFactor),
-                  Expanded(
-                    child: Container(
-                      color: Colors.transparent,
-                      width: double.infinity,
-                      child: Stack(
-                        children: [
-                          Center(child: _buildCenterLayer(scaleFactor)),
-                          _buildDirectionTips(scaleFactor),
-                        ],
-                      ),
-                    ),
-                  ),
-                  _buildBottomBar(scaleFactor),
-                ],
+          onVerticalDragUpdate:
+              widget.enablePanel && widget.isFullScreenMode && !_isErrorState
+                  ? (details) {
+                      if (details.delta.dy > 0) {
+                        _onMoveUpdate(QcHikPlayerMoveDirection.down);
+                      } else if (details.delta.dy < 0) {
+                        _onMoveUpdate(QcHikPlayerMoveDirection.up);
+                      }
+                    }
+                  : null,
+          onVerticalDragEnd:
+              widget.enablePanel && widget.isFullScreenMode && !_isErrorState
+                  ? (_) => _onMoveEnd()
+                  : null,
+          onHorizontalDragUpdate:
+              widget.enablePanel && widget.isFullScreenMode && !_isErrorState
+                  ? (details) {
+                      if (details.delta.dx > 0) {
+                        _onMoveUpdate(QcHikPlayerMoveDirection.right);
+                      } else if (details.delta.dx < 0) {
+                        _onMoveUpdate(QcHikPlayerMoveDirection.left);
+                      }
+                    }
+                  : null,
+          onHorizontalDragEnd:
+              widget.enablePanel && widget.isFullScreenMode && !_isErrorState
+                  ? (_) => _onMoveEnd()
+                  : null,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              AndroidView(
+                viewType: _viewType,
+                creationParams: widget.params.toMap(),
+                creationParamsCodec: const StandardMessageCodec(),
+                onPlatformViewCreated: _onPlatformViewCreated,
               ),
-            ),
-          if (_exception != null && _exception!.isNotEmpty)
-            IgnorePointer(
-              child: Container(color: Colors.black.withOpacity(0.18)),
-            ),
-          if (componentWidth == 0) const SizedBox(),
-        ],
-      ),
+              if (widget.enablePanel && !_isErrorState)
+                AbsorbPointer(
+                  absorbing: _hideStuff,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 20 * scaleFactor),
+                      Expanded(
+                        child: Container(
+                          color: Colors.transparent,
+                          width: double.infinity,
+                          child: Stack(
+                            children: [
+                              Center(child: _buildCenterLayer(scaleFactor)),
+                              _buildDirectionTips(scaleFactor),
+                            ],
+                          ),
+                        ),
+                      ),
+                      _buildBottomBar(scaleFactor),
+                    ],
+                  ),
+                ),
+              if (_isErrorState) Container(color: Colors.black),
+              if (_isErrorState) _buildErrorLayer(viewSize),
+              if (componentWidth == 0) const SizedBox(),
+            ],
+          ),
+        );
+      },
     );
   }
 }

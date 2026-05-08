@@ -31,6 +31,7 @@ import 'package:iot/utils/HhLog.dart';
 import 'package:iot/widgets/battery.dart';
 import 'package:screen_recorder/screen_recorder.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:qc_hik_player/qc_hik_player.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class LiGanDeviceDetailPage extends StatelessWidget {
@@ -132,24 +133,34 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                                 alignment: Alignment.center,
                                 child: Container(
                                   margin: EdgeInsets.only(top: 0.h * 3),
-                                  child: ScreenRecorder(
-                                    width: double.infinity,
-                                    height: 254.h * 3,
-                                    background: Colors.white,
-                                    controller: logic.recordController,
-                                    child: Screenshot(
-                                      controller: logic.screenshotController,
-                                      child: FijkView(
-                                        width: double.infinity,
-                                        height: 254.h * 3,
-                                        player: logic.player,
-                                        color: HhColors.blackColor,
-                                        fit: FijkFit.fill,
-                                        fsFit: FijkFit.ar16_9,
-                                        panelBuilder: hhFijkPanelBuilder,
-                                      ),
-                                    ),
-                                  ),
+                                  child: logic.hikPlayerTag.value &&
+                                          logic.hikPlayParams.value != null
+                                      ? QcHikPlayerView(
+                                          key: ValueKey(
+                                              logic.hikPlayerSeed.value),
+                                          params: logic.hikPlayParams.value!,
+                                          onMoveStart: logic.onHikMoveStart,
+                                          onMoveEnd: logic.onHikMoveEnd,
+                                        )
+                                      : ScreenRecorder(
+                                          width: double.infinity,
+                                          height: 254.h * 3,
+                                          background: Colors.white,
+                                          controller: logic.recordController,
+                                          child: Screenshot(
+                                            controller:
+                                                logic.screenshotController,
+                                            child: FijkView(
+                                              width: double.infinity,
+                                              height: 254.h * 3,
+                                              player: logic.player,
+                                              color: HhColors.blackColor,
+                                              fit: FijkFit.fill,
+                                              fsFit: FijkFit.ar16_9,
+                                              panelBuilder: hhFijkPanelBuilder,
+                                            ),
+                                          ),
+                                        ),
                                 ),
                               ),
                               logic.fix.value

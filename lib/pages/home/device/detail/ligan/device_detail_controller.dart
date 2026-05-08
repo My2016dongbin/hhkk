@@ -24,6 +24,7 @@ import 'package:iot/utils/RequestUtils.dart';
 import 'package:iot/utils/SPKeys.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:qc_hik_player/qc_hik_player.dart';
 import 'package:screen_recorder/screen_recorder.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -121,6 +122,9 @@ class LiGanDeviceDetailController extends GetxController {
     ..runJavaScript("document.documentElement.style.overflow = 'hidden';"
         "document.body.style.overflow = 'hidden';");
   late String url = "";
+  final RxBool hikPlayerTag = false.obs;
+  final Rxn<QcHikPlayerParams> hikPlayParams = Rxn<QcHikPlayerParams>();
+  final RxInt hikPlayerSeed = 0.obs;
 
   @override
   void onInit() {
@@ -512,18 +516,39 @@ class LiGanDeviceDetailController extends GetxController {
     HhLog.d("getPlayUrl result -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       try {
-        if("${result["data"]["platformType"]}" == "hikiot"){
+        if ("${result["data"]["platformType"]}" == "hikiot") {
           ///海康设备-单独对接SDK
+          player.release();
+          url = "";
+          hikPlayerTag.value = false;
+          hikPlayParams.value = null;
           dynamic dataHik = {
             'channelId': number,
           };
           var hikResult = await HhHttp().request(RequestUtils.devicePlayUrlHIK,
               method: DioMethod.post, data: dataHik);
           HhLog.d("getPlayUrl hikResult -- $hikResult");
-          ///这里的hikResult就是真实的接口返回信息结构与之前的模拟数据相同
 
-        }else{
+          ///这里的hikResult就是真实的接口返回信息结构与之前的模拟数据相同
+          if (hikResult["code"] == 0 && hikResult["data"] != null) {
+            final Map<String, dynamic> hikSdkParams =
+                QcHikPlayerParams.extractSdkParamsFromBusinessResponse(
+                    hikResult);
+            hikPlayParams.value = QcHikPlayerParams.fromSdkParams(hikSdkParams);
+            hikPlayerSeed.value++;
+            hikPlayerTag.value = true;
+            playErrorTag.value = false;
+            playLoadingTag.value = false;
+            playTag.value = true;
+          } else {
+            EventBusUtil.getInstance().fire(
+                HhToast(title: CommonUtils().msgString(hikResult["message"])));
+            videoError();
+          }
+        } else {
           ///其他设备
+          hikPlayerTag.value = false;
+          hikPlayParams.value = null;
           url = /*RequestUtils.rtsp + */ "${result["data"]["appRelativePath"]}";
           playLoadingTag.value = false;
           playTag.value = false;
@@ -550,7 +575,8 @@ class LiGanDeviceDetailController extends GetxController {
           player.setOption(
               FijkOption.formatCategory, "http-detect-range-support", 0);
           player.setOption(FijkOption.formatCategory, "analyzeduration", 1);
-          player.setOption(FijkOption.formatCategory, "rtsp_flags", "prefer_tcp");
+          player.setOption(
+              FijkOption.formatCategory, "rtsp_flags", "prefer_tcp");
           player.setOption(FijkOption.formatCategory, "buffer_size", 1024);
           player.setOption(FijkOption.formatCategory, "max-fps", 0);
           player.setOption(FijkOption.formatCategory, "analyzemaxduration", 50);
@@ -603,6 +629,33 @@ class LiGanDeviceDetailController extends GetxController {
           .fire(HhToast(title: CommonUtils().msgString(result["message"])));
     }
     EventBusUtil.getInstance().fire(HhLoading(show: false));
+  }
+
+  void onHikMoveStart(QcHikPlayerMoveDirection direction) {
+    int time = DateTime.now().millisecondsSinceEpoch;
+    if (time - controlTime <= 1000) {
+      return;
+    }
+    controlTime = time;
+    switch (direction) {
+      case QcHikPlayerMoveDirection.up:
+        command = "UP";
+        break;
+      case QcHikPlayerMoveDirection.down:
+        command = "DOWN";
+        break;
+      case QcHikPlayerMoveDirection.left:
+        command = "LEFT";
+        break;
+      case QcHikPlayerMoveDirection.right:
+        command = "RIGHT";
+        break;
+    }
+    controlPost(0);
+  }
+
+  void onHikMoveEnd() {
+    controlPost(1);
   }
 
   Future<void> getDeviceInfo() async {

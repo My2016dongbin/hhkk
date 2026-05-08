@@ -15,9 +15,9 @@ import 'package:iot/utils/HhLog.dart';
 import 'package:iot/utils/RequestUtils.dart';
 import 'package:iot/utils/SPKeys.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:qc_hik_player/qc_hik_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
 
 class VideoController extends GetxController {
   final index = 0.obs;
@@ -32,6 +32,7 @@ class VideoController extends GetxController {
   StreamSubscription? deviceListSubscription;
   final Rx<bool> containStatus = true.obs;
   final Rx<bool> videoStatus = true.obs;
+
   ///true列表模式（视频树）  false卡片模式（设备卡片列表）
   final Rx<bool> pageListStatus = false.obs;
   final Rx<String> dateStr = ''.obs;
@@ -50,19 +51,20 @@ class VideoController extends GetxController {
   TextEditingController? searchController = TextEditingController();
   TextEditingController? searchTreeController = TextEditingController();
   final PagingController<int, dynamic> pagingController =
-  PagingController(firstPageKey: 1);
+      PagingController(firstPageKey: 1);
   final PagingController<int, dynamic> deviceController =
-  PagingController(firstPageKey: 0);
+      PagingController(firstPageKey: 0);
   late EasyRefreshController easyController = EasyRefreshController();
   late String textId = '';
   late int pageNum = 1;
   late int pageSize = 20;
   late WebViewController webController = WebViewController()
-    ..setBackgroundColor(HhColors.trans)..runJavaScript(
-        "document.documentElement.style.overflow = 'hidden';"
-            "document.body.style.overflow = 'hidden';");
+    ..setBackgroundColor(HhColors.trans)
+    ..runJavaScript("document.documentElement.style.overflow = 'hidden';"
+        "document.body.style.overflow = 'hidden';");
   late Rx<bool> secondStatus = true.obs;
   late Directory tempDir;
+
   ///1屏 4屏 8屏
   final Rx<int> videoCount = 1.obs;
   final Rx<int> videoIndex = 0.obs;
@@ -73,36 +75,35 @@ class VideoController extends GetxController {
   Future<void> onInit() async {
     tempDir = await getApplicationCacheDirectory();
     DateTime dateTime = DateTime.now();
-    dateStr.value = CommonUtils().parseLongTimeWithLength("${dateTime.millisecondsSinceEpoch}",16);
+    dateStr.value = CommonUtils()
+        .parseLongTimeWithLength("${dateTime.millisecondsSinceEpoch}", 16);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     secondStatus.value = prefs.getBool(SPKeys().second) == true;
     pushTouchSubscription =
         EventBusUtil.getInstance().on<Location>().listen((event) {
-          if (CommonData.latitude != null && CommonData.latitude! > 0) {
-
-          }
-        });
+      if (CommonData.latitude != null && CommonData.latitude! > 0) {}
+    });
     spaceListSubscription =
         EventBusUtil.getInstance().on<SpaceList>().listen((event) {
-          getSpaceList(1,false);
-          spaceListIndex.value = 0;
-        });
+      getSpaceList(1, false);
+      spaceListIndex.value = 0;
+    });
     catchSubscription =
         EventBusUtil.getInstance().on<CatchRefresh>().listen((event) {
-          containStatus.value = false;
-          containStatus.value = true;
-          getSpaceList(1,false);
-        });
+      containStatus.value = false;
+      containStatus.value = true;
+      getSpaceList(1, false);
+    });
     deviceListSubscription =
         EventBusUtil.getInstance().on<DeviceList>().listen((event) {
-          pageNum = 1;
-          getDeviceList(1,false);
-          getTreeDetail();
-        });
+      pageNum = 1;
+      getDeviceList(1, false);
+      getTreeDetail();
+    });
     //天气信息
     getWeather();
     //获取空间列表
-    getSpaceList(1,true);
+    getSpaceList(1, true);
     //获取设备树
     getTreeDetail();
     super.onInit();
@@ -149,7 +150,7 @@ class VideoController extends GetxController {
     }
   }
 
-  Future<void> getSpaceList(int pageKey,bool loading) async {
+  Future<void> getSpaceList(int pageKey, bool loading) async {
     Map<String, dynamic> map = {};
     map['pageNo'] = '$pageKey';
     map['pageSize'] = '$pageSize';
@@ -157,53 +158,55 @@ class VideoController extends GetxController {
         method: DioMethod.get, params: map);
     HhLog.d("getSpaceList -- $result");
     if (result["code"] == 0 && result["data"] != null) {
-      spaceList = result["data"]["list"]??[];
+      spaceList = result["data"]["list"] ?? [];
       spaceListStatus.value = false;
       spaceListStatus.value = true;
 
-      getDeviceList(1,loading);
+      getDeviceList(1, loading);
     } else {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
 
-  Future<void> getDeviceList(int pageKey,bool loading) async {
-    if(loading){
+  Future<void> getDeviceList(int pageKey, bool loading) async {
+    if (loading) {
       EventBusUtil.getInstance().fire(HhLoading(show: true));
     }
     Map<String, dynamic> map = {};
-    if(spaceList.isNotEmpty){
+    if (spaceList.isNotEmpty) {
       map['spaceId'] = spaceList[spaceListIndex.value]['id'];
     }
     map['pageNo'] = '$pageKey';
     map['pageSize'] = '$pageSize';
     map['appSign'] = 1;
     map['videoSigns'] = 1;
-    if(searchController!.text.isNotEmpty){
-    map['name'] = searchController!.text;
+    if (searchController!.text.isNotEmpty) {
+      map['name'] = searchController!.text;
     }
-    var result = await HhHttp().request(RequestUtils.deviceList,method: DioMethod.get,params: map);
+    var result = await HhHttp()
+        .request(RequestUtils.deviceList, method: DioMethod.get, params: map);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("deviceList --- $pageKey , $result");
-    if(result["code"]==0 && result["data"]!=null){
+    if (result["code"] == 0 && result["data"] != null) {
       List<dynamic> newItems = [];
-      try{
-        newItems = result["data"]["list"]??[];
-      }catch(e){
+      try {
+        newItems = result["data"]["list"] ?? [];
+      } catch (e) {
         HhLog.e(e.toString());
       }
 
       if (pageKey == 1) {
         pagingController.itemList = [];
-      }else{
-        if(newItems.isEmpty){
-          easyController.finishLoad(IndicatorResult.noMore,true);
+      } else {
+        if (newItems.isEmpty) {
+          easyController.finishLoad(IndicatorResult.noMore, true);
         }
       }
       pagingController.appendLastPage(newItems);
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
 
@@ -221,32 +224,33 @@ class VideoController extends GetxController {
     Map<String, dynamic> map = {};
     map['id'] = '${item['id']}';
     // map['shareMark'] = '${item['shareMark']}';
-    var result = await HhHttp().request(RequestUtils.deviceDelete,method: DioMethod.delete,params: map);
+    var result = await HhHttp().request(RequestUtils.deviceDelete,
+        method: DioMethod.delete, params: map);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("deleteDevice -- $map");
     HhLog.d("deleteDevice -- $result");
-    if(result["code"]==0 && result["data"]!=null){
-      EventBusUtil.getInstance().fire(HhToast(title: '操作成功',type: 0));
+    if (result["code"] == 0 && result["data"] != null) {
+      EventBusUtil.getInstance().fire(HhToast(title: '操作成功', type: 0));
       pageNum = 1;
-      getDeviceList(1,false);
+      getDeviceList(1, false);
       EventBusUtil.getInstance().fire(SpaceList());
       EventBusUtil.getInstance().fire(DeviceList());
-    }else{
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
 
-  parseCacheImageView(String deviceNo,dynamic item) {
-    try{
+  parseCacheImageView(String deviceNo, dynamic item) {
+    try {
       // 将图片保存到缓存目录
-      final filePath =
-          '${tempDir.path}/catch_$deviceNo.png';
+      final filePath = '${tempDir.path}/catch_$deviceNo.png';
       final file = File(filePath);
 
       FileImage fileImage = FileImage(file);
       // 同步清除指定文件的缓存
       fileImage.evict();
-      if(fileImage.file.lengthSync() < 2600){
+      if (fileImage.file.lengthSync() < 2600) {
         //处理白屏问题
         return Image.asset(
           CommonUtils().parseDeviceBackImage(item),
@@ -254,15 +258,19 @@ class VideoController extends GetxController {
           fit: BoxFit.fill,
         );
       }
-      return Image(image: fileImage,errorBuilder: (c,d,e){
-        HhLog.d("parseCacheImageView error $deviceNo");
-        return Image.asset(
-          CommonUtils().parseDeviceBackImage(item),
-          // "assets/images/common/test_video.jpg",
-          fit: BoxFit.fill,
-        );
-      }, fit: BoxFit.fill,);
-    }catch(e){
+      return Image(
+        image: fileImage,
+        errorBuilder: (c, d, e) {
+          HhLog.d("parseCacheImageView error $deviceNo");
+          return Image.asset(
+            CommonUtils().parseDeviceBackImage(item),
+            // "assets/images/common/test_video.jpg",
+            fit: BoxFit.fill,
+          );
+        },
+        fit: BoxFit.fill,
+      );
+    } catch (e) {
       //
       return Image.asset(
         CommonUtils().parseDeviceBackImage(item),
@@ -272,20 +280,16 @@ class VideoController extends GetxController {
     }
   }
 
-
   Future<void> getTreeDetail() async {
     Map<String, dynamic> map = {
-      "collectFlag":treeIndex.value,//0查询全部 1只查询收藏的
-      "displayChannel":1,//是否展示通道 0否1是
+      "collectFlag": treeIndex.value, //0查询全部 1只查询收藏的
+      "displayChannel": 1, //是否展示通道 0否1是
     };
-    if(searchTreeController!.text.isNotEmpty){
+    if (searchTreeController!.text.isNotEmpty) {
       map['keyWord'] = searchTreeController!.text;
     }
-    var result = await HhHttp().request(
-        RequestUtils.treeDetail,
-        method: DioMethod.get,
-        params: map
-    );
+    var result = await HhHttp()
+        .request(RequestUtils.treeDetail, method: DioMethod.get, params: map);
     HhLog.d("treeDetail -- $map");
     HhLog.d("treeDetail -- $result");
     if (result["code"] == 0 && result["data"] != null) {
@@ -293,51 +297,50 @@ class VideoController extends GetxController {
       treeDetail.value = result["data"];
       EventBusUtil.getInstance().fire(TreeChannelRefresh());
     } else {
-      EventBusUtil.getInstance().fire(HhToast(title: /*CommonUtils().msgString(result["msg"])*/"视频树加载失败"));
+      EventBusUtil.getInstance().fire(
+          HhToast(title: /*CommonUtils().msgString(result["msg"])*/ "视频树加载失败"));
       EventBusUtil.getInstance().fire(HhLoading(show: false));
     }
   }
 
-  Future<void> collection(String userId,String channelId,String deviceId) async {
+  Future<void> collection(
+      String userId, String channelId, String deviceId) async {
     dynamic data = {
-      "userId":userId,
-      "channelId":channelId,
-      "deviceId":deviceId,
+      "userId": userId,
+      "channelId": channelId,
+      "deviceId": deviceId,
     };
-    var result = await HhHttp().request(
-        RequestUtils.collect,
-        method: DioMethod.post,
-        data: data
-    );
+    var result = await HhHttp()
+        .request(RequestUtils.collect, method: DioMethod.post, data: data);
     HhLog.d("collection -- $data");
     HhLog.d("collection -- $result");
     if (result["code"] == 0) {
-      EventBusUtil.getInstance().fire(HhToast(title: "收藏成功",type: 0));
+      EventBusUtil.getInstance().fire(HhToast(title: "收藏成功", type: 0));
       getTreeDetail();
     } else {
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().parseNull(result["msg"], "")));
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().parseNull(result["msg"], "")));
       EventBusUtil.getInstance().fire(HhLoading(show: false));
     }
   }
 
-  Future<void> disCollection(String userId,String channelId,String deviceId) async {
+  Future<void> disCollection(
+      String userId, String channelId, String deviceId) async {
     dynamic data = {
-      "userId":userId,
-      "channelId":channelId,
-      "deviceId":deviceId,
+      "userId": userId,
+      "channelId": channelId,
+      "deviceId": deviceId,
     };
-    var result = await HhHttp().request(
-        RequestUtils.disCollect,
-        method: DioMethod.post,
-        data: data
-    );
+    var result = await HhHttp()
+        .request(RequestUtils.disCollect, method: DioMethod.post, data: data);
     HhLog.d("disCollection -- $data");
     HhLog.d("disCollection -- $result");
     if (result["code"] == 0) {
-      EventBusUtil.getInstance().fire(HhToast(title: "已取消收藏",type: 0));
+      EventBusUtil.getInstance().fire(HhToast(title: "已取消收藏", type: 0));
       getTreeDetail();
     } else {
-      EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().parseNull(result["msg"], "")));
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().parseNull(result["msg"], "")));
       EventBusUtil.getInstance().fire(HhLoading(show: false));
     }
   }
@@ -347,41 +350,84 @@ class VideoController extends GetxController {
     dynamic data = {
       'channelId': "${channel["id"]}",
     };
-    var result = await HhHttp().request(
-        RequestUtils.devicePlayUrl,
-        method: DioMethod.post,
-        data: data
-    );
+    var result = await HhHttp().request(RequestUtils.devicePlayUrl,
+        method: DioMethod.post, data: data);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("getStream -- ${RequestUtils.devicePlayUrl}$data");
     HhLog.d("getStream -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       try {
-        String url = "${result["data"]["appRelativePath"]}";
-        HhLog.d("getStream -- $url");
-
         ///自适应播放数据到网格中
+        int targetIndex = videoIndex.value;
         if (CommonData.checkedChannels[videoIndex.value]["id"] != null &&
             videoIndex.value < videoCount.value - 1 &&
             CommonData.checkedChannels[videoIndex.value + 1]["id"] == null) {
           //当前选中的网格已有播放数据且不是最后一个网格-加载到下一网格
           videoIndex.value = videoIndex.value + 1;
-          CommonData.checkedChannels[videoIndex.value] = channel;
-          CommonData.checkedChannels[videoIndex.value]["url"] = url;
+          targetIndex = videoIndex.value;
+        }
+        final String platformType = "${result["data"]["platformType"] ?? ''}";
+        if (platformType == "hikiot") {
+          dynamic hikData = {
+            'channelId': "${channel["id"]}",
+          };
+          var hikResult = await HhHttp().request(RequestUtils.devicePlayUrlHIK,
+              method: DioMethod.post, data: hikData);
+          HhLog.d("getStream hikResult -- $hikResult");
+          if (hikResult["code"] == 0 && hikResult["data"] != null) {
+            final Map<String, dynamic> hikSdkParams =
+                QcHikPlayerParams.extractSdkParamsFromBusinessResponse(
+                    hikResult);
+            _applyCheckedChannel(
+              targetIndex,
+              channel,
+              platformType: platformType,
+              hikSdkParams: hikSdkParams,
+            );
+          } else {
+            EventBusUtil.getInstance().fire(HhToast(
+                title: CommonUtils()
+                    .msgString(hikResult["msg"] ?? hikResult["message"])));
+            return;
+          }
         } else {
           //当前选中的网格无播放数据-加载到当前网格
-          CommonData.checkedChannels[videoIndex.value] = channel;
-          CommonData.checkedChannels[videoIndex.value]["url"] = url;
+          String url = "${result["data"]["appRelativePath"]}";
+          HhLog.d("getStream -- $url");
+          _applyCheckedChannel(
+            targetIndex,
+            channel,
+            platformType: platformType,
+            url: url,
+          );
         }
         videoStatus.value = false;
         videoStatus.value = true;
         //视频树-频道状态刷新
         EventBusUtil.getInstance().fire(TreeChannelRefresh());
-      }catch(e){
-        EventBusUtil.getInstance().fire(HhToast(title: "视频流获取失败",type: 2));
+      } catch (e) {
+        EventBusUtil.getInstance().fire(HhToast(title: "视频流获取失败", type: 2));
       }
     } else {
-      EventBusUtil.getInstance().fire(HhToast(title: "视频流获取失败",type: 2));
+      EventBusUtil.getInstance().fire(HhToast(title: "视频流获取失败", type: 2));
     }
+  }
+
+  void _applyCheckedChannel(
+    int index,
+    dynamic channel, {
+    String? url,
+    String? platformType,
+    Map<String, dynamic>? hikSdkParams,
+  }) {
+    Map<String, dynamic> checkedChannel = {};
+    if (channel is Map) {
+      checkedChannel = Map<String, dynamic>.from(channel.cast());
+    }
+    checkedChannel["platformType"] = platformType;
+    checkedChannel["url"] = url;
+    checkedChannel["hikSdkParams"] = hikSdkParams;
+    checkedChannel["hikPlayerSeed"] = DateTime.now().millisecondsSinceEpoch;
+    CommonData.checkedChannels[index] = checkedChannel;
   }
 }
