@@ -10,7 +10,9 @@ class HikPlayerDemoController extends GetxController {
   void mockFetchAndPlay() {
     final Map<String, dynamic> response =
         jsonDecode(_mockBusinessApiResponse()) as Map<String, dynamic>;
-    playParams.value = QcHikPlayerParams.fromBusinessResponse(response);
+    final Map<String, dynamic> sdkParams =
+        QcHikPlayerParams.extractSdkParamsFromBusinessResponse(response);
+    playParams.value = QcHikPlayerParams.fromSdkParams(sdkParams);
     playerSeed.value++;
   }
 
