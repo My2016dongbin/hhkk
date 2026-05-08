@@ -40,6 +40,7 @@ class RequestUtils{
   // static const devicePlayUrl = '$base/admin-api/mid/videoAggregation/devicePreviewUrlApp';//设备视频流查询
   static const deviceStream = '$base/admin-api/mid/device-base/findChannelListByDeviceId';//设备通道查询
   static const devicePlayUrl = '$base/admin-api/mid/device-channel-rel/video/startPlay';//设备视频流查询
+  static const devicePlayUrlHIK = '$base/admin-api/mid/device-channel-rel/video/getHikPlayInfo';//设备视频流查询-海康SDK
   static const deviceCreate = '$base/admin-api/mid/device-base/create';//设备添加
   static const deviceUpdate = '$base/admin-api/mid/device-base/update';//设备修改
   static const deviceDelete = '$base/admin-api/mid/device-base/delete';//设备删除

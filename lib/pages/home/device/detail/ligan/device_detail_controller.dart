@@ -512,73 +512,86 @@ class LiGanDeviceDetailController extends GetxController {
     HhLog.d("getPlayUrl result -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       try {
-        url = /*RequestUtils.rtsp + */ "${result["data"]["appRelativePath"]}";
-        playLoadingTag.value = false;
-        playTag.value = false;
-        player.release();
-        player = FijkPlayer();
-        player.setDataSource(url, autoPlay: true);
-        player.setOption(FijkOption.playerCategory, "mediacodec-hevc", 1);
-        player.setOption(FijkOption.playerCategory, "framedrop", 1);
-        player.setOption(FijkOption.playerCategory, "start-on-prepared", 0);
-        player.setOption(FijkOption.playerCategory, "opensles", 0);
-        player.setOption(FijkOption.playerCategory, "mediacodec", 0);
-        player.setOption(FijkOption.playerCategory, "start-on-prepared", 1);
-        player.setOption(FijkOption.playerCategory, "packet-buffering", 0);
-        player.setOption(
-            FijkOption.playerCategory, "mediacodec-auto-rotate", 0);
-        player.setOption(FijkOption.playerCategory,
-            "mediacodec-handle-resolution-change", 0);
-        player.setOption(FijkOption.playerCategory, "min-frames", 2);
-        player.setOption(FijkOption.playerCategory, "max_cached_duration", 3);
-        player.setOption(FijkOption.playerCategory, "infbuf", 1);
-        player.setOption(FijkOption.playerCategory, "reconnect", 5);
-        player.setOption(FijkOption.playerCategory, "framedrop", 5);
-        player.setOption(FijkOption.formatCategory, "rtsp_transport", 'tcp');
-        player.setOption(
-            FijkOption.formatCategory, "http-detect-range-support", 0);
-        player.setOption(FijkOption.formatCategory, "analyzeduration", 1);
-        player.setOption(FijkOption.formatCategory, "rtsp_flags", "prefer_tcp");
-        player.setOption(FijkOption.formatCategory, "buffer_size", 1024);
-        player.setOption(FijkOption.formatCategory, "max-fps", 0);
-        player.setOption(FijkOption.formatCategory, "analyzemaxduration", 50);
-        player.setOption(FijkOption.formatCategory, "dns_cache_clear", 1);
-        player.setOption(FijkOption.formatCategory, "flush_packets", 1);
-        player.setOption(FijkOption.formatCategory, "max-buffer-size", 0);
-        player.setOption(FijkOption.formatCategory, "fflags", "nobuffer");
-        player.setOption(FijkOption.formatCategory, "probesize", 200);
-        player.setOption(
-            FijkOption.formatCategory, "http-detect-range-support", 0);
-        player.setOption(FijkOption.codecCategory, "skip_loop_filter", 48);
-        player.setOption(FijkOption.codecCategory, "skip_frame", 0);
-        // 添加播放器状态变化监听
-        player.addListener(() {
-          if (player.state == FijkState.started) {
-            playErrorTag.value = false;
-            // 播放成功开始
-            HhLog.d('Playback started successfully ${player.state}');
-            //截图并保存
-            Future.delayed(const Duration(milliseconds: 3000), () {
-              if (Get.isRegistered<LiGanDeviceDetailController>()) {
-                saveCatchImage();
-              }
-            });
-            Future.delayed(const Duration(milliseconds: 10000), () {
-              if (Get.isRegistered<LiGanDeviceDetailController>()) {
-                saveCatchImage();
-              }
-            });
-          }
-          if (player.state == FijkState.error) {
-            videoError();
-            player.reset();
-          }
-        });
-        Future.delayed(const Duration(seconds: 1), () {
-          playTag.value = true;
-        });
+        if("${result["data"]["platformType"]}" == "hikiot"){
+          ///海康设备-单独对接SDK
+          dynamic dataHik = {
+            'channelId': number,
+          };
+          var hikResult = await HhHttp().request(RequestUtils.devicePlayUrlHIK,
+              method: DioMethod.post, data: dataHik);
+          HhLog.d("getPlayUrl hikResult -- $hikResult");
+          ///这里的hikResult就是真实的接口返回信息结构与之前的模拟数据相同
 
-        EventBusUtil.getInstance().fire(HhLoading(show: false));
+        }else{
+          ///其他设备
+          url = /*RequestUtils.rtsp + */ "${result["data"]["appRelativePath"]}";
+          playLoadingTag.value = false;
+          playTag.value = false;
+          player.release();
+          player = FijkPlayer();
+          player.setDataSource(url, autoPlay: true);
+          player.setOption(FijkOption.playerCategory, "mediacodec-hevc", 1);
+          player.setOption(FijkOption.playerCategory, "framedrop", 1);
+          player.setOption(FijkOption.playerCategory, "start-on-prepared", 0);
+          player.setOption(FijkOption.playerCategory, "opensles", 0);
+          player.setOption(FijkOption.playerCategory, "mediacodec", 0);
+          player.setOption(FijkOption.playerCategory, "start-on-prepared", 1);
+          player.setOption(FijkOption.playerCategory, "packet-buffering", 0);
+          player.setOption(
+              FijkOption.playerCategory, "mediacodec-auto-rotate", 0);
+          player.setOption(FijkOption.playerCategory,
+              "mediacodec-handle-resolution-change", 0);
+          player.setOption(FijkOption.playerCategory, "min-frames", 2);
+          player.setOption(FijkOption.playerCategory, "max_cached_duration", 3);
+          player.setOption(FijkOption.playerCategory, "infbuf", 1);
+          player.setOption(FijkOption.playerCategory, "reconnect", 5);
+          player.setOption(FijkOption.playerCategory, "framedrop", 5);
+          player.setOption(FijkOption.formatCategory, "rtsp_transport", 'tcp');
+          player.setOption(
+              FijkOption.formatCategory, "http-detect-range-support", 0);
+          player.setOption(FijkOption.formatCategory, "analyzeduration", 1);
+          player.setOption(FijkOption.formatCategory, "rtsp_flags", "prefer_tcp");
+          player.setOption(FijkOption.formatCategory, "buffer_size", 1024);
+          player.setOption(FijkOption.formatCategory, "max-fps", 0);
+          player.setOption(FijkOption.formatCategory, "analyzemaxduration", 50);
+          player.setOption(FijkOption.formatCategory, "dns_cache_clear", 1);
+          player.setOption(FijkOption.formatCategory, "flush_packets", 1);
+          player.setOption(FijkOption.formatCategory, "max-buffer-size", 0);
+          player.setOption(FijkOption.formatCategory, "fflags", "nobuffer");
+          player.setOption(FijkOption.formatCategory, "probesize", 200);
+          player.setOption(
+              FijkOption.formatCategory, "http-detect-range-support", 0);
+          player.setOption(FijkOption.codecCategory, "skip_loop_filter", 48);
+          player.setOption(FijkOption.codecCategory, "skip_frame", 0);
+          // 添加播放器状态变化监听
+          player.addListener(() {
+            if (player.state == FijkState.started) {
+              playErrorTag.value = false;
+              // 播放成功开始
+              HhLog.d('Playback started successfully ${player.state}');
+              //截图并保存
+              Future.delayed(const Duration(milliseconds: 3000), () {
+                if (Get.isRegistered<LiGanDeviceDetailController>()) {
+                  saveCatchImage();
+                }
+              });
+              Future.delayed(const Duration(milliseconds: 10000), () {
+                if (Get.isRegistered<LiGanDeviceDetailController>()) {
+                  saveCatchImage();
+                }
+              });
+            }
+            if (player.state == FijkState.error) {
+              videoError();
+              player.reset();
+            }
+          });
+          Future.delayed(const Duration(seconds: 1), () {
+            playTag.value = true;
+          });
+
+          EventBusUtil.getInstance().fire(HhLoading(show: false));
+        }
       } catch (e) {
         HhLog.e(e.toString());
         EventBusUtil.getInstance().fire(HhLoading(show: false));
