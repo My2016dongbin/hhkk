@@ -955,6 +955,13 @@ packages:
       relative: true
     source: path
     version: "0.1.0"
+  qc_hik_player:
+    dependency: "direct main"
+    description:
+      path: "qc_hik/qc_hik_player"
+      relative: true
+    source: path
+    version: "0.1.0"
   qr_code_scanner:
     dependency: "direct main"
     description:

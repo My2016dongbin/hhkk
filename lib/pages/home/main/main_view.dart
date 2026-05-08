@@ -20,6 +20,8 @@ import 'package:iot/pages/home/device/detail/huoxianyinzi/device_detail_binding.
 import 'package:iot/pages/home/device/detail/huoxianyinzi/device_detail_view.dart';
 import 'package:iot/pages/home/device/list/device_list_binding.dart';
 import 'package:iot/pages/home/device/list/device_list_view.dart';
+import 'package:iot/pages/home/main/hik_player_demo/hik_player_demo_binding.dart';
+import 'package:iot/pages/home/main/hik_player_demo/hik_player_demo_view.dart';
 import 'package:iot/pages/home/space/space_binding.dart';
 import 'package:iot/pages/home/space/space_view.dart';
 import 'package:iot/utils/CommonUtils.dart';
@@ -78,37 +80,43 @@ class MainPage extends StatelessWidget {
         ),
 
         ///定位
-        Container(
-          margin: EdgeInsets.fromLTRB(14.w * 3, 51.w * 3, 100.w * 3, 0),
-          child: Row(
-            children: [
-              Image.asset(
-                "assets/images/common/icon_loc.png",
-                width: 24.w * 3,
-                height: 24.w * 3,
-                fit: BoxFit.fill,
-              ),
-              SizedBox(width: 4.w * 3),
-              Expanded(
-                child: InkWell(
-                  onTap: () {
-                    logic.searchLocation();
-                  },
-                  child: Container(
-                    color: HhColors.trans,
-                    child: Text(
-                      logic.appLoc.value,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                          color: HhColors.blackTextColor,
-                          fontSize: 14.sp * 3,
-                          fontWeight: FontWeight.w600),
+        InkWell(
+          onTap: () {
+            Get.to(() => HikPlayerDemoPage(), binding: HikPlayerDemoBinding());
+          },
+          child: Container(
+            margin: EdgeInsets.fromLTRB(14.w * 3, 51.w * 3, 100.w * 3, 0),
+            color: HhColors.trans,
+            child: Row(
+              children: [
+                Image.asset(
+                  "assets/images/common/icon_loc.png",
+                  width: 24.w * 3,
+                  height: 24.w * 3,
+                  fit: BoxFit.fill,
+                ),
+                SizedBox(width: 4.w * 3),
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      logic.searchLocation();
+                    },
+                    child: Container(
+                      color: HhColors.trans,
+                      child: Text(
+                        logic.appLoc.value,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: HhColors.blackTextColor,
+                            fontSize: 14.sp * 3,
+                            fontWeight: FontWeight.w600),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
 
@@ -1751,7 +1759,9 @@ class MainPage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(width: 3.w*3,),
+            SizedBox(
+              width: 3.w * 3,
+            ),
             Container(
               padding:
                   EdgeInsets.fromLTRB(10.w * 3, 4.w * 3, 10.w * 3, 5.w * 3),
@@ -1822,7 +1832,9 @@ class MainPage extends StatelessWidget {
                     fontWeight: FontWeight.w400),
               ),
             ),
-            SizedBox(width: 10.w*3,),
+            SizedBox(
+              width: 10.w * 3,
+            ),
             HhTap(
               borderRadius: BorderRadius.circular(4.w * 3),
               onTapUp: () async {
@@ -2237,8 +2249,8 @@ class MainPage extends StatelessWidget {
                                                 child: Text(
                                                   '真实',
                                                   style: TextStyle(
-                                                      color:
-                                                          HhColors.blackTextColor,
+                                                      color: HhColors
+                                                          .blackTextColor,
                                                       fontSize: 15.sp * 3,
                                                       fontWeight:
                                                           FontWeight.w200),
@@ -2264,8 +2276,8 @@ class MainPage extends StatelessWidget {
                                                 child: Text(
                                                   '误报',
                                                   style: TextStyle(
-                                                      color:
-                                                          HhColors.blackTextColor,
+                                                      color: HhColors
+                                                          .blackTextColor,
                                                       fontSize: 15.sp * 3,
                                                       fontWeight:
                                                           FontWeight.w200),
