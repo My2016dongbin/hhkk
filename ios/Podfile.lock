@@ -219,7 +219,7 @@ SPEC CHECKSUMS:
   package_info_plus: 566e1b7a2f3900e4b0020914ad3fc051dcc95596
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
-  qc_hik_player: 98e41929700f55f935622d3e4ebe681dab2325c1
+  qc_hik_player: 4477dc3dc74be2d5861f65e7648efa24baf3ee78
   qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
   qr_code_tools: 81a52b19190422a5ce108223f64b5ea81865b342
   record_darwin: 0c21d4367390053cf94be5527b36dd4556a72fd2
@@ -231,6 +231,6 @@ SPEC CHECKSUMS:
   video_thumbnail: b637e0ad5f588ca9945f6e2c927f73a69a661140
   webview_flutter_wkwebview: 45a041c7831641076618876de3ba75c712860c6b
 
-PODFILE CHECKSUM: 3d3b5a75c29ef7434b94f351c7075ffaeaea94e5
+PODFILE CHECKSUM: 30a31933fe8a0c66ad3bef31ff9f120c11488553
 
 COCOAPODS: 1.16.2

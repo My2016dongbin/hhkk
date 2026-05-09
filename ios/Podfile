@@ -63,4 +63,39 @@ post_install do |installer|
       ]
     end
   end
+
+  resource_script = File.join(
+    installer.sandbox.root.to_s,
+    'Target Support Files',
+    'Pods-Runner',
+    'Pods-Runner-resources.sh'
+  )
+
+  if File.exist?(resource_script)
+    hik_resource_block = <<~'SH'
+
+    # qc_hik_player extra resources copied to app main bundle for Hik playback SDK compatibility
+    QC_HIK_RESOURCE_ROOT="${PODS_ROOT}/../.symlinks/plugins/qc_hik_player/ios/ThirdParty/HikiotOpenSDK/Core/lib/EzvizLib"
+    install_resource "${QC_HIK_RESOURCE_ROOT}/doc/dependency_EZPlayerSDK.ini"
+    install_resource "${QC_HIK_RESOURCE_ROOT}/doc/dependency_EZVideoTalk.ini"
+    install_resource "${QC_HIK_RESOURCE_ROOT}/res/iOS/com.hri.hpc.mobile.ios.player.metallib"
+    install_resource "${QC_HIK_RESOURCE_ROOT}/res/iOS/ezrtc_media_session_skin_gray.png"
+    install_resource "${QC_HIK_RESOURCE_ROOT}/res/iOS/ezrtc_media_session_skin_lookup.png"
+    if [[ -d "${QC_HIK_RESOURCE_ROOT}/res/iOS/EZRTCBasicFilter" ]]; then
+      install_resource "${QC_HIK_RESOURCE_ROOT}/res/iOS/EZRTCBasicFilter"
+      for resource in "${QC_HIK_RESOURCE_ROOT}/res/iOS/EZRTCBasicFilter"/*; do
+        install_resource "${resource}"
+      done
+    fi
+    SH
+
+    script_content = File.read(resource_script)
+    marker = '# qc_hik_player extra resources copied to app main bundle for Hik playback SDK compatibility'
+    script_content.gsub!(/^\n# qc_hik_player extra resources copied to app main bundle for Hik playback SDK compatibility.*?^fi\n/m, '')
+    anchor = 'if [[ "$CONFIGURATION" == "Debug" ]]; then'
+    if script_content.include?(anchor)
+      script_content.sub!(anchor, "#{hik_resource_block}\n#{anchor}")
+      File.write(resource_script, script_content)
+    end
+  end
 end

@@ -91,6 +91,9 @@ static NSString * const kQcHikPlayerMissingParamsText = @"播放参数缺失";
 
 - (BOOL)applySoundEnabled:(BOOL)enabled;
 - (NSArray<NSString *> *)missingRequiredResources;
+- (BOOL)hasResourceNamed:(NSString *)name
+                  ofType:(NSString *)type
+               inBundles:(NSArray<NSBundle *> *)bundles;
 
 @end
 
@@ -267,22 +270,43 @@ static NSString *sCurrentAppKey = nil;
 
 - (NSArray<NSString *> *)missingRequiredResources {
   NSBundle *mainBundle = [NSBundle mainBundle];
+  NSBundle *frameworkBundle = [NSBundle bundleForClass:[self class]];
+  NSArray<NSBundle *> *candidateBundles = @[mainBundle, frameworkBundle];
   NSMutableArray<NSString *> *missingResources = [NSMutableArray array];
 
-  if ([mainBundle pathForResource:@"com.hri.hpc.mobile.ios.player" ofType:@"metallib"].length == 0) {
+  if (![self hasResourceNamed:@"com.hri.hpc.mobile.ios.player"
+                       ofType:@"metallib"
+                    inBundles:candidateBundles]) {
     [missingResources addObject:@"com.hri.hpc.mobile.ios.player.metallib"];
   }
-  if ([mainBundle pathForResource:@"dependency_EZPlayerSDK" ofType:@"ini"].length == 0) {
+  if (![self hasResourceNamed:@"dependency_EZPlayerSDK"
+                       ofType:@"ini"
+                    inBundles:candidateBundles]) {
     [missingResources addObject:@"dependency_EZPlayerSDK.ini"];
   }
-  if ([mainBundle pathForResource:@"ezrtc_media_session_skin_lookup" ofType:@"png"].length == 0) {
+  if (![self hasResourceNamed:@"ezrtc_media_session_skin_lookup"
+                       ofType:@"png"
+                    inBundles:candidateBundles]) {
     [missingResources addObject:@"ezrtc_media_session_skin_lookup.png"];
   }
-  if ([mainBundle pathForResource:@"ezrtc_media_session_filter01" ofType:@"fsh"].length == 0) {
+  if (![self hasResourceNamed:@"ezrtc_media_session_filter01"
+                       ofType:@"fsh"
+                    inBundles:candidateBundles]) {
     [missingResources addObject:@"ezrtc_media_session_filter01.fsh"];
   }
 
   return missingResources;
+}
+
+- (BOOL)hasResourceNamed:(NSString *)name
+                  ofType:(NSString *)type
+               inBundles:(NSArray<NSBundle *> *)bundles {
+  for (NSBundle *bundle in bundles) {
+    if ([bundle pathForResource:name ofType:type].length > 0) {
+      return YES;
+    }
+  }
+  return NO;
 }
 
 - (void)stopRealPlayInternal {

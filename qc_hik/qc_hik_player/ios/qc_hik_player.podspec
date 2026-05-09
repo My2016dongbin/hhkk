@@ -18,7 +18,6 @@ Flutter plugin for HikIot live stream player on Android and iOS.
   ]
   s.preserve_paths   = 'ThirdParty/HikiotOpenSDK/**/*'
   s.vendored_libraries = 'ThirdParty/HikiotOpenSDK/**/*.a'
-  s.static_framework = true
   s.platform         = :ios, '12.0'
   s.dependency 'Flutter'
   s.frameworks = 'CoreAudio', 'AVFoundation', 'VideoToolbox', 'CoreMedia', 'GLKit', 'OpenAL', 'AudioToolbox', 'Photos'
@@ -27,6 +26,7 @@ Flutter plugin for HikIot live stream player on Android and iOS.
   header_root = '${PODS_TARGET_SRCROOT}/ThirdParty/HikiotOpenSDK'
   s.pod_target_xcconfig = {
     'DEFINES_MODULE' => 'YES',
+    'MACH_O_TYPE' => 'mh_dylib',
     'OTHER_LDFLAGS' => '$(inherited) -ObjC -lz -lbz2 -liconv',
     'CLANG_CXX_LANGUAGE_STANDARD' => 'gnu++20',
     'CLANG_CXX_LIBRARY' => 'libc++',
