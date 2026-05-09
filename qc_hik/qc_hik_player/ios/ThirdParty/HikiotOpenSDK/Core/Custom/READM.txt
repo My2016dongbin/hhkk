@@ -1,0 +1,2 @@
+EzvizTrans.h  最近版本的HCNetSDK已经去掉该文件, 这里仍然留下来是为了兼容老业务逻辑,否则业务上会有报错
+HCExceptionCallBackHandler  是之前处理异常的类 我们自己写的保留在这里也是为了兼容老业务

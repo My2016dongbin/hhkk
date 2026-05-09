@@ -562,11 +562,29 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
 
   bool get _isErrorState => _exception != null && _exception!.isNotEmpty;
 
+  Widget _buildPlatformPlayerView() {
+    final Map<String, dynamic> creationParams = widget.params.toMap();
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      return AndroidView(
+        viewType: _viewType,
+        creationParams: creationParams,
+        creationParamsCodec: const StandardMessageCodec(),
+        onPlatformViewCreated: _onPlatformViewCreated,
+      );
+    }
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      return UiKitView(
+        viewType: _viewType,
+        creationParams: creationParams,
+        creationParamsCodec: const StandardMessageCodec(),
+        onPlatformViewCreated: _onPlatformViewCreated,
+      );
+    }
+    return const Center(child: Text('当前平台暂不支持'));
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (defaultTargetPlatform != TargetPlatform.android) {
-      return const Center(child: Text('当前仅支持 Android'));
-    }
     final double componentWidth = MediaQuery.of(context).size.width;
     final double scaleFactor = widget.isFullScreenMode ? 1.15 : 1.0;
     return LayoutBuilder(
@@ -607,12 +625,7 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              AndroidView(
-                viewType: _viewType,
-                creationParams: widget.params.toMap(),
-                creationParamsCodec: const StandardMessageCodec(),
-                onPlatformViewCreated: _onPlatformViewCreated,
-              ),
+              _buildPlatformPlayerView(),
               if (widget.enablePanel && !_isErrorState)
                 AbsorbPointer(
                   absorbing: _hideStuff,

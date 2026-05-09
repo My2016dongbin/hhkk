@@ -1,0 +1,369 @@
+### EZOpenSDK V5.16
+2024-10-09
+>1、支持霍曼蓝牙配网
+>2、支持海外新协议AP配网
+
+### EZOpenSDK V5.15
+2024-09-25
+>1、支持获取视频编码格式
+>2、支持获取设备能力集中的清晰度数据
+
+### EZOpenSDK V5.14
+2024-09-14
+>1、国内全面支持小权限tkToken
+
+### EZOpenSDK V5.13
+2024-06-11
+>1、修复已知问题
+
+### EZOpenSDK V5.12
+2024-04-20
+>1、支持云录制相关功能
+>2、修复已知问题
+
+### EZOpenSDK V5.11
+2024-04-01
+>1、新增国内云台控制新接口EZOpenSDK.controlPTZMix
+>2、修复已知问题
+
+### EZOpenSDK V5.10
+2024-02-23
+>1、支持小权限token取流
+>2、修复已知问题
+
+### EZOpenSDK V5.9
+2024-02-19
+>1、支持国内浓缩回放录像下载
+>2、支持对讲变声（需开通服务）
+
+### EZOpenSDK V5.8
+2024-01-17
+>1、支持海外浓缩回放录像下载
+>2、修复已知问题
+
+### EZOpenSDK V5.7
+2023-12-21
+>1、支持华住私有云AI回放
+>2、兼容网关下子设备预览、对讲、回放
+>3、局域网登录部分设备失败bug修复
+
+### EZOpenSDK V5.6.1
+2023-12-6
+>1、修复已知问题
+
+### EZOpenSDK V5.6
+2023-10-26
+>1、支持接触式AP配网
+
+### EZOpenSDK V5.5
+2023-10-10
+>1、鱼眼设备预览和回放支持多种矫正模式
+>2、openssl升级至1.1.1v，修复安全漏洞
+>3、修复已知问题
+
+### EZOpenSDK V5.4.3
+2023-09-14
+>1、修复已知问题
+
+### EZOpenSDK V5.4.2
+2023-09-06
+>1、修复设备配网方式获取失败的问题
+
+### EZOpenSDK V5.4
+2023-08-25
+>1、支持EZLink配网，新设备新配网方式
+>2、“是否支持SD卡录像下载”和“内网直连下是否支持倍数回放”api开放
+>3、根据能力集位数自助获取能力集api开放
+>4、Xcode15移除了libicon2.4.0动态库，已更改为libicon
+>5、修复已知问题
+
+### EZOpenSDK V5.3.1
+2023-06-21
+>1、openssl升级至1.1.1u，修复安全漏洞
+>2、修复已知问题
+
+### EZOpenSDK V5.3
+2023-05-26
+>1、新增接口EZPlay.setPlayerDisableP2P，该播放器不使用p2p取流
+>2、修复已知问题
+
+### EZOpenSDK V5.2
+2023-05-04
+>1、openssl升级至1.1.1t，修复安全漏洞
+>2、新增云台控制新接口EZOpenSDK.controlPTZEx，支持0-7共8档
+>3、修复已知问题
+
+### EZOpenSDK V5.1.3
+2023-03-30
+>1、修复已知问题
+
+### EZOpenSDK V5.1
+2023-02-08
+>1、支持门锁设备获取开门token
+>2、支持SD卡录像封面展示
+
+### EZOpenSDK V5.0.1
+2022-12-05
+>1、性能优化
+>2、修复已知问题
+
+### EZOpenSDK V4.20.1
+2022-08-25
+>1、支持开启智能分析
+>2、修复已知问题
+
+### EZOpenSDK V4.20.0
+2022-07-25
+>1、支持国标设备对讲
+
+### EZOpenSDK V4.19.9
+2022-06-27
+>1、云存储录像下载支持下载进度回调
+
+### EZOpenSDK V4.19.8
+2022-05-09
+>1、SD卡回放视频支持快速下载；
+>2、Smart配网，查询设备状态支持自定义域名；
+>3、设备云台操作时，可以显示角度比例尺；
+>4、视频会议升级到1.7.4版本；
+
+### EZOpenSDK V4.19.6
+2022-04-18
+>1、查询设备状态支持自定义域名；
+>2、p2p相关4个接口提供；
+
+### EZOpenSDK V4.19.5.1
+2022-03-23
+>1、修复EZDeviceInfo类中多个设备能力isSupportXXX判断错误bug；
+>2、修复iOS15.4系统在24小时制关闭情况下，字符串&日期之间转换出错bug；
+>3、EZPlayer提供静默预览方法startSilenceRealPlay；
+
+### EZOpenSDK V4.19.5
+2022-03-01
+>1、已知问题修复；
+
+### EZOpenSDK V4.19.4
+2022-01-17
+>1、海外云存储新增8个新接口；
+
+### EZOpenSDK V4.19.2
+2021-12-18
+>1、一屏多视屏预览创建播放器时支持使用子码流
+>2、已知问题修复；
+
+### EZOpenSDK V4.19.1
+2021-12-08
+>1、已知问题修复；
+
+### EZOpenSDK V4.19.0
+2021-12-01
+>1、视频会议升级到1.6版本；
+>2、已知问题修复；
+
+### EZOpenSDK V4.18.2
+2021-10-29
+>1、SD卡视频列表查询恢复老接口；
+
+### EZOpenSDK V4.18.1
+2021-10-22
+>1、修复与CocoaAsyncSocket冲突问题
+
+### EZOpenSDK V4.18.0
+2021-10-18
+>1、SD卡视频增加标签
+>2、修复部分崩溃问题
+
+### EZOpenSDK V4.16.8.1
+2021-10-12
+>1、性能优化
+
+### EZOpenSDK V4.16.8
+2021-08-23
+>1、支持对云端加密报警图片的解密
+>2、支持多人会议（初版），待进一步补全功能和优化接口
+>3、修复部分崩溃问题
+>4、修复部分设备SD卡录像无法回放问题
+
+EZOpenSDK V4.16.6 build20210610
+ for iOS 更新内容：
+1.预览/回放支持全链路加密，更安全
+2.修复内部bugs.
+
+EZOpenSDK V4.16.1 build20210330
+ for iOS 更新内容：
+1.支持NVR对讲；
+2.支持边缘设备播放；
+3.兼容新国标设备；
+
+EZOpenSDK V4.16.0 build20210128
+ for iOS 更新内容：
+1.支持三方音视频通话；
+2.优化配网流程；
+3. 修复预览偶现崩溃问题
+
+
+EZOpenSDK V4.15.0 build20201019
+ for iOS 更新内容：
+1.支持Qos对讲;
+2.兼容iOS14；
+3.修复内部bugs.
+
+EZOpenSDK V4.14.0 build20200717
+ for iOS 更新内容：
+1.支持云存储全帧快放；
+2.修复内部bugs。
+
+EZOpenSDK V4.13.0 build20200604
+ for iOS 更新内容：
+1.demo支持多画面预览，画面放大；
+2.提供日志回调接口 + (void)setDebugLogCallBack；
+3.修复内部bugs。
+
+EZOpenSDK V4.12.0 build20200509
+ for iOS 更新内容：
+1.支持预览、设备录像码流回调；
+2.支持设备录像无流控下载；
+3.更新播放组件，上层手动加入metallib库；
+
+EZOpenSDK V4.10.0 build20200327
+ for iOS 更新内容：
+1.支持儿童手表双向音视频对讲；
+2.修复内部bugs，提高稳定性；
+
+EZOpenSDK V4.9.0 build20200228
+ for iOS 更新内容：
+1.更新底层网络库及web控件；
+2.http接口返回值类型变更为NSURLSessionDataTask*类型
+
+EZOpenSDK V4.8.9 build20200107
+ for iOS 更新内容：
+1、支持设备直连时回放结束的标识
+2、修复若干问题
+
+EZOpenSDK V4.8.8.2 build20190903
+ for iOS 更新内容：
+1.取消媒体数据的长度回调，采用getStreamFlow方法替代；
+2.配网支持ASCII字符；
+
+EZOpenSDK V4.8.8.1 build20190725
+ for iOS 更新内容：
+1.独立录像下载逻辑；
+
+EZOpenSDK V4.8.8 build20190722
+ for iOS 更新内容：
+1.更新通用库版本v3.3.0，更新对讲库采用系统回声消除；
+2.支持SD卡/云录像下载（具体用法见demo）；
+3.支持连续云存储录像播放；
+4.新增设置硬解优先；
+5.本地录制功能更新；
+6.更新OpenCloudPage接口，加入通道号参数；
+7.dclog上报表名和上报字段变更；
+
+EZOpenSDK V4.8.6.1 build20190429
+ for iOS 更新内容：
+1、修复终端绑定bug
+2、新增硬件解码器优先接口
+
+EZOpenSDK V4.8.6 build20181121 for iOS 更新内容：
+1、适配Xcode10编译环境
+2、修改数据库相关BUG
+
+EZOpenSDK V4.8.4 build20180803 for iOS 更新内容：
+1、增加AP配网功能
+2、去除自助排查功能
+
+EZOpenSDK V4.8.3 build20180530 for iOS 更新内容：
+1、增加声波配网和批量配网接口，配网回调中增加序列号返回
+2、更新底层取流播放库，优化播放性能
+3、增加海康设备激活功能
+4、优化NVR不在线时回放逻辑
+5、修复探测器相关bug
+6、修复云存储回放seek接口失效bug
+
+
+EZOpenSDK V4.8.2 build20180306 for iOS 更新内容：
+1、通过H5界面登录后，授权信息自动刷新功能
+2、错误码收集功能
+
+EZOpenSDK V4.8.1 build20171228 for iOS 更新内容：
+1、增加CDN取流功能。
+
+EZOpenSDK V4.8.0 build20171205 for iOS 更新内容：
+1、增加自助排查系统
+2、新增动态库，部分冲突问题可以使用动态库解决
+
+EZOpenSDK V4.7.1 build20171109 for iOS 更新内容：
+1、修复使用XCode9开发APP在iOS 11上运行时，预览画面不显示的bug
+2、修复开启对讲或结束对讲时异常崩溃的bug
+3、修复对讲报380080错误
+4、修复EZUIKit不能切换清晰度的bug
+5、修复部分设备云台上下转动不会停止的bug
+6、去除预览或对讲时报34错误码，由SDK内部进行处理
+
+EZOpenSDK V4.7.0 build20171017 for iOS 更新内容：
+1、增加DDNS获取设备信息并进行预览的功能
+2、增加局域网搜索预览功能
+3、优化取流流程
+4、修复iOS 11中播放界面不展示的问题
+5、已知bug修复
+
+EZOpenSDK V4.5.0 build20170605 for iOS 更新内容：
+1.新增清除SDK内部缓存数据接口clearStreamInfoCache；
+2.已知Bug修复
+
+EZOpenSDK V4.4.0 build20170320 for iOS 更新内容：
+1.通道信息EZCameraInfo类中新增通道支持的清晰度列表
+2.告警消息EZAlarmInfo类中新增告警视频存储位置标识
+3.新增播放器播放成功后回调视频流分辨率
+4.优化取流流程
+5.EZConstants.h文件中错误码说明补齐
+6.Bug修复
+
+EZOpenSDK V4.3.0 build20161219 for iOS 更新内容：
+1.新增根据设备序列号获取单个设备信息接口；
+2.新增播放器流量回调；
+3.新增获取手机硬件特征码接口；
+4.已知Bug修复;
+
+EZOpenSDK V4.2.0 build20161008 for iOS 更新内容：
+1.SDK全面支持p2p，有控制开关接口，省流量，从p2p做起；
+2.全面修改不合理的接口设计，对接更加轻松，老版本用户请关注FYI;
+
+EZOpenSDK V3.4.2 build20160907 for iOS 更新内容：
+1.新增加半双工对讲的支持；
+2.优化对讲的稳定性；
+3.修复部分IPC设备的存在闪屏的问题。
+
+EZOpenSDK V3.4.1 build20160530 for iOS 更新内容：
+1.iOS 9的IPv6-only适配；
+2.对讲功能兼容问题修复；
+3.兼容protocolbuffer问题；
+4.更新头文件的注释内容。
+
+
+EZOpenSDK V3.4.0 build20160503 for iOS 更新内容：
+1.支持N1、X2等回放功能；
+2.新增加通过设备验证码关闭视频加密功能接口；
+3.优化对讲的效果和稳定性；
+4.修复已知的bug和性能优化。
+
+FYI:
+从3.4.2及以前升级的用户从这里开始看：
+1.EZPlayer新增加setPlayVerifyCode接口:视频播放时，需要输入验证码，旧版本在sdk弹输入框的，开发者改不了ui，而且在sdk中也不适合做ui层的工作。本版本将弹框放到app层了。需要输入验证码时，会向app层发送EZ_SDK_NEED_VALIDATECODE或者EZ_SDK_VALIDATECODE_NOT_MATCH消息，app层接收到此消息后，可以弹出输入框，让用户输入验证码，再通过-(void)setPlayVerifyCode:函数向SDK设置验证码，并且重新播放；（Demo中已经有相关的代码，请查看）；
+2.EZPlayer原先的录像接口使用较为复杂，sdk回调标准流，在app层保存文件。我们在新版本提供了一个更简单的方式，直接将文件名传入sdk即可。预览、回放的录像，推荐使用此接口：
+- (void)startLocalRecordWithPath:(NSString *)path；
+从4.0.0之后的版本升级的用户从这里开始看：
+3.删除视频广场相关的所有接口；
+4.删除接口openAddDevicePage、openSettingDevicePage、getSmsCode、secureSmsValidate、transferAPI等，SDK无需再验证短信验证码；
+5.删除接口getDetectorList，使用getDeviceList替代；
+6.删除接口getDeviceInfoBySerial、getCameraInfo、getDeviceInfo、getCameraList等，使用getDeviceList和getSharedDeviceList(分享设备)接口完成相关功能；
+7.EZDeviceInfo对象属性字段发生改变，EZCameraInfo对象属性字段发生改变，他们之间存在从属关系；
+8.EZPlayer构造方法从通过cameraId转变成通过deviceSerial和cameraNo构造；
+9.EZPlayer中的setVideoLevel接口移动到EZOpenSDK中的setVideoLevel接口，播放过程中如果要切换清晰度需要用户调用该接口成功以后stopRealPlay再startRealPlay即可完成清晰度切换。
+10.修改抓图接口名称capturePicture为captureCamera；
+11.修改画面翻转接口名称controlDisplay为controlVideoFlip；
+12.修改需要cameraId参数相关接口包括searchRecordFileFromCloud、searchRecordFileFromDevice、controlPTZ、controlVideoFlip等，都使用deviceSerial和cameraNo替代cameraId；
+13.修改设置布撤防接口setDefence名称，同时使其兼容IPC和非IPC设备的布撤防功能；
+14.修改需要validateCode参数相关的接口包括：addDevice、decryptData、setDeviceEncryptStatus等，修改validateCode名称为verifyCode，图片视频加解密接口（setDeviceEncryptStatus）使用设备验证码替代短信验证码，解决短信验证码发送太频繁的问题;
+15.拆分EZOpenSDK的常量定义为EZConstants类文件，更加完善EZErrorCode的信息；
+16.EZAlarm中的channelNo字段改成cameraNo，作统一。

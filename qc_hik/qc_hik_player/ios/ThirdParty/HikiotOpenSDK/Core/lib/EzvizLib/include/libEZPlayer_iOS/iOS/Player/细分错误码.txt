@@ -1,0 +1,32 @@
+//针对MP_E_DISPLAY类型错误细分错误码 4.23更新为800偏移，避免与通用库中1000冲突
+#define DISPLAY_E_BASIC                         1000
+#define DISPLAY_E_LDCINIT                       (DISPLAY_E_BASIC + 1)   //LDC初始化失败
+#define DISPLAY_E_LDCNEEDINIT                   (DISPLAY_E_BASIC + 2)   //LDC未初始化
+#define DISPLAY_E_LDCPROCESS                    (DISPLAY_E_BASIC + 3)   //LDC处理失败
+#define DISPLAY_E_EGLGETDISPLAY                 (DISPLAY_E_BASIC + 4)   //EGL获取display失败
+#define DISPLAY_E_EGLINIT                       (DISPLAY_E_BASIC + 5)   //EGL初始化失败
+#define DISPLAY_E_EGLCHOOSECONFIG               (DISPLAY_E_BASIC + 6)   //EGLchooseconfig失败
+#define DISPLAY_E_EGLCONFIGNUM                  (DISPLAY_E_BASIC + 7)   //EGL获取config num失败
+#define DISPLAY_E_EGLCREATESURFACE              (DISPLAY_E_BASIC + 8)   //EGL创建surface失败
+#define DISPLAY_E_EGLDESTROYSURFACE             (DISPLAY_E_BASIC + 9)   //EGL销毁surface失败
+#define DISPLAY_E_EGLCREATECONTEXT              (DISPLAY_E_BASIC + 10)  //EGL创建context失败
+#define DISPLAY_E_EGLMAKECURRENT                (DISPLAY_E_BASIC + 11)  //EGLmake context失败
+#define DISPLAY_E_EGLRELEASECONTEXT             (DISPLAY_E_BASIC + 12)  //EGL释放context失败
+#define DISPLAY_E_EGLDESTROYCONTEXT             (DISPLAY_E_BASIC + 13)  //EGL销毁context失败
+#define DISPLAY_E_EGLSWAPBUFFER                 (DISPLAY_E_BASIC + 14)  //EGL交换缓冲区失败
+#define DISPLAY_E_EGLGETSURFACESIZE             (DISPLAY_E_BASIC + 15)  //EGL获取窗口宽高失败
+#define DISPLAY_E_EGLGETRESOLUTION              (DISPLAY_E_BASIC + 16)  //EGL分辨率失败
+#define DISPLAY_E_RENDERLEN                     (DISPLAY_E_BASIC + 17)  //渲染长度异常
+#define DISPLAY_E_NEWDISPLAY                    (DISPLAY_E_BASIC + 18)  //display创建失败
+#define DISPLAY_E_DISPLAYINIT                   (DISPLAY_E_BASIC + 19)  //display初始化失败
+#define DISPLAY_E_SRSUPPORT                     (DISPLAY_E_BASIC + 20)  //渲染库不支持
+#define DISPLAY_E_SRSUBPORTFULL                 (DISPLAY_E_BASIC + 21)  //渲染库port为空
+#define DISPLAY_E_SRUPDATEDATA                  (DISPLAY_E_BASIC + 22)  //渲染库updata失败
+#define DISPLAY_E_SRSHADER                      (DISPLAY_E_BASIC + 23)  //渲染库shader异常
+#define DISPLAY_E_SRFONT                        (DISPLAY_E_BASIC + 24)  //渲染库字体异常
+#define DISPLAY_E_SRHWINDUSED                   (DISPLAY_E_BASIC + 25)  //窗口句柄已被占用
+#define DISPLAY_E_SRCUDA                        (DISPLAY_E_BASIC + 26)  //渲染库CUDA错误
+#define DISPLAY_E_SRSWAPCHAIN                   (DISPLAY_E_BASIC + 27)  //渲染库wapchain错误
+#define DISPLAY_E_SROPENGLRES                   (DISPLAY_E_BASIC + 28)  //渲染库opengl错误
+#define DISPLAY_E_SRNOCACHE                     (DISPLAY_E_BASIC + 29)  //渲染库缓存溢出
+#define DISPLAY_E_SRUNKONWN                     (DISPLAY_E_BASIC + 30)  //渲染库未知错误

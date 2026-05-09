@@ -11,8 +11,9 @@ flutter:
       android:
         package: com.qc.qc_hik_player
         pluginClass: QcHikPlayerPlugin
+      ios:
+        pluginClass: QcHikPlayerPlugin
 
 dependencies:
   flutter:
     sdk: flutter
-

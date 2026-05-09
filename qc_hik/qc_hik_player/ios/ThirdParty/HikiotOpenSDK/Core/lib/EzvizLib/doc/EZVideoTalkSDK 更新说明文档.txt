@@ -1,0 +1,87 @@
+EZVideoSDK 更新说明文档
+----------------------------------------------------------------------------------------------------------------
+iOS v3.2
+1.全新的视频会议相关接口，详细见SDK（- (int32_t)enterRoom:(EZConferenceParam *)param; - (int32_t)leaveRoom;）
+2.支持用户按需要选择观看会议中某个与会者视频
+3.支持在应用内共享屏幕到会议
+4.支持在发送自己的主码流画面的时候，附带发送小码流
+5.支持在会议中邀请某个萤石设备加入会场，会场中其他人可以听到设备采集的声音以及画面
+
+
+
+----------------------------------------------------------------------------------------------------------------
+iOS  V3.1
+
+1、start接口中，增加会控服务地址及端口，
+m_szVcAddr 会议模式必填，会控服务地址
+m_iVcPort 会议模式必填
+
+1.5、【重要】回调消息- (void)bavClient:(EZVideoTalk *)client didReceivedMessage:(int32_t)messageCode msg:(id)msg 的msg字段已修改，原先返回字典，现改为对象，详细见说明
+
+2、在对本地静音或解除静音时，会议中其它成员可以收到回调消息 EZBAVMessageClientInfo
+
+3、有用户加入房间时，回调消息类型 EZBAVMessagePeerEnteredRoom，增加用户静音状态参数（通过EZRTCParticipantsInfo中的m_szMute字段判断）  
+
+4、在通话过程中，新增回调，不断回其它用户当前音量 回调消息类型 EZBAVMessageClientState 回调对象
+
+----------------------------------------------------------------------------------------------------------------
+Android V3.1
+更新时间， 2021-05-06
+
+1、start接口中，增加会控服务地址及端口，
+m_szVcAddr 会议模式必填，会控服务地址
+m_iVcPort 会议模式必填
+
+ 
+
+2、在对本地静音或解除静音时，会议中其它成员可以收到回调
+/**
+
+* 用户信息更改，目前仅用作其它用户更改静音状态
+* @param bavJoinInfo
+*/
+void onClientUpdated(JNAApi.BavJoinInfo bavJoinInfo); 
+
+通过BavJoinInfo中的mute字段判断某用户是否静音；
+
+ 
+
+3、有用户加入房间时，增加用户静音状态参数
+/**
+* 有用户加入房间号
+* @param joinInfo 加入房间信息，可扩展
+*/
+void onJoinRoom(JNAApi.BavJoinInfo joinInfo);
+
+如AB处于会议中，此时A静音，B将会收到2中的回调，此后C再加入房间，将会收到A加入房间，且A的mute为true.
+
+4、在通话过程中，新增回调，不断回其它用户当前音量
+/**
+* 通话过程中，有其它用户更改声音状态的信息同步
+* @param clientId
+* @param volume
+*/
+void onClientStat(int clientId, int volume);  //volume 0-10 表示音量大小等级
+
+ 
+
+5、新增错误码
+/**
+* 连接会控服务失败
+*/
+public final static int BAV_CLIENT_EVENT_VC_CONNECT_FAIL = 601 + NPQ_OFFSET;
+
+/**
+* 会控回复超时
+*/
+public final static int BAV_CLIENT_EVENT_VC_TIMEOUT = 602 + NPQ_OFFSET;
+
+/**
+* 会控 服务地址为空
+*/
+public final static int BAV_CLIENT_EVENT_VC_ADDER_EMPTY = 603 + NPQ_OFFSET;
+
+/**
+* 客户端已存在
+*/
+public final static int BAV_CLIENT_EVENT_ROOM_CLIENT_IS_EXIST = 604 + NPQ_OFFSET;
