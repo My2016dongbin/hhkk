@@ -39,6 +39,35 @@ class QcHikPlayerController {
       return null;
     }
   }
+
+  Future<bool> startLocalRecord(String filePath) async {
+    if (_methodChannel == null) {
+      return false;
+    }
+    try {
+      final dynamic result = await _methodChannel!.invokeMethod(
+        'startLocalRecord',
+        {'filePath': filePath},
+      );
+      return result == true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  Future<bool> stopLocalRecord() async {
+    if (_methodChannel == null) {
+      return false;
+    }
+    try {
+      final dynamic result = await _methodChannel!.invokeMethod(
+        'stopLocalRecord',
+      );
+      return result == true;
+    } catch (_) {
+      return false;
+    }
+  }
 }
 
 class QcHikPlayerParams {

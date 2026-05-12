@@ -288,6 +288,13 @@ public class QcHikPlayerView implements PlatformView, MethodChannel.MethodCallHa
             case "capturePicture":
                 result.success(capturePictureBytes());
                 break;
+            case "startLocalRecord":
+                String filePath = call.argument("filePath");
+                result.success(startLocalRecord(filePath));
+                break;
+            case "stopLocalRecord":
+                result.success(stopLocalRecordInternal());
+                break;
             case "setSoundEnabled":
                 Boolean enabled = call.argument("enabled");
                 boolean setSuccess = setSoundEnabled(enabled != null && enabled);
@@ -330,6 +337,30 @@ public class QcHikPlayerView implements PlatformView, MethodChannel.MethodCallHa
                 } catch (Exception ignored) {
                 }
             }
+        }
+    }
+
+    private boolean startLocalRecord(String filePath) {
+        if (player == null || TextUtils.isEmpty(filePath)) {
+            return false;
+        }
+        try {
+            return player.startLocalRecordWithFile(filePath);
+        } catch (Exception e) {
+            Log.e(TAG, "startLocalRecord failed", e);
+            return false;
+        }
+    }
+
+    private boolean stopLocalRecordInternal() {
+        if (player == null) {
+            return false;
+        }
+        try {
+            return player.stopLocalRecord();
+        } catch (Exception e) {
+            Log.e(TAG, "stopLocalRecord failed", e);
+            return false;
         }
     }
 

@@ -126,6 +126,7 @@ class LiGanDeviceDetailController extends GetxController {
   final Rxn<QcHikPlayerParams> hikPlayParams = Rxn<QcHikPlayerParams>();
   final RxInt hikPlayerSeed = 0.obs;
   final QcHikPlayerController hikPlayerController = QcHikPlayerController();
+  String? hikRecordFilePath;
 
   @override
   void onInit() {
@@ -195,7 +196,10 @@ class LiGanDeviceDetailController extends GetxController {
       //
     }
     try {
-      stopRecordFFMPEG();
+      if (videoTag.value ||
+          (hikRecordFilePath != null && hikRecordFilePath!.isNotEmpty)) {
+        stopRecordFFMPEG();
+      }
     } catch (e) {
       //
     }
@@ -203,6 +207,10 @@ class LiGanDeviceDetailController extends GetxController {
   }
 
   saveImageToGallery() async {
+    if (hikPlayerTag.value) {
+      await saveHikImageToGallery();
+      return;
+    }
     HhLog.d("saveImageToGallery ");
     screenshotController.capture().then((value) async {
       HhLog.d("saveImageToGallery ");
@@ -226,6 +234,31 @@ class LiGanDeviceDetailController extends GetxController {
       HhLog.d("onError$onError");
       EventBusUtil.getInstance().fire(HhToast(title: '拍照失败请重试'));
     });
+  }
+
+  Future<void> saveHikImageToGallery() async {
+    final hasPermission = await _ensureGallerySavePermission();
+    if (!hasPermission) {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: '请先开启相册权限后再保存图片', type: 0));
+      return;
+    }
+    try {
+      final Uint8List? value = await hikPlayerController.capturePicture();
+      if (value == null || value.isEmpty) {
+        EventBusUtil.getInstance().fire(HhToast(title: '拍照失败请重试'));
+        return;
+      }
+      final result = await ImageGallerySaver.saveImage(value, quality: 100);
+      if (result != null && result['isSuccess'] == true) {
+        EventBusUtil.getInstance().fire(HhToast(title: '拍照已保存至相册', type: 0));
+      } else {
+        EventBusUtil.getInstance().fire(HhToast(title: '保存图片失败'));
+      }
+    } catch (e) {
+      HhLog.e("saveHikImageToGallery $e");
+      EventBusUtil.getInstance().fire(HhToast(title: '拍照失败请重试'));
+    }
   }
 
   saveCatchImage() async {
@@ -345,6 +378,10 @@ class LiGanDeviceDetailController extends GetxController {
   }
 
   Future<void> startRecordFFMPEG(String url) async {
+    if (hikPlayerTag.value) {
+      await startHikRecord();
+      return;
+    }
     if (Platform.isAndroid) {
       recordController.start();
     }
@@ -422,10 +459,101 @@ class LiGanDeviceDetailController extends GetxController {
   }
 
   void stopRecordFFMPEG() {
+    if (hikPlayerTag.value) {
+      stopHikRecord();
+      return;
+    }
     if (Platform.isAndroid) {
       recordController.stop();
     }
     FFmpegKit.cancel();
+  }
+
+  Future<void> startHikRecord() async {
+    final Directory? dir = await _getRecordBaseDirectory();
+    if (dir == null) {
+      EventBusUtil.getInstance().fire(HhToast(title: '无法获取存储目录', type: 0));
+      videoTag.value = false;
+      return;
+    }
+    final recordDir = Directory('${dir.path}/record');
+    if (!await recordDir.exists()) {
+      await recordDir.create(recursive: true);
+    }
+    final filePath =
+        '${recordDir.path}/video_${DateTime.now().millisecondsSinceEpoch}.mp4';
+    final bool started = await hikPlayerController.startLocalRecord(filePath);
+    if (!started) {
+      videoTag.value = false;
+      EventBusUtil.getInstance().fire(HhToast(title: '录制失败，请重试', type: 0));
+      return;
+    }
+    hikRecordFilePath = filePath;
+    videoSecond.value = 0;
+    videoMinute.value = 0;
+    runRecordTimer();
+  }
+
+  Future<void> stopHikRecord() async {
+    final String? filePath = hikRecordFilePath;
+    if (filePath == null || filePath.isEmpty) {
+      return;
+    }
+    final bool stopped = await hikPlayerController.stopLocalRecord();
+    hikRecordFilePath = null;
+    if (!stopped) {
+      EventBusUtil.getInstance().fire(HhToast(title: '录制失败，请重试', type: 0));
+      return;
+    }
+    if (videoSecond.value < 5 && videoMinute.value == 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: '录像时长太短请重新录制', type: 0));
+      return;
+    }
+    final File? file = await _waitForHikRecordFileReady(filePath);
+    final exists = file != null && await file.exists();
+    final length = exists ? await file.length() : 0;
+    if (!exists || length <= 0) {
+      EventBusUtil.getInstance().fire(HhToast(title: '录像文件生成失败', type: 0));
+      return;
+    }
+    await _saveRecordedVideoToGallery(filePath);
+  }
+
+  Future<File?> _waitForHikRecordFileReady(String filePath) async {
+    final file = File(filePath);
+    final tempFile = File('${filePath}_temp');
+    int lastLength = -1;
+    int stableCount = 0;
+    for (int i = 0; i < 40; i++) {
+      final exists = await file.exists();
+      final tempExists = await tempFile.exists();
+      final length = exists ? await file.length() : 0;
+      HhLog.d(
+          "_waitForHikRecordFileReady index=$i exists=$exists tempExists=$tempExists length=$length path=$filePath");
+      if (exists && length > 0) {
+        if (!tempExists) {
+          if (lastLength == length) {
+            stableCount++;
+          } else {
+            stableCount = 0;
+          }
+          lastLength = length;
+          if (stableCount >= 1) {
+            return file;
+          }
+        } else {
+          lastLength = length;
+          stableCount = 0;
+        }
+      }
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+    final exists = await file.exists();
+    if (!exists) {
+      return null;
+    }
+    final length = await file.length();
+    return length > 0 ? file : null;
   }
 
   Future<Directory?> _getRecordBaseDirectory() async {

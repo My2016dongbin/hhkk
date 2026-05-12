@@ -232,6 +232,36 @@ static NSString *sCurrentAppKey = nil;
                : [FlutterStandardTypedData typedDataWithBytes:imageData]);
     return;
   }
+  if ([@"startLocalRecord" isEqualToString:call.method]) {
+    NSDictionary *arguments =
+        [call.arguments isKindOfClass:[NSDictionary class]]
+            ? (NSDictionary *)call.arguments
+            : @{};
+    NSString *filePath = [QcHikBusinessPlayParams stringValue:arguments[@"filePath"]];
+    BOOL success = NO;
+    @try {
+      success = self.player != nil && filePath.length > 0 &&
+          [self.player startLocalRecordWithPathExt:filePath];
+    } @catch (NSException *exception) {
+      success = NO;
+    }
+    result(@(success));
+    return;
+  }
+  if ([@"stopLocalRecord" isEqualToString:call.method]) {
+    if (self.player == nil) {
+      result(@NO);
+      return;
+    }
+    @try {
+      [self.player stopLocalRecordExt:^(BOOL ret) {
+        result(@(ret));
+      }];
+    } @catch (NSException *exception) {
+      result(@NO);
+    }
+    return;
+  }
   if ([@"setSoundEnabled" isEqualToString:call.method]) {
     NSDictionary *arguments =
         [call.arguments isKindOfClass:[NSDictionary class]]
