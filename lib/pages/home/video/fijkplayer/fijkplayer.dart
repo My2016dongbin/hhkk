@@ -14,6 +14,7 @@ class VideoPlayerWidget extends StatefulWidget {
   final FijkFit? fit;
   final FijkFit? fsFit;
   final VoidCallback onOuterTap;
+  final VoidCallback? onPlaySuccess;
 
   const VideoPlayerWidget({
     Key? key,
@@ -22,6 +23,7 @@ class VideoPlayerWidget extends StatefulWidget {
     this.fit = FijkFit.fill,
     this.fsFit = FijkFit.fill,
     required this.onOuterTap,
+    this.onPlaySuccess,
   }) : super(key: key);
 
   @override
@@ -31,6 +33,7 @@ class VideoPlayerWidget extends StatefulWidget {
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late FijkPlayer player;
   late bool errorStatus = false;
+  bool _hasReportedPlaying = false;
 
   @override
   void initState() {
@@ -81,9 +84,14 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
           errorStatus = false;
         });
         HhLog.d('Playback started successfully ${player.state}');
+        if (!_hasReportedPlaying) {
+          _hasReportedPlaying = true;
+          widget.onPlaySuccess?.call();
+        }
       }
       if (player.state == FijkState.error ||
           player.state == FijkState.completed) {
+        _hasReportedPlaying = false;
         setState(() {
           errorStatus = true;
         });

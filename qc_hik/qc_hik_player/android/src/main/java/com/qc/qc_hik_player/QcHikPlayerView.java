@@ -2,6 +2,7 @@ package com.qc.qc_hik_player;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -21,6 +22,7 @@ import com.hikiot.hikiotsdk.core.HikIotPlayer;
 import com.videogo.errorlayer.ErrorInfo;
 import com.videogo.openapi.EZConstants;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -283,6 +285,9 @@ public class QcHikPlayerView implements PlatformView, MethodChannel.MethodCallHa
                 startRealPlay();
                 result.success(true);
                 break;
+            case "capturePicture":
+                result.success(capturePictureBytes());
+                break;
             case "setSoundEnabled":
                 Boolean enabled = call.argument("enabled");
                 boolean setSuccess = setSoundEnabled(enabled != null && enabled);
@@ -295,6 +300,36 @@ public class QcHikPlayerView implements PlatformView, MethodChannel.MethodCallHa
             default:
                 result.notImplemented();
                 break;
+        }
+    }
+
+    private byte[] capturePictureBytes() {
+        if (player == null) {
+            return null;
+        }
+        Bitmap bitmap = null;
+        ByteArrayOutputStream outputStream = null;
+        try {
+            bitmap = player.capturePicture();
+            if (bitmap == null) {
+                return null;
+            }
+            outputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            return outputStream.toByteArray();
+        } catch (Exception e) {
+            Log.e(TAG, "capturePicture failed", e);
+            return null;
+        } finally {
+            if (bitmap != null && !bitmap.isRecycled()) {
+                bitmap.recycle();
+            }
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (Exception ignored) {
+                }
+            }
         }
     }
 

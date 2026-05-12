@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,6 +17,7 @@ import 'package:iot/utils/RequestUtils.dart';
 import 'package:iot/utils/SPKeys.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qc_hik_player/qc_hik_player.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -64,6 +66,14 @@ class VideoController extends GetxController {
         "document.body.style.overflow = 'hidden';");
   late Rx<bool> secondStatus = true.obs;
   late Directory tempDir;
+  final List<ScreenshotController> screenshotControllers = List.generate(
+    CommonData.checkedChannels.length,
+    (_) => ScreenshotController(),
+  );
+  final List<QcHikPlayerController> hikPlayerControllers = List.generate(
+    CommonData.checkedChannels.length,
+    (_) => QcHikPlayerController(),
+  );
 
   ///1屏 4屏 8屏
   final Rx<int> videoCount = 1.obs;
@@ -278,6 +288,87 @@ class VideoController extends GetxController {
         fit: BoxFit.fill,
       );
     }
+  }
+
+  Future<void> saveCatchImageBytes(String deviceNo, Uint8List value) async {
+    if (deviceNo.isEmpty) {
+      return;
+    }
+    final filePath = '${tempDir.path}/catch_$deviceNo.png';
+    final file = File(filePath);
+    try {
+      File a = await file.writeAsBytes(value);
+      HhLog.d("video saveCatchImageBytes ${file.lengthSync()}");
+      HhLog.d("video saveCatchImageBytes $a");
+      EventBusUtil.getInstance().fire(CatchRefresh());
+    } catch (e) {
+      HhLog.e("video saveCatchImageBytes $e");
+    }
+  }
+
+  Future<void> saveCatchImage(int index) async {
+    if (index < 0 || index >= screenshotControllers.length) {
+      return;
+    }
+    try {
+      final Uint8List? value = await screenshotControllers[index].capture();
+      if (value == null || value.isEmpty) {
+        return;
+      }
+      await saveCatchImageBytes(_checkedChannelDeviceNo(index), value);
+    } catch (e) {
+      HhLog.e("video saveCatchImage $e");
+    }
+  }
+
+  Future<void> saveHikCatchImage(int index) async {
+    if (index < 0 || index >= hikPlayerControllers.length) {
+      return;
+    }
+    try {
+      final Uint8List? value =
+          await hikPlayerControllers[index].capturePicture();
+      if (value == null || value.isEmpty) {
+        return;
+      }
+      await saveCatchImageBytes(_checkedChannelDeviceNo(index), value);
+    } catch (e) {
+      HhLog.e("video saveHikCatchImage $e");
+    }
+  }
+
+  void onGridPlayerPlaySuccess(int index, {required bool useHikPlayer}) {
+    _scheduleCatchImageTasks(index, useHikPlayer: useHikPlayer);
+  }
+
+  void _scheduleCatchImageTasks(int index, {required bool useHikPlayer}) {
+    Future.delayed(const Duration(milliseconds: 3000), () async {
+      if (!Get.isRegistered<VideoController>()) {
+        return;
+      }
+      if (useHikPlayer) {
+        await saveHikCatchImage(index);
+      } else {
+        await saveCatchImage(index);
+      }
+    });
+    Future.delayed(const Duration(milliseconds: 10000), () async {
+      if (!Get.isRegistered<VideoController>()) {
+        return;
+      }
+      if (useHikPlayer) {
+        await saveHikCatchImage(index);
+      } else {
+        await saveCatchImage(index);
+      }
+    });
+  }
+
+  String _checkedChannelDeviceNo(int index) {
+    if (index < 0 || index >= CommonData.checkedChannels.length) {
+      return '';
+    }
+    return '${CommonData.checkedChannels[index]["deviceNo"] ?? CommonData.checkedChannels[index]["deviceId"] ?? CommonData.checkedChannels[index]["id"] ?? ''}';
   }
 
   Future<void> getTreeDetail() async {

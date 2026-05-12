@@ -139,6 +139,8 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                                           key: ValueKey(
                                               logic.hikPlayerSeed.value),
                                           params: logic.hikPlayParams.value!,
+                                          controller: logic.hikPlayerController,
+                                          onPlaySuccess: logic.onHikPlaySuccess,
                                           onMoveStart: logic.onHikMoveStart,
                                           onMoveEnd: logic.onHikMoveEnd,
                                         )

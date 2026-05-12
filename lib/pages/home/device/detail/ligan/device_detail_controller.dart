@@ -125,6 +125,7 @@ class LiGanDeviceDetailController extends GetxController {
   final RxBool hikPlayerTag = false.obs;
   final Rxn<QcHikPlayerParams> hikPlayParams = Rxn<QcHikPlayerParams>();
   final RxInt hikPlayerSeed = 0.obs;
+  final QcHikPlayerController hikPlayerController = QcHikPlayerController();
 
   @override
   void onInit() {
@@ -229,22 +230,68 @@ class LiGanDeviceDetailController extends GetxController {
 
   saveCatchImage() async {
     screenshotController.capture().then((value) async {
-      // 将图片保存到缓存目录
-      final tempDir = await getApplicationCacheDirectory();
-      final filePath = '${tempDir.path}/catch_$deviceNo.png';
-      final file = File(filePath);
       try {
-        File a = await file.writeAsBytes(value!);
-        HhLog.e("saveCatchImage  ----- $value");
-        HhLog.e("saveCatchImage ${file.lengthSync()}");
-        HhLog.e("saveCatchImage $a");
-        EventBusUtil.getInstance().fire(CatchRefresh());
+        if (value == null) {
+          return;
+        }
+        await saveCatchImageBytes(value);
       } catch (e) {
         HhLog.e("saveCatchImage $e");
       }
     }).catchError((onError) {
       // EventBusUtil.getInstance().fire(HhToast(title: '拍照失败请重试'));
     });
+  }
+
+  Future<void> saveCatchImageBytes(Uint8List value) async {
+    final tempDir = await getApplicationCacheDirectory();
+    final filePath = '${tempDir.path}/catch_$deviceNo.png';
+    final file = File(filePath);
+    File a = await file.writeAsBytes(value);
+    HhLog.e("saveCatchImage  ----- $value");
+    HhLog.e("saveCatchImage ${file.lengthSync()}");
+    HhLog.e("saveCatchImage $a");
+    EventBusUtil.getInstance().fire(CatchRefresh());
+  }
+
+  void scheduleCatchImageTasks({required bool useHikPlayer}) {
+    Future.delayed(const Duration(milliseconds: 3000), () async {
+      if (!Get.isRegistered<LiGanDeviceDetailController>()) {
+        return;
+      }
+      if (useHikPlayer) {
+        await saveHikCatchImage();
+      } else {
+        saveCatchImage();
+      }
+    });
+    Future.delayed(const Duration(milliseconds: 10000), () async {
+      if (!Get.isRegistered<LiGanDeviceDetailController>()) {
+        return;
+      }
+      if (useHikPlayer) {
+        await saveHikCatchImage();
+      } else {
+        saveCatchImage();
+      }
+    });
+  }
+
+  Future<void> saveHikCatchImage() async {
+    try {
+      final Uint8List? value = await hikPlayerController.capturePicture();
+      if (value == null || value.isEmpty) {
+        return;
+      }
+      await saveCatchImageBytes(value);
+    } catch (e) {
+      HhLog.e("saveHikCatchImage $e");
+    }
+  }
+
+  void onHikPlaySuccess() {
+    playErrorTag.value = false;
+    scheduleCatchImageTasks(useHikPlayer: true);
   }
 
   void runRecordTimer() {
@@ -595,16 +642,7 @@ class LiGanDeviceDetailController extends GetxController {
               // 播放成功开始
               HhLog.d('Playback started successfully ${player.state}');
               //截图并保存
-              Future.delayed(const Duration(milliseconds: 3000), () {
-                if (Get.isRegistered<LiGanDeviceDetailController>()) {
-                  saveCatchImage();
-                }
-              });
-              Future.delayed(const Duration(milliseconds: 10000), () {
-                if (Get.isRegistered<LiGanDeviceDetailController>()) {
-                  saveCatchImage();
-                }
-              });
+              scheduleCatchImageTasks(useHikPlayer: false);
             }
             if (player.state == FijkState.error) {
               videoError();

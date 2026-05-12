@@ -90,6 +90,7 @@ static NSString * const kQcHikPlayerMissingParamsText = @"播放参数缺失";
 @property (nonatomic, assign) BOOL soundEnabled;
 
 - (BOOL)applySoundEnabled:(BOOL)enabled;
+- (NSData * _Nullable)capturePictureData;
 - (NSArray<NSString *> *)missingRequiredResources;
 - (BOOL)hasResourceNamed:(NSString *)name
                   ofType:(NSString *)type
@@ -224,6 +225,13 @@ static NSString *sCurrentAppKey = nil;
     result(@YES);
     return;
   }
+  if ([@"capturePicture" isEqualToString:call.method]) {
+    NSData *imageData = [self capturePictureData];
+    result(imageData == nil
+               ? nil
+               : [FlutterStandardTypedData typedDataWithBytes:imageData]);
+    return;
+  }
   if ([@"setSoundEnabled" isEqualToString:call.method]) {
     NSDictionary *arguments =
         [call.arguments isKindOfClass:[NSDictionary class]]
@@ -240,6 +248,25 @@ static NSString *sCurrentAppKey = nil;
     return;
   }
   result(FlutterMethodNotImplemented);
+}
+
+- (NSData * _Nullable)capturePictureData {
+  if (self.player == nil) {
+    return nil;
+  }
+  @try {
+    UIImage *image = [self.player capturePicture:100];
+    if (image == nil) {
+      return nil;
+    }
+    NSData *pngData = UIImagePNGRepresentation(image);
+    if (pngData.length > 0) {
+      return pngData;
+    }
+    return UIImageJPEGRepresentation(image, 1.0);
+  } @catch (NSException *exception) {
+    return nil;
+  }
 }
 
 - (void)startRealPlayInternal {

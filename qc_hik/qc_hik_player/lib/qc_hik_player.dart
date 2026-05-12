@@ -10,6 +10,37 @@ enum QcHikPlayerMoveDirection { up, down, left, right }
 typedef QcHikPlayerMoveCallback = void Function(
     QcHikPlayerMoveDirection direction);
 
+class QcHikPlayerController {
+  MethodChannel? _methodChannel;
+
+  void _attach(MethodChannel? methodChannel) {
+    _methodChannel = methodChannel;
+  }
+
+  void _detach(MethodChannel? methodChannel) {
+    if (_methodChannel == methodChannel) {
+      _methodChannel = null;
+    }
+  }
+
+  Future<Uint8List?> capturePicture() async {
+    if (_methodChannel == null) {
+      return null;
+    }
+    try {
+      final dynamic result = await _methodChannel!.invokeMethod(
+        'capturePicture',
+      );
+      if (result is Uint8List) {
+        return result;
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+}
+
 class QcHikPlayerParams {
   final String tokenAppKey;
   final String httpUrlToken;
@@ -100,8 +131,10 @@ class QcHikPlayerParams {
 class QcHikPlayerView extends StatefulWidget {
   final QcHikPlayerParams params;
   final VoidCallback? onOuterTap;
+  final VoidCallback? onPlaySuccess;
   final QcHikPlayerMoveCallback? onMoveStart;
   final VoidCallback? onMoveEnd;
+  final QcHikPlayerController? controller;
   final bool enablePanel;
   final bool autoPlay;
   final bool isFullScreenMode;
@@ -110,8 +143,10 @@ class QcHikPlayerView extends StatefulWidget {
     super.key,
     required this.params,
     this.onOuterTap,
+    this.onPlaySuccess,
     this.onMoveStart,
     this.onMoveEnd,
+    this.controller,
     this.enablePanel = true,
     this.autoPlay = true,
     this.isFullScreenMode = false,
@@ -145,12 +180,23 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
     _isDisposed = true;
     _hideTimer?.cancel();
     _eventSubscription?.cancel();
+    widget.controller?._detach(_methodChannel);
     _methodChannel?.invokeMethod('disposePlayer');
     super.dispose();
   }
 
+  @override
+  void didUpdateWidget(covariant QcHikPlayerView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      oldWidget.controller?._detach(_methodChannel);
+      widget.controller?._attach(_methodChannel);
+    }
+  }
+
   Future<void> _onPlatformViewCreated(int id) async {
     _methodChannel = MethodChannel('qc_hik_player_view_$id/method');
+    widget.controller?._attach(_methodChannel);
     const eventCodec = StandardMethodCodec();
     final eventChannel = EventChannel(
       'qc_hik_player_view_$id/event',
@@ -185,6 +231,7 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
     final Map<dynamic, dynamic> rawMap = event;
     final String state = '${rawMap['state'] ?? ''}';
     final String message = '${rawMap['message'] ?? ''}'.trim();
+    final bool wasPlaying = _playing;
     setState(() {
       if (state == 'playing') {
         _prepared = true;
@@ -202,6 +249,9 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
         _exception = message.isEmpty ? '视频加载错误，请重试' : message;
       }
     });
+    if (state == 'playing' && !wasPlaying) {
+      widget.onPlaySuccess?.call();
+    }
   }
 
   Future<bool> _invokeBoolMethod(

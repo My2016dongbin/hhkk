@@ -562,23 +562,49 @@ class VideoPage extends StatelessWidget {
                                                                           "hikSdkParams"]
                                                                       .cast()),
                                                             ),
+                                                            controller: logic
+                                                                    .hikPlayerControllers[
+                                                                index],
+                                                            onPlaySuccess: () {
+                                                              logic
+                                                                  .onGridPlayerPlaySuccess(
+                                                                index,
+                                                                useHikPlayer:
+                                                                    true,
+                                                              );
+                                                            },
                                                             onOuterTap: () {
                                                               logic.videoIndex
                                                                       .value =
                                                                   index;
                                                             },
                                                           )
-                                                        : VideoPlayerWidget(
-                                                            key: ValueKey(
-                                                                "${CommonData.checkedChannels[index]["url"]}$index"),
-                                                            // key: ValueKey("${CommonData.checkedChannels[index]["url"]}${Random().nextInt(10000000)}"),
-                                                            url:
-                                                                "${CommonData.checkedChannels[index]["url"]}",
-                                                            onOuterTap: () {
-                                                              logic.videoIndex
-                                                                      .value =
-                                                                  index;
-                                                            },
+                                                        : Screenshot(
+                                                            controller: logic
+                                                                    .screenshotControllers[
+                                                                index],
+                                                            child:
+                                                                VideoPlayerWidget(
+                                                              key: ValueKey(
+                                                                  "${CommonData.checkedChannels[index]["url"]}$index"),
+                                                              // key: ValueKey("${CommonData.checkedChannels[index]["url"]}${Random().nextInt(10000000)}"),
+                                                              url:
+                                                                  "${CommonData.checkedChannels[index]["url"]}",
+                                                              onPlaySuccess:
+                                                                  () {
+                                                                logic
+                                                                    .onGridPlayerPlaySuccess(
+                                                                  index,
+                                                                  useHikPlayer:
+                                                                      false,
+                                                                );
+                                                              },
+                                                              onOuterTap: () {
+                                                                logic.videoIndex
+                                                                        .value =
+                                                                    index;
+                                                              },
+                                                            ),
                                                           ),
                                                   ),
                                                   Container(
