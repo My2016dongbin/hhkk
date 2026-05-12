@@ -28,6 +28,10 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 def flutterVersionCode = "32"
 def flutterVersionName = "1.0.22.260512"
+def isReleasePackagingTask = gradle.startParameter.taskNames.any { taskName ->
+    def lowerName = taskName.toLowerCase()
+    return lowerName.contains("release") || lowerName.contains("bundle")
+}
 
 android {
     compileSdkVersion 34
@@ -51,9 +55,11 @@ android {
         versionName flutterVersionName
 
 
-        ndk {
-            //设置支持的SO库架构
-            abiFilters  "armeabi-v7a","arm64-v8a"//, "x86"
+        if (!isReleasePackagingTask) {
+            ndk {
+                //设置支持的SO库架构
+                abiFilters  "armeabi-v7a","arm64-v8a"//, "x86"
+            }
         }
         manifestPlaceholders = [
                 XG_ACCESS_ID : "1500040929",///个人版
@@ -148,9 +154,11 @@ android {
             minifyEnabled false
 //            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            ndk{
-                //QQ微信等大佬都只用"armeabi"
-                abiFilters  "armeabi-v7a","arm64-v8a"//, "x86"
+            if (!isReleasePackagingTask) {
+                ndk{
+                    //QQ微信等大佬都只用"armeabi"
+                    abiFilters  "armeabi-v7a","arm64-v8a"//, "x86"
+                }
             }
         }
         debug {
@@ -159,10 +167,31 @@ android {
             shrinkResources false
 //            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            ndk {
-                //这里配置开发调试时的，根据个人需要增减少，x86建议加上不然部分模拟器回报错
-                abiFilters  "armeabi-v7a","arm64-v8a", "x86"
+            if (!isReleasePackagingTask) {
+                ndk {
+                    //这里配置开发调试时的，根据个人需要增减少，x86建议加上不然部分模拟器回报错
+                    abiFilters  "armeabi-v7a","arm64-v8a", "x86"
+                }
             }
+        }
+    }
+    splits {
+        abi {
+            enable isReleasePackagingTask
+            reset()
+            include "armeabi-v7a", "arm64-v8a"
+            universalApk false
+        }
+    }
+    bundle {
+        abi {
+            enableSplit true
+        }
+        density {
+            enableSplit true
+        }
+        language {
+            enableSplit false
         }
     }
     sourceSets {
