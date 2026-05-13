@@ -2783,6 +2783,10 @@ class LiGanDeviceDetailPage extends StatelessWidget {
       dynamic live = logic.liveList[i];
       list.add(InkWell(
         onTap: () {
+          if("${logic.liveList[i]["channelStatus"]}" != "1"){
+            EventBusUtil.getInstance().fire(HhToast(title: "该相机已离线"));
+            return;
+          }
           logic.liveIndex.value = i;
           logic.deviceId =
               "${logic.liveList[logic.liveIndex.value]["deviceId"]}";
@@ -2802,9 +2806,9 @@ class LiGanDeviceDetailPage extends StatelessWidget {
             child: Text(
               '${live['channelName']}',
               style: TextStyle(
-                  color: logic.liveIndex.value == i
+                  color:"${logic.liveList[i]["channelStatus"]}" != "1"? HhColors.grayCCTextColor : (logic.liveIndex.value == i
                       ? HhColors.mainBlueColor
-                      : HhColors.blackColor,
+                      : HhColors.blackColor),
                   fontSize: 14.sp * 3),
             )),
       ));

@@ -1873,6 +1873,10 @@ class _TreeChannelWidgetState extends State<TreeChannelWidget> {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           onTap: () {
+            if("${widget.channel["status"]}" != "1"){
+              EventBusUtil.getInstance().fire(HhToast(title: "该相机已离线"));
+              return;
+            }
             setState(() {
               checked = !checked;
             });
@@ -1897,7 +1901,7 @@ class _TreeChannelWidgetState extends State<TreeChannelWidget> {
                 SizedBox(width: 10.w * 3),
                 //图标
                 Image.asset(
-                  'assets/images/common/device_online.png',
+                  "${widget.channel["status"]}" != "1" ? 'assets/images/common/device_offline.png':'assets/images/common/device_online.png',
                   height: 17.w * 3,
                   width: 17.w * 3,
                   fit: BoxFit.contain,
