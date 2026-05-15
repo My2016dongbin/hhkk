@@ -2793,12 +2793,12 @@ class LiGanDetailPage extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                logic.versionStatus.value
+                                /*logic.versionStatus.value
                                     ? Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: buildVersionChild(),
                                       )
-                                    : const SizedBox(),
+                                    : const SizedBox(),*/
                                 logic.versionStatus.value
                                     ? BouncingWidget(
                                         duration:

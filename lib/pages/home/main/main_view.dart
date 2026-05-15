@@ -2350,9 +2350,10 @@ class MainPage extends StatelessWidget {
                                 onTapUp: () async {
                                   try {
                                     List<double> end =
-                                        ParseLocation.gps84_To_Gcj02(
-                                      double.parse("${fireInfo['latitude']}"),
-                                      double.parse("${fireInfo['longitude']}"),
+                                        ParseLocation.parseTypeToGcj02(
+                                            double.parse("${fireInfo['latitude']}"),
+                                            double.parse("${fireInfo['longitude']}"),
+                                            "${fireInfo["coordinateType"]}"
                                     );
                                     EventBusUtil.getInstance()
                                         .fire(HhLoading(show: true));

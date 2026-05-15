@@ -282,9 +282,10 @@ class MapController extends GetxController {
 
   Future<void> onTapSearchNavi(dynamic item) async {
     try {
-      List<double> end = ParseLocation.gps84_To_Gcj02(
+      List<double> end = ParseLocation.parseTypeToGcj02(
         double.parse("${item['latitude']}"),
         double.parse("${item['longitude']}"),
+        "${item["coordinateType"]}"
       );
       EventBusUtil.getInstance().fire(HhLoading(show: true));
       await QcAmapNavi.startNavigation(
@@ -470,9 +471,10 @@ class MapController extends GetxController {
                               onPressed: () async {
                                 try {
                                   List<double> end =
-                                      ParseLocation.gps84_To_Gcj02(
+                                      ParseLocation.parseTypeToGcj02(
                                     double.parse("${device['latitude']}"),
                                     double.parse("${device['longitude']}"),
+                                        "${device['coordinateType']}"
                                   );
                                   EventBusUtil.getInstance()
                                       .fire(HhLoading(show: true));

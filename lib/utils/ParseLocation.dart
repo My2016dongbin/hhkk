@@ -127,11 +127,12 @@ class ParseLocation {
     List<double> bd09 = [];
     if(type == "0"){
       bd09 = gps84_To_bd09(lat,lon);
-    }
-    if(type == "1"){
+    }else if(type == "1"){
       bd09 = gcj02_To_Bd09(lat,lon);
-    }
-    if(type == "2"){
+    }else if(type == "2"){
+      bd09.add(lat);
+      bd09.add(lon);
+    }else{
       bd09.add(lat);
       bd09.add(lon);
     }
@@ -143,13 +144,14 @@ class ParseLocation {
     List<double> gcj02 = [];
     if(type == "0"){
       gcj02 = gps84_To_Gcj02(lat,lon);
-    }
-    if(type == "1"){
+    }else if(type == "1"){
       gcj02.add(lat);
       gcj02.add(lon);
-    }
-    if(type == "2"){
+    } else if(type == "2"){
       gcj02 = bd09_To_Gcj02(lat,lon);
+    }else{
+      gcj02.add(lat);
+      gcj02.add(lon);
     }
 
     return gcj02;

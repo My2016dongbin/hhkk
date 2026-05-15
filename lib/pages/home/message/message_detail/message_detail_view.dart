@@ -107,7 +107,7 @@ class MessageDetailPage extends StatelessWidget {
             overlayColor: HhColors.trans,
             onTapUp: () async {
               try{
-                List<double> end = ParseLocation.gps84_To_Gcj02(double.parse("${logic.fireInfo['latitude']}"), double.parse("${logic.fireInfo['longitude']}"),);
+                List<double> end = ParseLocation.parseTypeToGcj02(double.parse("${logic.fireInfo['latitude']}"), double.parse("${logic.fireInfo['longitude']}"),"${logic.fireInfo["coordinateType"]}");
                 EventBusUtil.getInstance().fire(HhLoading(show: true));
                 await QcAmapNavi.startNavigation(
                   fromLat: double.parse("${CommonData.latitude}"),

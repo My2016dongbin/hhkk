@@ -231,6 +231,8 @@ class _TopAlarmNotificationOverlayState
 
   @override
   Widget build(BuildContext context) {
+    //查询当前横屏还是竖屏
+    bool isLand = MediaQuery.of(context).orientation != Orientation.landscape;
     return Positioned(
       left: 0,
       top: 0,
@@ -238,8 +240,8 @@ class _TopAlarmNotificationOverlayState
       child: SafeArea(
         bottom: false,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(
-              12.w * 3, Platform.isAndroid ? 8.w * 3 : 0, 12.w * 3, 0),
+          padding: isLand?EdgeInsets.fromLTRB(12.w * 3, Platform.isAndroid ? 8.w * 3 : 0, 12.w * 3, 0)
+              :EdgeInsets.fromLTRB(12.h * 3, Platform.isAndroid ? 8.h * 3 : 0, 12.h * 3, 0),
           child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onVerticalDragStart: _handleVerticalDragStart,
@@ -256,12 +258,12 @@ class _TopAlarmNotificationOverlayState
                     child: Container(
                       decoration: BoxDecoration(
                         color: HhColors.whiteColor,
-                        borderRadius: BorderRadius.circular(12.w * 3),
+                        borderRadius: isLand?BorderRadius.circular(12.w * 3):BorderRadius.circular(12.h * 3),
                         boxShadow: <BoxShadow>[
                           BoxShadow(
                             color: Colors.black.withAlpha(18),
-                            blurRadius: 18.w * 3,
-                            offset: Offset(0, 6.w * 3),
+                            blurRadius: isLand?18.w * 3:18.h * 3,
+                            offset: isLand?Offset(0, 6.w * 3):Offset(0, 6.h * 3),
                           ),
                         ],
                       ),
@@ -270,11 +272,12 @@ class _TopAlarmNotificationOverlayState
                         children: <Widget>[
                           Expanded(
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(12.w * 3),
+                              borderRadius: isLand?BorderRadius.circular(12.w * 3):BorderRadius.circular(12.h * 3),
                               onTap: _handleTap,
                               child: Padding(
-                                padding: EdgeInsets.fromLTRB(
-                                    14.w * 3, 14.w * 3, 10.w * 3, 14.w * 3),
+                                padding: isLand?EdgeInsets.fromLTRB(
+                                    14.w * 3, 14.w * 3, 10.w * 3, 14.w * 3):EdgeInsets.fromLTRB(
+                                    14.h * 3, 14.h * 3, 10.h * 3, 14.h * 3),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisSize: MainAxisSize.min,
@@ -282,19 +285,19 @@ class _TopAlarmNotificationOverlayState
                                     Row(
                                       children: <Widget>[
                                         Container(
-                                          width: 20.w * 3,
-                                          height: 20.w * 3,
+                                          width: isLand?20.w * 3:20.h * 3,
+                                          height: isLand?20.w * 3:20.h * 3,
                                           decoration: const BoxDecoration(
                                             color: Color(0xFFFFF1F1),
                                             shape: BoxShape.circle,
                                           ),
                                           child: Icon(
                                             Icons.warning_rounded,
-                                            size: 15.w * 3,
+                                            size: isLand?15.w * 3:15.h * 3,
                                             color: HhColors.mainRedNoticeColor,
                                           ),
                                         ),
-                                        SizedBox(width: 6.w * 3),
+                                        SizedBox(width: isLand?6.w * 3:6.h * 3,),
                                         Expanded(
                                           child: Text(
                                             widget.data.title,
@@ -302,34 +305,33 @@ class _TopAlarmNotificationOverlayState
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               color: HhColors.blackColor,
-                                              fontSize: 16.sp * 3,
+                                              fontSize: isLand?16.sp * 3:20.sp,
                                               fontWeight: FontWeight.w600,
                                             ),
                                           ),
                                         ),
                                         InkWell(
-                                          borderRadius:
-                                              BorderRadius.circular(14.w * 3),
+                                          borderRadius: isLand?BorderRadius.circular(14.w * 3):BorderRadius.circular(14.h * 3),
                                           onTap: _handleClearAll,
                                           child: Padding(
                                             padding: EdgeInsets.symmetric(
-                                              horizontal: 4.w * 3,
-                                              vertical: 3.w * 3,
+                                              horizontal: isLand?4.w * 3:4.h * 3,
+                                              vertical: isLand?3.w * 3:3.h * 3,
                                             ),
                                             child: Text(
                                               '一键关闭',
                                               style: TextStyle(
                                                 color: HhColors.mainBlueColor,
-                                                fontSize: 13.sp * 3,
+                                                fontSize: isLand?13.sp * 3:18.sp,
                                                 fontWeight: FontWeight.w500,
                                               ),
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 5.w * 3),
+                                        SizedBox(width: isLand?5.w * 3:5.h * 3,),
                                       ],
                                     ),
-                                    SizedBox(height: 10.w * 3),
+                                    SizedBox(height: isLand?10.w * 3:5.h * 3,),
                                     Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.baseline,
@@ -339,11 +341,11 @@ class _TopAlarmNotificationOverlayState
                                           '时间:',
                                           style: TextStyle(
                                             color: HhColors.gray6TextColor,
-                                            fontSize: 13.sp * 3,
+                                            fontSize: isLand?13.sp * 3:18.sp,
                                             fontWeight: FontWeight.w500,
                                           ),
                                         ),
-                                        SizedBox(width: 4.w * 3),
+                                        SizedBox(width: isLand?4.w * 3:4.h * 3,),
                                         Expanded(
                                           child: Text(
                                             widget.data.timeText,
@@ -351,20 +353,20 @@ class _TopAlarmNotificationOverlayState
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               color: HhColors.gray6TextColor,
-                                              fontSize: 13.sp * 3,
+                                              fontSize: isLand?13.sp * 3:18.sp,
                                             ),
                                           ),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 8.w * 3),
+                                    SizedBox(height: isLand?8.w * 3:5.h * 3,),
                                     Text(
                                       widget.data.message,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         color: HhColors.gray3TextColor,
-                                        fontSize: 14.sp * 3,
+                                        fontSize: isLand?14.sp * 3:18.sp,
                                         height: 1.35,
                                       ),
                                     ),
@@ -374,14 +376,13 @@ class _TopAlarmNotificationOverlayState
                             ),
                           ),
                           InkWell(
-                            borderRadius: BorderRadius.circular(18.w * 3),
+                            borderRadius: BorderRadius.circular(isLand?18.w * 3:18.h * 3),
                             onTap: _dismiss,
                             child: Padding(
-                              padding: EdgeInsets.fromLTRB(
-                                  4.w * 3, 18.w * 3, 20.w * 3, 0),
+                              padding: isLand?EdgeInsets.fromLTRB(4.w * 3, 18.w * 3, 20.w * 3, 0):EdgeInsets.fromLTRB(4.h * 3, 18.h * 3, 20.h * 3, 0),
                               child: Icon(
                                 Icons.close,
-                                size: 18.w * 3,
+                                size: isLand?18.w * 3:20.h * 3,
                                 color: HhColors.gray8TextColor,
                               ),
                             ),

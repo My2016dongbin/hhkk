@@ -227,7 +227,7 @@ class MapLocationSearchController extends GetxController {
                           scaleFactor: 0.2,
                           onPressed: () async {
                             try{
-                              List<double> end = ParseLocation.gps84_To_Gcj02(double.parse("${device['latitude']}"), double.parse("${device['longitude']}"),);
+                              List<double> end = ParseLocation.parseTypeToGcj02(double.parse("${device['latitude']}"), double.parse("${device['longitude']}"),"${device['coordinateType']}");
                               EventBusUtil.getInstance().fire(HhLoading(show: true));
                               await QcAmapNavi.startNavigation(
                                 fromLat: double.parse("${CommonData.latitude}"),
