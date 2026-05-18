@@ -2796,7 +2796,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
               "${logic.liveList[logic.liveIndex.value]["deviceId"]}";
           logic.channelNumber =
               "${logic.liveList[logic.liveIndex.value]["channelId"]}";
-          logic.getPlayUrl(logic.deviceId, logic.channelNumber);
+          logic.getPlayUrl(logic.deviceId, logic.channelNumber,click: true);
         },
         child: Container(
             padding:

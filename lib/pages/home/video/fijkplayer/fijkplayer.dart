@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iot/utils/EventBusUtils.dart';
 import 'package:iot/utils/HhColors.dart';
@@ -13,6 +14,7 @@ class VideoPlayerWidget extends StatefulWidget {
   final bool? autoPlay;
   final FijkFit? fit;
   final FijkFit? fsFit;
+  final FijkPlayer? player;
   final VoidCallback onOuterTap;
   final VoidCallback? onPlaySuccess;
 
@@ -22,6 +24,7 @@ class VideoPlayerWidget extends StatefulWidget {
     this.autoPlay = true,
     this.fit = FijkFit.fill,
     this.fsFit = FijkFit.fill,
+    this.player,
     required this.onOuterTap,
     this.onPlaySuccess,
   }) : super(key: key);
@@ -32,19 +35,40 @@ class VideoPlayerWidget extends StatefulWidget {
 
 class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
   late FijkPlayer player;
+  late bool _ownsPlayer;
   late bool errorStatus = false;
   bool _hasReportedPlaying = false;
 
   @override
   void initState() {
     super.initState();
-    player = FijkPlayer();
+    _ownsPlayer = widget.player == null;
+    player = widget.player ?? FijkPlayer();
+    player.addListener(_handlePlayerStateChanged);
     _initPlayer();
   }
 
-  void _initPlayer() async {
-    player.release();
-    player = FijkPlayer();
+  @override
+  void didUpdateWidget(covariant VideoPlayerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!identical(oldWidget.player, widget.player)) {
+      player.removeListener(_handlePlayerStateChanged);
+      if (_ownsPlayer) {
+        player.release();
+      }
+      _ownsPlayer = widget.player == null;
+      player = widget.player ?? FijkPlayer();
+      player.addListener(_handlePlayerStateChanged);
+    }
+    if (oldWidget.url != widget.url ||
+        oldWidget.autoPlay != widget.autoPlay ||
+        !identical(oldWidget.player, widget.player)) {
+      _hasReportedPlaying = false;
+      _initPlayer(force: true);
+    }
+  }
+
+  void _applyPlayerOptions() {
     player.setOption(FijkOption.playerCategory, "mediacodec-hevc", 1);
     player.setOption(FijkOption.playerCategory, "framedrop", 1);
     player.setOption(FijkOption.playerCategory, "start-on-prepared", 0);
@@ -75,31 +99,57 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
     player.setOption(FijkOption.formatCategory, "http-detect-range-support", 0);
     player.setOption(FijkOption.codecCategory, "skip_loop_filter", 48);
     player.setOption(FijkOption.codecCategory, "skip_frame", 0);
-    // 添加播放器状态变化监听
-    player.addListener(() async {
-      HhLog.e("player.state ${player.state}");
-      if (player.state == FijkState.started) {
-        // 播放成功开始
-        setState(() {
-          errorStatus = false;
-        });
-        HhLog.d('Playback started successfully ${player.state}');
-        if (!_hasReportedPlaying) {
-          _hasReportedPlaying = true;
-          widget.onPlaySuccess?.call();
-        }
+  }
+
+  Future<void> _initPlayer({bool force = false}) async {
+    final bool needsSetDataSource = force ||
+        player.state == FijkState.idle ||
+        player.state == FijkState.end ||
+        player.dataSource != widget.url;
+    _applyPlayerOptions();
+    if (needsSetDataSource) {
+      if (player.state != FijkState.idle && player.state != FijkState.end) {
+        await player.reset();
       }
-      if (player.state == FijkState.error ||
-          player.state == FijkState.completed) {
-        _hasReportedPlaying = false;
-        setState(() {
-          errorStatus = true;
-        });
-        // 播放失败
-        restartPlay(widget.url);
+      await player.setDataSource(widget.url, autoPlay: widget.autoPlay ?? true);
+      return;
+    }
+    if (widget.autoPlay == true &&
+        player.state != FijkState.started &&
+        player.state != FijkState.asyncPreparing) {
+      try {
+        await player.start();
+      } catch (e) {
+        HhLog.e("player.start ${player.state} $e");
       }
-    });
-    await player.setDataSource(widget.url, autoPlay: widget.autoPlay ?? true);
+    }
+  }
+
+  void _handlePlayerStateChanged() {
+    HhLog.e("player.state ${player.state}");
+    if (!mounted) {
+      return;
+    }
+    if (player.state == FijkState.started) {
+      // 播放成功开始
+      setState(() {
+        errorStatus = false;
+      });
+      HhLog.d('Playback started successfully ${player.state}');
+      if (!_hasReportedPlaying) {
+        _hasReportedPlaying = true;
+        widget.onPlaySuccess?.call();
+      }
+    }
+    if (player.state == FijkState.error ||
+        player.state == FijkState.completed) {
+      _hasReportedPlaying = false;
+      setState(() {
+        errorStatus = true;
+      });
+      // 播放失败
+      restartPlay(widget.url);
+    }
   }
 
   late int time = 0;
@@ -237,7 +287,10 @@ class _VideoPlayerWidgetState extends State<VideoPlayerWidget> {
 
   @override
   void dispose() {
-    player.release();
+    player.removeListener(_handlePlayerStateChanged);
+    if (_ownsPlayer) {
+      player.release();
+    }
     super.dispose();
   }
 }
@@ -493,10 +546,20 @@ class _AdaptiveFijkPanelState extends State<_AdaptiveFijkPanel> {
                     ),
                   ),
             InkWell(
-              onTap: () {
-                widget.player.value.fullScreen
-                    ? player.exitFullScreen()
-                    : player.enterFullScreen();
+              onTap: () async {
+                if (widget.player.value.fullScreen) {
+                  player.exitFullScreen();
+                  await Navigator.of(context, rootNavigator: true).maybePop();
+                  await SystemChrome.setEnabledSystemUIMode(
+                    SystemUiMode.manual,
+                    overlays: [
+                      SystemUiOverlay.top,
+                      SystemUiOverlay.bottom,
+                    ],
+                  );
+                } else {
+                  player.enterFullScreen();
+                }
               },
               child: Container(
                 padding: EdgeInsets.fromLTRB(

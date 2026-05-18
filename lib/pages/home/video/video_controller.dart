@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:easy_refresh/easy_refresh.dart';
+import 'package:fijkplayer/fijkplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -69,6 +70,10 @@ class VideoController extends GetxController {
   final List<ScreenshotController> screenshotControllers = List.generate(
     CommonData.checkedChannels.length,
     (_) => ScreenshotController(),
+  );
+  final List<FijkPlayer> fijkPlayers = List.generate(
+    CommonData.checkedChannels.length,
+    (_) => FijkPlayer(),
   );
   final List<QcHikPlayerController> hikPlayerControllers = List.generate(
     CommonData.checkedChannels.length,
@@ -226,6 +231,9 @@ class VideoController extends GetxController {
     spaceListSubscription!.cancel();
     catchSubscription!.cancel();
     deviceListSubscription!.cancel();
+    for (final FijkPlayer player in fijkPlayers) {
+      player.release();
+    }
     super.onClose();
   }
 
@@ -371,6 +379,40 @@ class VideoController extends GetxController {
     return '${CommonData.checkedChannels[index]["deviceNo"] ?? CommonData.checkedChannels[index]["deviceId"] ?? CommonData.checkedChannels[index]["id"] ?? ''}';
   }
 
+  Future<void> stopFijkPlayerAt(int index) async {
+    if (index < 0 || index >= fijkPlayers.length) {
+      return;
+    }
+    final FijkPlayer player = fijkPlayers[index];
+    if (player.state == FijkState.end || player.state == FijkState.idle) {
+      return;
+    }
+    try {
+      await player.reset();
+    } catch (e) {
+      HhLog.e("stopFijkPlayerAt $index $e");
+    }
+  }
+
+  Future<void> removeChannelById(String id) async {
+    int targetIndex = -1;
+    for (int i = 0; i < CommonData.checkedChannels.length; i++) {
+      final dynamic channel = CommonData.checkedChannels[i];
+      if (channel["id"] != null && "${channel["id"]}" == id) {
+        targetIndex = i;
+        break;
+      }
+    }
+    if (targetIndex >= 0) {
+      await stopFijkPlayerAt(targetIndex);
+      CommonData.checkedChannels[targetIndex] = {};
+    } else {
+      CommonData.removeChannel(id);
+    }
+    videoStatus.value = false;
+    videoStatus.value = true;
+  }
+
   Future<void> getTreeDetail() async {
     Map<String, dynamic> map = {
       "collectFlag": treeIndex.value, //0查询全部 1只查询收藏的
@@ -458,7 +500,9 @@ class VideoController extends GetxController {
           targetIndex = videoIndex.value;
         }
         final String platformType = "${result["data"]["platformType"] ?? ''}";
+        ///海康设备
         if (platformType == "hikiot") {
+          await stopFijkPlayerAt(targetIndex);
           dynamic hikData = {
             'channelId': "${channel["id"]}",
           };
@@ -482,7 +526,7 @@ class VideoController extends GetxController {
             return;
           }
         } else {
-          //当前选中的网格无播放数据-加载到当前网格
+          ///其他设备-当前选中的网格无播放数据-加载到当前网格
           String url = "${result["data"]["appRelativePath"]}";
           HhLog.d("getStream -- $url");
           _applyCheckedChannel(

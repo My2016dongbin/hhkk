@@ -27,7 +27,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 
 def flutterVersionCode = "34"
-def flutterVersionName = "1.0.24.260515"
+def flutterVersionName = "1.0.24.260518"
 def isReleasePackagingTask = gradle.startParameter.taskNames.any { taskName ->
     def lowerName = taskName.toLowerCase()
     return lowerName.contains("release") || lowerName.contains("bundle")

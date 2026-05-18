@@ -585,6 +585,9 @@ class VideoPage extends StatelessWidget {
                                                                 index],
                                                             child:
                                                                 VideoPlayerWidget(
+                                                              player: logic
+                                                                      .fijkPlayers[
+                                                                  index],
                                                               key: ValueKey(
                                                                   "${CommonData.checkedChannels[index]["url"]}$index"),
                                                               // key: ValueKey("${CommonData.checkedChannels[index]["url"]}${Random().nextInt(10000000)}"),
@@ -644,14 +647,10 @@ class VideoPage extends StatelessWidget {
                                                           width: 5.w * 3,
                                                         ),
                                                         InkWell(
-                                                          onTap: () {
-                                                            CommonData
-                                                                .removeChannel(
+                                                          onTap: () async {
+                                                            await logic
+                                                                .removeChannelById(
                                                                     "${CommonData.checkedChannels[index]["id"]}");
-                                                            logic.videoStatus
-                                                                .value = false;
-                                                            logic.videoStatus
-                                                                .value = true;
                                                           },
                                                           child: Container(
                                                             color:
@@ -1535,10 +1534,8 @@ class VideoPage extends StatelessWidget {
                                           if (checked) {
                                             logic.getStream(channel);
                                           } else {
-                                            CommonData.removeChannel(
+                                            logic.removeChannelById(
                                                 "${channel["id"]}");
-                                            logic.videoStatus.value = false;
-                                            logic.videoStatus.value = true;
                                           }
                                         },
                                       );

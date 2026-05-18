@@ -681,7 +681,7 @@ class LiGanDeviceDetailController extends GetxController {
     }
   }
 
-  Future<void> getPlayUrl(String ids, String number) async {
+  Future<void> getPlayUrl(String ids, String number,{bool? click}) async {
     dynamic data = {
       'channelId': number,
     };
@@ -714,6 +714,10 @@ class LiGanDeviceDetailController extends GetxController {
             playErrorTag.value = false;
             playLoadingTag.value = false;
             playTag.value = true;
+            if (click == true) {
+              ///解除设备离线情况下通道播放限制
+              offlineTag.value = false;
+            }
           } else {
             EventBusUtil.getInstance().fire(
                 HhToast(title: CommonUtils().msgString(hikResult["message"])));
@@ -779,6 +783,10 @@ class LiGanDeviceDetailController extends GetxController {
           });
           Future.delayed(const Duration(seconds: 1), () {
             playTag.value = true;
+            if (click == true) {
+              ///解除设备离线情况下通道播放限制
+              offlineTag.value = false;
+            }
           });
 
           EventBusUtil.getInstance().fire(HhLoading(show: false));
