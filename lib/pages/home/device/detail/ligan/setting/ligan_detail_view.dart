@@ -723,7 +723,8 @@ class LiGanDetailPage extends StatelessWidget {
 
                                     ///left
                                     DatePicker.showTimePicker(logic.context,
-                                        currentTime: DateTime.now(),
+                                        currentTime: _timePickerInitialTime(
+                                            logic.personStart.value),
                                         locale: LocaleType.zh,
                                         showSecondsColumn: true,
                                         onConfirm: (date) {
@@ -734,7 +735,8 @@ class LiGanDetailPage extends StatelessWidget {
 
                                       ///right
                                       DatePicker.showTimePicker(logic.context,
-                                          currentTime: DateTime.now(),
+                                          currentTime: _timePickerInitialTime(
+                                              logic.personEnd.value),
                                           locale: LocaleType.zh,
                                           showSecondsColumn: true,
                                           onConfirm: (date) {
@@ -950,7 +952,8 @@ class LiGanDetailPage extends StatelessWidget {
 
                                     ///left
                                     DatePicker.showTimePicker(logic.context,
-                                        currentTime: DateTime.now(),
+                                        currentTime: _timePickerInitialTime(
+                                            logic.carStart.value),
                                         locale: LocaleType.zh,
                                         showSecondsColumn: true,
                                         onConfirm: (date) {
@@ -961,7 +964,8 @@ class LiGanDetailPage extends StatelessWidget {
 
                                       ///right
                                       DatePicker.showTimePicker(logic.context,
-                                          currentTime: DateTime.now(),
+                                          currentTime: _timePickerInitialTime(
+                                              logic.carEnd.value),
                                           locale: LocaleType.zh,
                                           showSecondsColumn: true,
                                           onConfirm: (date) {
@@ -1177,7 +1181,8 @@ class LiGanDetailPage extends StatelessWidget {
 
                                     ///left
                                     DatePicker.showTimePicker(logic.context,
-                                        currentTime: DateTime.now(),
+                                        currentTime: _timePickerInitialTime(
+                                            logic.openStart.value),
                                         locale: LocaleType.zh,
                                         showSecondsColumn: true,
                                         onConfirm: (date) {
@@ -1188,7 +1193,8 @@ class LiGanDetailPage extends StatelessWidget {
 
                                       ///right
                                       DatePicker.showTimePicker(logic.context,
-                                          currentTime: DateTime.now(),
+                                          currentTime: _timePickerInitialTime(
+                                              logic.openEnd.value),
                                           locale: LocaleType.zh,
                                           showSecondsColumn: true,
                                           onConfirm: (date) {
@@ -1697,7 +1703,8 @@ class LiGanDetailPage extends StatelessWidget {
 
                                     ///left
                                     DatePicker.showTimePicker(logic.context,
-                                        currentTime: DateTime.now(),
+                                        currentTime: _timePickerInitialTime(
+                                            logic.closeStart.value),
                                         locale: LocaleType.zh,
                                         showSecondsColumn: true,
                                         onConfirm: (date) {
@@ -1708,7 +1715,8 @@ class LiGanDetailPage extends StatelessWidget {
 
                                       ///right
                                       DatePicker.showTimePicker(logic.context,
-                                          currentTime: DateTime.now(),
+                                          currentTime: _timePickerInitialTime(
+                                              logic.closeEnd.value),
                                           locale: LocaleType.zh,
                                           showSecondsColumn: true,
                                           onConfirm: (date) {
@@ -4923,10 +4931,33 @@ class LiGanDetailPage extends StatelessWidget {
     );
   }
 
-  Future<void> _pickSingleTime(ValueChanged<String> onConfirm) async {
+  DateTime _timePickerInitialTime(String value) {
+    final DateTime now = DateTime.now();
+    final List<String> parts = value.split(':');
+    if (parts.length < 2) {
+      return now;
+    }
+    final int? hour = int.tryParse(parts[0]);
+    final int? minute = int.tryParse(parts[1]);
+    final int second = parts.length > 2 ? int.tryParse(parts[2]) ?? 0 : 0;
+    if (hour == null || minute == null) {
+      return now;
+    }
+    return DateTime(
+      now.year,
+      now.month,
+      now.day,
+      min(23, max(0, hour)),
+      min(59, max(0, minute)),
+      min(59, max(0, second)),
+    );
+  }
+
+  Future<void> _pickSingleTime(
+      String initialValue, ValueChanged<String> onConfirm) async {
     DatePicker.showTimePicker(
       logic.context,
-      currentTime: DateTime.now(),
+      currentTime: _timePickerInitialTime(initialValue),
       locale: LocaleType.zh,
       showSecondsColumn: true,
       onConfirm: (date) {
@@ -5156,14 +5187,14 @@ class LiGanDetailPage extends StatelessWidget {
           start: logic.energyStart.value,
           end: logic.energyEnd.value,
           onPickStart: () {
-            _pickSingleTime((value) {
+            _pickSingleTime(logic.energyStart.value, (value) {
               logic.energyStart.value = value;
               logic.updateUploadTime(
                   "energy", logic.energyStart.value, logic.energyEnd.value);
             });
           },
           onPickEnd: () {
-            _pickSingleTime((value) {
+            _pickSingleTime(logic.energyEnd.value, (value) {
               logic.energyEnd.value = value;
               logic.updateUploadTime(
                   "energy", logic.energyStart.value, logic.energyEnd.value);
@@ -5190,14 +5221,14 @@ class LiGanDetailPage extends StatelessWidget {
           start: logic.weatherStart.value,
           end: logic.weatherEnd.value,
           onPickStart: () {
-            _pickSingleTime((value) {
+            _pickSingleTime(logic.weatherStart.value, (value) {
               logic.weatherStart.value = value;
               logic.updateUploadTime(
                   "weather", logic.weatherStart.value, logic.weatherEnd.value);
             });
           },
           onPickEnd: () {
-            _pickSingleTime((value) {
+            _pickSingleTime(logic.weatherEnd.value, (value) {
               logic.weatherEnd.value = value;
               logic.updateUploadTime(
                   "weather", logic.weatherStart.value, logic.weatherEnd.value);
@@ -5224,14 +5255,14 @@ class LiGanDetailPage extends StatelessWidget {
           start: logic.soilStart.value,
           end: logic.soilEnd.value,
           onPickStart: () {
-            _pickSingleTime((value) {
+            _pickSingleTime(logic.soilStart.value, (value) {
               logic.soilStart.value = value;
               logic.updateUploadTime(
                   "soil", logic.soilStart.value, logic.soilEnd.value);
             });
           },
           onPickEnd: () {
-            _pickSingleTime((value) {
+            _pickSingleTime(logic.soilEnd.value, (value) {
               logic.soilEnd.value = value;
               logic.updateUploadTime(
                   "soil", logic.soilStart.value, logic.soilEnd.value);
@@ -5327,7 +5358,7 @@ class LiGanDetailPage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _buildTimePickerBox(logic.alarmLedStart.value, () {
-                      _pickSingleTime((value) {
+                      _pickSingleTime(logic.alarmLedStart.value, (value) {
                         logic.alarmLedStart.value = value;
                       });
                     }),
@@ -5344,7 +5375,7 @@ class LiGanDetailPage extends StatelessWidget {
                   ),
                   Expanded(
                     child: _buildTimePickerBox(logic.alarmLedEnd.value, () {
-                      _pickSingleTime((value) {
+                      _pickSingleTime(logic.alarmLedEnd.value, (value) {
                         logic.alarmLedEnd.value = value;
                       });
                     }),
