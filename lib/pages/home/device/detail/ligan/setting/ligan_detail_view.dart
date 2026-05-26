@@ -4698,8 +4698,8 @@ class LiGanDetailPage extends StatelessWidget {
   Widget _buildCardDivider() {
     return Container(
       margin: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
-      height: 1.w,
-      color: HhColors.backColor,
+      height: 1.w*3,
+      color: HhColors.line252Color,
     );
   }
 
@@ -4750,17 +4750,9 @@ class LiGanDetailPage extends StatelessWidget {
             logic.changeAlarmDelay(target, -1);
           },
         ),
-        Container(
+        SizedBox(
           width: 46.w * 3,
           height: 34.w * 3,
-          decoration: BoxDecoration(
-            border: Border.symmetric(
-              vertical: BorderSide(
-                color: HhColors.grayE6BackColor,
-                width: 1.w,
-              ),
-            ),
-          ),
           child: TextField(
             controller: controller,
             textAlign: TextAlign.center,
@@ -4807,10 +4799,11 @@ class LiGanDetailPage extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        width: 34.w * 3,
-        height: 34.w * 3,
-        decoration: const BoxDecoration(
+        width: 26.w * 3,
+        height: 26.w * 3,
+        decoration: BoxDecoration(
           color: HhColors.whiteBackSearch,
+          borderRadius: BorderRadius.all(Radius.circular(4.w * 3)),
         ),
         child: Icon(
           icon,
@@ -4821,24 +4814,24 @@ class LiGanDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSmallConfirmButton(VoidCallback onPressed) {
+  Widget _buildSmallConfirmButton(VoidCallback onPressed,{double? height,double? fontSize,double? radius}) {
     return BouncingWidget(
       duration: const Duration(milliseconds: 100),
       scaleFactor: 1.2,
       onPressed: onPressed,
       child: Container(
-        height: 34.w * 3,
+        height: height??28.w * 3,
         padding: EdgeInsets.symmetric(horizontal: 14.w * 3),
         decoration: BoxDecoration(
             color: HhColors.mainBlueColor,
-            borderRadius: BorderRadius.all(Radius.circular(6.w * 3))),
+            borderRadius: BorderRadius.all(Radius.circular(radius??4.w * 3))),
         child: Center(
           child: Text(
             "确定",
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: HhColors.whiteColor,
-                fontSize: 14.sp * 3,
+                fontSize: fontSize??13.sp * 3,
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.w200),
           ),
@@ -4905,7 +4898,7 @@ class LiGanDetailPage extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        height: 40.w * 3,
+        height: 36.w * 3,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8.w * 3),
             border:
@@ -4987,7 +4980,7 @@ class LiGanDetailPage extends StatelessWidget {
               SizedBox(width: 10.w * 3),
               Expanded(
                 child: Container(
-                  height: 40.w * 3,
+                  height: 36.w * 3,
                   alignment: Alignment.centerRight,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.w * 3),
@@ -5049,7 +5042,7 @@ class LiGanDetailPage extends StatelessWidget {
                 child: _buildTimePickerBox(end, onPickEnd),
               ),
               SizedBox(width: 10.w * 3),
-              _buildSmallConfirmButton(onConfirm),
+              _buildSmallConfirmButton(onConfirm,height: 34.w*3,fontSize: 14.sp*3),
             ],
           ),
         ],
@@ -5061,7 +5054,7 @@ class LiGanDetailPage extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(right: 18.w * 3, bottom: 12.w * 3),
+        margin: EdgeInsets.only(right: 18.w * 3, top: 8.w * 3, bottom: 8.w * 3),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -5108,8 +5101,8 @@ class LiGanDetailPage extends StatelessWidget {
         _buildSwitchRow('球机', logic.warnBALL.value, (val) {
           logic.warnBALL.value = val;
           logic.warnSet("sCam1", val ? "ON" : "OFF");
-        }),*/
-        _buildCardDivider(),
+        }),
+        _buildCardDivider(),*/
         _buildAlarmRepeatRow(
           title: '传感器',
           value: logic.warnSENSOR.value,
@@ -5120,6 +5113,9 @@ class LiGanDetailPage extends StatelessWidget {
           },
           delay: logic.sensorDelay,
           onConfirm: () {
+            if(logic.sensorDelay.value==""){
+              logic.sensorDelay.value="0";
+            }
             logic.submitAlarmDelaySetting("sensor");
           },
         ),
@@ -5134,6 +5130,9 @@ class LiGanDetailPage extends StatelessWidget {
           },
           delay: logic.capDelay,
           onConfirm: () {
+            if(logic.capDelay.value==""){
+              logic.capDelay.value="0";
+            }
             logic.submitAlarmDelaySetting("cap");
           },
         ),
@@ -5171,6 +5170,9 @@ class LiGanDetailPage extends StatelessWidget {
             });
           },
           onConfirm: () {
+            if(logic.time1Controller!.text==""){
+              logic.time1Controller!.text = "0";
+            }
             logic.submitUploadSetting("energy");
           },
         ),
@@ -5202,6 +5204,9 @@ class LiGanDetailPage extends StatelessWidget {
             });
           },
           onConfirm: () {
+            if(logic.time2Controller!.text==""){
+              logic.time2Controller!.text = "0";
+            }
             logic.submitUploadSetting("weather");
           },
         ),
@@ -5233,6 +5238,9 @@ class LiGanDetailPage extends StatelessWidget {
             });
           },
           onConfirm: () {
+            if(logic.time3Controller!.text==""){
+              logic.time3Controller!.text = "0";
+            }
             logic.submitUploadSetting("soil");
           },
         ),
@@ -5295,6 +5303,7 @@ class LiGanDetailPage extends StatelessWidget {
                   SizedBox(width: 20.w * 3),
                   Expanded(
                     child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
                         _buildChoiceItem('常开', logic.alarmLedEnable.value == 1,
                             () {
@@ -5347,7 +5356,7 @@ class LiGanDetailPage extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: _buildSmallConfirmButton(() {
                   logic.alarmLedSetting();
-                }),
+                },height: 38.w*3,fontSize: 15.sp*3,radius: 8.w*3),
               ),
             ],
           ),
