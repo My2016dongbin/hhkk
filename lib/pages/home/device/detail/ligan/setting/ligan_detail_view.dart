@@ -1889,851 +1889,14 @@ class LiGanDetailPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ///设置
-                          //报警设置
-                          Container(
-                            margin: EdgeInsets.only(top: 30.w),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 19.w * 3,
-                                  width: 3.w * 3,
-                                  margin: EdgeInsets.only(right: 7.w * 3),
-                                  decoration: BoxDecoration(
-                                      color: HhColors.mainBlueColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(2.w * 3))),
-                                ),
-                                Text(
-                                  '报警设置',
-                                  style: TextStyle(
-                                      color: HhColors.blackTextColor,
-                                      fontSize: 15.sp * 3,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 20.w),
-                            decoration: BoxDecoration(
-                                color: HhColors.whiteColor,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.w * 3))),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '枪机1',
-                                        style: TextStyle(
-                                          color: HhColors.blackColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                      const Expanded(child: SizedBox()),
-                                      Align(
-                                          alignment: Alignment.centerRight,
-                                          child: FlutterSwitch(
-                                            width: 100.w,
-                                            height: 55.w,
-                                            activeColor: HhColors.mainBlueColor,
-                                            valueFontSize: 25.w,
-                                            toggleSize: 45.w,
-                                            value: logic.warnGANG1.value,
-                                            borderRadius: 30.w,
-                                            padding: 8.w,
-                                            onToggle: (val) {
-                                              logic.warnGANG1.value = val;
-                                              logic.warnSet(
-                                                  "gCam1", val ? "ON" : "OFF");
-                                            },
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
-                                  height: 1.w,
-                                  color: HhColors.backColor,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '枪机2',
-                                        style: TextStyle(
-                                          color: HhColors.blackColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                      const Expanded(child: SizedBox()),
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: FlutterSwitch(
-                                          width: 100.w,
-                                          height: 55.w,
-                                          activeColor: HhColors.mainBlueColor,
-                                          valueFontSize: 25.w,
-                                          toggleSize: 45.w,
-                                          value: logic.warnGANG2.value,
-                                          borderRadius: 30.w,
-                                          padding: 8.w,
-                                          onToggle: (val) {
-                                            logic.warnGANG2.value = val;
-                                            logic.warnSet(
-                                                "gCam2", val ? "ON" : "OFF");
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
-                                  height: 1.w,
-                                  color: HhColors.backColor,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '枪机3',
-                                        style: TextStyle(
-                                          color: HhColors.blackColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                      const Expanded(child: SizedBox()),
-                                      Align(
-                                          alignment: Alignment.centerRight,
-                                          child: FlutterSwitch(
-                                            width: 100.w,
-                                            height: 55.w,
-                                            activeColor: HhColors.mainBlueColor,
-                                            valueFontSize: 25.w,
-                                            toggleSize: 45.w,
-                                            value: logic.warnGANG3.value,
-                                            borderRadius: 30.w,
-                                            padding: 8.w,
-                                            onToggle: (val) {
-                                              logic.warnGANG3.value = val;
-                                              logic.warnSet(
-                                                  "gCam3", val ? "ON" : "OFF");
-                                            },
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
-                                  height: 1.w,
-                                  color: HhColors.backColor,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '球机',
-                                        style: TextStyle(
-                                          color: HhColors.blackColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                      const Expanded(child: SizedBox()),
-                                      Align(
-                                          alignment: Alignment.centerRight,
-                                          child: FlutterSwitch(
-                                            width: 100.w,
-                                            height: 55.w,
-                                            activeColor: HhColors.mainBlueColor,
-                                            valueFontSize: 25.w,
-                                            toggleSize: 45.w,
-                                            value: logic.warnBALL.value,
-                                            borderRadius: 30.w,
-                                            padding: 8.w,
-                                            onToggle: (val) {
-                                              logic.warnBALL.value = val;
-                                              logic.warnSet(
-                                                  "sCam1", val ? "ON" : "OFF");
-                                            },
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
-                                  height: 1.w,
-                                  color: HhColors.backColor,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '传感器',
-                                        style: TextStyle(
-                                          color: HhColors.blackColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                      const Expanded(child: SizedBox()),
-                                      Align(
-                                          alignment: Alignment.centerRight,
-                                          child: FlutterSwitch(
-                                            width: 100.w,
-                                            height: 55.w,
-                                            activeColor: HhColors.mainBlueColor,
-                                            valueFontSize: 25.w,
-                                            toggleSize: 45.w,
-                                            value: logic.warnSENSOR.value,
-                                            borderRadius: 30.w,
-                                            padding: 8.w,
-                                            onToggle: (val) {
-                                              logic.warnSENSOR.value = val;
-                                              logic.warnSet(
-                                                  "sensor", val ? "ON" : "OFF");
-                                            },
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
-                                  height: 1.w,
-                                  color: HhColors.backColor,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '开盖报警',
-                                        style: TextStyle(
-                                          color: HhColors.blackColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                      const Expanded(child: SizedBox()),
-                                      Align(
-                                          alignment: Alignment.centerRight,
-                                          child: FlutterSwitch(
-                                            width: 100.w,
-                                            height: 55.w,
-                                            activeColor: HhColors.mainBlueColor,
-                                            valueFontSize: 25.w,
-                                            toggleSize: 45.w,
-                                            value: logic.warnOPEN.value,
-                                            borderRadius: 30.w,
-                                            padding: 8.w,
-                                            onToggle: (val) {
-                                              logic.warnOPEN.value = val;
-                                              logic.warnSet(
-                                                  "cap", val ? "ON" : "OFF");
-                                            },
-                                          )),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          //数据上报间隔
-                          Container(
-                            margin: EdgeInsets.only(top: 30.w),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 19.w * 3,
-                                  width: 3.w * 3,
-                                  margin: EdgeInsets.only(right: 7.w * 3),
-                                  decoration: BoxDecoration(
-                                      color: HhColors.mainBlueColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(2.w * 3))),
-                                ),
-                                Text(
-                                  '数据上报间隔',
-                                  style: TextStyle(
-                                      color: HhColors.blackTextColor,
-                                      fontSize: 15.sp * 3,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 20.w),
-                            decoration: BoxDecoration(
-                                color: HhColors.whiteColor,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.w * 3))),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      30.w, 10.w, 30.w, 10.w),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '太阳能控制器',
-                                        style: TextStyle(
-                                          color: HhColors.blackColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 20.w,
-                                      ),
-                                      FlutterSwitch(
-                                        width: 100.w,
-                                        height: 55.w,
-                                        activeColor: HhColors.mainBlueColor,
-                                        valueFontSize: 25.w,
-                                        toggleSize: 45.w,
-                                        value: logic.energyAction.value,
-                                        borderRadius: 30.w,
-                                        padding: 8.w,
-                                        onToggle: (val) {
-                                          logic.energyAction.value = val;
-                                        },
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          textAlign: TextAlign.right,
-                                          maxLines: 1,
-                                          maxLength: 10,
-                                          cursorColor: HhColors.titleColor_99,
-                                          controller: logic.time1Controller,
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.zero,
-                                            border: const OutlineInputBorder(
-                                                borderSide: BorderSide.none),
-                                            counterText: '',
-                                            hintText: '',
-                                            hintStyle: TextStyle(
-                                                color: HhColors.grayCCTextColor,
-                                                fontSize: 15.sp * 3,
-                                                fontWeight: FontWeight.w200),
-                                          ),
-                                          onChanged: (s) {
-                                            logic.energyDelay.value = s;
-                                          },
-                                          style: TextStyle(
-                                              color: HhColors.blueTextColor,
-                                              fontSize: 15.sp * 3,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ),
-                                      Text(
-                                        '分',
-                                        style: TextStyle(
-                                          color: HhColors.gray9TextColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      30.w, 10.w, 30.w, 10.w),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '一体式气象站',
-                                        style: TextStyle(
-                                          color: HhColors.blackColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 20.w,
-                                      ),
-                                      FlutterSwitch(
-                                        width: 100.w,
-                                        height: 55.w,
-                                        activeColor: HhColors.mainBlueColor,
-                                        valueFontSize: 25.w,
-                                        toggleSize: 45.w,
-                                        value: logic.weatherAction.value,
-                                        borderRadius: 30.w,
-                                        padding: 8.w,
-                                        onToggle: (val) {
-                                          logic.weatherAction.value = val;
-                                        },
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          textAlign: TextAlign.right,
-                                          maxLines: 1,
-                                          maxLength: 10,
-                                          cursorColor: HhColors.titleColor_99,
-                                          controller: logic.time2Controller,
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.zero,
-                                            border: const OutlineInputBorder(
-                                                borderSide: BorderSide.none),
-                                            counterText: '',
-                                            hintText: '',
-                                            hintStyle: TextStyle(
-                                                color: HhColors.grayCCTextColor,
-                                                fontSize: 15.sp * 3,
-                                                fontWeight: FontWeight.w200),
-                                          ),
-                                          onChanged: (s) {
-                                            logic.weatherDelay.value = s;
-                                          },
-                                          style: TextStyle(
-                                              color: HhColors.blueTextColor,
-                                              fontSize: 15.sp * 3,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ),
-                                      Text(
-                                        '分',
-                                        style: TextStyle(
-                                          color: HhColors.gray9TextColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  padding: EdgeInsets.fromLTRB(
-                                      30.w, 10.w, 30.w, 10.w),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '土壤传感器',
-                                        style: TextStyle(
-                                          color: HhColors.blackColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 20.w,
-                                      ),
-                                      FlutterSwitch(
-                                        width: 100.w,
-                                        height: 55.w,
-                                        activeColor: HhColors.mainBlueColor,
-                                        valueFontSize: 25.w,
-                                        toggleSize: 45.w,
-                                        value: logic.soilAction.value,
-                                        borderRadius: 30.w,
-                                        padding: 8.w,
-                                        onToggle: (val) {
-                                          logic.soilAction.value = val;
-                                        },
-                                      ),
-                                      Expanded(
-                                        child: TextField(
-                                          textAlign: TextAlign.right,
-                                          maxLines: 1,
-                                          maxLength: 10,
-                                          cursorColor: HhColors.titleColor_99,
-                                          controller: logic.time3Controller,
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                            contentPadding: EdgeInsets.zero,
-                                            border: const OutlineInputBorder(
-                                                borderSide: BorderSide.none),
-                                            counterText: '',
-                                            hintText: '',
-                                            hintStyle: TextStyle(
-                                                color: HhColors.gray9TextColor,
-                                                fontSize: 15.sp * 3,
-                                                fontWeight: FontWeight.w200),
-                                          ),
-                                          onChanged: (s) {
-                                            logic.soilDelay.value = s;
-                                          },
-                                          style: TextStyle(
-                                              color: HhColors.blueTextColor,
-                                              fontSize: 15.sp * 3,
-                                              fontWeight: FontWeight.w400),
-                                        ),
-                                      ),
-                                      Text(
-                                        '分',
-                                        style: TextStyle(
-                                          color: HhColors.gray9TextColor,
-                                          fontSize: 15.sp * 3,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                BouncingWidget(
-                                  duration: const Duration(milliseconds: 100),
-                                  scaleFactor: 1.2,
-                                  onPressed: () {
-                                    int energy = 0;
-                                    int weather = 0;
-                                    int soil = 0;
-                                    try {
-                                      energy = int.parse(
-                                              logic.time1Controller!.text) *
-                                          60;
-                                      weather = int.parse(
-                                              logic.time2Controller!.text) *
-                                          60;
-                                      soil = int.parse(
-                                              logic.time3Controller!.text) *
-                                          60;
-                                    } catch (e) {
-                                      EventBusUtil.getInstance()
-                                          .fire(HhToast(title: "间隔时间格式错误"));
-                                      return;
-                                    }
-                                    logic.warnUploadSet(
-                                        "energy",
-                                        logic.energyAction.value ? "ON" : "OFF",
-                                        energy,
-                                        logic.config["energyOpenTime"] ?? "");
-                                    logic.warnUploadSet(
-                                        "weather",
-                                        logic.weatherAction.value
-                                            ? "ON"
-                                            : "OFF",
-                                        weather,
-                                        logic.config["weatherOpenTime"] ?? "");
-                                    logic.warnUploadSet(
-                                        "soil",
-                                        logic.soilAction.value ? "ON" : "OFF",
-                                        soil,
-                                        logic.config["soilOpenTime"] ?? "");
-                                  },
-                                  child: Container(
-                                    width: 1.sw,
-                                    height: 40.w * 3,
-                                    margin: EdgeInsets.fromLTRB(
-                                        30.w, 10.w, 30.w, 30.w),
-                                    decoration: BoxDecoration(
-                                        color: HhColors.whiteColor,
-                                        border: Border.all(
-                                            color: HhColors.gray9TextColor,
-                                            width: 0.5.w),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8.w * 3))),
-                                    child: Center(
-                                      child: Text(
-                                        "确定",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            color: HhColors.blackTextColor,
-                                            fontSize: 15.sp * 3,
-                                            decoration: TextDecoration.none,
-                                            fontWeight: FontWeight.w200),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            // child: ,
-                          ),
-                          //防火等级
-                          Container(
-                            margin: EdgeInsets.only(top: 30.w),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 19.w * 3,
-                                  width: 3.w * 3,
-                                  margin: EdgeInsets.only(right: 7.w * 3),
-                                  decoration: BoxDecoration(
-                                      color: HhColors.mainBlueColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(2.w * 3))),
-                                ),
-                                Text(
-                                  '防火等级',
-                                  style: TextStyle(
-                                      color: HhColors.blackTextColor,
-                                      fontSize: 15.sp * 3,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 20.w),
-                            decoration: BoxDecoration(
-                                color: HhColors.whiteColor,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.w * 3))),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    logic.fireLevel.value = 5;
-                                    logic.settingLevel();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                            logic.fireLevel.value == 5
-                                                ? "assets/images/common/yes2.png"
-                                                : "assets/images/common/no.png",
-                                            height: 20,
-                                            width: 20),
-                                        SizedBox(
-                                          width: 15.w,
-                                        ),
-                                        Text(
-                                          '极高风险',
-                                          style: TextStyle(
-                                            color: HhColors.blackColor,
-                                            fontSize: 15.sp * 3,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    logic.fireLevel.value = 4;
-                                    logic.settingLevel();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                            logic.fireLevel.value == 4
-                                                ? "assets/images/common/yes2.png"
-                                                : "assets/images/common/no.png",
-                                            height: 20,
-                                            width: 20),
-                                        SizedBox(
-                                          width: 15.w,
-                                        ),
-                                        Text(
-                                          '高风险',
-                                          style: TextStyle(
-                                            color: HhColors.blackColor,
-                                            fontSize: 15.sp * 3,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    logic.fireLevel.value = 3;
-                                    logic.settingLevel();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                            logic.fireLevel.value == 3
-                                                ? "assets/images/common/yes2.png"
-                                                : "assets/images/common/no.png",
-                                            height: 20,
-                                            width: 20),
-                                        SizedBox(
-                                          width: 15.w,
-                                        ),
-                                        Text(
-                                          '较高风险',
-                                          style: TextStyle(
-                                            color: HhColors.blackColor,
-                                            fontSize: 15.sp * 3,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    logic.fireLevel.value = 2;
-                                    logic.settingLevel();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                            logic.fireLevel.value == 2
-                                                ? "assets/images/common/yes2.png"
-                                                : "assets/images/common/no.png",
-                                            height: 20,
-                                            width: 20),
-                                        SizedBox(
-                                          width: 15.w,
-                                        ),
-                                        Text(
-                                          '较低风险',
-                                          style: TextStyle(
-                                            color: HhColors.blackColor,
-                                            fontSize: 15.sp * 3,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    logic.fireLevel.value = 1;
-                                    logic.settingLevel();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                            logic.fireLevel.value == 1
-                                                ? "assets/images/common/yes2.png"
-                                                : "assets/images/common/no.png",
-                                            height: 20,
-                                            width: 20),
-                                        SizedBox(
-                                          width: 15.w,
-                                        ),
-                                        Text(
-                                          '低风险',
-                                          style: TextStyle(
-                                            color: HhColors.blackColor,
-                                            fontSize: 15.sp * 3,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          /*//枪球联动
-                          Container(
-                            margin: EdgeInsets.only(top: 30.w),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 30.w,
-                                  width: 5.w,
-                                  margin: EdgeInsets.only(right: 10.w),
-                                  decoration: BoxDecoration(
-                                      color: HhColors.mainBlueColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(3.w))),
-                                ),
-                                Text(
-                                  '枪球联动',
-                                  style: TextStyle(
-                                      color: HhColors.blackColor,
-                                      fontSize: 15.sp*3,
-                                      fontWeight: FontWeight.bold),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Container(
-                            margin: EdgeInsets.only(top: 20.w),
-                            decoration: BoxDecoration(
-                                color: HhColors.whiteColor,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(8.w*3))),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    logic.circle.value = 0;
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        30.w, 30.w, 30.w, 30.w),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                            logic.circle.value == 0
-                                                ? "assets/images/common/yes2.png"
-                                                : "assets/images/common/no.png",
-                                            height: 20,
-                                            width: 20),
-                                        SizedBox(
-                                          width: 15.w,
-                                        ),
-                                        Text(
-                                          '关闭',
-                                          style: TextStyle(
-                                            color: HhColors.blackColor,
-                                            fontSize: 15.sp*3,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    logic.circle.value = 1;
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(
-                                        30.w, 30.w, 30.w, 30.w),
-                                    child: Row(
-                                      children: [
-                                        Image.asset(
-                                            logic.circle.value == 1
-                                                ? "assets/images/common/yes2.png"
-                                                : "assets/images/common/no.png",
-                                            height: 20,
-                                            width: 20),
-                                        SizedBox(
-                                          width: 15.w,
-                                        ),
-                                        Text(
-                                          '开启',
-                                          style: TextStyle(
-                                            color: HhColors.blackColor,
-                                            fontSize: 15.sp*3,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),*/
+                          _buildSettingSectionTitle('报警设置'),
+                          _buildAlarmSettingCard(),
+                          _buildSettingSectionTitle('数据上报间隔'),
+                          _buildUploadSettingCard(),
+                          _buildSettingSectionTitle('防火等级'),
+                          _buildFireLevelCard(),
+                          _buildSettingSectionTitle('红蓝灯设置'),
+                          _buildAlarmLedCard(),
                           //固件版本号
                           Container(
                             margin: EdgeInsets.only(top: 30.w),
@@ -5491,6 +4654,706 @@ class LiGanDetailPage extends StatelessWidget {
         isDismissible: true,
         enableDrag: false,
         backgroundColor: HhColors.trans);
+  }
+
+  Widget _buildSettingSectionTitle(String title) {
+    return Container(
+      margin: EdgeInsets.only(top: 30.w),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            height: 19.w * 3,
+            width: 3.w * 3,
+            margin: EdgeInsets.only(right: 7.w * 3),
+            decoration: BoxDecoration(
+                color: HhColors.mainBlueColor,
+                borderRadius: BorderRadius.all(Radius.circular(2.w * 3))),
+          ),
+          Text(
+            title,
+            style: TextStyle(
+                color: HhColors.blackTextColor,
+                fontSize: 15.sp * 3,
+                fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSettingCard({required List<Widget> children}) {
+    return Container(
+      margin: EdgeInsets.only(top: 20.w),
+      decoration: BoxDecoration(
+          color: HhColors.whiteColor,
+          borderRadius: BorderRadius.all(Radius.circular(8.w * 3))),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: children,
+      ),
+    );
+  }
+
+  Widget _buildCardDivider() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
+      height: 1.w,
+      color: HhColors.backColor,
+    );
+  }
+
+  Widget _buildSwitchRow(
+      String title, bool value, ValueChanged<bool> onToggle) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
+      child: Row(
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              color: HhColors.blackColor,
+              fontSize: 15.sp * 3,
+            ),
+          ),
+          const Expanded(child: SizedBox()),
+          Align(
+              alignment: Alignment.centerRight,
+              child: FlutterSwitch(
+                width: 100.w,
+                height: 55.w,
+                activeColor: HhColors.mainBlueColor,
+                valueFontSize: 25.w,
+                toggleSize: 45.w,
+                value: value,
+                borderRadius: 30.w,
+                padding: 8.w,
+                onToggle: onToggle,
+              )),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAlarmDelayControl(Rx<String> target, VoidCallback onConfirm) {
+    final TextEditingController controller = TextEditingController.fromValue(
+      TextEditingValue(
+        text: target.value,
+        selection: TextSelection.collapsed(offset: target.value.length),
+      ),
+    );
+    return Row(
+      children: [
+        _buildStepperButton(
+          Icons.remove,
+          () {
+            logic.changeAlarmDelay(target, -1);
+          },
+        ),
+        Container(
+          width: 46.w * 3,
+          height: 34.w * 3,
+          decoration: BoxDecoration(
+            border: Border.symmetric(
+              vertical: BorderSide(
+                color: HhColors.grayE6BackColor,
+                width: 1.w,
+              ),
+            ),
+          ),
+          child: TextField(
+            controller: controller,
+            textAlign: TextAlign.center,
+            maxLines: 1,
+            maxLength: 10,
+            cursorColor: HhColors.titleColor_99,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.zero,
+              border: OutlineInputBorder(borderSide: BorderSide.none),
+              counterText: '',
+            ),
+            onChanged: (value) {
+              target.value = value;
+            },
+            style: TextStyle(
+              color: HhColors.gray9TextColor,
+              fontSize: 14.sp * 3,
+            ),
+          ),
+        ),
+        _buildStepperButton(
+          Icons.add,
+          () {
+            logic.changeAlarmDelay(target, 1);
+          },
+        ),
+        SizedBox(width: 6.w * 3),
+        Text(
+          '秒',
+          style: TextStyle(
+            color: HhColors.gray9TextColor,
+            fontSize: 14.sp * 3,
+          ),
+        ),
+        SizedBox(width: 10.w * 3),
+        _buildSmallConfirmButton(onConfirm),
+      ],
+    );
+  }
+
+  Widget _buildStepperButton(IconData icon, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: 34.w * 3,
+        height: 34.w * 3,
+        decoration: const BoxDecoration(
+          color: HhColors.whiteBackSearch,
+        ),
+        child: Icon(
+          icon,
+          size: 16.w * 3,
+          color: HhColors.gray9TextColor,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSmallConfirmButton(VoidCallback onPressed) {
+    return BouncingWidget(
+      duration: const Duration(milliseconds: 100),
+      scaleFactor: 1.2,
+      onPressed: onPressed,
+      child: Container(
+        height: 34.w * 3,
+        padding: EdgeInsets.symmetric(horizontal: 14.w * 3),
+        decoration: BoxDecoration(
+            color: HhColors.mainBlueColor,
+            borderRadius: BorderRadius.all(Radius.circular(6.w * 3))),
+        child: Center(
+          child: Text(
+            "确定",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: HhColors.whiteColor,
+                fontSize: 14.sp * 3,
+                decoration: TextDecoration.none,
+                fontWeight: FontWeight.w200),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAlarmRepeatRow({
+    required String title,
+    required bool value,
+    required ValueChanged<bool> onToggle,
+    required Rx<String> delay,
+    required VoidCallback onConfirm,
+  }) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: HhColors.blackColor,
+                  fontSize: 15.sp * 3,
+                ),
+              ),
+              const Expanded(child: SizedBox()),
+              FlutterSwitch(
+                width: 100.w,
+                height: 55.w,
+                activeColor: HhColors.mainBlueColor,
+                valueFontSize: 25.w,
+                toggleSize: 45.w,
+                value: value,
+                borderRadius: 30.w,
+                padding: 8.w,
+                onToggle: onToggle,
+              ),
+            ],
+          ),
+          SizedBox(height: 12.w * 3),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  '重复报警时间间隔',
+                  style: TextStyle(
+                    color: HhColors.gray9TextColor,
+                    fontSize: 14.sp * 3,
+                  ),
+                ),
+              ),
+              _buildAlarmDelayControl(delay, onConfirm),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTimePickerBox(String value, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 40.w * 3,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.w * 3),
+            border:
+                Border.all(color: HhColors.grayE6BackColor, width: 1.w * 3)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset("assets/images/common/icon_times.png",
+                height: 13.w * 3, width: 13.w * 3),
+            SizedBox(width: 5.w * 3),
+            Text(
+              value,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: HhColors.gray9TextColor,
+                fontSize: 15.sp * 3,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _pickSingleTime(ValueChanged<String> onConfirm) async {
+    DatePicker.showTimePicker(
+      logic.context,
+      currentTime: DateTime.now(),
+      locale: LocaleType.zh,
+      showSecondsColumn: true,
+      onConfirm: (date) {
+        onConfirm(
+          CommonUtils()
+              .parseLongTimeHourMinuteSecond("${date.millisecondsSinceEpoch}"),
+        );
+      },
+    );
+  }
+
+  Widget _buildUploadSettingItem({
+    required String title,
+    required bool value,
+    required ValueChanged<bool> onToggle,
+    required TextEditingController controller,
+    required ValueChanged<String> onChanged,
+    required String start,
+    required String end,
+    required VoidCallback onPickStart,
+    required VoidCallback onPickEnd,
+    required VoidCallback onConfirm,
+  }) {
+    return Container(
+      padding: EdgeInsets.fromLTRB(16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                width: 95.w * 3,
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: HhColors.blackColor,
+                    fontSize: 15.sp * 3,
+                  ),
+                ),
+              ),
+              FlutterSwitch(
+                width: 100.w,
+                height: 55.w,
+                activeColor: HhColors.mainBlueColor,
+                valueFontSize: 25.w,
+                toggleSize: 45.w,
+                value: value,
+                borderRadius: 30.w,
+                padding: 8.w,
+                onToggle: onToggle,
+              ),
+              SizedBox(width: 10.w * 3),
+              Expanded(
+                child: Container(
+                  height: 40.w * 3,
+                  alignment: Alignment.centerRight,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.w * 3),
+                      border: Border.all(
+                          color: HhColors.grayE6BackColor, width: 1.w * 3)),
+                  child: TextField(
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    maxLength: 10,
+                    cursorColor: HhColors.titleColor_99,
+                    controller: controller,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.zero,
+                      border:
+                          const OutlineInputBorder(borderSide: BorderSide.none),
+                      counterText: '',
+                      hintText: '',
+                      hintStyle: TextStyle(
+                          color: HhColors.grayCCTextColor,
+                          fontSize: 15.sp * 3,
+                          fontWeight: FontWeight.w200),
+                    ),
+                    onChanged: onChanged,
+                    style: TextStyle(
+                        color: HhColors.blueTextColor,
+                        fontSize: 15.sp * 3,
+                        fontWeight: FontWeight.w400),
+                  ),
+                ),
+              ),
+              SizedBox(width: 8.w * 3),
+              Text(
+                '分',
+                style: TextStyle(
+                  color: HhColors.gray9TextColor,
+                  fontSize: 15.sp * 3,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 12.w * 3),
+          Row(
+            children: [
+              Expanded(
+                child: _buildTimePickerBox(start, onPickStart),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6.w * 3),
+                child: Text(
+                  '至',
+                  style: TextStyle(
+                    color: HhColors.gray9TextColor,
+                    fontSize: 15.sp * 3,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: _buildTimePickerBox(end, onPickEnd),
+              ),
+              SizedBox(width: 10.w * 3),
+              _buildSmallConfirmButton(onConfirm),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildChoiceItem(String title, bool selected, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        margin: EdgeInsets.only(right: 18.w * 3, bottom: 12.w * 3),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              selected
+                  ? "assets/images/common/yes2.png"
+                  : "assets/images/common/no.png",
+              height: 20,
+              width: 20,
+            ),
+            SizedBox(width: 10.w * 3),
+            Text(
+              title,
+              style: TextStyle(
+                color:
+                    selected ? HhColors.mainBlueColor : HhColors.blackTextColor,
+                fontSize: 15.sp * 3,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAlarmSettingCard() {
+    return _buildSettingCard(
+      children: [
+        /*_buildSwitchRow('枪机1', logic.warnGANG1.value, (val) {
+          logic.warnGANG1.value = val;
+          logic.warnSet("gCam1", val ? "ON" : "OFF");
+        }),
+        _buildCardDivider(),
+        _buildSwitchRow('枪机2', logic.warnGANG2.value, (val) {
+          logic.warnGANG2.value = val;
+          logic.warnSet("gCam2", val ? "ON" : "OFF");
+        }),
+        _buildCardDivider(),
+        _buildSwitchRow('枪机3', logic.warnGANG3.value, (val) {
+          logic.warnGANG3.value = val;
+          logic.warnSet("gCam3", val ? "ON" : "OFF");
+        }),
+        _buildCardDivider(),
+        _buildSwitchRow('球机', logic.warnBALL.value, (val) {
+          logic.warnBALL.value = val;
+          logic.warnSet("sCam1", val ? "ON" : "OFF");
+        }),*/
+        _buildCardDivider(),
+        _buildAlarmRepeatRow(
+          title: '传感器',
+          value: logic.warnSENSOR.value,
+          onToggle: (val) {
+            logic.warnSENSOR.value = val;
+            logic.warnSet("sensor", val ? "ON" : "OFF",
+                delay: logic.parseDelayOrZero(logic.sensorDelay.value));
+          },
+          delay: logic.sensorDelay,
+          onConfirm: () {
+            logic.submitAlarmDelaySetting("sensor");
+          },
+        ),
+        _buildCardDivider(),
+        _buildAlarmRepeatRow(
+          title: '开盖报警',
+          value: logic.warnOPEN.value,
+          onToggle: (val) {
+            logic.warnOPEN.value = val;
+            logic.warnSet("cap", val ? "ON" : "OFF",
+                delay: logic.parseDelayOrZero(logic.capDelay.value));
+          },
+          delay: logic.capDelay,
+          onConfirm: () {
+            logic.submitAlarmDelaySetting("cap");
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildUploadSettingCard() {
+    return _buildSettingCard(
+      children: [
+        _buildUploadSettingItem(
+          title: '太阳能控制器',
+          value: logic.energyAction.value,
+          onToggle: (val) {
+            logic.energyAction.value = val;
+          },
+          controller: logic.time1Controller!,
+          onChanged: (s) {
+            logic.energyDelay.value = s;
+          },
+          start: logic.energyStart.value,
+          end: logic.energyEnd.value,
+          onPickStart: () {
+            _pickSingleTime((value) {
+              logic.energyStart.value = value;
+              logic.updateUploadTime(
+                  "energy", logic.energyStart.value, logic.energyEnd.value);
+            });
+          },
+          onPickEnd: () {
+            _pickSingleTime((value) {
+              logic.energyEnd.value = value;
+              logic.updateUploadTime(
+                  "energy", logic.energyStart.value, logic.energyEnd.value);
+            });
+          },
+          onConfirm: () {
+            logic.submitUploadSetting("energy");
+          },
+        ),
+        _buildCardDivider(),
+        _buildUploadSettingItem(
+          title: '一体式气象站',
+          value: logic.weatherAction.value,
+          onToggle: (val) {
+            logic.weatherAction.value = val;
+          },
+          controller: logic.time2Controller!,
+          onChanged: (s) {
+            logic.weatherDelay.value = s;
+          },
+          start: logic.weatherStart.value,
+          end: logic.weatherEnd.value,
+          onPickStart: () {
+            _pickSingleTime((value) {
+              logic.weatherStart.value = value;
+              logic.updateUploadTime(
+                  "weather", logic.weatherStart.value, logic.weatherEnd.value);
+            });
+          },
+          onPickEnd: () {
+            _pickSingleTime((value) {
+              logic.weatherEnd.value = value;
+              logic.updateUploadTime(
+                  "weather", logic.weatherStart.value, logic.weatherEnd.value);
+            });
+          },
+          onConfirm: () {
+            logic.submitUploadSetting("weather");
+          },
+        ),
+        _buildCardDivider(),
+        _buildUploadSettingItem(
+          title: '土壤传感器',
+          value: logic.soilAction.value,
+          onToggle: (val) {
+            logic.soilAction.value = val;
+          },
+          controller: logic.time3Controller!,
+          onChanged: (s) {
+            logic.soilDelay.value = s;
+          },
+          start: logic.soilStart.value,
+          end: logic.soilEnd.value,
+          onPickStart: () {
+            _pickSingleTime((value) {
+              logic.soilStart.value = value;
+              logic.updateUploadTime(
+                  "soil", logic.soilStart.value, logic.soilEnd.value);
+            });
+          },
+          onPickEnd: () {
+            _pickSingleTime((value) {
+              logic.soilEnd.value = value;
+              logic.updateUploadTime(
+                  "soil", logic.soilStart.value, logic.soilEnd.value);
+            });
+          },
+          onConfirm: () {
+            logic.submitUploadSetting("soil");
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFireLevelCard() {
+    return _buildSettingCard(
+      children: [
+        Container(
+          width: 1.sw,
+          padding: EdgeInsets.fromLTRB(16.w * 3, 16.w * 3, 16.w * 3, 6.w * 3),
+          child: Wrap(
+            children: [
+              _buildChoiceItem('极高风险', logic.fireLevel.value == 5, () {
+                logic.fireLevel.value = 5;
+                logic.settingLevel();
+              }),
+              _buildChoiceItem('高风险', logic.fireLevel.value == 4, () {
+                logic.fireLevel.value = 4;
+                logic.settingLevel();
+              }),
+              _buildChoiceItem('较高风险', logic.fireLevel.value == 3, () {
+                logic.fireLevel.value = 3;
+                logic.settingLevel();
+              }),
+              _buildChoiceItem('较低风险', logic.fireLevel.value == 2, () {
+                logic.fireLevel.value = 2;
+                logic.settingLevel();
+              }),
+              _buildChoiceItem('低风险', logic.fireLevel.value == 1, () {
+                logic.fireLevel.value = 1;
+                logic.settingLevel();
+              }),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAlarmLedCard() {
+    return _buildSettingCard(
+      children: [
+        Container(
+          width: 1.sw,
+          padding: EdgeInsets.fromLTRB(16.w * 3, 16.w * 3, 16.w * 3, 10.w * 3),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(
+                    '控制',
+                    style: TextStyle(
+                      color: HhColors.blackColor,
+                      fontSize: 15.sp * 3,
+                    ),
+                  ),
+                  SizedBox(width: 20.w * 3),
+                  Expanded(
+                    child: Wrap(
+                      children: [
+                        _buildChoiceItem('常开', logic.alarmLedEnable.value == 1,
+                            () {
+                          logic.alarmLedEnable.value = 1;
+                        }),
+                        _buildChoiceItem('常闭', logic.alarmLedEnable.value == 0,
+                            () {
+                          logic.alarmLedEnable.value = 0;
+                        }),
+                        _buildChoiceItem('时间段', logic.alarmLedEnable.value == 2,
+                            () {
+                          logic.alarmLedEnable.value = 2;
+                        }),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 8.w * 3),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildTimePickerBox(logic.alarmLedStart.value, () {
+                      _pickSingleTime((value) {
+                        logic.alarmLedStart.value = value;
+                      });
+                    }),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6.w * 3),
+                    child: Text(
+                      '至',
+                      style: TextStyle(
+                        color: HhColors.gray9TextColor,
+                        fontSize: 15.sp * 3,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: _buildTimePickerBox(logic.alarmLedEnd.value, () {
+                      _pickSingleTime((value) {
+                        logic.alarmLedEnd.value = value;
+                      });
+                    }),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16.w * 3),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: _buildSmallConfirmButton(() {
+                  logic.alarmLedSetting();
+                }),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
   }
 
   buildDialogPerson() {

@@ -32,9 +32,20 @@ class LiGanDetailController extends GetxController {
   final Rx<bool> weatherAction = false.obs;
   final Rx<bool> soilAction = false.obs;
   final Rx<String> recordTimes = '00:00:00'.obs;
+  final Rx<String> sensorDelay = '0'.obs;
+  final Rx<String> capDelay = '0'.obs;
   final Rx<String> energyDelay = ''.obs;
   final Rx<String> weatherDelay = ''.obs;
   final Rx<String> soilDelay = ''.obs;
+  final Rx<String> energyStart = '00:00:00'.obs;
+  final Rx<String> energyEnd = '23:59:59'.obs;
+  final Rx<String> weatherStart = '00:00:00'.obs;
+  final Rx<String> weatherEnd = '23:59:59'.obs;
+  final Rx<String> soilStart = '00:00:00'.obs;
+  final Rx<String> soilEnd = '23:59:59'.obs;
+  final Rx<int> alarmLedEnable = 0.obs;
+  final Rx<String> alarmLedStart = '00:00:00'.obs;
+  final Rx<String> alarmLedEnd = '23:59:59'.obs;
   final Rx<String> deviceVer = ''.obs;
   final Rx<int> deviceFireLevel = 999.obs;
   final Rx<int> tabIndex = 0.obs;
@@ -175,7 +186,7 @@ class LiGanDetailController extends GetxController {
   }
 
   Future<void> postScreenTop() async {
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "cmdType": "ledSetParam",
       "speed": speed.value,
@@ -195,7 +206,7 @@ class LiGanDetailController extends GetxController {
   }
 
   Future<void> postScreenBottom() async {
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "cmdType": "ledSetSwitch",
       "switchType": closeTab.value,
@@ -221,30 +232,15 @@ class LiGanDetailController extends GetxController {
     HhLog.d("getDeviceConfig -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       config = result["data"];
-      try {
-        personStart.value = "${config["audioHumanTime"]}".substring(0, 8);
-        personEnd.value = "${config["audioHumanTime"]}".substring(9, 17);
-      } catch (e) {
-        //
-      }
-      try {
-        carStart.value = "${config["audioCarTime"]}".substring(0, 8);
-        carEnd.value = "${config["audioCarTime"]}".substring(9, 17);
-      } catch (e) {
-        //
-      }
-      try {
-        openStart.value = "${config["audioOpenTime"]}".substring(0, 8);
-        openEnd.value = "${config["audioOpenTime"]}".substring(9, 17);
-      } catch (e) {
-        //
-      }
-      try {
-        closeStart.value = "${config["ledTime"]}".substring(0, 8);
-        closeEnd.value = "${config["ledTime"]}".substring(9, 17);
-      } catch (e) {
-        //
-      }
+      _parseTimeRange(config["audioHumanTime"], personStart, personEnd);
+      _parseTimeRange(config["audioCarTime"], carStart, carEnd);
+      _parseTimeRange(config["audioOpenTime"], openStart, openEnd);
+      _parseTimeRange(config["ledTime"], closeStart, closeEnd);
+      _parseTimeRange(config["energyOpenTime"], energyStart, energyEnd);
+      _parseTimeRange(config["weatherOpenTime"], weatherStart, weatherEnd);
+      _parseTimeRange(config["soilOpenTime"], soilStart, soilEnd);
+      _parseTimeRange(config["alarmLedTime"], alarmLedStart, alarmLedEnd,
+          defaultStart: '07:00:00', defaultEnd: '18:59:59');
       voiceBottomList = result["data"]["audioArray"];
       voiceBottomStatus.value = false;
       voiceBottomStatus.value = true;
@@ -254,9 +250,12 @@ class LiGanDetailController extends GetxController {
       warnBALL.value = config["scam1Enable"] == "ON";
       warnSENSOR.value = config["sensorEnable"] == "ON";
       warnOPEN.value = config["capEnable"] == "ON";
+      sensorDelay.value = '${config["sensorTime"] ?? 0}';
+      capDelay.value = '${config["capTime"] ?? 0}';
       energyAction.value = config["energyAction"] == "ON";
       weatherAction.value = config["weatherAction"] == "ON";
       soilAction.value = config["soilAction"] == "ON";
+      alarmLedEnable.value = config["alarmLedEnable"] ?? 0;
       energyDelay.value =
           CommonUtils().parseMinuteUpload('${config["energyDelay"]}');
       weatherDelay.value =
@@ -300,9 +299,59 @@ class LiGanDetailController extends GetxController {
     }
   }
 
+  void _parseTimeRange(
+    dynamic range,
+    Rx<String> start,
+    Rx<String> end, {
+    String defaultStart = '00:00:00',
+    String defaultEnd = '23:59:59',
+  }) {
+    final String value = '${range ?? ''}';
+    if (value.length >= 17 && value.contains('-')) {
+      start.value = value.substring(0, 8);
+      end.value = value.substring(9, 17);
+    } else {
+      start.value = defaultStart;
+      end.value = defaultEnd;
+    }
+  }
+
+  int parseDelayOrZero(String value) {
+    try {
+      final int parsed = int.parse(value.trim());
+      return max(0, parsed);
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  void changeAlarmDelay(Rx<String> target, int delta) {
+    final int current = parseDelayOrZero(target.value);
+    target.value = max(0, current + delta).toString();
+  }
+
+  String buildTimeRange(String start, String end) {
+    return '$start-$end';
+  }
+
+  void updateUploadTime(String value, String start, String end) {
+    final String time = buildTimeRange(start, end);
+    if (value == "energy") {
+      config["energyOpenTime"] = time;
+      return;
+    }
+    if (value == "weather") {
+      config["weatherOpenTime"] = time;
+      return;
+    }
+    if (value == "soil") {
+      config["soilOpenTime"] = time;
+    }
+  }
+
   Future<void> uploadVoice(String name, String url) async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "switchType": "start",
       "cmdType": "audioSetData",
@@ -324,7 +373,7 @@ class LiGanDetailController extends GetxController {
 
   Future<void> playVoice(String name) async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "switchType": "play",
       "cmdType": "audioSetData",
@@ -378,7 +427,7 @@ class LiGanDetailController extends GetxController {
 
   Future<void> stopVoice() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "switchType": "stop",
       "cmdType": "audioSetData"
@@ -399,7 +448,7 @@ class LiGanDetailController extends GetxController {
 
   Future<void> deleteVoice(String name) async {
     EventBusUtil.getInstance().fire(HhLoading(show: true, title: "正在删除，请稍后…"));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "switchType": "delet",
       "cmdType": "audioSetData",
@@ -439,7 +488,7 @@ class LiGanDetailController extends GetxController {
 
   Future<void> voiceSubmitHuman() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "cmdType": "audioSetParam",
       "switchType": config["audioHumanEnable"],
@@ -463,7 +512,7 @@ class LiGanDetailController extends GetxController {
 
   Future<void> voiceSubmitCar() async {
     // EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "cmdType": "audioSetParam",
       "switchType": config["audioCarEnable"],
@@ -486,7 +535,7 @@ class LiGanDetailController extends GetxController {
 
   Future<void> voiceSubmitCap() async {
     // EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "cmdType": "audioSetParam",
       "switchType": config["audioOpenEnable"],
@@ -509,7 +558,7 @@ class LiGanDetailController extends GetxController {
 
   Future<void> settingLevel() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "cmdType": "deviceSetLevel",
       "value": fireLevel.value
@@ -529,7 +578,10 @@ class LiGanDetailController extends GetxController {
 
   Future<void> resetDevice() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {"deviceNo": deviceNo, "cmdType": "deviceSetReboot"};
+    final Map<String, dynamic> data = {
+      "deviceNo": deviceNo,
+      "cmdType": "deviceSetReboot"
+    };
     var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
         method: DioMethod.post, data: data);
     HhLog.d("resetDevice -- $data");
@@ -545,7 +597,7 @@ class LiGanDetailController extends GetxController {
 
   Future<void> versionUpdate() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "cmdType": "deviceSetOTA",
       "url": "${versionList[version.value]["url"]}",
@@ -564,14 +616,17 @@ class LiGanDetailController extends GetxController {
     }
   }
 
-  Future<void> warnSet(String value, String type) async {
+  Future<void> warnSet(String value, String type, {int? delay}) async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "cmdType": "alarmSetSwitch",
       "value": value,
       "switchType": type
     };
+    if (delay != null) {
+      data["delay"] = delay;
+    }
     var result = await HhHttp().request(RequestUtils.deviceConfigScreenTop,
         method: DioMethod.post, data: data);
     HhLog.d("versionUpdate -- $data");
@@ -585,10 +640,25 @@ class LiGanDetailController extends GetxController {
     }
   }
 
+  Future<void> submitAlarmDelaySetting(String value) async {
+    final bool enabled;
+    final int delay;
+    if (value == "sensor") {
+      enabled = warnSENSOR.value;
+      delay = parseDelayOrZero(sensorDelay.value);
+      config["sensorTime"] = '$delay';
+    } else {
+      enabled = warnOPEN.value;
+      delay = parseDelayOrZero(capDelay.value);
+      config["capTime"] = '$delay';
+    }
+    await warnSet(value, enabled ? "ON" : "OFF", delay: delay);
+  }
+
   Future<void> warnUploadSet(
       String value, String type, int delay, String time) async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "cmdType": "dataSetSwitch",
       "value": value,
@@ -609,9 +679,63 @@ class LiGanDetailController extends GetxController {
     }
   }
 
+  Future<void> submitUploadSetting(String value) async {
+    int delay = 0;
+    String type = "OFF";
+    String time = "";
+    if (value == "energy") {
+      delay = parseDelayOrZero(time1Controller!.text) * 60;
+      type = energyAction.value ? "ON" : "OFF";
+      time = buildTimeRange(energyStart.value, energyEnd.value);
+      energyDelay.value = time1Controller!.text;
+      config["energyDelay"] = delay;
+    } else if (value == "weather") {
+      delay = parseDelayOrZero(time2Controller!.text) * 60;
+      type = weatherAction.value ? "ON" : "OFF";
+      time = buildTimeRange(weatherStart.value, weatherEnd.value);
+      weatherDelay.value = time2Controller!.text;
+      config["weatherDelay"] = delay;
+    } else {
+      delay = parseDelayOrZero(time3Controller!.text) * 60;
+      type = soilAction.value ? "ON" : "OFF";
+      time = buildTimeRange(soilStart.value, soilEnd.value);
+      soilDelay.value = time3Controller!.text;
+      config["soilDelay"] = delay;
+    }
+    updateUploadTime(value, time.substring(0, 8), time.substring(9, 17));
+    await warnUploadSet(value, type, delay, time);
+  }
+
+  Future<void> alarmLedSetting() async {
+    EventBusUtil.getInstance().fire(HhLoading(show: true));
+    final Map<String, dynamic> data = {
+      "deviceNo": deviceNo,
+      "cmdType": "alarmledSetSwitch",
+      "switchType": alarmLedEnable.value,
+      "time": buildTimeRange(alarmLedStart.value, alarmLedEnd.value),
+    };
+    final dynamic result = await HhHttp().request(
+      RequestUtils.deviceConfigScreenTop,
+      method: DioMethod.post,
+      data: data,
+    );
+    HhLog.d("alarmLedSetting -- $data");
+    HhLog.d("alarmLedSetting -- $result");
+    EventBusUtil.getInstance().fire(HhLoading(show: false));
+    if (result["code"] == 0) {
+      config["alarmLedEnable"] = alarmLedEnable.value;
+      config["alarmLedTime"] =
+          buildTimeRange(alarmLedStart.value, alarmLedEnd.value);
+      EventBusUtil.getInstance().fire(HhToast(title: "设置成功", type: 1));
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    }
+  }
+
   Future<void> sunSetting() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
-    dynamic data = {
+    final Map<String, dynamic> data = {
       "deviceNo": deviceNo,
       "cmdType": "energySetParam",
       "liVP": liVP.value,
@@ -1020,7 +1144,8 @@ class LiGanDetailController extends GetxController {
       var dio = Dio();
       FormData formData = FormData.fromMap({
         "file": await MultipartFile.fromFile(newFile.path, filename: fileName),
-        "path": "/${DateTime.now().millisecondsSinceEpoch.toString()}/$fileName",
+        "path":
+            "/${DateTime.now().millisecondsSinceEpoch.toString()}/$fileName",
       });
 
       try {
@@ -1050,7 +1175,7 @@ class LiGanDetailController extends GetxController {
   }
 
   Future<void> postAudioUrl(String url, String fileName) async {
-    dynamic data = {};
+    final Map<String, dynamic> data = {};
     data['name'] = fileName;
     data['pcmUrl'] = url;
     data['description'] = "App上传";
