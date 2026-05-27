@@ -4706,40 +4706,8 @@ class LiGanDetailPage extends StatelessWidget {
   Widget _buildCardDivider() {
     return Container(
       margin: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
-      height: 1.w*3,
+      height: 1.w * 3,
       color: HhColors.line252Color,
-    );
-  }
-
-  Widget _buildSwitchRow(
-      String title, bool value, ValueChanged<bool> onToggle) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(16.w * 3, 15.w * 3, 16.w * 3, 15.w * 3),
-      child: Row(
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              color: HhColors.blackColor,
-              fontSize: 15.sp * 3,
-            ),
-          ),
-          const Expanded(child: SizedBox()),
-          Align(
-              alignment: Alignment.centerRight,
-              child: FlutterSwitch(
-                width: 100.w,
-                height: 55.w,
-                activeColor: HhColors.mainBlueColor,
-                valueFontSize: 25.w,
-                toggleSize: 45.w,
-                value: value,
-                borderRadius: 30.w,
-                padding: 8.w,
-                onToggle: onToggle,
-              )),
-        ],
-      ),
     );
   }
 
@@ -4822,24 +4790,25 @@ class LiGanDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSmallConfirmButton(VoidCallback onPressed,{double? height,double? fontSize,double? radius}) {
+  Widget _buildSmallConfirmButton(VoidCallback onPressed,
+      {double? height, double? fontSize, double? radius}) {
     return BouncingWidget(
       duration: const Duration(milliseconds: 100),
       scaleFactor: 1.2,
       onPressed: onPressed,
       child: Container(
-        height: height??28.w * 3,
+        height: height ?? 28.w * 3,
         padding: EdgeInsets.symmetric(horizontal: 14.w * 3),
         decoration: BoxDecoration(
             color: HhColors.mainBlueColor,
-            borderRadius: BorderRadius.all(Radius.circular(radius??4.w * 3))),
+            borderRadius: BorderRadius.all(Radius.circular(radius ?? 4.w * 3))),
         child: Center(
           child: Text(
             "确定",
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: HhColors.whiteColor,
-                fontSize: fontSize??13.sp * 3,
+                fontSize: fontSize ?? 13.sp * 3,
                 decoration: TextDecoration.none,
                 fontWeight: FontWeight.w200),
           ),
@@ -5073,7 +5042,8 @@ class LiGanDetailPage extends StatelessWidget {
                 child: _buildTimePickerBox(end, onPickEnd),
               ),
               SizedBox(width: 10.w * 3),
-              _buildSmallConfirmButton(onConfirm,height: 34.w*3,fontSize: 14.sp*3),
+              _buildSmallConfirmButton(onConfirm,
+                  height: 34.w * 3, fontSize: 14.sp * 3),
             ],
           ),
         ],
@@ -5144,8 +5114,8 @@ class LiGanDetailPage extends StatelessWidget {
           },
           delay: logic.sensorDelay,
           onConfirm: () {
-            if(logic.sensorDelay.value==""){
-              logic.sensorDelay.value="0";
+            if (logic.sensorDelay.value == "") {
+              logic.sensorDelay.value = "0";
             }
             logic.submitAlarmDelaySetting("sensor");
           },
@@ -5161,8 +5131,8 @@ class LiGanDetailPage extends StatelessWidget {
           },
           delay: logic.capDelay,
           onConfirm: () {
-            if(logic.capDelay.value==""){
-              logic.capDelay.value="0";
+            if (logic.capDelay.value == "") {
+              logic.capDelay.value = "0";
             }
             logic.submitAlarmDelaySetting("cap");
           },
@@ -5201,7 +5171,7 @@ class LiGanDetailPage extends StatelessWidget {
             });
           },
           onConfirm: () {
-            if(logic.time1Controller!.text==""){
+            if (logic.time1Controller!.text == "") {
               logic.time1Controller!.text = "0";
             }
             logic.submitUploadSetting("energy");
@@ -5235,7 +5205,7 @@ class LiGanDetailPage extends StatelessWidget {
             });
           },
           onConfirm: () {
-            if(logic.time2Controller!.text==""){
+            if (logic.time2Controller!.text == "") {
               logic.time2Controller!.text = "0";
             }
             logic.submitUploadSetting("weather");
@@ -5269,7 +5239,7 @@ class LiGanDetailPage extends StatelessWidget {
             });
           },
           onConfirm: () {
-            if(logic.time3Controller!.text==""){
+            if (logic.time3Controller!.text == "") {
               logic.time3Controller!.text = "0";
             }
             logic.submitUploadSetting("soil");
@@ -5387,7 +5357,7 @@ class LiGanDetailPage extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: _buildSmallConfirmButton(() {
                   logic.alarmLedSetting();
-                },height: 38.w*3,fontSize: 15.sp*3,radius: 8.w*3),
+                }, height: 38.w * 3, fontSize: 15.sp * 3, radius: 8.w * 3),
               ),
             ],
           ),
