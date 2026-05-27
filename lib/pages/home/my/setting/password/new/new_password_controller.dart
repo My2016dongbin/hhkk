@@ -40,7 +40,8 @@ class NewPasswordController extends GetxController {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     mobile.value = prefs.getString(SPKeys().mobile)!;
     password.value = prefs.getString(SPKeys().password)!;
-    // passwordController!.text = mobile.value;
+
+    passwordController!.text = CommonUtils().mobileString(mobile.value);
     super.onInit();
   }
 
@@ -49,7 +50,7 @@ class NewPasswordController extends GetxController {
     var result = await HhHttp().request(
       RequestUtils.codeRegisterSend,
       method: DioMethod.post,
-      data: {'mobile':passwordController!.text,'scene':24},
+      data: {'mobile':mobile.value,'scene':24},
     );
     HhLog.d("codeRegisterSend -- $result");
     EventBusUtil.getInstance().fire(HhLoading(show: false));

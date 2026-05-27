@@ -119,6 +119,7 @@ class NewPasswordPage extends StatelessWidget {
                               maxLength: 11,
                               cursorColor: HhColors.titleColor_99,
                               controller: logic.passwordController,
+                              enabled: false,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 contentPadding: EdgeInsets.fromLTRB(15.w*3, 15.w*3, 15.w*3, 15.w*3),
@@ -126,12 +127,12 @@ class NewPasswordPage extends StatelessWidget {
                                     borderSide: BorderSide.none
                                 ),
                                 counterText: '',
-                                hintText: '手机号',
+                                hintText: '',
                                 hintStyle: TextStyle(
                                     color: HhColors.gray9TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
                               ),
                               style:
-                              TextStyle(color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
+                              TextStyle(color: HhColors.gray6TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
                               onChanged: (s){
                                 logic.passwordStatus.value = s.isNotEmpty;
                               },
@@ -191,11 +192,7 @@ class NewPasswordPage extends StatelessWidget {
                               //隐藏输入法
                               FocusScope.of(logic.context).requestFocus(FocusNode());
                               if(logic.passwordController!.text.length<11){
-                                EventBusUtil.getInstance().fire(HhToast(title: '请输入正确的手机号'));
-                                return;
-                              }
-                              if(logic.passwordController!.text != logic.mobile.value){
-                                EventBusUtil.getInstance().fire(HhToast(title: '请输入正确的安全手机号'));
+                                EventBusUtil.getInstance().fire(HhToast(title: '安全手机未设置，请先设置安全手机'));
                                 return;
                               }
                               if(logic.time.value!=0){
@@ -298,14 +295,6 @@ class NewPasswordPage extends StatelessWidget {
                   onPressed: (){
                     //隐藏输入法
                     FocusScope.of(logic.context).requestFocus(FocusNode());
-                    if(logic.passwordController!.text.isEmpty){
-                      EventBusUtil.getInstance().fire(HhToast(title: '请输入手机号'));
-                      return;
-                    }
-                    if(logic.passwordController!.text != logic.mobile.value){
-                      EventBusUtil.getInstance().fire(HhToast(title: '请输入正确的安全手机号'));
-                      return;
-                    }
                     if(logic.passwordNew1Controller!.text.isEmpty){
                       EventBusUtil.getInstance().fire(HhToast(title: '请输入验证码'));
                       return;
