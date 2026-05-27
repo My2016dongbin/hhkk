@@ -496,110 +496,88 @@ class VideoPage extends StatelessWidget {
                                 EdgeInsets.fromLTRB(15.w * 3, 0, 15.w * 3, 0),
                             width: 1.sw,
                             alignment: Alignment.topCenter,
-                            child: GridView.builder(
-                              padding:
-                                  EdgeInsets.fromLTRB(0, 10.w * 3, 0, 10.w * 3),
-                              shrinkWrap: true,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: logic.videoCount.value == 1
-                                    ? 1
-                                    : 2 /*sqrt(logic.videoCount.value).toInt()*/,
-                                crossAxisSpacing: 10.w * 3,
-                                mainAxisSpacing: 10.w * 3,
-                                childAspectRatio: 168 / 123,
-                              ),
-                              itemCount: logic.videoCount.value,
-                              itemBuilder: (context, index) {
-                                return GestureDetector(
-                                  behavior: HitTestBehavior.translucent,
-                                  onTap: () {
-                                    if (!_hasVideoSource(index)) {
-                                      showVideoTreeDrawer(context);
-                                    }
-                                    logic.videoIndex.value = index;
-                                  },
-                                  child: Container(
-                                    clipBehavior: Clip.hardEdge,
-                                    decoration: BoxDecoration(
-                                        color: HhColors.gray6EColor,
-                                        borderRadius:
-                                            BorderRadius.circular(16.w * 3)),
-                                    child: Stack(
-                                      alignment: Alignment.center,
-                                      children: [
-                                        //边框
-                                        Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(16.w * 3),
-                                            border: logic.videoIndex.value ==
-                                                    index
-                                                ? Border.all(
-                                                    color:
-                                                        HhColors.mainBlueColor,
-                                                    width: 5.w)
-                                                : null,
+                            child: EasyRefresh(
+                              onRefresh: () {
+                                DateTime dateTime = DateTime.now();
+                                logic.dateStr.value = CommonUtils()
+                                    .parseLongTimeWithLength(
+                                    "${dateTime.millisecondsSinceEpoch}", 16);
+                                logic.getWeather();
+                              },
+                              child: GridView.builder(
+                                padding:
+                                    EdgeInsets.fromLTRB(0, 10.w * 3, 0, 10.w * 3),
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: logic.videoCount.value == 1
+                                      ? 1
+                                      : 2 /*sqrt(logic.videoCount.value).toInt()*/,
+                                  crossAxisSpacing: 10.w * 3,
+                                  mainAxisSpacing: 10.w * 3,
+                                  childAspectRatio: 168 / 123,
+                                ),
+                                itemCount: logic.videoCount.value,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    behavior: HitTestBehavior.translucent,
+                                    onTap: () {
+                                      if (!_hasVideoSource(index)) {
+                                        showVideoTreeDrawer(context);
+                                      }
+                                      logic.videoIndex.value = index;
+                                    },
+                                    child: Container(
+                                      clipBehavior: Clip.hardEdge,
+                                      decoration: BoxDecoration(
+                                          color: HhColors.gray6EColor,
+                                          borderRadius:
+                                              BorderRadius.circular(16.w * 3)),
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          //边框
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(16.w * 3),
+                                              border: logic.videoIndex.value ==
+                                                      index
+                                                  ? Border.all(
+                                                      color:
+                                                          HhColors.mainBlueColor,
+                                                      width: 5.w)
+                                                  : null,
+                                            ),
                                           ),
-                                        ),
-                                        _hasVideoSource(index)
-                                            ? Column(
-                                                children: [
-                                                  Expanded(
-                                                    child: _isHikPlayer(index)
-                                                        ? QcHikPlayerView(
-                                                            key: ValueKey(
-                                                                "hik_${CommonData.checkedChannels[index]["hikPlayerSeed"]}_$index"),
-                                                            params:
-                                                                QcHikPlayerParams
-                                                                    .fromSdkParams(
-                                                              Map<String,
-                                                                      dynamic>.from(
-                                                                  CommonData
-                                                                      .checkedChannels[
-                                                                          index]
-                                                                          [
-                                                                          "hikSdkParams"]
-                                                                      .cast()),
-                                                            ),
-                                                            controller: logic
-                                                                    .hikPlayerControllers[
-                                                                index],
-                                                            onPlaySuccess: () {
-                                                              logic
-                                                                  .onGridPlayerPlaySuccess(
-                                                                index,
-                                                                useHikPlayer:
-                                                                    true,
-                                                              );
-                                                            },
-                                                            onOuterTap: () {
-                                                              logic.videoIndex
-                                                                      .value =
-                                                                  index;
-                                                            },
-                                                          )
-                                                        : Screenshot(
-                                                            controller: logic
-                                                                    .screenshotControllers[
-                                                                index],
-                                                            child:
-                                                                VideoPlayerWidget(
-                                                              player: logic
-                                                                      .fijkPlayers[
-                                                                  index],
+                                          _hasVideoSource(index)
+                                              ? Column(
+                                                  children: [
+                                                    Expanded(
+                                                      child: _isHikPlayer(index)
+                                                          ? QcHikPlayerView(
                                                               key: ValueKey(
-                                                                  "${CommonData.checkedChannels[index]["url"]}$index"),
-                                                              // key: ValueKey("${CommonData.checkedChannels[index]["url"]}${Random().nextInt(10000000)}"),
-                                                              url:
-                                                                  "${CommonData.checkedChannels[index]["url"]}",
-                                                              onPlaySuccess:
-                                                                  () {
+                                                                  "hik_${CommonData.checkedChannels[index]["hikPlayerSeed"]}_$index"),
+                                                              params:
+                                                                  QcHikPlayerParams
+                                                                      .fromSdkParams(
+                                                                Map<String,
+                                                                        dynamic>.from(
+                                                                    CommonData
+                                                                        .checkedChannels[
+                                                                            index]
+                                                                            [
+                                                                            "hikSdkParams"]
+                                                                        .cast()),
+                                                              ),
+                                                              controller: logic
+                                                                      .hikPlayerControllers[
+                                                                  index],
+                                                              onPlaySuccess: () {
                                                                 logic
                                                                     .onGridPlayerPlaySuccess(
                                                                   index,
                                                                   useHikPlayer:
-                                                                      false,
+                                                                      true,
                                                                 );
                                                               },
                                                               onOuterTap: () {
@@ -607,121 +585,151 @@ class VideoPage extends StatelessWidget {
                                                                         .value =
                                                                     index;
                                                               },
+                                                            )
+                                                          : Screenshot(
+                                                              controller: logic
+                                                                      .screenshotControllers[
+                                                                  index],
+                                                              child:
+                                                                  VideoPlayerWidget(
+                                                                player: logic
+                                                                        .fijkPlayers[
+                                                                    index],
+                                                                key: ValueKey(
+                                                                    "${CommonData.checkedChannels[index]["url"]}$index"),
+                                                                // key: ValueKey("${CommonData.checkedChannels[index]["url"]}${Random().nextInt(10000000)}"),
+                                                                url:
+                                                                    "${CommonData.checkedChannels[index]["url"]}",
+                                                                onPlaySuccess:
+                                                                    () {
+                                                                  logic
+                                                                      .onGridPlayerPlaySuccess(
+                                                                    index,
+                                                                    useHikPlayer:
+                                                                        false,
+                                                                  );
+                                                                },
+                                                                onOuterTap: () {
+                                                                  logic.videoIndex
+                                                                          .value =
+                                                                      index;
+                                                                },
+                                                              ),
                                                             ),
-                                                          ),
-                                                  ),
-                                                  Container(
-                                                    color: HhColors.whiteColor,
-                                                    padding: logic.videoCount
-                                                                .value ==
-                                                            1
-                                                        ? EdgeInsets.fromLTRB(
-                                                            15.w * 3,
-                                                            8.w * 3,
-                                                            15.w * 3,
-                                                            8.w * 3)
-                                                        : EdgeInsets.fromLTRB(
-                                                            10.w * 3,
-                                                            4.w * 3,
-                                                            10.w * 3,
-                                                            4.w * 3),
-                                                    child: Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(
-                                                            CommonUtils().parseNull(
-                                                                "${CommonData.checkedChannels[index]["name"]}",
-                                                                ""),
-                                                            style: TextStyle(
-                                                                color: HhColors
-                                                                    .textBlackColor,
-                                                                fontSize:
-                                                                    12.sp * 3),
-                                                            maxLines: 1,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
-                                                        ),
-                                                        SizedBox(
-                                                          width: 5.w * 3,
-                                                        ),
-                                                        InkWell(
-                                                          onTap: () async {
-                                                            await logic
-                                                                .removeChannelById(
-                                                                    "${CommonData.checkedChannels[index]["id"]}");
-                                                          },
-                                                          child: Container(
-                                                            color:
-                                                                HhColors.trans,
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    2.w * 3),
-                                                            child: Image.asset(
-                                                              "assets/images/common/icon_video_close.png",
-                                                              width: logic.videoCount
-                                                                          .value ==
-                                                                      1
-                                                                  ? 16.w * 3
-                                                                  : 12.w * 3,
-                                                              height: logic
-                                                                          .videoCount
-                                                                          .value ==
-                                                                      1
-                                                                  ? 16.w * 3
-                                                                  : 12.w * 3,
-                                                              fit: BoxFit.fill,
-                                                            ),
-                                                          ),
-                                                        )
-                                                      ],
                                                     ),
-                                                  )
-                                                ],
-                                              )
-                                            : Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Image.asset(
-                                                    "assets/images/common/icon_video_adding.png",
-                                                    width: logic.videoCount
-                                                                .value ==
-                                                            1
-                                                        ? 32.w * 3
-                                                        : 28.w * 3,
-                                                    height: logic.videoCount
-                                                                .value ==
-                                                            1
-                                                        ? 32.w * 3
-                                                        : 28.w * 3,
-                                                    fit: BoxFit.fill,
-                                                  ),
-                                                  SizedBox(
-                                                    height: 10.w * 3,
-                                                  ),
-                                                  Text(
-                                                    '请点击左侧视频树\n选择视频',
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                        color: HhColors
-                                                            .grayB6Color,
-                                                        fontSize: logic
-                                                                    .videoCount
-                                                                    .value ==
-                                                                1
-                                                            ? 14.sp * 3
-                                                            : 12.sp * 3,
-                                                        fontWeight:
-                                                            FontWeight.w400),
-                                                  )
-                                                ],
-                                              ),
-                                      ],
+                                                    Container(
+                                                      color: HhColors.whiteColor,
+                                                      padding: logic.videoCount
+                                                                  .value ==
+                                                              1
+                                                          ? EdgeInsets.fromLTRB(
+                                                              15.w * 3,
+                                                              8.w * 3,
+                                                              15.w * 3,
+                                                              8.w * 3)
+                                                          : EdgeInsets.fromLTRB(
+                                                              10.w * 3,
+                                                              4.w * 3,
+                                                              10.w * 3,
+                                                              4.w * 3),
+                                                      child: Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              CommonUtils().parseNull(
+                                                                  "${CommonData.checkedChannels[index]["name"]}",
+                                                                  ""),
+                                                              style: TextStyle(
+                                                                  color: HhColors
+                                                                      .textBlackColor,
+                                                                  fontSize:
+                                                                      12.sp * 3),
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: 5.w * 3,
+                                                          ),
+                                                          InkWell(
+                                                            onTap: () async {
+                                                              await logic
+                                                                  .removeChannelById(
+                                                                      "${CommonData.checkedChannels[index]["id"]}");
+                                                            },
+                                                            child: Container(
+                                                              color:
+                                                                  HhColors.trans,
+                                                              padding:
+                                                                  EdgeInsets.all(
+                                                                      2.w * 3),
+                                                              child: Image.asset(
+                                                                "assets/images/common/icon_video_close.png",
+                                                                width: logic.videoCount
+                                                                            .value ==
+                                                                        1
+                                                                    ? 16.w * 3
+                                                                    : 12.w * 3,
+                                                                height: logic
+                                                                            .videoCount
+                                                                            .value ==
+                                                                        1
+                                                                    ? 16.w * 3
+                                                                    : 12.w * 3,
+                                                                fit: BoxFit.fill,
+                                                              ),
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    )
+                                                  ],
+                                                )
+                                              : Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Image.asset(
+                                                      "assets/images/common/icon_video_adding.png",
+                                                      width: logic.videoCount
+                                                                  .value ==
+                                                              1
+                                                          ? 32.w * 3
+                                                          : 28.w * 3,
+                                                      height: logic.videoCount
+                                                                  .value ==
+                                                              1
+                                                          ? 32.w * 3
+                                                          : 28.w * 3,
+                                                      fit: BoxFit.fill,
+                                                    ),
+                                                    SizedBox(
+                                                      height: 10.w * 3,
+                                                    ),
+                                                    Text(
+                                                      '请点击左侧视频树\n选择视频',
+                                                      textAlign: TextAlign.center,
+                                                      style: TextStyle(
+                                                          color: HhColors
+                                                              .grayB6Color,
+                                                          fontSize: logic
+                                                                      .videoCount
+                                                                      .value ==
+                                                                  1
+                                                              ? 14.sp * 3
+                                                              : 12.sp * 3,
+                                                          fontWeight:
+                                                              FontWeight.w400),
+                                                    )
+                                                  ],
+                                                ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                );
-                              },
+                                  );
+                                },
+                              ),
                             ),
                           )
                         : const SizedBox()),
