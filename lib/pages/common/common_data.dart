@@ -10,6 +10,8 @@ class CommonData{
   static bool personal = false;
   ///false正式版 true测试版
   static bool test = false;
+  ///消息页面是否有消息未刷新
+  static bool hasMessageNotRefresh = false;
   static String ?tenantName = personal?'haohai':null;
   static String ?tenant = personal?'1':null;
   static String ?tenantTitle = '';

@@ -1847,6 +1847,10 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                                 duration: const Duration(milliseconds: 100),
                                 scaleFactor: 1.2,
                                 onPressed: () {
+                                  if("${logic.liveList[logic.liveIndex.value]["channelStatus"]}" != "1"){
+                                    EventBusUtil.getInstance().fire(HhToast(title: "该相机已离线"));
+                                    return;
+                                  }
                                   logic.videoTag.value = !logic.videoTag.value;
                                   if (logic.videoTag.value) {
                                     //开启录像

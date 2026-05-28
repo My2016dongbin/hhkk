@@ -372,6 +372,8 @@ class LiGanDeviceDetailController extends GetxController {
     final result = await ImageGallerySaver.saveFile(filePath);
     if (result != null && result['isSuccess']) {
       EventBusUtil.getInstance().fire(HhToast(title: '录像已保存至相册', type: 0));
+      //异常状态重置
+      videoTag.value = false;
     } else {
       EventBusUtil.getInstance().fire(HhToast(title: '保存录像失败'));
     }
@@ -451,7 +453,9 @@ class LiGanDeviceDetailController extends GetxController {
             }
           } else {
             EventBusUtil.getInstance()
-                .fire(HhToast(title: '录制失败，请重试', type: 0));
+                .fire(HhToast(title: '录制失败，请检查网络后重试', type: 0));
+            //异常状态重置
+            videoTag.value = false;
           }
         }
       },
@@ -485,7 +489,9 @@ class LiGanDeviceDetailController extends GetxController {
     final bool started = await hikPlayerController.startLocalRecord(filePath);
     if (!started) {
       videoTag.value = false;
-      EventBusUtil.getInstance().fire(HhToast(title: '录制失败，请重试', type: 0));
+      EventBusUtil.getInstance().fire(HhToast(title: '录制失败，请检查网络后重试', type: 0));
+      //异常状态重置
+      videoTag.value = false;
       return;
     }
     hikRecordFilePath = filePath;
@@ -502,7 +508,9 @@ class LiGanDeviceDetailController extends GetxController {
     final bool stopped = await hikPlayerController.stopLocalRecord();
     hikRecordFilePath = null;
     if (!stopped) {
-      EventBusUtil.getInstance().fire(HhToast(title: '录制失败，请重试', type: 0));
+      EventBusUtil.getInstance().fire(HhToast(title: '录制失败，请检查网络后重试', type: 0));
+      //异常状态重置
+      videoTag.value = false;
       return;
     }
     if (videoSecond.value < 5 && videoMinute.value == 0) {
@@ -600,6 +608,8 @@ class LiGanDeviceDetailController extends GetxController {
 
     if (result != null && result['isSuccess'] == true) {
       EventBusUtil.getInstance().fire(HhToast(title: '录像已保存至相册', type: 0));
+      //异常状态重置
+      videoTag.value = false;
     } else {
       EventBusUtil.getInstance().fire(HhToast(title: '保存录像失败', type: 0));
     }

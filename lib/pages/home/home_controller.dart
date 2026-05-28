@@ -39,6 +39,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
   Function()? onScrollToUnreadMessage;
   late StreamSubscription showToastSubscription;
   StreamSubscription? versionSubscription;
+  StreamSubscription? messageSubscription;
   StreamSubscription? tabIndexSubscription;
   StreamSubscription? progressSubscription;
   StreamSubscription? downloadProgressSubscription;
@@ -67,6 +68,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
             statusBarBrightness: Brightness.light,
           );
     SystemChrome.setSystemUIOverlayStyle(overlayStyle);
+    EventBusUtil.getInstance().fire(TabIndexChanged(index: index));
   }
 
   scrollToUnreadMessage(index) {
@@ -103,6 +105,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
     try {
       WidgetsBinding.instance.removeObserver(this);
       versionSubscription!.cancel();
+      messageSubscription!.cancel();
       tabIndexSubscription!.cancel();
       showToastSubscription.cancel();
       progressSubscription!.cancel();
@@ -186,6 +189,15 @@ class HomeController extends GetxController with WidgetsBindingObserver {
       if (now - CommonData.time > 1000) {
         CommonData.time = now;
         getVersion(info: event.info);
+      }
+    });
+    messageSubscription = EventBusUtil.getInstance()
+        .on<Message>()
+        .listen((event) {
+      if(index.value != 2){
+        CommonData.hasMessageNotRefresh = true;
+      }else{
+        CommonData.hasMessageNotRefresh = false;
       }
     });
     tabIndexSubscription =

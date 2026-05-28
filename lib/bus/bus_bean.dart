@@ -60,6 +60,10 @@ class TabIndex{
   int index;
   TabIndex({required this.index});
 }
+class TabIndexChanged{
+  int index;
+  TabIndexChanged({required this.index});
+}
 class DownProgress{
   int progress;
   DownProgress({required this.progress});

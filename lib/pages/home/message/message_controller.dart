@@ -38,6 +38,7 @@ class MessageController extends GetxController {
   late int pageNumRight = 1;
   late int pageNumCall = 1;
   late int pageSize = 20;
+  late int mainTabIndex = 0;
   late TextEditingController deviceNameController = TextEditingController();
   late EasyRefreshController easyControllerLeft = EasyRefreshController();
   late EasyRefreshController easyControllerRight = EasyRefreshController();
@@ -68,6 +69,8 @@ class MessageController extends GetxController {
   StreamSubscription ?spaceListSubscription;
   StreamSubscription ?warnListSubscription;
   StreamSubscription ?messageSubscription;
+  StreamSubscription ?tabIndexSubscription;
+  StreamSubscription ?tabIndexChangedSubscription;
   late List<dynamic> typeListFinal = [
     {
       "alarmName":"类型",
@@ -101,14 +104,52 @@ class MessageController extends GetxController {
     messageSubscription = EventBusUtil.getInstance()
         .on<Message>()
         .listen((event) {
-      pageNumLeft = 1;
-      pageNumRight = 1;
-      pageNumCall = 1;
-      fetchPageLeft(1);
-      fetchPageRight(1);
-      fetchPageCall(1);
+          if(mainTabIndex == 2){
+            pageNumLeft = 1;
+            pageNumRight = 1;
+            pageNumCall = 1;
+            fetchPageLeft(1);
+            fetchPageRight(1);
+            fetchPageCall(1);
+          }
     });
+    tabIndexSubscription =
+        EventBusUtil.getInstance().on<TabIndex>().listen((event) {
+          mainTabIndex = event.index;
+          if(event.index == 2 && CommonData.hasMessageNotRefresh == true){
+            refreshMessage();
+          }
+        });
+    tabIndexChangedSubscription =
+        EventBusUtil.getInstance().on<TabIndexChanged>().listen((event) {
+          mainTabIndex = event.index;
+          if(event.index == 2 && CommonData.hasMessageNotRefresh == true){
+            refreshMessage();
+          }
+        });
     super.onInit();
+  }
+
+  @override
+  void onClose() {
+    try{
+      spaceListSubscription?.cancel();
+      warnListSubscription?.cancel();
+      messageSubscription?.cancel();
+      tabIndexSubscription?.cancel();
+      tabIndexChangedSubscription?.cancel();
+      deviceController.dispose();
+      callController.dispose();
+      easyControllerLeft.dispose();
+      easyControllerRight.dispose();
+      easyControllerCall.dispose();
+      deviceScrollController.dispose();
+      tipController.dispose();
+      deviceNameController.dispose();
+    }catch(e){
+      HhLog.e(e.toString());
+    }
+    super.onClose();
   }
 
   Future<void> fetchPageRight(int pageKey) async {
@@ -515,5 +556,21 @@ class MessageController extends GetxController {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
+  }
+
+  void refreshMessage() {
+    pageNumLeft = 1;
+    pageNumRight = 1;
+    pageNumCall = 1;
+    fetchPageLeft(1);
+    fetchPageRight(1);
+    fetchPageCall(1);
+    editLeft.value = false;
+    editRight.value = false;
+    editCall.value = false;
+
+    Future.delayed(const Duration(milliseconds: 500),(){
+      CommonData.hasMessageNotRefresh = false;
+    });
   }
 }

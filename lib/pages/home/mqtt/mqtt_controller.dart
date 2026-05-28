@@ -28,9 +28,15 @@ class MqttController extends GetxController {
   late MqttServerClient client;
   late String id;
   late String clientId;
+  Timer? messageTimer;
+  Timer? messageMaxWaitTimer;
 
   @override
   void onClose() {
+    messageTimer?.cancel();
+    messageTimer = null;
+    messageMaxWaitTimer?.cancel();
+    messageMaxWaitTimer = null;
     try {
       ///通过 disconnect 方法安全断开连接
       client.disconnect();
@@ -122,7 +128,8 @@ class MqttController extends GetxController {
           dynamic model = jsonDecode(payload);
           //设备报警
           if ("${model["messageType"]}" == "deviceAlarm") {
-            EventBusUtil.getInstance().fire(Message());
+            ///3秒防抖
+            handleMessageRefresh();
             //语音播报
             final SharedPreferences prefs =
                 await SharedPreferences.getInstance();
@@ -155,6 +162,25 @@ class MqttController extends GetxController {
 
   void onSubscribed(String topic) {
     HhLog.d('mqtt_page Subscribed to topic: $topic   $clientId');
+  }
+
+  ///压测防抖
+  void handleMessageRefresh() {
+    messageMaxWaitTimer ??= Timer(const Duration(seconds: 10), () {
+      fireMessageRefresh();
+    });
+    messageTimer?.cancel();
+    messageTimer = Timer(const Duration(seconds: 3), () {
+      fireMessageRefresh();
+    });
+  }
+
+  void fireMessageRefresh() {
+    messageTimer?.cancel();
+    messageTimer = null;
+    messageMaxWaitTimer?.cancel();
+    messageMaxWaitTimer = null;
+    EventBusUtil.getInstance().fire(Message());
   }
 
   getRandomId() {
