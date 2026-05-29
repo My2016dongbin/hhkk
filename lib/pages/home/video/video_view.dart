@@ -596,7 +596,7 @@ class VideoPage extends StatelessWidget {
                                                                         .fijkPlayers[
                                                                     index],
                                                                 key: ValueKey(
-                                                                    "${CommonData.checkedChannels[index]["url"]}$index"),
+                                                                    "fijk_${CommonData.checkedChannels[index]["fijkPlayerSeed"]}_${CommonData.checkedChannels[index]["url"]}_$index"),
                                                                 // key: ValueKey("${CommonData.checkedChannels[index]["url"]}${Random().nextInt(10000000)}"),
                                                                 url:
                                                                     "${CommonData.checkedChannels[index]["url"]}",

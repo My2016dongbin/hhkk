@@ -75,6 +75,7 @@ class VideoController extends GetxController {
     CommonData.checkedChannels.length,
     (_) => FijkPlayer(),
   );
+  final Map<int, FijkPlayer> pendingReleaseFijkPlayers = {};
   final List<QcHikPlayerController> hikPlayerControllers = List.generate(
     CommonData.checkedChannels.length,
     (_) => QcHikPlayerController(),
@@ -234,6 +235,10 @@ class VideoController extends GetxController {
     for (final FijkPlayer player in fijkPlayers) {
       player.release();
     }
+    for (final FijkPlayer player in pendingReleaseFijkPlayers.values) {
+      player.release();
+    }
+    pendingReleaseFijkPlayers.clear();
     super.onClose();
   }
 
@@ -479,6 +484,8 @@ class VideoController extends GetxController {
   }
 
   Future<void> getStream(dynamic channel) async {
+    final int targetIndex = resolveTargetIndexForNewStream();
+    await replaceFijkPlayerBeforeStreamSwitch(targetIndex);
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dynamic data = {
       'channelId': "${channel["id"]}",
@@ -490,16 +497,11 @@ class VideoController extends GetxController {
     HhLog.d("getStream -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       try {
-        ///自适应播放数据到网格中
-        int targetIndex = videoIndex.value;
-        if (CommonData.checkedChannels[videoIndex.value]["id"] != null &&
-            videoIndex.value < videoCount.value - 1 &&
-            CommonData.checkedChannels[videoIndex.value + 1]["id"] == null) {
-          //当前选中的网格已有播放数据且不是最后一个网格-加载到下一网格
-          videoIndex.value = videoIndex.value + 1;
-          targetIndex = videoIndex.value;
+        if (targetIndex != videoIndex.value) {
+          videoIndex.value = targetIndex;
         }
         final String platformType = "${result["data"]["platformType"] ?? ''}";
+
         ///海康设备
         if (platformType == "hikiot") {
           await stopFijkPlayerAt(targetIndex);
@@ -538,6 +540,7 @@ class VideoController extends GetxController {
         }
         videoStatus.value = false;
         videoStatus.value = true;
+        releasePendingFijkPlayerAfterRebuild(targetIndex);
         //视频树-频道状态刷新
         EventBusUtil.getInstance().fire(TreeChannelRefresh());
       } catch (e) {
@@ -546,6 +549,48 @@ class VideoController extends GetxController {
     } else {
       EventBusUtil.getInstance().fire(HhToast(title: "视频流获取失败", type: 2));
     }
+  }
+
+  int resolveTargetIndexForNewStream() {
+    int targetIndex = videoIndex.value;
+    if (CommonData.checkedChannels[videoIndex.value]["id"] != null &&
+        videoIndex.value < videoCount.value - 1 &&
+        CommonData.checkedChannels[videoIndex.value + 1]["id"] == null) {
+      //当前选中的网格已有播放数据且不是最后一个网格-加载到下一网格
+      targetIndex = videoIndex.value + 1;
+    }
+    return targetIndex;
+  }
+
+  Future<void> replaceFijkPlayerBeforeStreamSwitch(int index) async {
+    if (index < 0 || index >= CommonData.checkedChannels.length) {
+      return;
+    }
+    if (index >= fijkPlayers.length) {
+      return;
+    }
+    if (CommonData.checkedChannels[index]["url"] == null) {
+      return;
+    }
+    await pendingReleaseFijkPlayers.remove(index)?.release();
+    final FijkPlayer oldPlayer = fijkPlayers[index];
+    await stopFijkPlayerAt(index);
+    fijkPlayers[index] = FijkPlayer();
+    pendingReleaseFijkPlayers[index] = oldPlayer;
+  }
+
+  void releasePendingFijkPlayerAfterRebuild(int index) {
+    final FijkPlayer? player = pendingReleaseFijkPlayers.remove(index);
+    if (player == null) {
+      return;
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      try {
+        await player.release();
+      } catch (e) {
+        HhLog.e("releasePendingFijkPlayerAfterRebuild $index $e");
+      }
+    });
   }
 
   void _applyCheckedChannel(
@@ -563,6 +608,7 @@ class VideoController extends GetxController {
     checkedChannel["url"] = url;
     checkedChannel["hikSdkParams"] = hikSdkParams;
     checkedChannel["hikPlayerSeed"] = DateTime.now().millisecondsSinceEpoch;
+    checkedChannel["fijkPlayerSeed"] = DateTime.now().millisecondsSinceEpoch;
     CommonData.checkedChannels[index] = checkedChannel;
   }
 }
