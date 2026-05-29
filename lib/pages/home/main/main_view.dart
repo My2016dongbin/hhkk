@@ -80,43 +80,38 @@ class MainPage extends StatelessWidget {
         ),
 
         ///定位
-        InkWell(
-          onTap: () {
-            Get.to(() => HikPlayerDemoPage(), binding: HikPlayerDemoBinding());
-          },
-          child: Container(
-            margin: EdgeInsets.fromLTRB(14.w * 3, 51.w * 3, 100.w * 3, 0),
-            color: HhColors.trans,
-            child: Row(
-              children: [
-                Image.asset(
-                  "assets/images/common/icon_loc.png",
-                  width: 24.w * 3,
-                  height: 24.w * 3,
-                  fit: BoxFit.fill,
-                ),
-                SizedBox(width: 4.w * 3),
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      logic.searchLocation();
-                    },
-                    child: Container(
-                      color: HhColors.trans,
-                      child: Text(
-                        logic.appLoc.value,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: HhColors.blackTextColor,
-                            fontSize: 14.sp * 3,
-                            fontWeight: FontWeight.w600),
-                      ),
+        Container(
+          margin: EdgeInsets.fromLTRB(14.w * 3, 51.w * 3, 100.w * 3, 0),
+          color: HhColors.trans,
+          child: Row(
+            children: [
+              Image.asset(
+                "assets/images/common/icon_loc.png",
+                width: 24.w * 3,
+                height: 24.w * 3,
+                fit: BoxFit.fill,
+              ),
+              SizedBox(width: 4.w * 3),
+              Expanded(
+                child: InkWell(
+                  onTap: () {
+                    logic.searchLocation();
+                  },
+                  child: Container(
+                    color: HhColors.trans,
+                    child: Text(
+                      logic.appLoc.value,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: HhColors.blackTextColor,
+                          fontSize: 14.sp * 3,
+                          fontWeight: FontWeight.w600),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
 

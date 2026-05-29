@@ -1672,7 +1672,7 @@ class LiGanDetailPage extends StatelessWidget {
                                                       width: 10.w,
                                                     ),
                                                     Text(
-                                                      '触发',
+                                                      '时间段',
                                                       style: TextStyle(
                                                         color: logic.closeTab
                                                                     .value ==

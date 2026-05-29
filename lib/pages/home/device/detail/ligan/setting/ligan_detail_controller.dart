@@ -235,6 +235,7 @@ class LiGanDetailController extends GetxController {
       _parseTimeRange(config["audioHumanTime"], personStart, personEnd);
       _parseTimeRange(config["audioCarTime"], carStart, carEnd);
       _parseTimeRange(config["audioOpenTime"], openStart, openEnd);
+      closeTab.value = config["ledEnable"]??0;
       _parseTimeRange(config["ledTime"], closeStart, closeEnd);
       _parseTimeRange(config["energyOpenTime"], energyStart, energyEnd);
       _parseTimeRange(config["weatherOpenTime"], weatherStart, weatherEnd);
