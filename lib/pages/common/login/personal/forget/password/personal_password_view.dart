@@ -91,7 +91,7 @@ class PersonalPasswordPage extends StatelessWidget {
                         child: TextField(
                           textAlign: TextAlign.left,
                           maxLines: 1,
-                          maxLength: 20,
+                          maxLength: 16,
                           cursorColor: HhColors.titleColor_99,
                           controller: logic.passwordController,
                           keyboardType: TextInputType.visiblePassword,
@@ -155,7 +155,7 @@ class PersonalPasswordPage extends StatelessWidget {
                         child: TextField(
                           textAlign: TextAlign.left,
                           maxLines: 1,
-                          maxLength: 20,
+                          maxLength: 16,
                           cursorColor: HhColors.titleColor_99,
                           controller: logic.password2Controller,
                           keyboardType: TextInputType.visiblePassword,

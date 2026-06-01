@@ -92,7 +92,7 @@ class LocationPage extends StatelessWidget {
             privacyStatement: const AMapPrivacyStatement(
                 hasContains: true, hasShow: true, hasAgree: true),
             onMapCreated: logic.onGDMapCreated,
-            mapType: MapType.satellite,
+            mapType: MapType.normal,
             tiltGesturesEnabled: true,
             buildingsEnabled: true,
             compassEnabled: true,

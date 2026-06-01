@@ -1,8 +1,8 @@
 
 class RequestUtils{
 
-  // static const base = 'http://117.132.5.139:18034/iot-api';//外网生产
-  static const base = 'https://iot.ehaohai.com/iot-api';//外网生产
+  static const base = 'http://117.132.5.139:18034/iot-api';//外网生产
+  // static const base = 'https://iot.ehaohai.com/iot-api';//外网生产
   // static const base = 'http://192.168.1.2:18034';//debug
   // static const base = 'http://117.132.5.139:18034';//外网debug
 
