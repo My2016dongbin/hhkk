@@ -111,7 +111,7 @@ class VideoPage extends StatelessWidget {
                                             ? HhColors.mainBlueColor
                                             : HhColors.gray9TextColor,
                                         fontSize: 10.sp * 3,
-                                        fontWeight: FontWeight.w200),
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ],
                               ),
@@ -148,7 +148,7 @@ class VideoPage extends StatelessWidget {
                                             ? HhColors.gray9TextColor
                                             : HhColors.mainBlueColor,
                                         fontSize: 10.sp * 3,
-                                        fontWeight: FontWeight.w200),
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ],
                               ),
@@ -241,7 +241,7 @@ class VideoPage extends StatelessWidget {
                                     style: TextStyle(
                                         color: HhColors.textBlackColor,
                                         fontSize: 10.sp * 3,
-                                        fontWeight: FontWeight.w200),
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ],
                               ),
@@ -478,7 +478,7 @@ class VideoPage extends StatelessWidget {
                                 style: TextStyle(
                                     color: HhColors.textBlackColor,
                                     fontSize: 10.sp * 3,
-                                    fontWeight: FontWeight.w200),
+                                    fontWeight: FontWeight.w400),
                               ),
                             ],
                           ),
@@ -796,7 +796,7 @@ class VideoPage extends StatelessWidget {
                                   style: TextStyle(
                                       color: HhColors.textBlackColor,
                                       fontSize: 10.sp * 3,
-                                      fontWeight: FontWeight.w200),
+                                      fontWeight: FontWeight.w400),
                                 ),
                               ],
                             ),
@@ -1010,12 +1010,12 @@ class VideoPage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      CommonUtils().parseNameCount("${item['name']}", 4),
+                      CommonUtils().parseNameCount("${item['name']}", 15),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: HhColors.textBlackColor,
-                        fontSize: 15.sp * 3,
+                        fontSize: 14.sp * 3,
                       ),
                     ),
                   ),

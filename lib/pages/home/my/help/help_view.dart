@@ -97,7 +97,7 @@ class HelpPage extends StatelessWidget {
                                   child: Text(
                                     '热门问题',
                                     style: TextStyle(
-                                        color: logic.tabIndex.value==0?HhColors.mainBlueColor:HhColors.gray9TextColor, fontSize: logic.tabIndex.value==0?32.sp:26.sp,fontWeight: logic.tabIndex.value==0?FontWeight.bold:FontWeight.w200),
+                                        color: logic.tabIndex.value==0?HhColors.mainBlueColor:HhColors.gray9TextColor, fontSize: logic.tabIndex.value==0?32.sp:26.sp,fontWeight: logic.tabIndex.value==0?FontWeight.bold:FontWeight.w400),
                                   ),
                                 ),
                                 SizedBox(height: 5.w,),
@@ -125,7 +125,7 @@ class HelpPage extends StatelessWidget {
                                     child: Text(
                                       '连接设备',
                                       style: TextStyle(
-                                          color: logic.tabIndex.value==1?HhColors.mainBlueColor:HhColors.gray9TextColor, fontSize: logic.tabIndex.value==1?32.sp:26.sp,fontWeight: logic.tabIndex.value==1?FontWeight.bold:FontWeight.w200),
+                                          color: logic.tabIndex.value==1?HhColors.mainBlueColor:HhColors.gray9TextColor, fontSize: logic.tabIndex.value==1?32.sp:26.sp,fontWeight: logic.tabIndex.value==1?FontWeight.bold:FontWeight.w400),
                                     ),
                                   ),
                                   SizedBox(height: 5.w,),
@@ -154,7 +154,7 @@ class HelpPage extends StatelessWidget {
                                     child: Text(
                                       '网络异常',
                                       style: TextStyle(
-                                          color: logic.tabIndex.value==2?HhColors.mainBlueColor:HhColors.gray9TextColor, fontSize: logic.tabIndex.value==2?32.sp:26.sp,fontWeight: logic.tabIndex.value==2?FontWeight.bold:FontWeight.w200),
+                                          color: logic.tabIndex.value==2?HhColors.mainBlueColor:HhColors.gray9TextColor, fontSize: logic.tabIndex.value==2?32.sp:26.sp,fontWeight: logic.tabIndex.value==2?FontWeight.bold:FontWeight.w400),
                                     ),
                                   ),
                                   SizedBox(height: 5.w,),

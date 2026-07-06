@@ -527,7 +527,7 @@ class VideoController extends GetxController {
           }
         } else {
           ///其他设备-当前选中的网格无播放数据-加载到当前网格
-          String url = "${result["data"]["appRelativePath"]}";
+          String url = 'http://117.132.5.139:18034/app-video${result["data"]["appRelativePath"]}';
           HhLog.d("getStream -- $url");
           _applyCheckedChannel(
             targetIndex,

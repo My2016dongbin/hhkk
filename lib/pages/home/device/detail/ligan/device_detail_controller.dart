@@ -737,7 +737,7 @@ class LiGanDeviceDetailController extends GetxController {
           ///其他设备
           hikPlayerTag.value = false;
           hikPlayParams.value = null;
-          url = /*RequestUtils.rtsp + */ "${result["data"]["appRelativePath"]}";
+          url = 'http://117.132.5.139:18034/app-video${result["data"]["appRelativePath"]}';
           playLoadingTag.value = false;
           playTag.value = false;
           player.release();

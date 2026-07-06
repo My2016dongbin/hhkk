@@ -114,7 +114,7 @@ class RegisterPage extends StatelessWidget {
                             counterText: '',
                             hintText: '请输入账号',
                             hintStyle: TextStyle(
-                                color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                           ),
                           style:
                           TextStyle(color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
@@ -166,7 +166,7 @@ class RegisterPage extends StatelessWidget {
                             counterText: '',
                             hintText: '请输入密码',
                             hintStyle: TextStyle(
-                                color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                           ),
                           style:
                           TextStyle(color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.w300),
@@ -230,7 +230,7 @@ class RegisterPage extends StatelessWidget {
                             counterText: '',
                             hintText: '请输入手机号',
                             hintStyle: TextStyle(
-                                color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                           ),
                           style:
                           TextStyle(color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
@@ -281,7 +281,7 @@ class RegisterPage extends StatelessWidget {
                             counterText: '',
                             hintText: '请输入验证码',
                             hintStyle: TextStyle(
-                                color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                           ),
                           style:
                           TextStyle(color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
@@ -427,7 +427,7 @@ class RegisterPage extends StatelessWidget {
                       child: Text(
                         "注册",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3,fontWeight: FontWeight.w200),
+                        style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3,fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),
@@ -545,7 +545,7 @@ class RegisterPage extends StatelessWidget {
                               color: HhColors.whiteColor,
                               fontSize: 16.sp*3,
                               decoration: TextDecoration.none,
-                              fontWeight: FontWeight.w200),
+                              fontWeight: FontWeight.w400),
                         ),
                       ),
                     ),

@@ -511,7 +511,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                                               : 14.sp * 3,
                                           fontWeight: logic.tabIndex.value == 0
                                               ? FontWeight.w500
-                                              : FontWeight.w200),
+                                              : FontWeight.w400),
                                     ),
                                   ],
                                 ),
@@ -574,7 +574,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                                               : 14.sp * 3,
                                           fontWeight: logic.tabIndex.value == 1
                                               ? FontWeight.w500
-                                              : FontWeight.w200),
+                                              : FontWeight.w400),
                                     ),
                                   ],
                                 ),
@@ -637,7 +637,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                                               : 14.sp * 3,
                                           fontWeight: logic.tabIndex.value == 2
                                               ? FontWeight.w500
-                                              : FontWeight.w200),
+                                              : FontWeight.w400),
                                     ),
                                   ],
                                 ),
@@ -702,7 +702,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                                               : 14.sp * 3,
                                           fontWeight: logic.tabIndex.value == 3
                                               ? FontWeight.w500
-                                              : FontWeight.w200),
+                                              : FontWeight.w400),
                                     ),
                                   ],
                                 ),

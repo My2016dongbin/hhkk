@@ -289,7 +289,7 @@ class YunWeiDetailController extends GetxController {
     HhLog.d("getPlayUrl result -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       try {
-        String url = /*RequestUtils.rtsp + */ "${result["data"]["appRelativePath"]}";
+        String url = 'http://117.132.5.139:18034/app-video${result["data"]["appRelativePath"]}';
         playTag.value = false;
         player.release();
         player = FijkPlayer();

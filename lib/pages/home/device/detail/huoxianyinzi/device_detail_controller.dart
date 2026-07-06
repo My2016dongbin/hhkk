@@ -426,7 +426,7 @@ class HXYZDeviceDetailController extends GetxController {
     HhLog.d("getPlayUrl1 result -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       try {
-        url = /*RequestUtils.rtsp + */ "${result["data"]["appRelativePath"]}";
+        url = 'http://117.132.5.139:18034/app-video${result["data"]["appRelativePath"]}';
         playLoadingTag.value = false;
         playTag.value = false;
         player.release();

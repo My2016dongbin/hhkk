@@ -81,7 +81,7 @@ class LaunchPage extends StatelessWidget {
                       child: Text(
                         "开始体验",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                        style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),

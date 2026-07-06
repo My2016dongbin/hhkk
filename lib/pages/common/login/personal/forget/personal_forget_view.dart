@@ -111,7 +111,7 @@ class PersonalForgetPage extends StatelessWidget {
                             counterText: '',
                             hintText:'手机号',
                             hintStyle: TextStyle(
-                                color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                           ),
                           style:
                           TextStyle(color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
@@ -172,7 +172,7 @@ class PersonalForgetPage extends StatelessWidget {
                       child: Text(
                         "获取验证码",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                        style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),

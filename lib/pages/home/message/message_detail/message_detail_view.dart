@@ -233,10 +233,10 @@ class MessageDetailPage extends StatelessWidget {
                                 return;
                               }
                               HhActionMenu.dismiss();
-                              CommonUtils().showPictureDialog(Get.context, url:"${CommonData.endpoint}${logic.fireInfo['alarmImageUrl']}");
+                              CommonUtils().showPictureDialog(Get.context, url:"${logic.fireInfo['alarmImageUrl']}".startsWith("http")?"${logic.fireInfo['alarmImageUrl']}":"${CommonData.endpoint}${logic.fireInfo['alarmImageUrl']}");
                             },
                             child: Image.network(
-                              "${CommonData.endpoint}${logic.fireInfo["alarmImageUrl"]}",
+                              "${logic.fireInfo['alarmImageUrl']}".startsWith("http")?"${logic.fireInfo['alarmImageUrl']}":"${CommonData.endpoint}${logic.fireInfo['alarmImageUrl']}",
                               width: 1.sw,
                               height: 0.45.sw,
                               fit: BoxFit.fill,
@@ -350,7 +350,7 @@ class MessageDetailPage extends StatelessWidget {
                                     child: Container(
                                       color:HhColors.trans,
                                       padding: EdgeInsets.fromLTRB(35.w*3, 10.w*3, 35.w*3, 10.w*3),
-                                      child: Text('真实', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                      child: Text('真实', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w400),),
                                     ),
                                   ),
                                   BouncingWidget(
@@ -363,7 +363,7 @@ class MessageDetailPage extends StatelessWidget {
                                     child: Container(
                                       color:HhColors.trans,
                                       padding: EdgeInsets.fromLTRB(35.w*3, 10.w*3, 35.w*3, 10.w*3),
-                                      child: Text('误报', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                      child: Text('误报', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w400),),
                                     ),
                                   )
                                 ],

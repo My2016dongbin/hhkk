@@ -113,7 +113,7 @@ class MessagePage extends StatelessWidget {
                                         child: Container(
                                             color: HhColors.trans,
                                             margin: EdgeInsets.fromLTRB(0, logic.tabIndex.value==0?0:10.w, 40.w, 0),
-                                            child: Text("报警",style: TextStyle(color: logic.tabIndex.value==0?HhColors.blackColor:HhColors.gray9TextColor,fontSize: logic.tabIndex.value==0?18.sp*3:14.sp*3,fontWeight: logic.tabIndex.value==0?FontWeight.bold:FontWeight.w200),))),
+                                            child: Text("报警",style: TextStyle(color: logic.tabIndex.value==0?HhColors.blackColor:HhColors.gray9TextColor,fontSize: logic.tabIndex.value==0?18.sp*3:14.sp*3,fontWeight: logic.tabIndex.value==0?FontWeight.bold:FontWeight.w400),))),
                                     logic.warnCount.value=="0"?const SizedBox():Align(
                                       alignment: Alignment.topRight,
                                       child: Container(
@@ -150,7 +150,7 @@ class MessagePage extends StatelessWidget {
                                         child: Container(
                                             color: HhColors.trans,
                                             margin: EdgeInsets.fromLTRB(0, logic.tabIndex.value==1?0:10.w, 40.w, 0),
-                                            child: Text("通知",style: TextStyle(color: logic.tabIndex.value==1?HhColors.blackColor:HhColors.gray9TextColor,fontSize: logic.tabIndex.value==1?18.sp*3:14.sp*3,fontWeight: logic.tabIndex.value==1?FontWeight.bold:FontWeight.w200),))),
+                                            child: Text("通知",style: TextStyle(color: logic.tabIndex.value==1?HhColors.blackColor:HhColors.gray9TextColor,fontSize: logic.tabIndex.value==1?18.sp*3:14.sp*3,fontWeight: logic.tabIndex.value==1?FontWeight.bold:FontWeight.w400),))),
                                     logic.noticeCount.value=="0"?const SizedBox():Align(
                                       alignment: Alignment.topRight,
                                       child: Container(
@@ -190,7 +190,7 @@ class MessagePage extends StatelessWidget {
                                         child: Container(
                                             color: HhColors.trans,
                                             margin: EdgeInsets.fromLTRB(0, logic.tabIndex.value==2?0:10.w, 40.w, 0),
-                                            child: Text("通话",style: TextStyle(color: logic.tabIndex.value==2?HhColors.blackColor:HhColors.gray9TextColor,fontSize: logic.tabIndex.value==2?18.sp*3:14.sp*3,fontWeight: logic.tabIndex.value==2?FontWeight.bold:FontWeight.w200),))),
+                                            child: Text("通话",style: TextStyle(color: logic.tabIndex.value==2?HhColors.blackColor:HhColors.gray9TextColor,fontSize: logic.tabIndex.value==2?18.sp*3:14.sp*3,fontWeight: logic.tabIndex.value==2?FontWeight.bold:FontWeight.w400),))),
                                     /*logic.noticeCount.value=="0"?const SizedBox():Align(
                                       alignment: Alignment.topRight,
                                       child: Container(
@@ -294,7 +294,7 @@ class MessagePage extends StatelessWidget {
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                Text('管理消息', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                                Text('管理消息', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w400),),
                                                 SizedBox(width: 20.w*3,),
                                                 Image.asset(
                                                   "assets/images/common/ic_setting.png",
@@ -319,7 +319,7 @@ class MessagePage extends StatelessWidget {
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                Text('报警设置', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                                Text('报警设置', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w400),),
                                                 SizedBox(width: 20.w*3,),
                                                 Image.asset(
                                                   "assets/images/common/icon_warn_setting.png",
@@ -775,10 +775,10 @@ class MessagePage extends StatelessWidget {
                                                 fit: BoxFit.fill,
                                               ):InkWell(
                                                 onTap: (){
-                                                  CommonUtils().showPictureDialog(context, url:"${CommonData.endpoint}${item['alarmImageUrl']}");
+                                                  CommonUtils().showPictureDialog(context, url:"${item['alarmImageUrl']}".startsWith("http")?"${item['alarmImageUrl']}":"${CommonData.endpoint}${item['alarmImageUrl']}");
                                                   logic.readOneLeft("${item["id"]}");
                                                 },
-                                                child: Image.network("${CommonData.endpoint}${item['alarmImageUrl']}",errorBuilder: (a,b,c){
+                                                child: Image.network("${item['alarmImageUrl']}".startsWith("http")?"${item['alarmImageUrl']}":"${CommonData.endpoint}${item['alarmImageUrl']}",errorBuilder: (a,b,c){
                                                   return Image.asset(
                                                     "assets/images/common/ic_message_no.png",
                                                     width: 113.w*3,
@@ -1598,7 +1598,7 @@ class MessagePage extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Container(constraints: BoxConstraints(maxWidth: 0.9.sw),child: Text(CommonUtils().parseNameCount('${type["name"]}', 5),style: TextStyle(color: logic.spaceSelectIndex.value == i?HhColors.mainBlueColor:HhColors.blackColor,fontSize: 14.sp*3,overflow: TextOverflow.ellipsis),)),
+                Expanded(child: Text(CommonUtils().parseNull('${type["name"]}', ""),style: TextStyle(color: logic.spaceSelectIndex.value == i?HhColors.mainBlueColor:HhColors.blackColor,fontSize: 14.sp*3),)),
                 SizedBox(width: 10.w,),
                 logic.spaceSelectIndex.value == i?Image.asset(
                   "assets/images/common/icon_yes.png",
@@ -1630,7 +1630,7 @@ class MessagePage extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('${type["alarmName"]}',style: TextStyle(color: logic.typeSelectIndex.value == i?HhColors.mainBlueColor:HhColors.blackColor,fontSize: 14.sp*3),),
+                Expanded(child: Text('${type["alarmName"]}',style: TextStyle(color: logic.typeSelectIndex.value == i?HhColors.mainBlueColor:HhColors.blackColor,fontSize: 14.sp*3),)),
                 SizedBox(width: 10.w,),
                 logic.typeSelectIndex.value == i?Image.asset(
                   "assets/images/common/icon_yes.png",

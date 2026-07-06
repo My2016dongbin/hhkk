@@ -20,7 +20,7 @@ class CommonData{
   static String ?tenantDef = personal?'1':null;
   static String ?deviceNo;
   static String ?sessionId;
-  static String ?endpoint = "http://117.132.5.139:18034/admin-file";
+  static String ?endpoint = "http://36.110.47.66:18034/admin-file";
   static String html = "assets/file/privacy.html";
   static String info = "";
   static String loadingInfo = "正在加载，请稍后…";
@@ -30,13 +30,14 @@ class CommonData{
   static List<dynamic> checkedChannels = [{},{},{},{},{},{},{},{},];
   static String videoSearch = "";
   // static String webSocketUrl = "ws://192.168.1.2:6003/";
-  static String webSocketUrl = "ws://117.132.5.139:18034/websocket/";//"ws://192.168.1.2:18034/websocket/";
-  static const String mqttIP = 'ws://117.132.5.139:18034/wsUrl/mqtt';//192.168.1.66
+  static String webSocketUrl = /*"ws://36.110.47.66:18034/";*/"ws://117.132.5.139:18030/";
+  static const String mqttIP = 'ws://36.110.47.66:18034/wsUrl/mqtt';//192.168.1.66
   static const int mqttPORT = 18034;//11889
   static String mqttAccount = "admin";
   static String mqttPassword = "QIyG0!bhfS";
   static String chatTopic = "/device/pole/chat/";//$id
-  static String alarmTopic = "/deviceAlarm/kakouApp/";//$id
+  // static String alarmTopic = "/deviceAlarm/kakouApp/";//$id
+  static String alarmTopic = "/deviceAlarm/";//$id
 
 
   ///高德地图key

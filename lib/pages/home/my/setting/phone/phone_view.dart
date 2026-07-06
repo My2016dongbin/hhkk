@@ -117,7 +117,7 @@ class PhonePage extends StatelessWidget {
                                   counterText: '',
                                   hintText: '请输入新的手机号码',
                                   hintStyle: TextStyle(
-                                      color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                      color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                                 ),
                                 style:
                                 TextStyle(color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
@@ -168,7 +168,7 @@ class PhonePage extends StatelessWidget {
                                   counterText: '',
                                   hintText: '请输入验证码',
                                   hintStyle: TextStyle(
-                                      color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                      color: HhColors.grayCCTextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                                 ),
                                 style:
                                 TextStyle(color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
@@ -265,7 +265,7 @@ class PhonePage extends StatelessWidget {
                       child: Text(
                         "保存",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                        style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),

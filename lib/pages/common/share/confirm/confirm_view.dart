@@ -110,7 +110,7 @@ class ConfirmPage extends StatelessWidget {
                           style: TextStyle(
                               color: HhColors.textBlackColor,
                               fontSize: 28.sp,
-                              fontWeight: FontWeight.w200),
+                              fontWeight: FontWeight.w400),
                         ),
                       ),
                       Container(
@@ -165,7 +165,7 @@ class ConfirmPage extends StatelessWidget {
                           style: TextStyle(
                               color: HhColors.textBlackColor,
                               fontSize: 28.sp,
-                              fontWeight: FontWeight.w200),
+                              fontWeight: FontWeight.w400),
                         ),
                       ),
                     ],
@@ -203,7 +203,7 @@ class ConfirmPage extends StatelessWidget {
                   style: TextStyle(
                     color: HhColors.gray4TextColor,
                     fontSize: 30.sp,
-                    fontWeight: FontWeight.w200,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
                 SizedBox(

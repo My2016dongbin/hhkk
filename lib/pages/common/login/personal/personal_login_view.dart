@@ -110,7 +110,7 @@ class PersonalLoginPage extends StatelessWidget {
                                   counterText: '',
                                   hintText: logic.pageStatus.value?'手机号':'用户名/手机号',
                                   hintStyle: TextStyle(
-                                      color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                      color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                                 ),
                                 style:
                                 TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
@@ -165,7 +165,7 @@ class PersonalLoginPage extends StatelessWidget {
                                   counterText: '',
                                   hintText: '密码',
                                   hintStyle: TextStyle(
-                                      color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                      color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                                 ),
                                 style:
                                 TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w300),
@@ -304,7 +304,7 @@ class PersonalLoginPage extends StatelessWidget {
                             child: Text(
                               logic.pageStatus.value?"获取验证码":"登录",
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                              style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                             ),
                           ),
                         ),
@@ -544,7 +544,7 @@ class PersonalLoginPage extends StatelessWidget {
                               color: HhColors.whiteColor,
                               fontSize: 16.sp*3,
                               decoration: TextDecoration.none,
-                              fontWeight: FontWeight.w200),
+                              fontWeight: FontWeight.w400),
                         ),
                       ),
                     ),

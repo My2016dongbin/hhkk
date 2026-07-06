@@ -172,7 +172,7 @@ class ShareManagePage extends StatelessWidget {
                                             style: TextStyle(
                                                 color: HhColors.mainRedColor,
                                                 fontSize: 14.sp*3,
-                                                fontWeight: FontWeight.w200),
+                                                fontWeight: FontWeight.w400),
                                           ),
                                         ),
                                       )
@@ -201,7 +201,7 @@ class ShareManagePage extends StatelessWidget {
                                             style: TextStyle(
                                                 color: HhColors.mainBlueColor,
                                                 fontSize: 14.sp*3,
-                                                fontWeight: FontWeight.w200),
+                                                fontWeight: FontWeight.w400),
                                           ),
                                         ),
                                       )
@@ -215,7 +215,7 @@ class ShareManagePage extends StatelessWidget {
                                           style: TextStyle(
                                               color: HhColors.grayBBTextColor,
                                               fontSize: 14.sp*3,
-                                              fontWeight: FontWeight.w200),
+                                              fontWeight: FontWeight.w400),
                                         ),
                                       )
                                     : const SizedBox(),
@@ -262,7 +262,7 @@ class ShareManagePage extends StatelessWidget {
                     fontSize: logic.tabIndex.value == i ? 18.sp*3 : 15.sp*3,
                     fontWeight: logic.tabIndex.value == i
                         ? FontWeight.bold
-                        : FontWeight.w200),
+                        : FontWeight.w400),
               ),
             ),
             SizedBox(

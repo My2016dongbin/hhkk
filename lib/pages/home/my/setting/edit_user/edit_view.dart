@@ -115,7 +115,7 @@ class EditPage extends StatelessWidget {
                             counterText: '',
                             hintText: '请输入修改内容',
                             hintStyle: TextStyle(
-                                color: HhColors.grayCCTextColor, fontSize: 16.sp*3,fontWeight: FontWeight.w200),
+                                color: HhColors.grayCCTextColor, fontSize: 16.sp*3,fontWeight: FontWeight.w400),
                           ),
                           style:
                           TextStyle(color: HhColors.textBlackColor, fontSize: 16.sp*3,fontWeight: FontWeight.bold),
@@ -172,7 +172,7 @@ class EditPage extends StatelessWidget {
                       child: Text(
                         "保存",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3,fontWeight: FontWeight.w200),
+                        style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3,fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),

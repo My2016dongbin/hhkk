@@ -165,7 +165,7 @@ class LocationPage extends StatelessWidget {
                       child: Text(
                         "确认选择",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                        style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),

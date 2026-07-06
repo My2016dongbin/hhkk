@@ -26,8 +26,8 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 
-def flutterVersionCode = "40"
-def flutterVersionName = "1.0.30.260529"
+def flutterVersionCode = "1"
+def flutterVersionName = "1.0.0"
 def isReleasePackagingTask = gradle.startParameter.taskNames.any { taskName ->
     def lowerName = taskName.toLowerCase()
     return lowerName.contains("release") || lowerName.contains("bundle")
@@ -98,7 +98,7 @@ android {
             manifestPlaceholders = [
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "haohaiVersion",
-                    APP_NAME: "浩海卡口",
+                    APP_NAME: "京西万联",
                     AUTHORITIES: "com.ehaohai.kk.fileprovider",
                     XG_ACCESS_ID : "1500040929",///个人版
                     XG_ACCESS_KEY: "A2UCA4MQX4ST",///个人版
@@ -112,7 +112,7 @@ android {
             manifestPlaceholders = [
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "businessVersion",
-                    APP_NAME: "浩海卡口",
+                    APP_NAME: "京西万联",
                     AUTHORITIES: "com.ehaohai.kk.fileprovider",
                     XG_ACCESS_ID : "1500041692",///企业版
                     XG_ACCESS_KEY: "AAST7H0KI7QE",///企业版
@@ -125,7 +125,7 @@ android {
             manifestPlaceholders = [
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "betaVersion",
-                    APP_NAME: "浩海卡口测试版${defaultConfig.versionName}",
+                    APP_NAME: "京西万联测试版${defaultConfig.versionName}",
                     AUTHORITIES: "com.ehaohai.kk.fileprovider",
                     XG_ACCESS_ID : "1500040929",///个人版
                     XG_ACCESS_KEY: "A2UCA4MQX4ST",///个人版
@@ -138,7 +138,7 @@ android {
             manifestPlaceholders = [
                     APP_ICON: "@drawable/logo",//app图标
                     CHANNEL_NAME: "betaBusinessVersion",
-                    APP_NAME: "浩海卡口企业测试版${defaultConfig.versionName}",
+                    APP_NAME: "京西万联企业测试版${defaultConfig.versionName}",
                     AUTHORITIES: "com.ehaohai.kk.fileprovider",
                     XG_ACCESS_ID : "1500041692",///企业版
                     XG_ACCESS_KEY: "AAST7H0KI7QE",///企业版
