@@ -47,6 +47,8 @@ class CommonData{
   static const String productKeyFireRiskFactor = "2QWASjR4T7aetr7G";
   ///智慧立杆卡口
   static const String productKeyFireSmartPole= "aSkWAXGKPh4zEcjE";
+  ///二期智慧立杆卡口
+  static const String productKeyFireSmartPoleSecond = "5Yk5Jcf5NmzGkCxW";
 
 
   static void clear(){

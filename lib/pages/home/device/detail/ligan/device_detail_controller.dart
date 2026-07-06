@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:draggable_widget/draggable_widget.dart';
@@ -74,6 +75,7 @@ class LiGanDeviceDetailController extends GetxController {
   late int shareMark;
   late String deviceId;
   late String channelNumber;
+  late String deviceType = '';
   late String commandLast;
   late String command = "";
   late Rx<bool> fixLeft = false.obs;
@@ -86,6 +88,8 @@ class LiGanDeviceDetailController extends GetxController {
   late Rx<bool> fix = false.obs;
   FijkPlayer player = FijkPlayer();
   late WebSocketManager manager;
+  bool get isSecondSmartPole =>
+      deviceType == CommonData.productKeyFireSmartPoleSecond;
   late dynamic energyModel = {};
   late dynamic soilModel = {};
 
@@ -133,9 +137,10 @@ class LiGanDeviceDetailController extends GetxController {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     dragController = DragController();
     Future.delayed(const Duration(milliseconds: 500), () {
-      getDeviceStream();
-      getDeviceInfo();
-      getDeviceHistory();
+      getDeviceInfo().then((_) {
+        getDeviceStream();
+        getDeviceHistory();
+      });
       getWarnType();
       getDataInfo();
       getLocationByDeviceNo();
@@ -159,9 +164,9 @@ class LiGanDeviceDetailController extends GetxController {
       dy.value = event.dy;
     });
     deviceSubscription =
-        EventBusUtil.getInstance().on<DeviceInfo>().listen((event) {
+        EventBusUtil.getInstance().on<DeviceInfo>().listen((event) async {
+      await getDeviceInfo();
       getDeviceStream();
-      getDeviceInfo();
       getDeviceHistory();
     });
     recordSubscription =
@@ -660,6 +665,24 @@ class LiGanDeviceDetailController extends GetxController {
   }
 
   Future<void> getDeviceStream() async {
+    if (deviceType.isEmpty) {
+      await getDeviceInfo();
+    }
+    if (isSecondSmartPole) {
+      liveList = [
+        {
+          "channelName": "实时视频",
+          "deviceId": id,
+          "channelId": "1",
+        }
+      ];
+      liveStatus.value = false;
+      liveStatus.value = true;
+      deviceId = id;
+      channelNumber = "1";
+      await getPlayUrl(deviceId, channelNumber);
+      return;
+    }
     Map<String, dynamic> map = {};
     map['id'] = id;
     var result = await HhHttp()
@@ -691,7 +714,11 @@ class LiGanDeviceDetailController extends GetxController {
     }
   }
 
-  Future<void> getPlayUrl(String ids, String number,{bool? click}) async {
+  Future<void> getPlayUrl(String ids, String number, {bool? click}) async {
+    if (isSecondSmartPole) {
+      await getSecondPlayUrl(click: click);
+      return;
+    }
     dynamic data = {
       'channelId': number,
     };
@@ -737,68 +764,9 @@ class LiGanDeviceDetailController extends GetxController {
           ///其他设备
           hikPlayerTag.value = false;
           hikPlayParams.value = null;
-          url = 'http://117.132.5.139:18034/app-video${result["data"]["appRelativePath"]}';
-          playLoadingTag.value = false;
-          playTag.value = false;
-          player.release();
-          player = FijkPlayer();
-          player.setDataSource(url, autoPlay: true);
-          player.setOption(FijkOption.playerCategory, "mediacodec-hevc", 1);
-          player.setOption(FijkOption.playerCategory, "framedrop", 1);
-          player.setOption(FijkOption.playerCategory, "start-on-prepared", 0);
-          player.setOption(FijkOption.playerCategory, "opensles", 0);
-          player.setOption(FijkOption.playerCategory, "mediacodec", 0);
-          player.setOption(FijkOption.playerCategory, "start-on-prepared", 1);
-          player.setOption(FijkOption.playerCategory, "packet-buffering", 0);
-          player.setOption(
-              FijkOption.playerCategory, "mediacodec-auto-rotate", 0);
-          player.setOption(FijkOption.playerCategory,
-              "mediacodec-handle-resolution-change", 0);
-          player.setOption(FijkOption.playerCategory, "min-frames", 2);
-          player.setOption(FijkOption.playerCategory, "max_cached_duration", 3);
-          player.setOption(FijkOption.playerCategory, "infbuf", 1);
-          player.setOption(FijkOption.playerCategory, "reconnect", 5);
-          player.setOption(FijkOption.playerCategory, "framedrop", 5);
-          player.setOption(FijkOption.formatCategory, "rtsp_transport", 'tcp');
-          player.setOption(
-              FijkOption.formatCategory, "http-detect-range-support", 0);
-          player.setOption(FijkOption.formatCategory, "analyzeduration", 1);
-          player.setOption(
-              FijkOption.formatCategory, "rtsp_flags", "prefer_tcp");
-          player.setOption(FijkOption.formatCategory, "buffer_size", 1024);
-          player.setOption(FijkOption.formatCategory, "max-fps", 0);
-          player.setOption(FijkOption.formatCategory, "analyzemaxduration", 50);
-          player.setOption(FijkOption.formatCategory, "dns_cache_clear", 1);
-          player.setOption(FijkOption.formatCategory, "flush_packets", 1);
-          player.setOption(FijkOption.formatCategory, "max-buffer-size", 0);
-          player.setOption(FijkOption.formatCategory, "fflags", "nobuffer");
-          player.setOption(FijkOption.formatCategory, "probesize", 200);
-          player.setOption(
-              FijkOption.formatCategory, "http-detect-range-support", 0);
-          player.setOption(FijkOption.codecCategory, "skip_loop_filter", 48);
-          player.setOption(FijkOption.codecCategory, "skip_frame", 0);
-          // 添加播放器状态变化监听
-          player.addListener(() {
-            if (player.state == FijkState.started) {
-              playErrorTag.value = false;
-              // 播放成功开始
-              HhLog.d('Playback started successfully ${player.state}');
-              //截图并保存
-              scheduleCatchImageTasks(useHikPlayer: false);
-            }
-            if (player.state == FijkState.error) {
-              videoError();
-              player.reset();
-            }
-          });
-          Future.delayed(const Duration(seconds: 1), () {
-            playTag.value = true;
-            if (click == true) {
-              ///解除设备离线情况下通道播放限制
-              offlineTag.value = false;
-            }
-          });
-
+          url =
+              'http://117.132.5.139:18034/app-video${result["data"]["appRelativePath"]}';
+          startFijkPlayUrl(url, click: click);
           EventBusUtil.getInstance().fire(HhLoading(show: false));
         }
       } catch (e) {
@@ -812,6 +780,100 @@ class LiGanDeviceDetailController extends GetxController {
           .fire(HhToast(title: CommonUtils().msgString(result["message"])));
     }
     EventBusUtil.getInstance().fire(HhLoading(show: false));
+  }
+
+  String parseDeviceNo(String deviceNo) {
+    if (deviceNo.length <= 5) return deviceNo;
+    return deviceNo.substring(0, deviceNo.length - 5);
+  }
+
+  Future<void> getSecondPlayUrl({bool? click}) async {
+    dynamic params = {
+      'deviceNo': parseDeviceNo(deviceNo),
+      'dwStreamType': 1,
+    };
+    var result = await HhHttp().request(RequestUtils.deviceSecondPlayUrl,
+        method: DioMethod.post, params: params);
+    HhLog.d("getSecondPlayUrl params -- $params");
+    HhLog.d("getSecondPlayUrl result -- $result");
+    if (result["code"] == 0 && result["data"] != null) {
+      try {
+        hikPlayerTag.value = false;
+        hikPlayParams.value = null;
+        url = "${result["data"]["rtspStreamPath"] ?? ''}";
+        if (url.isEmpty) {
+          throw Exception("二期设备视频流为空");
+        }
+        startFijkPlayUrl(url, click: click);
+      } catch (e) {
+        HhLog.e(e.toString());
+        videoError();
+      }
+    } else {
+      EventBusUtil.getInstance()
+          .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+      videoError();
+    }
+    EventBusUtil.getInstance().fire(HhLoading(show: false));
+  }
+
+  void startFijkPlayUrl(String playUrl, {bool? click}) {
+    playLoadingTag.value = false;
+    playTag.value = false;
+    player.release();
+    player = FijkPlayer();
+    player.setDataSource(playUrl, autoPlay: true);
+    player.setOption(FijkOption.playerCategory, "mediacodec-hevc", 1);
+    player.setOption(FijkOption.playerCategory, "framedrop", 1);
+    player.setOption(FijkOption.playerCategory, "start-on-prepared", 0);
+    player.setOption(FijkOption.playerCategory, "opensles", 0);
+    player.setOption(FijkOption.playerCategory, "mediacodec", 0);
+    player.setOption(FijkOption.playerCategory, "start-on-prepared", 1);
+    player.setOption(FijkOption.playerCategory, "packet-buffering", 0);
+    player.setOption(FijkOption.playerCategory, "mediacodec-auto-rotate", 0);
+    player.setOption(
+        FijkOption.playerCategory, "mediacodec-handle-resolution-change", 0);
+    player.setOption(FijkOption.playerCategory, "min-frames", 2);
+    player.setOption(FijkOption.playerCategory, "max_cached_duration", 3);
+    player.setOption(FijkOption.playerCategory, "infbuf", 1);
+    player.setOption(FijkOption.playerCategory, "reconnect", 5);
+    player.setOption(FijkOption.playerCategory, "framedrop", 5);
+    player.setOption(FijkOption.formatCategory, "rtsp_transport", 'tcp');
+    player.setOption(FijkOption.formatCategory, "http-detect-range-support", 0);
+    player.setOption(FijkOption.formatCategory, "analyzeduration", 1);
+    player.setOption(FijkOption.formatCategory, "rtsp_flags", "prefer_tcp");
+    player.setOption(FijkOption.formatCategory, "buffer_size", 1024);
+    player.setOption(FijkOption.formatCategory, "max-fps", 0);
+    player.setOption(FijkOption.formatCategory, "analyzemaxduration", 50);
+    player.setOption(FijkOption.formatCategory, "dns_cache_clear", 1);
+    player.setOption(FijkOption.formatCategory, "flush_packets", 1);
+    player.setOption(FijkOption.formatCategory, "max-buffer-size", 0);
+    player.setOption(FijkOption.formatCategory, "fflags", "nobuffer");
+    player.setOption(FijkOption.formatCategory, "probesize", 200);
+    player.setOption(FijkOption.formatCategory, "http-detect-range-support", 0);
+    player.setOption(FijkOption.codecCategory, "skip_loop_filter", 48);
+    player.setOption(FijkOption.codecCategory, "skip_frame", 0);
+    // 添加播放器状态变化监听
+    player.addListener(() {
+      if (player.state == FijkState.started) {
+        playErrorTag.value = false;
+        // 播放成功开始
+        HhLog.d('Playback started successfully ${player.state}');
+        //截图并保存
+        scheduleCatchImageTasks(useHikPlayer: false);
+      }
+      if (player.state == FijkState.error) {
+        videoError();
+        player.reset();
+      }
+    });
+    Future.delayed(const Duration(seconds: 1), () {
+      playTag.value = true;
+      if (click == true) {
+        ///解除设备离线情况下通道播放限制
+        offlineTag.value = false;
+      }
+    });
   }
 
   void onHikMoveStart(QcHikPlayerMoveDirection direction) {
@@ -851,9 +913,10 @@ class LiGanDeviceDetailController extends GetxController {
     HhLog.d("getDeviceInfo -- $result");
     if (result["code"] == 0 && result["data"] != null) {
       item = result["data"];
+      deviceType = "${result["data"]["deviceType"] ?? ''}";
       name.value = CommonUtils().parseNull(result["data"]["name"] ?? '', "");
       productName.value = result["data"]["productName"] ?? '';
-      functionItem.value = item['functionItem'];
+      functionItem.value = "${item['functionItem'] ?? ''}";
       offlineTag.value =
           ("${item["status"]}" == "false" || "${item["status"]}" == "0");
     } else {
@@ -1033,6 +1096,13 @@ class LiGanDeviceDetailController extends GetxController {
   }
 
   Future<void> controlPost(int action) async {
+    if (deviceType.isEmpty) {
+      await getDeviceInfo();
+    }
+    if (isSecondSmartPole) {
+      await secondControlPost(action);
+      return;
+    }
     dynamic data = {
       "action": action, //0 开始  1 结束
       "channelNumber": channelNumber,
@@ -1050,6 +1120,82 @@ class LiGanDeviceDetailController extends GetxController {
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(tenantResult["data"][0]["msg"])));
     }*/
+  }
+
+  Future<void> secondControlPost(int action) async {
+    final dynamic controlCommand = buildSecondControlCommand(action);
+    if (controlCommand == null) {
+      return;
+    }
+    dynamic params = {
+      "deviceNo": parseDeviceNo(deviceNo),
+      "command": jsonEncode(controlCommand),
+    };
+    var tenantResult = await HhHttp().request(RequestUtils.deviceSecondControl,
+        method: DioMethod.post, params: params);
+    HhLog.d("secondControlPost params -- $params");
+    HhLog.d("secondControlPost result -- $tenantResult");
+  }
+
+  dynamic buildSecondControlCommand(int action) {
+    if (action != 0) {
+      return {
+        "pan": 0,
+        "tilt": 0,
+      };
+    }
+    switch (command) {
+      case "UP":
+        return {
+          "pan": 0,
+          "tilt": 15,
+        };
+      case "RIGHT_UP":
+        return {
+          "pan": 15,
+          "tilt": 15,
+        };
+      case "RIGHT":
+        return {
+          "pan": 15,
+          "tilt": 0,
+        };
+      case "RIGHT_DOWN":
+        return {
+          "pan": 15,
+          "tilt": -15,
+        };
+      case "DOWN":
+        return {
+          "pan": 0,
+          "tilt": -15,
+        };
+      case "LEFT_DOWN":
+        return {
+          "pan": -15,
+          "tilt": -15,
+        };
+      case "LEFT":
+        return {
+          "pan": -15,
+          "tilt": 0,
+        };
+      case "LEFT_UP":
+        return {
+          "pan": -15,
+          "tilt": 15,
+        };
+      case "ZOOM_OUT":
+        return {
+          "zoom": -15,
+        };
+      case "ZOOM_IN":
+        return {
+          "zoom": 15,
+        };
+      default:
+        return null;
+    }
   }
 
   Future<void> deleteDevice(item) async {
