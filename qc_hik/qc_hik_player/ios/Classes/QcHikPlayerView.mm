@@ -154,6 +154,12 @@ static NSString *sCurrentAppKey = nil;
           errorCode:0];
     return;
   }
+  if ([args isKindOfClass:[NSDictionary class]]) {
+    NSNumber *soundEnabled = ((NSDictionary *)args)[@"soundEnabled"];
+    if ([soundEnabled isKindOfClass:[NSNumber class]]) {
+      self.soundEnabled = [soundEnabled boolValue];
+    }
+  }
   if (![self.playParams isValid]) {
     [self emitState:@"error"
             message:kQcHikPlayerMissingParamsText

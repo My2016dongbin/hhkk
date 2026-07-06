@@ -118,6 +118,8 @@ public class QcHikPlayerView implements PlatformView, MethodChannel.MethodCallHa
             return;
         }
         BusinessPlayParams params = BusinessPlayParams.fromMap((Map<?, ?>) args);
+        Object soundValue = ((Map<?, ?>) args).get("soundEnabled");
+        soundEnabled = !(soundValue instanceof Boolean) || (Boolean) soundValue;
         if (!params.isValid()) {
             sendState("error", "播放参数缺失", 0);
             return;
@@ -219,6 +221,7 @@ public class QcHikPlayerView implements PlatformView, MethodChannel.MethodCallHa
     private void handlePlayerMessage(Message msg) {
         switch (msg.what) {
             case EZConstants.EZRealPlayConstants.MSG_REALPLAY_PLAY_SUCCESS:
+                setSoundEnabled(soundEnabled);
                 sendState("playing", "直播播放成功", 0);
                 break;
             case EZConstants.EZRealPlayConstants.MSG_REALPLAY_PLAY_FAIL:

@@ -47,6 +47,7 @@ class LiGanDeviceDetailController extends GetxController {
   final Rx<bool> recordTag2 = false.obs;
   final Rx<bool> videoTag = false.obs;
   final Rx<bool> voiceTag = true.obs;
+  final Rx<bool> skeletonStatus = true.obs;
   final Rx<int> liveIndex = 0.obs;
   final Rx<double> scale = 1.0.obs;
   final Rx<double> dx = 0.0.obs;
@@ -131,18 +132,22 @@ class LiGanDeviceDetailController extends GetxController {
   final RxInt hikPlayerSeed = 0.obs;
   final QcHikPlayerController hikPlayerController = QcHikPlayerController();
   String? hikRecordFilePath;
+  bool pageClosing = false;
+  bool chatManagerReady = false;
 
   @override
   void onInit() {
-    EventBusUtil.getInstance().fire(HhLoading(show: true));
+    skeletonStatus.value = true;
     dragController = DragController();
     Future.delayed(const Duration(milliseconds: 500), () {
       getDeviceInfo().then((_) {
         getDeviceStream();
         getDeviceHistory();
+        if (!isSecondSmartPole) {
+          getDataInfo();
+        }
       });
       getWarnType();
-      getDataInfo();
       getLocationByDeviceNo();
       getNowWeatherByDeviceNo();
       get7daysWeatherByDeviceNo();
@@ -189,26 +194,73 @@ class LiGanDeviceDetailController extends GetxController {
   @override
   void onClose() {
     HhLog.d("onClose()");
+    pageClosing = true;
     moveSubscription?.cancel();
     scaleSubscription?.cancel();
     deviceSubscription?.cancel();
     recordSubscription?.cancel();
     chatCloseSubscription?.cancel();
-    player.release();
-    try {
-      manager.dispose();
-    } catch (e) {
-      //
-    }
+    closeTalkOnPageClose();
+    releaseVideoPlayerOnPageClose();
+    super.onClose();
+  }
+
+  void releaseVideoPlayerOnPageClose() {
     try {
       if (videoTag.value ||
           (hikRecordFilePath != null && hikRecordFilePath!.isNotEmpty)) {
         stopRecordFFMPEG();
       }
     } catch (e) {
-      //
+      HhLog.e("releaseVideoPlayerOnPageClose stopRecord $e");
     }
-    super.onClose();
+    try {
+      player.release();
+    } catch (e) {
+      HhLog.e("releaseVideoPlayerOnPageClose fijk $e");
+    }
+    try {
+      hikPlayerController.disposePlayer();
+    } catch (e) {
+      HhLog.e("releaseVideoPlayerOnPageClose hik $e");
+    }
+    hikPlayerTag.value = false;
+    hikPlayParams.value = null;
+    playTag.value = false;
+    videoTag.value = false;
+    url = "";
+  }
+
+  void closeTalkOnPageClose() {
+    final sessionId = CommonData.sessionId ?? '';
+    if (!recordTag.value && !recordTag2.value && !chatManagerReady) {
+      return;
+    }
+    try {
+      chatClosePost(showToast: false);
+    } catch (e) {
+      HhLog.e("closeTalkOnPageClose post $e");
+    }
+    try {
+      if (chatManagerReady && sessionId.isNotEmpty) {
+        dynamic data = {"CallType": "Close", "SessionId": sessionId};
+        manager.sendMessage(data);
+      }
+    } catch (e) {
+      HhLog.e("closeTalkOnPageClose send $e");
+    }
+    try {
+      if (chatManagerReady) {
+        manager.stopRecording();
+        manager.disconnect();
+      }
+    } catch (e) {
+      HhLog.e("closeTalkOnPageClose manager $e");
+    }
+    chatManagerReady = false;
+    recordTag.value = false;
+    recordTag2.value = false;
+    CommonData.sessionId = null;
   }
 
   saveImageToGallery() async {
@@ -294,7 +346,7 @@ class LiGanDeviceDetailController extends GetxController {
 
   void scheduleCatchImageTasks({required bool useHikPlayer}) {
     Future.delayed(const Duration(milliseconds: 3000), () async {
-      if (!Get.isRegistered<LiGanDeviceDetailController>()) {
+      if (pageClosing || !Get.isRegistered<LiGanDeviceDetailController>()) {
         return;
       }
       if (useHikPlayer) {
@@ -304,7 +356,7 @@ class LiGanDeviceDetailController extends GetxController {
       }
     });
     Future.delayed(const Duration(milliseconds: 10000), () async {
-      if (!Get.isRegistered<LiGanDeviceDetailController>()) {
+      if (pageClosing || !Get.isRegistered<LiGanDeviceDetailController>()) {
         return;
       }
       if (useHikPlayer) {
@@ -822,7 +874,9 @@ class LiGanDeviceDetailController extends GetxController {
     playTag.value = false;
     player.release();
     player = FijkPlayer();
+    player.setVolume(0);
     player.setDataSource(playUrl, autoPlay: true);
+    player.setVolume(0);
     player.setOption(FijkOption.playerCategory, "mediacodec-hevc", 1);
     player.setOption(FijkOption.playerCategory, "framedrop", 1);
     player.setOption(FijkOption.playerCategory, "start-on-prepared", 0);
@@ -919,13 +973,21 @@ class LiGanDeviceDetailController extends GetxController {
       functionItem.value = "${item['functionItem'] ?? ''}";
       offlineTag.value =
           ("${item["status"]}" == "false" || "${item["status"]}" == "0");
+      skeletonStatus.value = false;
     } else {
+      skeletonStatus.value = false;
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
     }
   }
 
   Future<void> getDataInfo() async {
+    if (deviceType.isEmpty) {
+      await getDeviceInfo();
+    }
+    if (isSecondSmartPole) {
+      return;
+    }
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     Map<String, dynamic> map = {};
     map['deviceNo'] = deviceNo;
@@ -946,6 +1008,10 @@ class LiGanDeviceDetailController extends GetxController {
   }
 
   Future<void> getDataPage({dynamic status}) async {
+    if (isSecondSmartPole) {
+      return;
+    }
+
     ///太阳能信息数据
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     Map<String, dynamic> map = {};
@@ -1066,20 +1132,34 @@ class LiGanDeviceDetailController extends GetxController {
     manager =
         // WebSocketManager('${CommonData.webSocketUrl}$nickname', '');
         WebSocketManager('${CommonData.webSocketUrl}$nickname', '');
+    chatManagerReady = true;
     manager.sendMessage({"CallType": "Active", "Dest": deviceNo});
     CommonData.deviceNo = deviceNo;
   }
 
-  void chatClose() {
-    chatClosePost();
-    dynamic o = {"CallType": "Close", "SessionId": CommonData.sessionId};
-    // manager.sendMessage(jsonEncode(o));
-    manager.sendMessage(o);
-    manager.disconnect();
-    manager = WebSocketManager('', '');
+  void chatClose({bool showToast = true}) {
+    chatClosePost(showToast: showToast);
+    try {
+      dynamic o = {"CallType": "Close", "SessionId": CommonData.sessionId};
+      // manager.sendMessage(jsonEncode(o));
+      manager.sendMessage(o);
+    } catch (e) {
+      HhLog.e("chatClose send $e");
+    }
+    try {
+      if (chatManagerReady) {
+        manager.disconnect();
+      }
+    } catch (e) {
+      HhLog.e("chatClose manager $e");
+    }
+    chatManagerReady = false;
+    recordTag.value = false;
+    recordTag2.value = false;
+    CommonData.sessionId = null;
   }
 
-  Future<void> chatClosePost() async {
+  Future<void> chatClosePost({bool showToast = true}) async {
     var tenantResult = await HhHttp()
         .request(RequestUtils.chatCreate, method: DioMethod.post, data: {
       "deviceNo": deviceNo,
@@ -1088,10 +1168,14 @@ class LiGanDeviceDetailController extends GetxController {
     });
     HhLog.d("chatClose socket -- $tenantResult");
     if (tenantResult["code"] == 0 && tenantResult["data"] != null) {
-      EventBusUtil.getInstance().fire(HhToast(title: '对讲已结束'));
+      if (showToast) {
+        EventBusUtil.getInstance().fire(HhToast(title: '对讲已结束'));
+      }
     } else {
-      EventBusUtil.getInstance()
-          .fire(HhToast(title: CommonUtils().msgString(tenantResult["msg"])));
+      if (showToast) {
+        EventBusUtil.getInstance()
+            .fire(HhToast(title: CommonUtils().msgString(tenantResult["msg"])));
+      }
     }
   }
 

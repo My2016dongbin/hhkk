@@ -140,6 +140,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                                               logic.hikPlayerSeed.value),
                                           params: logic.hikPlayParams.value!,
                                           controller: logic.hikPlayerController,
+                                          soundEnabled: false,
                                           onPlaySuccess: logic.onHikPlaySuccess,
                                           onMoveStart: logic.onHikMoveStart,
                                           onMoveEnd: logic.onHikMoveEnd,
@@ -471,7 +472,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                   child: Row(
                     children: [
                       SizedBox(
-                        width: 0.3.sw,
+                        width: logic.isSecondSmartPole ? 0.333.sw : 0.3.sw,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -533,71 +534,75 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(
-                        width: 0.3.sw,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            HhTap(
-                              overlayColor: Colors.transparent,
-                              onTapUp: () {
-                                logic.tabIndex.value = 1;
-                              },
-                              child: Container(
-                                height: 40.h * 3,
-                                color: HhColors.trans,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      margin: EdgeInsets.only(top: 5.h),
-                                      child: Image.asset(
-                                        logic.tabIndex.value == 1
-                                            ? "assets/images/common/icon_datas.png"
-                                            : "assets/images/common/icon_datas_un.png",
-                                        width: 16.h * 3,
-                                        height: 16.h * 3,
-                                        fit: BoxFit.fill,
+                      logic.isSecondSmartPole
+                          ? const SizedBox()
+                          : SizedBox(
+                              width: 0.3.sw,
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  HhTap(
+                                    overlayColor: Colors.transparent,
+                                    onTapUp: () {
+                                      logic.tabIndex.value = 1;
+                                    },
+                                    child: Container(
+                                      height: 40.h * 3,
+                                      color: HhColors.trans,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Container(
+                                            margin: EdgeInsets.only(top: 5.h),
+                                            child: Image.asset(
+                                              logic.tabIndex.value == 1
+                                                  ? "assets/images/common/icon_datas.png"
+                                                  : "assets/images/common/icon_datas_un.png",
+                                              width: 16.h * 3,
+                                              height: 16.h * 3,
+                                              fit: BoxFit.fill,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 6.h,
+                                          ),
+                                          Text(
+                                            '数据统计',
+                                            style: TextStyle(
+                                                color: logic.tabIndex.value == 1
+                                                    ? HhColors.mainBlueColor
+                                                    : HhColors.gray6TextColor,
+                                                fontSize:
+                                                    logic.tabIndex.value == 1
+                                                        ? 14.sp * 3
+                                                        : 14.sp * 3,
+                                                fontWeight:
+                                                    logic.tabIndex.value == 1
+                                                        ? FontWeight.w500
+                                                        : FontWeight.w400),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 6.h,
-                                    ),
-                                    Text(
-                                      '数据统计',
-                                      style: TextStyle(
-                                          color: logic.tabIndex.value == 1
-                                              ? HhColors.mainBlueColor
-                                              : HhColors.gray6TextColor,
-                                          fontSize: logic.tabIndex.value == 1
-                                              ? 14.sp * 3
-                                              : 14.sp * 3,
-                                          fontWeight: logic.tabIndex.value == 1
-                                              ? FontWeight.w500
-                                              : FontWeight.w400),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  SizedBox(
+                                    height: 5.h,
+                                  ),
+                                  logic.tabIndex.value == 1
+                                      ? Container(
+                                          height: 4.h,
+                                          width: 140.h,
+                                          decoration: BoxDecoration(
+                                              color: HhColors.mainBlueColor,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(2.h))),
+                                        )
+                                      : const SizedBox()
+                                ],
                               ),
                             ),
-                            SizedBox(
-                              height: 5.h,
-                            ),
-                            logic.tabIndex.value == 1
-                                ? Container(
-                                    height: 4.h,
-                                    width: 140.h,
-                                    decoration: BoxDecoration(
-                                        color: HhColors.mainBlueColor,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(2.h))),
-                                  )
-                                : const SizedBox()
-                          ],
-                        ),
-                      ),
                       SizedBox(
-                        width: 0.3.sw,
+                        width: logic.isSecondSmartPole ? 0.333.sw : 0.3.sw,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -660,7 +665,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                         ),
                       ),
                       SizedBox(
-                        width: 0.3.sw,
+                        width: logic.isSecondSmartPole ? 0.333.sw : 0.3.sw,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -735,9 +740,265 @@ class LiGanDeviceDetailPage extends StatelessWidget {
               ),
 
               logic.testStatus.value ? const SizedBox() : const SizedBox(),
+              logic.skeletonStatus.value ? skeletonPage() : const SizedBox(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  skeletonPage() {
+    return Container(
+      height: 1.sh,
+      width: 1.sw,
+      color: HhColors.backColorF5,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              skeletonBlock(
+                width: 1.sw,
+                height: 254.h * 3,
+                radius: 0,
+                color: HhColors.blackColor,
+              ),
+              Container(
+                margin: EdgeInsets.fromLTRB(23.h * 3, 59.h * 3, 0, 0),
+                child: Row(
+                  children: [
+                    skeletonBlock(
+                      width: 10.h * 3,
+                      height: 17.h * 3,
+                      radius: 3.h,
+                      color: HhColors.gray6TextColor,
+                    ),
+                    SizedBox(width: 12.h * 3),
+                    skeletonBlock(
+                      width: 130.w * 3,
+                      height: 18.h * 3,
+                      radius: 9.h * 3,
+                      color: HhColors.gray5TextColor,
+                    ),
+                  ],
+                ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  margin: EdgeInsets.fromLTRB(0, 57.h * 3, 14.h * 3, 0),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      skeletonBlock(
+                        width: 38.w * 3,
+                        height: 34.w * 3,
+                        radius: 8.w * 3,
+                        color: HhColors.gray5TextColor,
+                      ),
+                      SizedBox(width: 10.w * 3),
+                      skeletonBlock(
+                        width: 34.w * 3,
+                        height: 34.w * 3,
+                        radius: 8.w * 3,
+                        color: HhColors.gray5TextColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Center(
+                child: Container(
+                  margin: EdgeInsets.only(top: 120.h * 3),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      skeletonBlock(
+                        width: 56.w * 3,
+                        height: 56.w * 3,
+                        radius: 28.w * 3,
+                        color: HhColors.gray4TextColor,
+                      ),
+                      SizedBox(height: 12.h * 3),
+                      skeletonBlock(
+                        width: 90.w * 3,
+                        height: 12.h * 3,
+                        radius: 6.h * 3,
+                        color: HhColors.gray4TextColor,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Container(
+            height: 45.h * 3,
+            width: 1.sw,
+            color: HhColors.whiteColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                skeletonTab(),
+                skeletonTab(),
+                skeletonTab(),
+                skeletonTab(),
+              ],
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  SizedBox(height: 12.w * 3),
+                  skeletonCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        skeletonBlock(
+                          width: 160.w * 3,
+                          height: 18.h * 3,
+                          radius: 9.h * 3,
+                        ),
+                        SizedBox(height: 14.w * 3),
+                        Row(
+                          children: [
+                            skeletonActionItem(),
+                            skeletonActionItem(),
+                            skeletonActionItem(),
+                            skeletonActionItem(),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  skeletonCard(
+                    child: Column(
+                      children: [
+                        skeletonRow(),
+                        SizedBox(height: 16.w * 3),
+                        skeletonRow(),
+                        SizedBox(height: 16.w * 3),
+                        skeletonRow(),
+                      ],
+                    ),
+                  ),
+                  skeletonCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        skeletonBlock(
+                          width: 120.w * 3,
+                          height: 18.h * 3,
+                          radius: 9.h * 3,
+                        ),
+                        SizedBox(height: 16.w * 3),
+                        skeletonBlock(
+                          width: double.infinity,
+                          height: 14.h * 3,
+                          radius: 7.h * 3,
+                        ),
+                        SizedBox(height: 10.w * 3),
+                        skeletonBlock(
+                          width: 0.7.sw,
+                          height: 14.h * 3,
+                          radius: 7.h * 3,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget skeletonTab() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        skeletonBlock(
+          width: 72.w * 3,
+          height: 15.h * 3,
+          radius: 8.h * 3,
+        ),
+        SizedBox(height: 8.h),
+        skeletonBlock(
+          width: 46.w * 3,
+          height: 4.h,
+          radius: 2.h,
+        ),
+      ],
+    );
+  }
+
+  Widget skeletonCard({required Widget child}) {
+    return Container(
+      width: 1.sw,
+      margin: EdgeInsets.fromLTRB(14.w * 3, 10.w * 3, 14.w * 3, 0),
+      padding: EdgeInsets.all(15.w * 3),
+      decoration: BoxDecoration(
+        color: HhColors.whiteColor,
+        borderRadius: BorderRadius.circular(8.w * 3),
+      ),
+      child: child,
+    );
+  }
+
+  Widget skeletonActionItem() {
+    return Expanded(
+      child: Column(
+        children: [
+          skeletonBlock(
+            width: 48.w * 3,
+            height: 48.w * 3,
+            radius: 24.w * 3,
+          ),
+          SizedBox(height: 8.w * 3),
+          skeletonBlock(
+            width: 36.w * 3,
+            height: 12.h * 3,
+            radius: 6.h * 3,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget skeletonRow() {
+    return Row(
+      children: [
+        skeletonBlock(
+          width: 78.w * 3,
+          height: 15.h * 3,
+          radius: 8.h * 3,
+        ),
+        const Spacer(),
+        skeletonBlock(
+          width: 110.w * 3,
+          height: 15.h * 3,
+          radius: 8.h * 3,
+        ),
+      ],
+    );
+  }
+
+  Widget skeletonBlock({
+    required double width,
+    required double height,
+    double? radius,
+    Color color = HhColors.grayEDBackColor,
+  }) {
+    return Container(
+      width: width,
+      height: height,
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(radius ?? 6.w * 3),
       ),
     );
   }
@@ -747,6 +1008,9 @@ class LiGanDeviceDetailPage extends StatelessWidget {
       return livePage();
     }
     if (logic.tabIndex.value == 1) {
+      if (logic.isSecondSmartPole) {
+        return livePage();
+      }
       return dataPage();
     }
     if (logic.tabIndex.value == 2) {
@@ -1847,8 +2111,10 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                                 duration: const Duration(milliseconds: 100),
                                 scaleFactor: 1.2,
                                 onPressed: () {
-                                  if("${logic.liveList[logic.liveIndex.value]["channelStatus"]}" != "1"){
-                                    EventBusUtil.getInstance().fire(HhToast(title: "该相机已离线"));
+                                  if ("${logic.liveList[logic.liveIndex.value]["channelStatus"]}" !=
+                                      "1") {
+                                    EventBusUtil.getInstance()
+                                        .fire(HhToast(title: "该相机已离线"));
                                     return;
                                   }
                                   logic.videoTag.value = !logic.videoTag.value;
@@ -2152,7 +2418,8 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                                 logic.dataPageNum = 1;
                                 EventBusUtil.getInstance().fire(HhToast(
                                     title: "当前已是第一条\n稍后为您加载最新一条数据", type: 0));
-                                Future.delayed(const Duration(milliseconds: 2000),(){
+                                Future.delayed(
+                                    const Duration(milliseconds: 2000), () {
                                   logic.getDataPage();
                                 });
                                 return;
@@ -2791,7 +3058,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
       dynamic live = logic.liveList[i];
       list.add(InkWell(
         onTap: () {
-          if("${logic.liveList[i]["channelStatus"]}" != "1"){
+          if ("${logic.liveList[i]["channelStatus"]}" != "1") {
             EventBusUtil.getInstance().fire(HhToast(title: "该相机已离线"));
             return;
           }
@@ -2800,7 +3067,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
               "${logic.liveList[logic.liveIndex.value]["deviceId"]}";
           logic.channelNumber =
               "${logic.liveList[logic.liveIndex.value]["channelId"]}";
-          logic.getPlayUrl(logic.deviceId, logic.channelNumber,click: true);
+          logic.getPlayUrl(logic.deviceId, logic.channelNumber, click: true);
         },
         child: Container(
             padding:
@@ -2814,9 +3081,11 @@ class LiGanDeviceDetailPage extends StatelessWidget {
             child: Text(
               '${live['channelName']}',
               style: TextStyle(
-                  color:"${logic.liveList[i]["channelStatus"]}" != "1"? HhColors.grayCCTextColor : (logic.liveIndex.value == i
-                      ? HhColors.mainBlueColor
-                      : HhColors.blackColor),
+                  color: "${logic.liveList[i]["channelStatus"]}" != "1"
+                      ? HhColors.grayCCTextColor
+                      : (logic.liveIndex.value == i
+                          ? HhColors.mainBlueColor
+                          : HhColors.blackColor),
                   fontSize: 14.sp * 3),
             )),
       ));
