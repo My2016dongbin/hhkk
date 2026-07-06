@@ -2039,7 +2039,7 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                           ),
                           Expanded(
                               child: Text(
-                            "${logic.energyQuantity.value}%",
+                            "${logic.energyQuantity.value}",
                             style: TextStyle(
                                 color: HhColors.blackColor,
                                 fontSize: 15.sp * 3),
@@ -2059,7 +2059,7 @@ class HXYZDeviceDetailPage extends StatelessWidget {
                           ),
                           Expanded(
                               child: Text(
-                            "${logic.energyConsumption.value}KWH",
+                            "${logic.energyConsumption.value}",
                             style: TextStyle(
                                 color: HhColors.blackColor,
                                 fontSize: 15.sp * 3),
