@@ -194,7 +194,7 @@ class MyAppState extends State<HhApp> {
               enableBallisticLoad: true, // 可以通过惯性滑动触发加载更多
               child: GetMaterialApp(
                 navigatorObservers: [CustomNavigatorObserver.getInstance()],
-                title: CommonData.personal ? '浩海卡口' : '浩海卡口',
+                title: CommonData.personal ? '京西万联' : '京西万联',
                 theme: ThemeData(
                   fontFamily: '.SF UI Display',
                   // 使用系统默认字体

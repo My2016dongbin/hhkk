@@ -375,7 +375,7 @@ class RegisterPage extends StatelessWidget {
                       onPressed: () {
                         Get.to(WebViewPage(title: '隐私协议', url: CommonData.html));
                       },
-                      child: Text('《浩海卡口平台隐私政策》',
+                      child: Text('《京西万联平台隐私政策》',
                         style: TextStyle(color: HhColors.backBlueOutColor,fontSize: 12.sp*3,fontWeight: FontWeight.w500),
                       ),
                     ),
@@ -487,7 +487,7 @@ class RegisterPage extends StatelessWidget {
                                 Get.to(WebViewPage(title: '隐私协议', url: CommonData.html));
                               },
                               child: Text(
-                                '《浩海卡口平台隐私政策》',
+                                '《京西万联平台隐私政策》',
                                 style: TextStyle(
                                     decoration: TextDecoration.none,
                                     color: HhColors.mainBlueColor,

@@ -71,7 +71,7 @@ class PersonalLoginPage extends StatelessWidget {
                   alignment: Alignment.topLeft,
                   child: Container(
                     margin: EdgeInsets.fromLTRB(29.w*3, 100.h*3, 0, 0),
-                    child: Text('浩海卡口',style: TextStyle(color: HhColors.textBlackColor,fontSize: 42.sp*3,fontWeight: FontWeight.bold),),
+                    child: Text('京西万联',style: TextStyle(color: HhColors.textBlackColor,fontSize: 42.sp*3,fontWeight: FontWeight.bold),),
                   ),
                 ),
                 Align(
@@ -241,7 +241,7 @@ class PersonalLoginPage extends StatelessWidget {
                               // showWebDialog();
                               Get.to(WebViewPage(title: '隐私协议', url: CommonData.html));
                             },
-                            child: Text('《浩海卡口平台隐私政策》',
+                            child: Text('《京西万联平台隐私政策》',
                               style: TextStyle(color: HhColors.backBlueOutColor,fontSize: 12.sp*3,fontWeight: FontWeight.w500),
                             ),
                           ),
@@ -488,7 +488,7 @@ class PersonalLoginPage extends StatelessWidget {
                                 Get.to(WebViewPage(title: '隐私协议', url: CommonData.html));
                               },
                               child: Text(
-                                '《浩海卡口平台隐私政策》',
+                                '《京西万联平台隐私政策》',
                                 style: TextStyle(
                                     decoration: TextDecoration.none,
                                     color: HhColors.mainBlueColor,
