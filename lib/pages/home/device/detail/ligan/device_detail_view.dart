@@ -851,23 +851,25 @@ class LiGanDeviceDetailPage extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  SizedBox(height: 12.w * 3),
                   skeletonCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         skeletonBlock(
-                          width: 160.w * 3,
-                          height: 18.h * 3,
+                          width: 100.w * 3,
+                          height: 40.h * 3,
                           radius: 9.h * 3,
                         ),
                         SizedBox(height: 14.w * 3),
                         Row(
                           children: [
-                            skeletonActionItem(),
-                            skeletonActionItem(),
-                            skeletonActionItem(),
-                            skeletonActionItem(),
+                            const Spacer(),
+                            skeletonBlock(
+                              width: 240.w * 3,
+                              height: 240.w * 3,
+                              radius: 120.w * 3,
+                            ),
+                            const Spacer(),
                           ],
                         ),
                       ],
@@ -926,9 +928,9 @@ class LiGanDeviceDetailPage extends StatelessWidget {
           height: 15.h * 3,
           radius: 8.h * 3,
         ),
-        SizedBox(height: 8.h),
+        SizedBox(height: 10.h*3),
         skeletonBlock(
-          width: 46.w * 3,
+          width: 55.w * 3,
           height: 4.h,
           radius: 2.h,
         ),
@@ -939,7 +941,7 @@ class LiGanDeviceDetailPage extends StatelessWidget {
   Widget skeletonCard({required Widget child}) {
     return Container(
       width: 1.sw,
-      margin: EdgeInsets.fromLTRB(14.w * 3, 10.w * 3, 14.w * 3, 0),
+      margin: EdgeInsets.fromLTRB(5.w * 3, 10.w * 3, 5.w * 3, 0),
       padding: EdgeInsets.all(15.w * 3),
       decoration: BoxDecoration(
         color: HhColors.whiteColor,
