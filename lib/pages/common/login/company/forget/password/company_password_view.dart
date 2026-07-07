@@ -101,7 +101,7 @@ class CompanyPasswordPage extends StatelessWidget {
                           hintStyle: TextStyle(
                               color: HhColors.grayCCTextColor,
                               fontSize: 16.sp*3,
-                              fontWeight: FontWeight.w200),
+                              fontWeight: FontWeight.w400),
                         ),
                         style: TextStyle(
                             color: HhColors.textBlackColor,
@@ -168,7 +168,7 @@ class CompanyPasswordPage extends StatelessWidget {
                           hintStyle: TextStyle(
                               color: HhColors.grayCCTextColor,
                               fontSize: 16.sp*3,
-                              fontWeight: FontWeight.w200),
+                              fontWeight: FontWeight.w400),
                         ),
                         style: TextStyle(
                             color: HhColors.textBlackColor,
@@ -259,7 +259,7 @@ class CompanyPasswordPage extends StatelessWidget {
                       child: Text(
                         "提交",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3,fontWeight: FontWeight.w200),
+                        style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3,fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),

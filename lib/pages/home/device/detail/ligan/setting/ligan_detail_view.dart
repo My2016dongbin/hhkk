@@ -1282,7 +1282,7 @@ class LiGanDetailPage extends StatelessWidget {
                                       color: HhColors.whiteColor,
                                       fontSize: 15.sp * 3,
                                       decoration: TextDecoration.none,
-                                      fontWeight: FontWeight.w200),
+                                      fontWeight: FontWeight.w400),
                                 ),
                               ),
                             ),
@@ -1511,7 +1511,7 @@ class LiGanDetailPage extends StatelessWidget {
                                       hintStyle: TextStyle(
                                           color: HhColors.gray9TextColor,
                                           fontSize: 15.sp * 3,
-                                          fontWeight: FontWeight.w200),
+                                          fontWeight: FontWeight.w400),
                                     ),
                                     onChanged: (s) {
                                       logic.ledContent.value = s;
@@ -1882,7 +1882,7 @@ class LiGanDetailPage extends StatelessWidget {
                                       color: HhColors.whiteColor,
                                       fontSize: 15.sp * 3,
                                       decoration: TextDecoration.none,
-                                      fontWeight: FontWeight.w200),
+                                      fontWeight: FontWeight.w400),
                                 ),
                               ),
                             ),
@@ -2056,7 +2056,7 @@ class LiGanDetailPage extends StatelessWidget {
                                       color: HhColors.blackTextColor,
                                       fontSize: 15.sp * 3,
                                       decoration: TextDecoration.none,
-                                      fontWeight: FontWeight.w200),
+                                      fontWeight: FontWeight.w400),
                                 ),
                               ),
                             ),
@@ -3910,7 +3910,7 @@ class LiGanDetailPage extends StatelessWidget {
                                       color: HhColors.whiteColor,
                                       fontSize: 15.sp * 3,
                                       decoration: TextDecoration.none,
-                                      fontWeight: FontWeight.w200),
+                                      fontWeight: FontWeight.w400),
                                 ),
                               ),
                             ),
@@ -4810,7 +4810,7 @@ class LiGanDetailPage extends StatelessWidget {
                 color: HhColors.whiteColor,
                 fontSize: fontSize ?? 13.sp * 3,
                 decoration: TextDecoration.none,
-                fontWeight: FontWeight.w200),
+                fontWeight: FontWeight.w400),
           ),
         ),
       ),
@@ -5002,7 +5002,7 @@ class LiGanDetailPage extends StatelessWidget {
                       hintStyle: TextStyle(
                           color: HhColors.grayCCTextColor,
                           fontSize: 15.sp * 3,
-                          fontWeight: FontWeight.w200),
+                          fontWeight: FontWeight.w400),
                     ),
                     onChanged: onChanged,
                     style: TextStyle(

@@ -106,7 +106,7 @@ class CompanyLoginPage extends StatelessWidget {
                           hintStyle: TextStyle(
                               color: HhColors.grayCCTextColor,
                               fontSize: 16.sp*3,
-                              fontWeight: FontWeight.w300),
+                              fontWeight: FontWeight.w400),
                         ),
                         style: TextStyle(
                             color: HhColors.textBlackColor,
@@ -169,7 +169,7 @@ class CompanyLoginPage extends StatelessWidget {
                                 hintStyle: TextStyle(
                                     color: HhColors.grayCCTextColor,
                                     fontSize: 16.sp*3,
-                                    fontWeight: FontWeight.w300),
+                                    fontWeight: FontWeight.w400),
                               ),
                               style: TextStyle(
                                   color: HhColors.textBlackColor,
@@ -315,7 +315,7 @@ class CompanyLoginPage extends StatelessWidget {
                         style: TextStyle(
                             color: HhColors.whiteColor,
                             fontSize: 16.sp*3,
-                            fontWeight: FontWeight.w200),
+                            fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),
@@ -497,7 +497,7 @@ class CompanyLoginPage extends StatelessWidget {
                               color: HhColors.whiteColor,
                               fontSize: 16.sp*3,
                               decoration: TextDecoration.none,
-                              fontWeight: FontWeight.w200),
+                              fontWeight: FontWeight.w400),
                         ),
                       ),
                     ),

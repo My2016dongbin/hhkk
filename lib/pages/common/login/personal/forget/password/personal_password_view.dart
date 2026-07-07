@@ -104,10 +104,10 @@ class PersonalPasswordPage extends StatelessWidget {
                             counterText: '',
                             hintText: '请输入新密码',
                             hintStyle: TextStyle(
-                                color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                           ),
                           style:
-                          TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w300),
+                          TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                           onChanged: (s){
                             logic.passwordStatus.value = s.isNotEmpty;
                           },
@@ -168,10 +168,10 @@ class PersonalPasswordPage extends StatelessWidget {
                             counterText: '',
                             hintText: '请再次输入新密码',
                             hintStyle: TextStyle(
-                                color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                           ),
                           style:
-                          TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w300),
+                          TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                           onChanged: (s){
                             logic.password2Status.value = s.isNotEmpty;
                           },
@@ -254,7 +254,7 @@ class PersonalPasswordPage extends StatelessWidget {
                       child: Text(
                         "提交",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                        style: TextStyle(color: HhColors.whiteColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),

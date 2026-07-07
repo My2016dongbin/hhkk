@@ -350,7 +350,7 @@ class MessageDetailPage extends StatelessWidget {
                                     child: Container(
                                       color:HhColors.trans,
                                       padding: EdgeInsets.fromLTRB(35.w*3, 10.w*3, 35.w*3, 10.w*3),
-                                      child: Text('真实', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                      child: Text('真实', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w400),),
                                     ),
                                   ),
                                   BouncingWidget(
@@ -363,7 +363,7 @@ class MessageDetailPage extends StatelessWidget {
                                     child: Container(
                                       color:HhColors.trans,
                                       padding: EdgeInsets.fromLTRB(35.w*3, 10.w*3, 35.w*3, 10.w*3),
-                                      child: Text('误报', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w200),),
+                                      child: Text('误报', style: TextStyle(color: HhColors.blackColor,fontSize: 15.sp*3,fontWeight: FontWeight.w400),),
                                     ),
                                   )
                                 ],

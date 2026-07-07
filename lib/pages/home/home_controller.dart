@@ -284,7 +284,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
                                     color: HhColors.blackTextColor,
                                     fontSize: 18.sp * 3,
                                     decoration: TextDecoration.none,
-                                    fontWeight: FontWeight.w200),
+                                    fontWeight: FontWeight.w400),
                               ),
                               SizedBox(
                                 height: 12.w * 3,
@@ -305,7 +305,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
                                     color: HhColors.gray6TextColor,
                                     fontSize: 16.sp * 3,
                                     decoration: TextDecoration.none,
-                                    fontWeight: FontWeight.w200),
+                                    fontWeight: FontWeight.w400),
                               ),
                               Row(
                                 children: [
@@ -335,7 +335,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
                                             style: TextStyle(
                                               color: HhColors.blackTextColor,
                                               decoration: TextDecoration.none,
-                                              fontWeight: FontWeight.w300,
+                                              fontWeight: FontWeight.w400,
                                               fontSize: 16.sp * 3,
                                             ),
                                           ),
@@ -366,7 +366,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
                                             style: TextStyle(
                                               color: HhColors.whiteColor,
                                               decoration: TextDecoration.none,
-                                              fontWeight: FontWeight.w300,
+                                              fontWeight: FontWeight.w400,
                                               fontSize: 16.sp * 3,
                                             ),
                                           ),
@@ -548,7 +548,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
                                     decoration: TextDecoration.none,
                                     color: HhColors.gray9TextColor,
                                     fontSize: 14.sp * 3,
-                                    fontWeight: FontWeight.w300),
+                                    fontWeight: FontWeight.w400),
                               ),
                             ),
                           ),
@@ -592,7 +592,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
                                                           HhColors.blackColor,
                                                       fontSize: 13.sp * 3,
                                                       fontWeight:
-                                                          FontWeight.w300),
+                                                          FontWeight.w400),
                                                 ),
                                               ],
                                             ),
@@ -660,7 +660,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
                                                 decoration: TextDecoration.none,
                                                 color: HhColors.gray9TextColor,
                                                 fontSize: 14.sp * 3,
-                                                fontWeight: FontWeight.w300))
+                                                fontWeight: FontWeight.w400))
                                       ],
                                     ),
                                   ),
@@ -704,7 +704,7 @@ class HomeController extends GetxController with WidgetsBindingObserver {
                                         decoration: TextDecoration.none,
                                         color: HhColors.whiteColor,
                                         fontSize: 16.sp * 3,
-                                        fontWeight: FontWeight.w300),
+                                        fontWeight: FontWeight.w400),
                                   ),
                                 ),
                               ),

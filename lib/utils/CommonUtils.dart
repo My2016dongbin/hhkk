@@ -632,7 +632,7 @@ class CommonUtils {
                                 hintStyle: TextStyle(
                                     color: HhColors.grayCCTextColor,
                                     fontSize: 15.sp * 3,
-                                    fontWeight: FontWeight.w200),
+                                    fontWeight: FontWeight.w400),
                               ),
                               style: TextStyle(
                                   color: HhColors.textBlackColor,

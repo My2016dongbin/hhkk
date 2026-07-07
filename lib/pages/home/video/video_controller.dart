@@ -185,6 +185,9 @@ class VideoController extends GetxController {
   }
 
   Future<void> getDeviceList(int pageKey, bool loading) async {
+    if (pageKey == 1) {
+      easyController.resetFooter();
+    }
     if (loading) {
       EventBusUtil.getInstance().fire(HhLoading(show: true));
     }

@@ -127,6 +127,8 @@ class LiGanDeviceDetailController extends GetxController {
   final RxInt hikPlayerSeed = 0.obs;
   final QcHikPlayerController hikPlayerController = QcHikPlayerController();
   String? hikRecordFilePath;
+  bool pageClosing = false;
+  bool chatManagerReady = false;
 
   @override
   void onInit() {
@@ -184,26 +186,70 @@ class LiGanDeviceDetailController extends GetxController {
   @override
   void onClose() {
     HhLog.d("onClose()");
+    pageClosing = true;
     moveSubscription?.cancel();
     scaleSubscription?.cancel();
     deviceSubscription?.cancel();
     recordSubscription?.cancel();
     chatCloseSubscription?.cancel();
-    player.release();
-    try {
-      manager.dispose();
-    } catch (e) {
-      //
-    }
+    closeTalkOnPageClose();
+    releaseVideoPlayerOnPageClose();
+    super.onClose();
+  }
+
+  void releaseVideoPlayerOnPageClose() {
     try {
       if (videoTag.value ||
           (hikRecordFilePath != null && hikRecordFilePath!.isNotEmpty)) {
         stopRecordFFMPEG();
       }
     } catch (e) {
-      //
+      HhLog.e("releaseVideoPlayerOnPageClose stopRecord $e");
     }
-    super.onClose();
+    try {
+      player.release();
+    } catch (e) {
+      HhLog.e("releaseVideoPlayerOnPageClose fijk $e");
+    }
+    try {
+      hikPlayerController.disposePlayer();
+    } catch (e) {
+      HhLog.e("releaseVideoPlayerOnPageClose hik $e");
+    }
+    hikPlayerTag.value = false;
+    hikPlayParams.value = null;
+    playTag.value = false;
+    videoTag.value = false;
+    url = "";
+  }
+
+  void closeTalkOnPageClose() {
+    final sessionId = CommonData.sessionId ?? '';
+    if (!recordTag.value && !recordTag2.value && !chatManagerReady) {
+      return;
+    }
+    chatClosePost(showToast: false).catchError((e) {
+      HhLog.e("closeTalkOnPageClose post $e");
+    });
+    try {
+      if (chatManagerReady && sessionId.isNotEmpty) {
+        dynamic data = {"CallType": "Close", "SessionId": sessionId};
+        manager.sendMessage(data);
+      }
+    } catch (e) {
+      HhLog.e("closeTalkOnPageClose send $e");
+    }
+    try {
+      if (chatManagerReady) {
+        manager.disconnect();
+      }
+    } catch (e) {
+      HhLog.e("closeTalkOnPageClose manager $e");
+    }
+    chatManagerReady = false;
+    recordTag.value = false;
+    recordTag2.value = false;
+    CommonData.sessionId = null;
   }
 
   saveImageToGallery() async {
@@ -289,7 +335,7 @@ class LiGanDeviceDetailController extends GetxController {
 
   void scheduleCatchImageTasks({required bool useHikPlayer}) {
     Future.delayed(const Duration(milliseconds: 3000), () async {
-      if (!Get.isRegistered<LiGanDeviceDetailController>()) {
+      if (pageClosing || !Get.isRegistered<LiGanDeviceDetailController>()) {
         return;
       }
       if (useHikPlayer) {
@@ -299,7 +345,7 @@ class LiGanDeviceDetailController extends GetxController {
       }
     });
     Future.delayed(const Duration(milliseconds: 10000), () async {
-      if (!Get.isRegistered<LiGanDeviceDetailController>()) {
+      if (pageClosing || !Get.isRegistered<LiGanDeviceDetailController>()) {
         return;
       }
       if (useHikPlayer) {
@@ -428,7 +474,7 @@ class LiGanDeviceDetailController extends GetxController {
 
         // 只有真正成功才保存
         if (rc?.isValueSuccess() == true) {
-          if (videoSecond.value < 5) {
+          if (videoSecond.value < 5 && videoMinute.value == 0) {
             EventBusUtil.getInstance()
                 .fire(HhToast(title: '录像时长太短请重新录制', type: 0));
             return;
@@ -445,7 +491,7 @@ class LiGanDeviceDetailController extends GetxController {
           // 用户停止 / 取消
           if (rc?.getValue() == 255) {
             // 如果取消时文件已经存在且不为空，也允许保存
-            if (videoSecond.value >= 5 && exists && length > 0) {
+            if ((!(videoSecond.value < 5 && videoMinute.value == 0)) && exists && length > 0) {
               await _saveRecordedVideoToGallery(filePath);
             } else {
               EventBusUtil.getInstance()
@@ -691,7 +737,7 @@ class LiGanDeviceDetailController extends GetxController {
     }
   }
 
-  Future<void> getPlayUrl(String ids, String number,{bool? click}) async {
+  Future<void> getPlayUrl(String ids, String number, {bool? click}) async {
     dynamic data = {
       'channelId': number,
     };
@@ -742,7 +788,9 @@ class LiGanDeviceDetailController extends GetxController {
           playTag.value = false;
           player.release();
           player = FijkPlayer();
+          player.setVolume(0);
           player.setDataSource(url, autoPlay: true);
+          player.setVolume(0);
           player.setOption(FijkOption.playerCategory, "mediacodec-hevc", 1);
           player.setOption(FijkOption.playerCategory, "framedrop", 1);
           player.setOption(FijkOption.playerCategory, "start-on-prepared", 0);
@@ -1003,20 +1051,36 @@ class LiGanDeviceDetailController extends GetxController {
     manager =
         // WebSocketManager('${CommonData.webSocketUrl}$nickname', '');
         WebSocketManager('${CommonData.webSocketUrl}$nickname', '');
+    chatManagerReady = true;
     manager.sendMessage({"CallType": "Active", "Dest": deviceNo});
     CommonData.deviceNo = deviceNo;
   }
 
-  void chatClose() {
-    chatClosePost();
-    dynamic o = {"CallType": "Close", "SessionId": CommonData.sessionId};
-    // manager.sendMessage(jsonEncode(o));
-    manager.sendMessage(o);
-    manager.disconnect();
-    manager = WebSocketManager('', '');
+  void chatClose({bool showToast = true}) {
+    chatClosePost(showToast: showToast).catchError((e) {
+      HhLog.e("chatClose post $e");
+    });
+    try {
+      dynamic o = {"CallType": "Close", "SessionId": CommonData.sessionId};
+      // manager.sendMessage(jsonEncode(o));
+      manager.sendMessage(o);
+    } catch (e) {
+      HhLog.e("chatClose send $e");
+    }
+    try {
+      if (chatManagerReady) {
+        manager.disconnect();
+      }
+    } catch (e) {
+      HhLog.e("chatClose manager $e");
+    }
+    chatManagerReady = false;
+    recordTag.value = false;
+    recordTag2.value = false;
+    CommonData.sessionId = null;
   }
 
-  Future<void> chatClosePost() async {
+  Future<void> chatClosePost({bool showToast = true}) async {
     var tenantResult = await HhHttp()
         .request(RequestUtils.chatCreate, method: DioMethod.post, data: {
       "deviceNo": deviceNo,
@@ -1025,10 +1089,14 @@ class LiGanDeviceDetailController extends GetxController {
     });
     HhLog.d("chatClose socket -- $tenantResult");
     if (tenantResult["code"] == 0 && tenantResult["data"] != null) {
-      EventBusUtil.getInstance().fire(HhToast(title: '对讲已结束'));
+      if (showToast) {
+        EventBusUtil.getInstance().fire(HhToast(title: '对讲已结束'));
+      }
     } else {
-      EventBusUtil.getInstance()
-          .fire(HhToast(title: CommonUtils().msgString(tenantResult["msg"])));
+      if (showToast) {
+        EventBusUtil.getInstance()
+            .fire(HhToast(title: CommonUtils().msgString(tenantResult["msg"])));
+      }
     }
   }
 

@@ -129,7 +129,7 @@ class NewPasswordPage extends StatelessWidget {
                                 counterText: '',
                                 hintText: '',
                                 hintStyle: TextStyle(
-                                    color: HhColors.gray9TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                    color: HhColors.gray9TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                               ),
                               style:
                               TextStyle(color: HhColors.gray6TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
@@ -163,7 +163,7 @@ class NewPasswordPage extends StatelessWidget {
                                 counterText: '',
                                 hintText: '验证码',
                                 hintStyle: TextStyle(
-                                    color: HhColors.gray9TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                    color: HhColors.gray9TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                               ),
                               style:
                               TextStyle(color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.bold),
@@ -242,10 +242,10 @@ class NewPasswordPage extends StatelessWidget {
                                 counterText: '',
                                 hintText: '请输入新密码',
                                 hintStyle: TextStyle(
-                                    color: HhColors.gray9TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                                    color: HhColors.gray9TextColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                               ),
                               style:
-                              TextStyle(color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.w200),
+                              TextStyle(color: HhColors.textBlackColor, fontSize: 15.sp*3,fontWeight: FontWeight.w400),
                               onChanged: (s){
                                 logic.passwordNew2Status.value = s.isNotEmpty;
                               },
@@ -320,7 +320,7 @@ class NewPasswordPage extends StatelessWidget {
                       child: Text(
                         "确认修改",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3,fontWeight: FontWeight.w200),
+                        style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3,fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),

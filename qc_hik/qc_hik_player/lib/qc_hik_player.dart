@@ -68,6 +68,37 @@ class QcHikPlayerController {
       return false;
     }
   }
+
+  Future<bool> disposePlayer() async {
+    if (_methodChannel == null) {
+      return false;
+    }
+    try {
+      final dynamic result = await _methodChannel!.invokeMethod(
+        'disposePlayer',
+      );
+      _methodChannel = null;
+      return result == true;
+    } catch (_) {
+      _methodChannel = null;
+      return false;
+    }
+  }
+
+  Future<bool> setSoundEnabled(bool enabled) async {
+    if (_methodChannel == null) {
+      return false;
+    }
+    try {
+      final dynamic result = await _methodChannel!.invokeMethod(
+        'setSoundEnabled',
+        {'enabled': enabled},
+      );
+      return result == true;
+    } catch (_) {
+      return false;
+    }
+  }
 }
 
 class QcHikPlayerParams {
@@ -167,6 +198,7 @@ class QcHikPlayerView extends StatefulWidget {
   final bool enablePanel;
   final bool autoPlay;
   final bool isFullScreenMode;
+  final bool soundEnabled;
 
   const QcHikPlayerView({
     super.key,
@@ -179,6 +211,7 @@ class QcHikPlayerView extends StatefulWidget {
     this.enablePanel = true,
     this.autoPlay = true,
     this.isFullScreenMode = false,
+    this.soundEnabled = true,
   });
 
   @override
@@ -195,7 +228,7 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
   bool _hideStuff = true;
   bool _playing = false;
   bool _prepared = false;
-  bool _muted = false;
+  late bool _muted;
   bool _isDisposed = false;
   String? _exception;
 
@@ -203,6 +236,12 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
   bool downStatus = false;
   bool leftStatus = false;
   bool rightStatus = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _muted = !widget.soundEnabled;
+  }
 
   @override
   void dispose() {
@@ -390,6 +429,7 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
           params: widget.params,
           onMoveStart: widget.onMoveStart,
           onMoveEnd: widget.onMoveEnd,
+          soundEnabled: widget.soundEnabled,
         ),
       ),
     );
@@ -643,6 +683,7 @@ class _QcHikPlayerViewState extends State<QcHikPlayerView> {
 
   Widget _buildPlatformPlayerView() {
     final Map<String, dynamic> creationParams = widget.params.toMap();
+    creationParams['soundEnabled'] = widget.soundEnabled;
     if (defaultTargetPlatform == TargetPlatform.android) {
       return AndroidView(
         viewType: _viewType,
@@ -742,11 +783,13 @@ class _QcHikPlayerFullScreenPage extends StatefulWidget {
   final QcHikPlayerParams params;
   final QcHikPlayerMoveCallback? onMoveStart;
   final VoidCallback? onMoveEnd;
+  final bool soundEnabled;
 
   const _QcHikPlayerFullScreenPage({
     required this.params,
     this.onMoveStart,
     this.onMoveEnd,
+    this.soundEnabled = true,
   });
 
   @override
@@ -778,6 +821,7 @@ class _QcHikPlayerFullScreenPageState
                 onMoveStart: widget.onMoveStart,
                 onMoveEnd: widget.onMoveEnd,
                 isFullScreenMode: true,
+                soundEnabled: widget.soundEnabled,
               ),
             ),
             Positioned(

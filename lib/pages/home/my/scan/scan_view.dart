@@ -152,7 +152,7 @@ class ScanPage extends StatelessWidget {
                         style: TextStyle(
                             color: HhColors.whiteColor,
                             fontSize: 13.sp*3,
-                            fontWeight: FontWeight.w300),
+                            fontWeight: FontWeight.w400),
                       ),
                       BouncingWidget(
                         duration: const Duration(milliseconds: 100),
@@ -175,7 +175,7 @@ class ScanPage extends StatelessWidget {
                                 style: TextStyle(
                                     color: HhColors.whiteColor,
                                     fontSize: 13.sp*3,
-                                    fontWeight: FontWeight.w300),
+                                    fontWeight: FontWeight.w400),
                               ),
                               SizedBox(width: 10.w*3,),
                               Image.asset(

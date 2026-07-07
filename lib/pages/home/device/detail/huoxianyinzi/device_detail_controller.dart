@@ -311,7 +311,7 @@ class HXYZDeviceDetailController extends GetxController {
 
         // 只有真正成功才保存
         if (rc?.isValueSuccess() == true) {
-          if (videoSecond.value < 5) {
+          if (videoSecond.value < 5 && videoMinute.value == 0) {
             EventBusUtil.getInstance()
                 .fire(HhToast(title: '录像时长太短请重新录制', type: 0));
             return;
@@ -337,7 +337,7 @@ class HXYZDeviceDetailController extends GetxController {
           // 用户停止 / 取消
           if (rc?.getValue() == 255) {
             // 如果取消时文件已经存在且不为空，也允许保存
-            if (videoSecond.value >= 5 && exists && length > 0) {
+            if ((!(videoSecond.value < 5 && videoMinute.value == 0)) && exists && length > 0) {
               final result = await ImageGallerySaver.saveFile(filePath);
               HhLog.d('cancel saveFile result=$result');
 

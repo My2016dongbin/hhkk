@@ -100,7 +100,7 @@ class CompanyForgetPage extends StatelessWidget {
                           hintStyle: TextStyle(
                               color: HhColors.grayCCTextColor,
                               fontSize: 16.sp*3,
-                              fontWeight: FontWeight.w200),
+                              fontWeight: FontWeight.w400),
                         ),
                         style: TextStyle(
                             color: HhColors.textBlackColor,
@@ -168,7 +168,7 @@ class CompanyForgetPage extends StatelessWidget {
                       child: Text(
                         "获取验证码",
                         textAlign: TextAlign.center,
-                        style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3,fontWeight: FontWeight.w200),
+                        style: TextStyle(color: HhColors.whiteColor, fontSize: 16.sp*3,fontWeight: FontWeight.w400),
                       ),
                     ),
                   ),
