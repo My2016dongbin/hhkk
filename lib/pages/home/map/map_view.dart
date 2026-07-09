@@ -68,281 +68,464 @@ class MapPage extends StatelessWidget {
             color: HhColors.trans,
             child: Stack(
               children: [
-                ///火险因子
-                logic.searchMode.value
-                    ? const SizedBox()
-                    : Container(
-                        margin: EdgeInsets.only(left: 145.w * 3),
-                        child: HhTap(
-                          overlayColor: HhColors.trans,
-                          onTapUp: () async {
-                            logic.tabIndex.value = 2;
-                            logic.pageNum = 1;
-                            logic.deviceCount.value = "-1";
-                            await logic.fetchPage();
-                          },
-                          child: Container(
-                            height: 40.w * 3,
-                            width: 95.w * 3,
-                            color: HhColors.trans,
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        '火险因子',
-                                        style: TextStyle(
-                                            color: logic.tabIndex.value == 2
-                                                ? HhColors.blackTextColor
-                                                : HhColors.gray9TextColor,
-                                            fontSize: logic.tabIndex.value == 2
-                                                ? 18.sp * 3
-                                                : 14.sp * 3,
-                                            fontWeight:
-                                                logic.tabIndex.value == 2
-                                                    ? FontWeight.w600
-                                                    : FontWeight.w500),
-                                      ),
-                                      SizedBox(
-                                        height: 2.w * 3,
-                                      ),
-                                      logic.tabIndex.value == 2
-                                          ? Container(
-                                              height: 7.w,
-                                              width: 30.w,
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      HhColors.blackTextColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          2.w * 3)),
-                                            )
-                                          : SizedBox(
-                                              height: 2.w * 3,
-                                              width: 12.w * 3,
-                                            )
-                                    ],
-                                  ),
-                                ),
-                                logic.deviceCount.value == "-1" ||
-                                        logic.tabIndex.value != 2
-                                    ? const SizedBox()
-                                    : Align(
-                                        alignment: Alignment.topRight,
-                                        child: Container(
-                                          height: 16.w * 3,
-                                          width: 32.w * 3,
-                                          padding: EdgeInsets.fromLTRB(
-                                              3.w * 3, 5.w, 3.w * 3, 0),
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                              color: HhColors.mapBlueColors,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      8.w * 3)),
-                                          child: Text(
-                                            logic.deviceCount.value,
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: HhColors.whiteColor,
-                                              fontSize: 10.sp * 3,
-                                            ),
-                                          ),
+                Container(
+                  width: 1.sw,
+                  margin: EdgeInsets.only(right: 60.w*3),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        ///全部
+                        logic.searchMode.value
+                            ? const SizedBox()
+                            : Container(
+                          margin: EdgeInsets.only(left: 15.w * 3),
+                          child: HhTap(
+                            overlayColor: HhColors.trans,
+                            onTapUp: () async {
+                              logic.tabIndex.value = 0;
+                              logic.pageNum = 1;
+                              logic.deviceCount.value = "-1";
+                              await logic.fetchPage();
+                            },
+                            child: Container(
+                              height: 40.w * 3,
+                              width: 62.w * 3,
+                              color: HhColors.trans,
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Text(
+                                          '全部',
+                                          style: TextStyle(
+                                              color: logic.tabIndex.value == 0
+                                                  ? HhColors.blackTextColor
+                                                  : HhColors.gray9TextColor,
+                                              fontSize: logic.tabIndex.value == 0
+                                                  ? 18.sp * 3
+                                                  : 14.sp * 3,
+                                              fontWeight:
+                                              logic.tabIndex.value == 0
+                                                  ? FontWeight.w600
+                                                  : FontWeight.w500),
                                         ),
-                                      )
-                              ],
+                                        SizedBox(
+                                          height: 2.w * 3,
+                                        ),
+                                        logic.tabIndex.value == 0
+                                            ? Container(
+                                          height: 7.w,
+                                          width: 30.w,
+                                          decoration: BoxDecoration(
+                                              color:
+                                              HhColors.blackTextColor,
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  2.w * 3)),
+                                        )
+                                            : SizedBox(
+                                          height: 2.w * 3,
+                                          width: 12.w * 3,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  logic.deviceCount.value == "-1" ||
+                                      logic.tabIndex.value != 0
+                                      ? const SizedBox()
+                                      : Align(
+                                    alignment: Alignment.topRight,
+                                    child: Container(
+                                      height: 16.w * 3,
+                                      width: 32.w * 3,
+                                      padding: EdgeInsets.fromLTRB(
+                                          3.w * 3, 5.w, 3.w * 3, 0),
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                          color: HhColors.mapBlueColors,
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              8.w * 3)),
+                                      child: Text(
+                                        logic.deviceCount.value,
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          color: HhColors.whiteColor,
+                                          fontSize: 10.sp * 3,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
 
-                ///智慧立杆
-                logic.searchMode.value
-                    ? const SizedBox()
-                    : Container(
-                        margin: EdgeInsets.only(left: 65.w * 3),
-                        child: HhTap(
-                          overlayColor: HhColors.trans,
-                          onTapUp: () async {
-                            logic.tabIndex.value = 1;
-                            logic.pageNum = 1;
-                            logic.deviceCount.value = "-1";
-                            await logic.fetchPage();
-                          },
-                          child: Container(
-                            height: 40.w * 3,
-                            width: 95.w * 3,
-                            color: HhColors.trans,
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        '智慧立杆',
-                                        style: TextStyle(
-                                            color: logic.tabIndex.value == 1
-                                                ? HhColors.blackTextColor
-                                                : HhColors.gray9TextColor,
-                                            fontSize: logic.tabIndex.value == 1
-                                                ? 18.sp * 3
-                                                : 14.sp * 3,
-                                            fontWeight:
+                        ///火险因子
+                        logic.searchMode.value
+                            ? const SizedBox()
+                            : HhTap(
+                              overlayColor: HhColors.trans,
+                              onTapUp: () async {
+                                logic.tabIndex.value = 1;
+                                logic.pageNum = 1;
+                                logic.deviceCount.value = "-1";
+                                await logic.fetchPage();
+                              },
+                              child: Container(
+                                height: 40.w * 3,
+                                width: 95.w * 3,
+                                color: HhColors.trans,
+                                child: Stack(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            '火险因子',
+                                            style: TextStyle(
+                                                color: logic.tabIndex.value == 1
+                                                    ? HhColors.blackTextColor
+                                                    : HhColors.gray9TextColor,
+                                                fontSize: logic.tabIndex.value == 1
+                                                    ? 18.sp * 3
+                                                    : 14.sp * 3,
+                                                fontWeight:
                                                 logic.tabIndex.value == 1
                                                     ? FontWeight.w600
                                                     : FontWeight.w500),
+                                          ),
+                                          SizedBox(
+                                            height: 2.w * 3,
+                                          ),
+                                          logic.tabIndex.value == 1
+                                              ? Container(
+                                            height: 7.w,
+                                            width: 30.w,
+                                            decoration: BoxDecoration(
+                                                color:
+                                                HhColors.blackTextColor,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    2.w * 3)),
+                                          )
+                                              : SizedBox(
+                                            height: 2.w * 3,
+                                            width: 12.w * 3,
+                                          )
+                                        ],
                                       ),
-                                      SizedBox(
-                                        height: 2.w * 3,
-                                      ),
-                                      logic.tabIndex.value == 1
-                                          ? Container(
-                                              height: 7.w,
-                                              width: 30.w,
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      HhColors.blackTextColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          2.w * 3)),
-                                            )
-                                          : SizedBox(
-                                              height: 2.w * 3,
-                                              width: 12.w * 3,
-                                            )
-                                    ],
-                                  ),
-                                ),
-                                logic.deviceCount.value == "-1" ||
+                                    ),
+                                    logic.deviceCount.value == "-1" ||
                                         logic.tabIndex.value != 1
-                                    ? const SizedBox()
-                                    : Align(
-                                        alignment: Alignment.topRight,
-                                        child: Container(
-                                          height: 16.w * 3,
-                                          width: 32.w * 3,
-                                          padding: EdgeInsets.fromLTRB(
-                                              3.w * 3, 5.w, 3.w * 3, 0),
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                              color: HhColors.mapBlueColors,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      8.w * 3)),
-                                          child: Text(
-                                            logic.deviceCount.value,
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: HhColors.whiteColor,
-                                              fontSize: 10.sp * 3,
-                                            ),
+                                        ? const SizedBox()
+                                        : Align(
+                                      alignment: Alignment.topRight,
+                                      child: Container(
+                                        height: 16.w * 3,
+                                        width: 32.w * 3,
+                                        padding: EdgeInsets.fromLTRB(
+                                            3.w * 3, 5.w, 3.w * 3, 0),
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            color: HhColors.mapBlueColors,
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                8.w * 3)),
+                                        child: Text(
+                                          logic.deviceCount.value,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: HhColors.whiteColor,
+                                            fontSize: 10.sp * 3,
                                           ),
                                         ),
-                                      )
-                              ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
 
-                ///全部
-                logic.searchMode.value
-                    ? const SizedBox()
-                    : Container(
-                        margin: EdgeInsets.only(left: 15.w * 3),
-                        child: HhTap(
-                          overlayColor: HhColors.trans,
-                          onTapUp: () async {
-                            logic.tabIndex.value = 0;
-                            logic.pageNum = 1;
-                            logic.deviceCount.value = "-1";
-                            await logic.fetchPage();
-                          },
-                          child: Container(
-                            height: 40.w * 3,
-                            width: 62.w * 3,
-                            color: HhColors.trans,
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        '全部',
-                                        style: TextStyle(
-                                            color: logic.tabIndex.value == 0
-                                                ? HhColors.blackTextColor
-                                                : HhColors.gray9TextColor,
-                                            fontSize: logic.tabIndex.value == 0
-                                                ? 18.sp * 3
-                                                : 14.sp * 3,
-                                            fontWeight:
-                                                logic.tabIndex.value == 0
+                        ///一期卡口
+                        logic.searchMode.value
+                            ? const SizedBox()
+                            : HhTap(
+                              overlayColor: HhColors.trans,
+                              onTapUp: () async {
+                                logic.tabIndex.value = 2;
+                                logic.pageNum = 1;
+                                logic.deviceCount.value = "-1";
+                                await logic.fetchPage();
+                              },
+                              child: Container(
+                                height: 40.w * 3,
+                                width: 95.w * 3,
+                                color: HhColors.trans,
+                                child: Stack(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            '一期卡口',
+                                            style: TextStyle(
+                                                color: logic.tabIndex.value == 2
+                                                    ? HhColors.blackTextColor
+                                                    : HhColors.gray9TextColor,
+                                                fontSize: logic.tabIndex.value == 2
+                                                    ? 18.sp * 3
+                                                    : 14.sp * 3,
+                                                fontWeight:
+                                                logic.tabIndex.value == 2
                                                     ? FontWeight.w600
                                                     : FontWeight.w500),
+                                          ),
+                                          SizedBox(
+                                            height: 2.w * 3,
+                                          ),
+                                          logic.tabIndex.value == 2
+                                              ? Container(
+                                            height: 7.w,
+                                            width: 30.w,
+                                            decoration: BoxDecoration(
+                                                color:
+                                                HhColors.blackTextColor,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    2.w * 3)),
+                                          )
+                                              : SizedBox(
+                                            height: 2.w * 3,
+                                            width: 12.w * 3,
+                                          )
+                                        ],
                                       ),
-                                      SizedBox(
-                                        height: 2.w * 3,
-                                      ),
-                                      logic.tabIndex.value == 0
-                                          ? Container(
-                                              height: 7.w,
-                                              width: 30.w,
-                                              decoration: BoxDecoration(
-                                                  color:
-                                                      HhColors.blackTextColor,
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          2.w * 3)),
-                                            )
-                                          : SizedBox(
-                                              height: 2.w * 3,
-                                              width: 12.w * 3,
-                                            )
-                                    ],
-                                  ),
-                                ),
-                                logic.deviceCount.value == "-1" ||
-                                        logic.tabIndex.value != 0
-                                    ? const SizedBox()
-                                    : Align(
-                                        alignment: Alignment.topRight,
-                                        child: Container(
-                                          height: 16.w * 3,
-                                          width: 32.w * 3,
-                                          padding: EdgeInsets.fromLTRB(
-                                              3.w * 3, 5.w, 3.w * 3, 0),
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                              color: HhColors.mapBlueColors,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      8.w * 3)),
-                                          child: Text(
-                                            logic.deviceCount.value,
-                                            textAlign: TextAlign.center,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: HhColors.whiteColor,
-                                              fontSize: 10.sp * 3,
-                                            ),
+                                    ),
+                                    logic.deviceCount.value == "-1" ||
+                                        logic.tabIndex.value != 2
+                                        ? const SizedBox()
+                                        : Align(
+                                      alignment: Alignment.topRight,
+                                      child: Container(
+                                        height: 16.w * 3,
+                                        width: 32.w * 3,
+                                        padding: EdgeInsets.fromLTRB(
+                                            3.w * 3, 5.w, 3.w * 3, 0),
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            color: HhColors.mapBlueColors,
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                8.w * 3)),
+                                        child: Text(
+                                          logic.deviceCount.value,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: HhColors.whiteColor,
+                                            fontSize: 10.sp * 3,
                                           ),
                                         ),
-                                      )
-                              ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ),
+
+                        ///二期卡口
+                        logic.searchMode.value
+                            ? const SizedBox()
+                            : HhTap(
+                              overlayColor: HhColors.trans,
+                              onTapUp: () async {
+                                logic.tabIndex.value = 3;
+                                logic.pageNum = 1;
+                                logic.deviceCount.value = "-1";
+                                await logic.fetchPage();
+                              },
+                              child: Container(
+                                height: 40.w * 3,
+                                width: 95.w * 3,
+                                color: HhColors.trans,
+                                child: Stack(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            '二期卡口',
+                                            style: TextStyle(
+                                                color: logic.tabIndex.value == 3
+                                                    ? HhColors.blackTextColor
+                                                    : HhColors.gray9TextColor,
+                                                fontSize: logic.tabIndex.value == 3
+                                                    ? 18.sp * 3
+                                                    : 14.sp * 3,
+                                                fontWeight:
+                                                logic.tabIndex.value == 3
+                                                    ? FontWeight.w600
+                                                    : FontWeight.w500),
+                                          ),
+                                          SizedBox(
+                                            height: 2.w * 3,
+                                          ),
+                                          logic.tabIndex.value == 3
+                                              ? Container(
+                                            height: 7.w,
+                                            width: 30.w,
+                                            decoration: BoxDecoration(
+                                                color:
+                                                HhColors.blackTextColor,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    2.w * 3)),
+                                          )
+                                              : SizedBox(
+                                            height: 2.w * 3,
+                                            width: 12.w * 3,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    logic.deviceCount.value == "-1" ||
+                                        logic.tabIndex.value != 3
+                                        ? const SizedBox()
+                                        : Align(
+                                      alignment: Alignment.topRight,
+                                      child: Container(
+                                        height: 16.w * 3,
+                                        width: 32.w * 3,
+                                        padding: EdgeInsets.fromLTRB(
+                                            3.w * 3, 5.w, 3.w * 3, 0),
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            color: HhColors.mapBlueColors,
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                8.w * 3)),
+                                        child: Text(
+                                          logic.deviceCount.value,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: HhColors.whiteColor,
+                                            fontSize: 10.sp * 3,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                        ///地表火
+                        logic.searchMode.value
+                            ? const SizedBox()
+                            : HhTap(
+                              overlayColor: HhColors.trans,
+                              onTapUp: () async {
+                                logic.tabIndex.value = 4;
+                                logic.pageNum = 1;
+                                logic.deviceCount.value = "-1";
+                                await logic.fetchPage();
+                              },
+                              child: Container(
+                                height: 40.w * 3,
+                                width: 80.w * 3,
+                                color: HhColors.trans,
+                                child: Stack(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            '地表火',
+                                            style: TextStyle(
+                                                color: logic.tabIndex.value == 4
+                                                    ? HhColors.blackTextColor
+                                                    : HhColors.gray9TextColor,
+                                                fontSize: logic.tabIndex.value == 4
+                                                    ? 18.sp * 3
+                                                    : 14.sp * 3,
+                                                fontWeight:
+                                                logic.tabIndex.value == 4
+                                                    ? FontWeight.w600
+                                                    : FontWeight.w500),
+                                          ),
+                                          SizedBox(
+                                            height: 2.w * 3,
+                                          ),
+                                          logic.tabIndex.value == 4
+                                              ? Container(
+                                            height: 7.w,
+                                            width: 30.w,
+                                            decoration: BoxDecoration(
+                                                color:
+                                                HhColors.blackTextColor,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    2.w * 3)),
+                                          )
+                                              : SizedBox(
+                                            height: 2.w * 3,
+                                            width: 12.w * 3,
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    logic.deviceCount.value == "-1" ||
+                                        logic.tabIndex.value != 4
+                                        ? const SizedBox()
+                                        : Align(
+                                      alignment: Alignment.topRight,
+                                      child: Container(
+                                        height: 16.w * 3,
+                                        width: 32.w * 3,
+                                        padding: EdgeInsets.fromLTRB(
+                                            3.w * 3, 5.w, 3.w * 3, 0),
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            color: HhColors.mapBlueColors,
+                                            borderRadius:
+                                            BorderRadius.circular(
+                                                8.w * 3)),
+                                        child: Text(
+                                          logic.deviceCount.value,
+                                          textAlign: TextAlign.center,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: HhColors.whiteColor,
+                                            fontSize: 10.sp * 3,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                      ],
+                    ),
+                  ),
+                ),
 
                 ///搜索
                 logic.searchMode.value

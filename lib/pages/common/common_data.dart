@@ -49,6 +49,8 @@ class CommonData{
   static const String productKeyFireSmartPole= "aSkWAXGKPh4zEcjE";
   ///二期智慧立杆卡口
   static const String productKeyFireSmartPoleSecond = "5Yk5Jcf5NmzGkCxW";
+  ///地表火
+  static const String landFire = "ieF66HMwky4FpcXH";
 
 
   static void clear(){

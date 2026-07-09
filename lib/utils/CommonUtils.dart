@@ -1392,7 +1392,7 @@ class CommonUtils {
       index = str.indexOf('.');
       rt = str.substring(0, index + 1 + number);
     } catch (e) {
-      rt = str;
+      rt = parseNull(str, "");
     }
     return rt;
   }
@@ -1573,6 +1573,24 @@ class CommonUtils {
     }
   }
 
+
+  parseProductKey(int index) {
+    switch (index) {
+      case 1:
+      ///火险因子
+        return CommonData.productKeyFireRiskFactor;
+      case 2:
+      ///一期卡口
+        return CommonData.productKeyFireSmartPole;
+      case 3:
+      ///二期卡口
+        return CommonData.productKeyFireSmartPoleSecond;
+      case 4:
+      ///地表火
+        return CommonData.landFire;
+    }
+  }
+
   parseOnlineIcon(item) {
     if (item['productKey'] == '5MiTcinKdSasKdKQ') {
       ///道闸-高清车牌识别一体机
@@ -1582,8 +1600,14 @@ class CommonUtils {
       ///智能运维箱
       return "assets/images/common/ic_device_online2.png";
     } else if (item['productKey'] == CommonData.productKeyFireSmartPole) {
-      ///浩海智慧立杆
+      ///浩海智慧立杆-一期卡口
       return "assets/images/common/marker_online_zhlg.png";
+    } else if (item['productKey'] == CommonData.productKeyFireSmartPoleSecond) {
+      ///二期卡口
+      return "assets/images/common/marker_online_zhlg.png";
+    } else if (item['productKey'] == CommonData.landFire) {
+      ///地表火
+      return "assets/images/common/ic_device_online2.png";
     } else if (item['productKey'] == CommonData.productKeyFireRiskFactor) {
       ///火险因子监测站
       return "assets/images/common/marker_online_hxyz.png";
@@ -1604,8 +1628,14 @@ class CommonUtils {
       ///智能运维箱
       return "assets/images/common/ic_device_offline2.png";
     } else if (item['productKey'] == CommonData.productKeyFireSmartPole) {
-      ///浩海智慧立杆
+      ///浩海智慧立杆-一期卡口
       return "assets/images/common/marker_offline_zhlg.png";
+    } else if (item['productKey'] == CommonData.productKeyFireSmartPoleSecond) {
+      ///二期卡口
+      return "assets/images/common/marker_offline_zhlg.png";
+    } else if (item['productKey'] == CommonData.landFire) {
+      ///地表火
+      return "assets/images/common/ic_device_offline2.png";
     } else if (item['productKey'] == CommonData.productKeyFireRiskFactor) {
       ///火险因子监测站
       return "assets/images/common/marker_offline_hxyz.png";

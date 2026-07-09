@@ -1021,6 +1021,7 @@ class LiGanDeviceDetailController extends GetxController {
     var result = await HhHttp()
         .request(RequestUtils.energyPage, method: DioMethod.get, params: map);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
+    HhLog.d("energyPage -- ${RequestUtils.energyPage}");
     HhLog.d("energyPage -- $map");
     HhLog.d("energyPage -- $result");
     if (result["code"] == 0 && result["data"] != null) {

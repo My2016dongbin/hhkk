@@ -161,9 +161,7 @@ class MapController extends GetxController {
       "activeStatus": 1,
     };
     if (tabIndex.value != 0) {
-      map["productKey"] = tabIndex.value == 1
-          ? CommonData.productKeyFireSmartPole
-          : CommonData.productKeyFireRiskFactor;
+      map["productKey"] = CommonUtils().parseProductKey(tabIndex.value);
     }
     if (searchMode.value && searchController!.text.isNotEmpty) {
       map["name"] = searchController!.text;
@@ -171,6 +169,7 @@ class MapController extends GetxController {
     var result = await HhHttp().request(RequestUtils.mainDeviceList,
         method: DioMethod.get, params: map);
     EventBusUtil.getInstance().fire(HhLoading(show: false));
+    HhLog.d("fetchPage -- ${RequestUtils.mainDeviceList}");
     HhLog.d("fetchPage -- $map");
     HhLog.d("fetchPage -- total ${result['data']["total"]}");
     HhLog.d("fetchPage -- $result");

@@ -179,6 +179,7 @@ class MainController extends GetxController {
       RequestUtils.fireLevelStatistics,
       method: DioMethod.get,
     );
+    HhLog.d("getFireLevelStatistics -- ${RequestUtils.fireLevelStatistics}");
     HhLog.d("getFireLevelStatistics -- $result");
     if (result["data"] != null) {
       for (int i = 0; i < result["data"].length; i++) {
@@ -218,6 +219,7 @@ class MainController extends GetxController {
       params: params
     );
     EventBusUtil.getInstance().fire(HhLoading(show: false));
+    HhLog.d("getFireLevelList -- ${RequestUtils.fireLevelList}");
     HhLog.d("getFireLevelList -- $params");
     HhLog.d("getFireLevelList -- $result");
     fireLevelList.value = [];
