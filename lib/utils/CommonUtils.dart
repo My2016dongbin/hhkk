@@ -1392,7 +1392,7 @@ class CommonUtils {
       index = str.indexOf('.');
       rt = str.substring(0, index + 1 + number);
     } catch (e) {
-      rt = str;
+      rt = parseNull(str, "");
     }
     return rt;
   }
