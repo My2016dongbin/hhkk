@@ -26,8 +26,8 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 
-def flutterVersionCode = "40"
-def flutterVersionName = "1.0.30.260529"
+def flutterVersionCode = "41"
+def flutterVersionName = "1.0.31.260710"
 def isReleasePackagingTask = gradle.startParameter.taskNames.any { taskName ->
     def lowerName = taskName.toLowerCase()
     return lowerName.contains("release") || lowerName.contains("bundle")
