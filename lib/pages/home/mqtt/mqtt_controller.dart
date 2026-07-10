@@ -30,6 +30,7 @@ class MqttController extends GetxController {
   late String clientId;
   Timer? messageTimer;
   Timer? messageMaxWaitTimer;
+  DateTime? lastAudioPlayTime;
 
   @override
   void onClose() {
@@ -130,14 +131,8 @@ class MqttController extends GetxController {
           if ("${model["messageType"]}" == "deviceAlarm") {
             ///3秒防抖
             handleMessageRefresh();
-            //语音播报
-            final SharedPreferences prefs =
-                await SharedPreferences.getInstance();
-            bool voice = prefs.getBool(SPKeys().voice) ?? false;
-            if (voice) {
-              final AudioPlayer audioPlayer = AudioPlayer();
-              audioPlayer.play(AssetSource('audio/common/find_fire.mp3'));
-            }
+            ///语音播报
+            playAudio();
             _showAlarmNotification(model);
           }
         }
@@ -255,5 +250,22 @@ class MqttController extends GetxController {
     } else {
       //EventBusUtil.getInstance().fire(HhToast(title: CommonUtils().msgString(tenantResult["msg"])));
     }
+  }
+
+  Future<void> playAudio() async {
+    //语音播报
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool voice = prefs.getBool(SPKeys().voice) ?? false;
+    if (!voice) {
+      return;
+    }
+    DateTime now = DateTime.now();
+    if (lastAudioPlayTime != null &&
+        now.difference(lastAudioPlayTime!).inSeconds < 3) {
+      return;
+    }
+    lastAudioPlayTime = now;
+    final AudioPlayer audioPlayer = AudioPlayer();
+    audioPlayer.play(AssetSource('audio/common/find_fire.mp3'));
   }
 }
