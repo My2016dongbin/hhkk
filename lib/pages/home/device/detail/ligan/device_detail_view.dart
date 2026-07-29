@@ -2734,11 +2734,10 @@ class LiGanDeviceDetailPage extends StatelessWidget {
                               : InkWell(
                                   onTap: () {
                                     CommonUtils().showPictureDialog(context,
-                                        url:
-                                            "${CommonData.endpoint}${item['alarmImageUrl']}");
+                                        url:"${item['alarmImageUrl']}".startsWith("http")?"${item['alarmImageUrl']}":"${CommonData.endpoint}${item['alarmImageUrl']}");
                                   },
                                   child: Image.network(
-                                    '${logic.endpoint}${item['alarmImageUrl']}',
+                                    "${item['alarmImageUrl']}".startsWith("http")?"${item['alarmImageUrl']}":"${CommonData.endpoint}${item['alarmImageUrl']}",
                                     width: 109.h * 3,
                                     height: 59.h * 3,
                                     fit: BoxFit.fill,

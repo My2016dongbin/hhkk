@@ -1,6 +1,5 @@
 import 'package:amap_flutter_map/amap_flutter_map.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart' hide Response, FormData, MultipartFile;
@@ -16,6 +15,7 @@ import 'package:iot/utils/HhLog.dart';
 import 'package:amap_flutter_base/amap_flutter_base.dart';
 import 'package:iot/utils/ParseLocation.dart';
 import 'package:iot/utils/RequestUtils.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:qc_amap_navi/qc_amap_navi.dart';
 
 class MapController extends GetxController {
@@ -32,10 +32,15 @@ class MapController extends GetxController {
   late int pageNum = 1;
   late int pageSize = 20;
   late int totalPage = 0;
+  bool deviceLoadMoreLoading = false;
+  Future<void>? deviceLoadMoreFuture;
+  Future<void>? deviceFetchPageFuture;
+  String deviceFetchPageKey = "";
   final PagingController<int, dynamic> deviceController =
       PagingController(firstPageKey: 1);
   final ScrollController deviceScrollController = ScrollController();
-  late EasyRefreshController deviceEasyController = EasyRefreshController();
+  final RefreshController deviceRefreshController =
+      RefreshController(initialRefresh: false);
   late TextEditingController? searchController = TextEditingController();
   final FocusNode searchFocusNode = FocusNode();
   final RxList<dynamic> searchResultList = <dynamic>[].obs;
@@ -80,6 +85,7 @@ class MapController extends GetxController {
     mapSearchSubscription?.cancel();
     deviceListSubscription?.cancel();
     _searchDebounce?.cancel();
+    deviceRefreshController.dispose();
     searchFocusNode.dispose();
     searchController?.dispose();
     super.onClose();
@@ -152,22 +158,67 @@ class MapController extends GetxController {
     }
   }
 
-  Future<void> fetchPage() async {
+  Future<void> fetchPage() {
+    final int requestPage = pageNum;
+    final int requestTabIndex = tabIndex.value;
+    final bool requestSearchMode = searchMode.value;
+    final String requestKeyword = searchController?.text ?? "";
+    final String requestKey =
+        "$requestPage-$requestTabIndex-$requestSearchMode-$requestKeyword";
+    if (deviceFetchPageFuture != null && deviceFetchPageKey == requestKey) {
+      return deviceFetchPageFuture!;
+    }
+    deviceFetchPageKey = requestKey;
+    deviceFetchPageFuture = fetchPageRequest(
+      requestPage: requestPage,
+      requestTabIndex: requestTabIndex,
+      requestSearchMode: requestSearchMode,
+      requestKeyword: requestKeyword,
+    ).whenComplete(() {
+      if (deviceFetchPageKey == requestKey) {
+        deviceFetchPageFuture = null;
+        deviceFetchPageKey = "";
+      }
+    });
+    return deviceFetchPageFuture!;
+  }
+
+  Future<void> fetchPageRequest({
+    required int requestPage,
+    required int requestTabIndex,
+    required bool requestSearchMode,
+    required String requestKeyword,
+  }) async {
+    if (requestPage == 1) {
+      deviceRefreshController.resetNoData();
+    }
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     Map<String, dynamic> map = {
-      "pageNum": pageNum,
+      "pageNo": requestPage,
       "pageSize": pageSize,
       "status": null,
       "activeStatus": 1,
     };
-    if (tabIndex.value != 0) {
-      map["productKey"] = CommonUtils().parseProductKey(tabIndex.value);
+    if (requestTabIndex != 0) {
+      map["productKey"] = CommonUtils().parseProductKey(requestTabIndex);
     }
-    if (searchMode.value && searchController!.text.isNotEmpty) {
-      map["name"] = searchController!.text;
+    if (requestSearchMode && requestKeyword.isNotEmpty) {
+      map["name"] = requestKeyword;
     }
-    var result = await HhHttp().request(RequestUtils.mainDeviceList,
-        method: DioMethod.get, params: map);
+    dynamic result;
+    try {
+      result = await HhHttp().request(RequestUtils.mainDeviceList,
+          method: DioMethod.get, params: map);
+    } catch (e) {
+      EventBusUtil.getInstance().fire(HhLoading(show: false));
+      if (requestPage == 1) {
+        deviceRefreshController.refreshFailed();
+      } else {
+        deviceRefreshController.loadFailed();
+      }
+      HhLog.e(e.toString());
+      rethrow;
+    }
     EventBusUtil.getInstance().fire(HhLoading(show: false));
     HhLog.d("fetchPage -- ${RequestUtils.mainDeviceList}");
     HhLog.d("fetchPage -- $map");
@@ -181,19 +232,59 @@ class MapController extends GetxController {
 
     if (result["data"] != null && result["data"]["list"] != null) {
       List<dynamic> newItems = result["data"]["list"];
-      if (pageNum == 1) {
+      if (requestPage == 1) {
         deviceController.itemList = [];
       }
-      if (pageNum > totalPage) {
+      if (requestPage > totalPage) {
         deviceController.appendLastPage([]);
-        deviceEasyController.finishLoad(IndicatorResult.noMore, true);
+        deviceRefreshController.loadNoData();
       } else {
         deviceController.appendLastPage(newItems);
+        if (requestPage >= totalPage) {
+          deviceRefreshController.loadNoData();
+        } else if (requestPage > 1) {
+          deviceRefreshController.loadComplete();
+        }
+      }
+      if (requestPage == 1) {
+        deviceRefreshController.refreshCompleted();
       }
       updateMarker();
     } else {
+      if (requestPage == 1) {
+        deviceRefreshController.refreshCompleted();
+      } else {
+        deviceRefreshController.loadFailed();
+      }
       EventBusUtil.getInstance()
           .fire(HhToast(title: CommonUtils().msgString(result["msg"])));
+    }
+  }
+
+  Future<void> refreshDevicePage() async {
+    pageNum = 1;
+    deviceRefreshController.resetNoData();
+    await fetchPage();
+  }
+
+  Future<void> loadMoreDevicePage() async {
+    if (deviceLoadMoreLoading) {
+      return deviceLoadMoreFuture ?? Future.value();
+    }
+    if (totalPage > 0 && pageNum >= totalPage) {
+      deviceRefreshController.loadNoData();
+      return;
+    }
+    deviceLoadMoreLoading = true;
+    pageNum++;
+    try {
+      deviceLoadMoreFuture = fetchPage();
+      await deviceLoadMoreFuture;
+    } catch (e) {
+      pageNum--;
+    } finally {
+      deviceLoadMoreLoading = false;
+      deviceLoadMoreFuture = null;
     }
   }
 

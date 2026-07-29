@@ -34,6 +34,7 @@ import 'package:iot/utils/RequestUtils.dart';
 import 'package:iot/utils/SPKeys.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tpns_flutter_plugin/tpns_flutter_plugin.dart';
 import 'package:video_player/video_player.dart';
@@ -121,6 +122,71 @@ class CommonUtils {
     ];
 
     return gradientColors;
+  }
+
+  Widget pullRefreshConfiguration({required Widget child}) {
+    return RefreshConfiguration(
+      headerBuilder: () => const ClassicHeader(
+        idleText: "下拉刷新",
+        releaseText: "释放刷新",
+        refreshingText: "刷新中...",
+        completeText: "刷新成功",
+        failedText: "刷新失败",
+      ),
+      footerBuilder: () => CustomFooter(
+        height: 45.w * 3,
+        builder: (BuildContext context, LoadStatus? mode) {
+          if (mode == LoadStatus.loading) {
+            return const Center(
+              child: SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            );
+          }
+          if (mode == LoadStatus.failed) {
+            return Center(
+              child: Text(
+                "加载失败，点击重试",
+                style: TextStyle(
+                    color: HhColors.gray9TextColor, fontSize: 12.sp * 3),
+              ),
+            );
+          }
+          return const SizedBox();
+        },
+      ),
+      headerTriggerDistance: 80,
+      maxOverScrollExtent: 80,
+      maxUnderScrollExtent: 0,
+      hideFooterWhenNotFull: true,
+      enableScrollWhenRefreshCompleted: false,
+      enableLoadingWhenNoData: false,
+      enableLoadingWhenFailed: true,
+      enableBallisticLoad: true,
+      child: child,
+    );
+  }
+
+  Widget pullRefreshView({
+    required RefreshController controller,
+    required Widget child,
+    bool enablePullDown = true,
+    bool enablePullUp = false,
+    VoidCallback? onRefresh,
+    VoidCallback? onLoading,
+  }) {
+    return pullRefreshConfiguration(
+      child: SmartRefresher(
+        controller: controller,
+        enablePullDown: enablePullDown,
+        enablePullUp: enablePullUp,
+        onRefresh: onRefresh,
+        onLoading: onLoading,
+        child: child,
+      ),
+    );
   }
 
   ///百度转高德

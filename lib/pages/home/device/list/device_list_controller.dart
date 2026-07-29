@@ -17,6 +17,7 @@ class DeviceListController extends GetxController {
   final Rx<int> deviceStatus = 0.obs;
   final Rx<String> title = "设备列表".obs;
   late String productKey;
+  late List<String> productKeyList;
   late BuildContext context;
   late TextEditingController? searchController = TextEditingController();
   late int pageNum = 1;
@@ -32,6 +33,7 @@ class DeviceListController extends GetxController {
     if(arguments!=null){
       title.value = arguments["title"];
       productKey = arguments["productKey"]??"";
+      productKeyList = arguments["productKeyList"]??"";
     }
     pageNum = 1;
     fetchPage();
@@ -54,12 +56,16 @@ class DeviceListController extends GetxController {
   Future<void> fetchPage() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     Map<String, dynamic> map = {
-      "pageNum":pageNum,
+      "pageNo":pageNum,
       "pageSize":pageSize,
       "status":null,
       "activeStatus":1,
-      "productKey":productKey,
     };
+    if(productKey.isNotEmpty){
+      map["productKey"] = productKey;
+    }else if(productKeyList.isNotEmpty){
+      map["productKeyList"] = productKeyList;
+    }
     if(searchController!.text.isNotEmpty){
       map["name"] = searchController!.text;
     }

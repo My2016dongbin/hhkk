@@ -1,5 +1,4 @@
 import 'package:amap_flutter_map/amap_flutter_map.dart';
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -1008,16 +1007,15 @@ class MapPage extends StatelessWidget {
                   height: 10.w * 3,
                 ),
                 Expanded(
-                  child: EasyRefresh(
+                  child: CommonUtils().pullRefreshView(
+                    controller: logic.deviceRefreshController,
+                    enablePullUp: true,
                     onRefresh: () {
-                      logic.pageNum = 1;
-                      logic.fetchPage();
+                      logic.refreshDevicePage();
                     },
-                    onLoad: () {
-                      logic.pageNum++;
-                      logic.fetchPage();
+                    onLoading: () {
+                      logic.loadMoreDevicePage();
                     },
-                    controller: logic.deviceEasyController,
                     child: PagedListView<int, dynamic>(
                       padding: EdgeInsets.zero,
                       pagingController: logic.deviceController,

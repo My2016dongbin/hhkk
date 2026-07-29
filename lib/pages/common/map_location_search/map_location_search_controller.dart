@@ -111,7 +111,7 @@ class MapLocationSearchController extends GetxController {
   Future<void> fetchPage() async {
     EventBusUtil.getInstance().fire(HhLoading(show: true));
     Map<String, dynamic> map = {
-      "pageNum":pageNum,
+      "pageNo":pageNum,
       "pageSize":100,
       "status":null,
       "activeStatus":1,

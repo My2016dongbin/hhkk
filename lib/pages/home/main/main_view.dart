@@ -1864,7 +1864,10 @@ class MainPage extends StatelessWidget {
   void menuTap(item) {
     if (item["title"] == "智慧立杆") {
       Get.to(() => DeviceListPage(), binding: DeviceListBinding(), arguments: {
-        "productKey": CommonData.productKeyFireSmartPole,
+        "productKeyList": [
+          (CommonData.productKeyFireSmartPole),
+          (CommonData.productKeyFireSmartPoleSecond)
+        ],
         "title": "智慧立杆"
       });
     }
