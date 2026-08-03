@@ -1562,6 +1562,9 @@ class CommonUtils {
     } else if (item['productKey'] == CommonData.productKeyFireSmartPole) {
       ///浩海智慧立杆
       return "assets/images/common/icon_live_k.png";
+    } else if (item['productKey'] == CommonData.productKeyFireSmartPoleSecond) {
+      ///浩海智慧立杆
+      return "assets/images/common/icon_live_k.png";
     } else if (item['productKey'] == CommonData.productKeyFireRiskFactor) {
       ///火险因子监测站
       return "assets/images/common/icon_live_fire.png";
