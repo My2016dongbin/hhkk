@@ -33,7 +33,7 @@ class DeviceListController extends GetxController {
     if(arguments!=null){
       title.value = arguments["title"];
       productKey = arguments["productKey"]??"";
-      productKeyList = arguments["productKeyList"]??"";
+      productKeyList = arguments["productKeyList"]??[];
     }
     pageNum = 1;
     fetchPage();
