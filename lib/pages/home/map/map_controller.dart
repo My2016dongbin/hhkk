@@ -367,7 +367,19 @@ class MapController extends GetxController {
   }
 
   Future<void> onTapSearchItem(dynamic item) async {
-    await CommonUtils().parseRouteDetail(item);
+    //await CommonUtils().parseRouteDetail(item);
+    FocusScope.of(Get.context!).requestFocus(FocusNode());
+    hideSearchResult();
+    try {
+      LatLng latLng = LatLng(double.parse("${item["latitude"]}"),
+          double.parse("${item["longitude"]}"));
+      gdMapController
+          .moveCamera(CameraUpdate.newLatLngZoom(latLng, 16));
+      Get.back();
+      deviceDetailDialog(item);
+    } catch (e) {
+      EventBusUtil.getInstance().fire(HhToast(title: "定位不可用"));
+    }
   }
 
   Future<void> onTapSearchNavi(dynamic item) async {
